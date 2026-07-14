@@ -3,8 +3,13 @@ import { PaymentStatus as MolliePaymentStatus } from "@mollie/api-client";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { serverEnv } from "@/lib/env/server";
+import { clientEnv } from "@/lib/env/client";
 import { getMollieClient, isMollieConfigured } from "@/lib/payments/mollie";
+import { sendEmail } from "@/lib/email/provider";
+import { orderConfirmationEmail, paymentFailedEmail } from "@/lib/email/templates";
 import { logger } from "@/lib/observability/logger";
+import { getOrderSummary } from "./orders.server";
+import type { OrderEmailData } from "@/lib/email/types";
 import type { Json, OrderStatus, PaymentStatus } from "@/lib/db/database.types";
 
 export type FulfillmentResult =
@@ -92,6 +97,7 @@ export async function processMolliePayment(molliePaymentId: string): Promise<Ful
   }
 
   const becamePaid = nextOrderStatus === "paid" && current.status !== "paid";
+  const becameFailed = nextOrderStatus === "failed" && current.status !== "failed";
 
   const orderUpdate: Record<string, unknown> = { status: nextOrderStatus };
   if (becamePaid) {
@@ -115,5 +121,49 @@ export async function processMolliePayment(molliePaymentId: string): Promise<Ful
     return { handled: false, reason: "update-failed" };
   }
 
+  // Transactionele e-mail (best-effort; mag de webhook nooit breken).
+  if (becamePaid) {
+    await sendOrderEmail(orderId, "paid");
+  } else if (becameFailed) {
+    await sendOrderEmail(orderId, "failed");
+  }
+
   return { handled: true, orderId, orderStatus: nextOrderStatus, becamePaid };
+}
+
+/**
+ * Stuurt de order-bevestiging of betaling-mislukt-mail. No-op wanneer e-mail
+ * niet geconfigureerd is (dat regelt de provider zelf). Gooit nooit.
+ */
+async function sendOrderEmail(orderId: string, kind: "paid" | "failed"): Promise<void> {
+  try {
+    const summary = await getOrderSummary(orderId);
+    if (!summary) return;
+
+    const baseUrl = clientEnv.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+    const data: OrderEmailData = {
+      orderNumber: summary.orderNumber,
+      invoiceNumber: summary.invoiceNumber,
+      email: summary.email,
+      currency: summary.currency,
+      vatRate: summary.vatRate,
+      subtotalCents: summary.subtotalCents,
+      vatCents: summary.vatCents,
+      totalCents: summary.totalCents,
+      lines: summary.lines.map((l) => ({
+        name: l.name,
+        quantity: l.quantity,
+        lineTotalCents: l.lineTotalCents,
+      })),
+      statusUrl: `${baseUrl}/bestelling/${orderId}`,
+    };
+
+    const message = kind === "paid" ? orderConfirmationEmail(data) : paymentFailedEmail(data);
+    await sendEmail(message);
+  } catch (error) {
+    logger.warn("Kon order-e-mail niet versturen", {
+      orderId,
+      message: error instanceof Error ? error.message : "onbekend",
+    });
+  }
 }
