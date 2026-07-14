@@ -19,7 +19,7 @@ export function SiteHeader() {
     <header className="border-border/70 bg-background/80 sticky top-0 z-40 border-b backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4">
         <Link href="/" aria-label="Naar de homepage" className="shrink-0">
-          <Logo />
+          <Logo priority />
         </Link>
 
         <nav aria-label="Hoofdmenu" className="hidden items-center gap-0.5 md:flex">
