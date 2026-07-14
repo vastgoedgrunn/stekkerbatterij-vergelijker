@@ -9,9 +9,13 @@ import { trackEvent } from "@/lib/observability/analytics";
  * Affiliate-/aanbiederlink die de primaire conversie-KPI meet:
  * uitgaande kliks naar een aanbieder ("offer_clicked"). Client component zodat
  * we het event kunnen afvuren; de omliggende tabel blijft een server component.
+ *
+ * De link wijst naar onze eigen redirect `/api/go/{offerId}` die de klik
+ * server-side registreert, tracking-parameters toevoegt en doorstuurt naar de
+ * aanbieder. Zo blijft de affiliate-URL uit de HTML en meten we elke klik.
  */
 export function OfferLink({
-  href,
+  offerId,
   productId,
   merchant,
   sponsored,
@@ -19,7 +23,7 @@ export function OfferLink({
   className,
   children,
 }: {
-  href: string;
+  offerId: string;
   productId: string;
   merchant: string;
   sponsored: boolean;
@@ -29,9 +33,9 @@ export function OfferLink({
 }) {
   return (
     <a
-      href={href}
+      href={`/api/go/${offerId}`}
       target="_blank"
-      rel={sponsored ? "sponsored noopener" : "noopener"}
+      rel={sponsored ? "sponsored nofollow noopener" : "nofollow noopener"}
       onClick={() => trackEvent({ name: "offer_clicked", props: { productId, merchant } })}
       className={cn(buttonVariants({ size }), className)}
     >
