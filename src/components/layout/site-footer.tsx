@@ -26,6 +26,15 @@ const columns = [
       { href: "/over-ons#contact", label: "Contact" },
     ],
   },
+  {
+    title: "Juridisch",
+    links: [
+      { href: "/algemene-voorwaarden", label: "Algemene voorwaarden" },
+      { href: "/herroepingsrecht", label: "Herroepingsrecht" },
+      { href: "/garantie", label: "Garantie" },
+      { href: "/privacybeleid", label: "Privacybeleid" },
+    ],
+  },
 ] as const;
 
 const trust = [
@@ -50,8 +59,8 @@ export function SiteFooter() {
         </ul>
       </div>
 
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:grid-cols-2 md:grid-cols-4">
-        <div className="space-y-4 sm:col-span-2 md:col-span-1">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        <div className="space-y-4 sm:col-span-2 md:col-span-3 lg:col-span-1">
           <Logo />
           <p className="text-muted-foreground max-w-xs text-sm">{siteConfig.description}</p>
         </div>
