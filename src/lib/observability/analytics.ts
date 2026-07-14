@@ -11,7 +11,9 @@ export type AnalyticsEvent =
   | { name: "price_alert_created"; props?: { productId: string } }
   | { name: "offer_clicked"; props?: { productId: string; merchant: string } }
   | { name: "product_detail_viewed"; props?: { productId: string; slug: string } }
-  | { name: "review_submitted"; props?: { productId: string } };
+  | { name: "review_submitted"; props?: { productId: string } }
+  | { name: "cart_add"; props?: { productId: string } }
+  | { name: "checkout_started"; props?: { orderValueCents: number } };
 
 type PlausibleFn = (
   event: string,

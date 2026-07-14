@@ -236,7 +236,17 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               <h2 id="aanbieders" className="mb-5 text-2xl font-bold tracking-tight">
                 Prijzen &amp; aanbieders
               </h2>
-              <OfferTable offers={product.offers} productId={product.id} />
+              <OfferTable
+                offers={product.offers}
+                product={{
+                  id: product.id,
+                  slug: product.slug,
+                  name: product.name,
+                  brandName: product.brand.name,
+                  imagePath: product.imagePath,
+                  supplierId: product.supplierId,
+                }}
+              />
             </section>
 
             {product.priceHistory.length >= 2 && (

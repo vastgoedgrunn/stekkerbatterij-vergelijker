@@ -7,6 +7,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { CompareProvider } from "@/features/comparison/compare-store";
 import { CompareBar } from "@/features/comparison/compare-bar";
+import { CartProvider } from "@/features/checkout/cart-store";
 import "./globals.css";
 
 const fontSans = Geist({
@@ -74,12 +75,14 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="bg-background text-foreground flex min-h-full flex-col">
-        <CompareProvider>
-          <SiteHeader />
-          <div className="flex flex-1 flex-col">{children}</div>
-          <SiteFooter />
-          <CompareBar />
-        </CompareProvider>
+        <CartProvider>
+          <CompareProvider>
+            <SiteHeader />
+            <div className="flex flex-1 flex-col">{children}</div>
+            <SiteFooter />
+            <CompareBar />
+          </CompareProvider>
+        </CartProvider>
         {clientEnv.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
           <>
             <Script

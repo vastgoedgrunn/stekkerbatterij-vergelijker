@@ -60,6 +60,8 @@ export interface PricePoint {
 
 export interface ProductDetail extends ProductListItem {
   description: string | null;
+  /** Dropship-leverancier; gezet = verkoopbaar via de eigen shop (fase 2). */
+  supplierId: string | null;
   categories: Category[];
   specs: ProductSpec[];
   offers: ProductOffer[];

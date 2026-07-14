@@ -4,8 +4,20 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
+import { AddToCartButton } from "@/features/checkout/add-to-cart-button";
+import { featureFlags } from "@/config/feature-flags";
 import type { ProductOffer } from "@/features/products/types";
 import type { StockStatus } from "@/lib/db/database.types";
+
+/** Productinfo die nodig is om een self-aanbieding in de winkelmand te leggen. */
+export interface OfferTableProduct {
+  id: string;
+  slug: string;
+  name: string;
+  brandName: string | null;
+  imagePath: string | null;
+  supplierId: string | null;
+}
 
 const stockLabels: Record<
   StockStatus,
@@ -17,7 +29,18 @@ const stockLabels: Record<
   unknown: { label: "Onbekend", variant: "muted" },
 };
 
-export function OfferTable({ offers, productId }: { offers: ProductOffer[]; productId: string }) {
+export function OfferTable({
+  offers,
+  product,
+}: {
+  offers: ProductOffer[];
+  product: OfferTableProduct;
+}) {
+  // Verkoopbaar via de eigen shop? Alleen wanneer de checkout-flag aan staat
+  // én het product aan een dropship-leverancier gekoppeld is. Zo lang de flag
+  // uit is (productie), verandert er niets aan de zichtbare site.
+  const canSellSelf = featureFlags.checkout && product.supplierId !== null;
+
   if (offers.length === 0) {
     return (
       <p className="text-muted-foreground border-border rounded-2xl border border-dashed p-6 text-sm">
@@ -71,12 +94,24 @@ export function OfferTable({ offers, productId }: { offers: ProductOffer[]; prod
               {offer.affiliateUrl ? (
                 <OfferLink
                   offerId={offer.id}
-                  productId={productId}
+                  productId={product.id}
                   merchant={offer.merchantName}
                   sponsored={offer.isSponsored}
                 >
                   Bekijk
                 </OfferLink>
+              ) : canSellSelf && offer.isSelf ? (
+                <AddToCartButton
+                  item={{
+                    productId: product.id,
+                    offerId: offer.id,
+                    slug: product.slug,
+                    name: product.name,
+                    brandName: product.brandName,
+                    imagePath: product.imagePath,
+                    unitPriceCents: offer.priceCents,
+                  }}
+                />
               ) : (
                 <span className={cn(buttonVariants({ size: "sm", variant: "secondary" }))}>
                   Via ons
