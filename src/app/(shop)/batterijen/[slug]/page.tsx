@@ -200,7 +200,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               <div className="mt-4 flex flex-col gap-2 sm:flex-row">
                 {bestOffer?.affiliateUrl ? (
                   <OfferLink
-                    href={bestOffer.affiliateUrl}
+                    offerId={bestOffer.id}
                     productId={product.id}
                     merchant={bestOffer.merchantName}
                     sponsored={bestOffer.isSponsored}

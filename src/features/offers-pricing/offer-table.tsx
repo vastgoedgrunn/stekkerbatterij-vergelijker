@@ -70,7 +70,7 @@ export function OfferTable({ offers, productId }: { offers: ProductOffer[]; prod
               </span>
               {offer.affiliateUrl ? (
                 <OfferLink
-                  href={offer.affiliateUrl}
+                  offerId={offer.id}
                   productId={productId}
                   merchant={offer.merchantName}
                   sponsored={offer.isSponsored}

@@ -69,8 +69,21 @@ export interface OfferRow extends TimestampFields {
   stock_status: StockStatus;
   delivery_days: number | null;
   affiliate_url: string | null;
+  affiliate_network: string | null;
+  affiliate_params: Json | null;
   is_sponsored: boolean;
   last_checked_at: string;
+}
+
+export interface OfferClickRow {
+  id: string;
+  offer_id: string;
+  product_id: string | null;
+  merchant_id: string | null;
+  referrer: string | null;
+  user_agent: string | null;
+  session_hash: string | null;
+  created_at: string;
 }
 
 export interface PriceHistoryRow {
@@ -173,6 +186,7 @@ export interface Database {
       products: Table<ProductRow>;
       merchants: Table<MerchantRow>;
       offers: Table<OfferRow>;
+      offer_clicks: Table<OfferClickRow>;
       price_history: Table<PriceHistoryRow>;
       reviews: Table<ReviewRow>;
       spec_definitions: Table<SpecDefinitionRow>;
