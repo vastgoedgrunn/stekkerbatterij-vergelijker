@@ -1,0 +1,42 @@
+import "server-only";
+import { z } from "zod";
+
+/**
+ * Server-only omgevingsvariabelen (secrets). Dit bestand mag NOOIT
+ * in een Client Component belanden; `server-only` dwingt dat af.
+ *
+ * Variabelen zijn nu optioneel omdat integraties gefaseerd worden
+ * aangesloten. Zodra een agent een integratie toevoegt, maakt die
+ * de betreffende variabele verplicht (verwijder `.optional()`).
+ */
+const serverSchema = z.object({
+  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+
+  // Database / Supabase
+  DATABASE_URL: z.string().url().optional(),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
+
+  // Payments (release 2)
+  STRIPE_SECRET_KEY: z.string().min(1).optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().min(1).optional(),
+
+  // Shipping (release 2)
+  SENDCLOUD_API_KEY: z.string().min(1).optional(),
+  SENDCLOUD_API_SECRET: z.string().min(1).optional(),
+
+  // Observability
+  SENTRY_AUTH_TOKEN: z.string().min(1).optional(),
+});
+
+const skipValidation = process.env.SKIP_ENV_VALIDATION === "true";
+
+const parsed = skipValidation
+  ? serverSchema.partial().safeParse(process.env)
+  : serverSchema.safeParse(process.env);
+
+if (!parsed.success) {
+  throw new Error(`Ongeldige server-omgevingsvariabelen:\n${z.prettifyError(parsed.error)}`);
+}
+
+export const serverEnv = parsed.data;
+export type ServerEnv = typeof serverEnv;
