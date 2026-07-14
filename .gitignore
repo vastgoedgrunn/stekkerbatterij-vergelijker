@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+# lighthouse ci artifacts
+/.lighthouseci/
+
 # next.js
 /.next/
 /out/

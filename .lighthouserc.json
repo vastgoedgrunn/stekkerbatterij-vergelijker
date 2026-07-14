@@ -10,7 +10,7 @@
         "http://localhost:3000/beslishulp",
         "http://localhost:3000/gidsen"
       ],
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "settings": {
         "preset": "desktop"
       }
