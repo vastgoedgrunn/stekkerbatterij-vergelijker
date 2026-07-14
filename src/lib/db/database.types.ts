@@ -12,6 +12,12 @@ export type StockStatus = "in_stock" | "out_of_stock" | "preorder" | "unknown";
 export type ReviewStatus = "pending" | "approved" | "rejected";
 export type ContentStatus = "draft" | "in_review" | "published" | "archived";
 
+/** Commerce (fase 2). */
+export type OrderStatus = "pending" | "paid" | "failed" | "cancelled" | "refunded" | "shipped";
+export type PaymentStatus =
+  "open" | "pending" | "authorized" | "paid" | "failed" | "canceled" | "expired" | "refunded";
+export type ShipmentStatus = "pending" | "label_created" | "shipped" | "delivered" | "cancelled";
+
 interface TimestampFields {
   created_at: string;
   updated_at: string;
@@ -50,6 +56,12 @@ export interface ProductRow extends TimestampFields {
   expandable: boolean;
   image_path: string | null;
   published_at: string | null;
+  sku: string | null;
+  ean: string | null;
+  cost_cents: number | null;
+  supplier_id: string | null;
+  handling_days: number;
+  weight_grams: number | null;
 }
 
 export interface MerchantRow extends TimestampFields {
@@ -171,6 +183,97 @@ export interface UserRoleRow {
   created_at: string;
 }
 
+// ---------------------------------------------------------------------------
+// Commerce (fase 2)
+// ---------------------------------------------------------------------------
+export interface SupplierRow extends TimestampFields {
+  id: string;
+  name: string;
+  slug: string;
+  contact_email: string | null;
+  website_url: string | null;
+}
+
+export interface AddressRow {
+  id: string;
+  user_id: string | null;
+  full_name: string;
+  company: string | null;
+  line1: string;
+  line2: string | null;
+  postal_code: string;
+  city: string;
+  country: string;
+  phone: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OrderRow {
+  id: string;
+  order_number: number;
+  invoice_number: number | null;
+  user_id: string | null;
+  email: string;
+  status: OrderStatus;
+  currency: string;
+  vat_rate: number;
+  subtotal_cents: number;
+  vat_cents: number;
+  total_cents: number;
+  shipping_address_id: string | null;
+  billing_address_id: string | null;
+  notes: string | null;
+  placed_at: string;
+  paid_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OrderLineRow {
+  id: string;
+  order_id: string;
+  product_id: string | null;
+  offer_id: string | null;
+  sku: string | null;
+  name: string;
+  quantity: number;
+  unit_price_cents: number;
+  vat_rate: number;
+  line_total_cents: number;
+  created_at: string;
+}
+
+export interface PaymentRow {
+  id: string;
+  order_id: string;
+  provider: string;
+  provider_payment_id: string | null;
+  status: PaymentStatus;
+  amount_cents: number;
+  currency: string;
+  method: string | null;
+  checkout_url: string | null;
+  paid_at: string | null;
+  raw: Json | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ShipmentRow {
+  id: string;
+  order_id: string;
+  supplier_id: string | null;
+  status: ShipmentStatus;
+  carrier: string | null;
+  tracking_code: string | null;
+  tracking_url: string | null;
+  shipped_at: string | null;
+  delivered_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 type Table<Row, Insert = Partial<Row>, Update = Partial<Row>> = {
   Row: Row;
   Insert: Insert;
@@ -197,6 +300,12 @@ export interface Database {
       price_alerts: Table<PriceAlertRow>;
       user_roles: Table<UserRoleRow>;
       product_categories: Table<{ product_id: string; category_id: string }>;
+      suppliers: Table<SupplierRow>;
+      addresses: Table<AddressRow>;
+      orders: Table<OrderRow>;
+      order_lines: Table<OrderLineRow>;
+      payments: Table<PaymentRow>;
+      shipments: Table<ShipmentRow>;
     };
     Views: {
       product_rating_stats: {
@@ -207,9 +316,13 @@ export interface Database {
     Functions: {
       has_role: { Args: { r: AppRole }; Returns: boolean };
       refresh_product_rating_stats: { Args: Record<string, never>; Returns: undefined };
+      next_invoice_number: { Args: Record<string, never>; Returns: number };
     };
     Enums: {
       app_role: AppRole;
+      order_status: OrderStatus;
+      payment_status: PaymentStatus;
+      shipment_status: ShipmentStatus;
     };
     CompositeTypes: Record<string, never>;
   };
