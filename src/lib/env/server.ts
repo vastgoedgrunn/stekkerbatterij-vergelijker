@@ -16,9 +16,11 @@ const serverSchema = z.object({
   DATABASE_URL: z.string().url().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
 
-  // Payments (release 2)
-  STRIPE_SECRET_KEY: z.string().min(1).optional(),
-  STRIPE_WEBHOOK_SECRET: z.string().min(1).optional(),
+  // Payments (release 2) — Mollie.
+  // De webhook her-bevraagt de betaalstatus via de Mollie API (geen aparte
+  // webhook-secret nodig); daarom volstaat de API-key. Ontbreekt de key, dan
+  // is de betaalintegratie een no-op (graceful, net als Supabase).
+  MOLLIE_API_KEY: z.string().min(1).optional(),
 
   // Shipping (release 2)
   SENDCLOUD_API_KEY: z.string().min(1).optional(),
