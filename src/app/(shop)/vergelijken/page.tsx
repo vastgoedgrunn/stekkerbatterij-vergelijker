@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getProductBySlug } from "@/features/products/queries";
 import { CompareView } from "@/features/comparison/compare-view";
+import { Container } from "@/components/patterns/section";
 import { buttonVariants } from "@/components/ui/button";
 import { businessRules } from "@/config/business-rules";
 import { cn } from "@/lib/utils";
@@ -32,27 +33,35 @@ export default async function ComparePage({
   );
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-8">
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">Vergelijken</h1>
-        <p className="text-muted-foreground mt-1">
-          De beste waarde per kenmerk is groen gemarkeerd.
-        </p>
-      </header>
-
-      {products.length >= 2 ? (
-        <CompareView products={products} />
-      ) : (
-        <div className="border-border rounded-xl border border-dashed p-12 text-center">
-          <p className="font-medium">Selecteer minimaal twee batterijen</p>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Voeg batterijen toe via de vergelijk-knop in de catalogus.
+    <main>
+      <div className="border-border/70 from-primary/5 border-b bg-gradient-to-b to-transparent">
+        <Container className="py-10 sm:py-14">
+          <p className="text-primary text-sm font-semibold tracking-wide uppercase">Vergelijken</p>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+            Batterijen naast elkaar
+          </h1>
+          <p className="text-muted-foreground mt-2 max-w-2xl text-lg">
+            De beste waarde per kenmerk is gemarkeerd met een{" "}
+            <span className="text-primary font-medium">trofee</span>.
           </p>
-          <Link href="/batterijen" className={cn(buttonVariants(), "mt-4")}>
-            Naar de catalogus
-          </Link>
-        </div>
-      )}
+        </Container>
+      </div>
+
+      <Container className="py-8">
+        {products.length >= 2 ? (
+          <CompareView products={products} />
+        ) : (
+          <div className="border-border rounded-2xl border border-dashed p-12 text-center">
+            <p className="text-lg font-semibold">Selecteer minimaal twee batterijen</p>
+            <p className="text-muted-foreground mx-auto mt-1 max-w-sm text-sm">
+              Voeg batterijen toe via de vergelijk-knop in de catalogus of op een productpagina.
+            </p>
+            <Link href="/batterijen" className={cn(buttonVariants(), "mt-5")}>
+              Naar de catalogus
+            </Link>
+          </div>
+        )}
+      </Container>
     </main>
   );
 }

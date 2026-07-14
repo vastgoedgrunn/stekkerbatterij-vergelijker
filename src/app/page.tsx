@@ -1,9 +1,25 @@
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Scale, ShieldCheck, Sparkles, TrendingDown } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  BatteryCharging,
+  LineChart,
+  Scale,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  TrendingDown,
+} from "lucide-react";
 import { getProducts } from "@/features/products/queries";
 import { getArticles } from "@/features/content/queries";
 import { ProductCard } from "@/components/patterns/product-card";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { HeroMatcher } from "@/features/comparison/hero-matcher";
+import { Container, Section, SectionHeading } from "@/components/patterns/section";
+import { Reveal } from "@/components/patterns/reveal";
+import { Stat } from "@/components/patterns/stat";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/json-ld";
@@ -11,23 +27,56 @@ import { cn } from "@/lib/utils";
 
 export const revalidate = 3600;
 
+const brands = [
+  "Zendure",
+  "EcoFlow",
+  "Anker SOLIX",
+  "Marstek",
+  "Growatt",
+  "Sessy",
+  "HomeWizard",
+  "Sunology",
+];
+
 const trustItems = [
   {
     icon: Scale,
-    title: "Onafhankelijk",
-    text: "Objectieve rangschikking op prijs, capaciteit en garantie.",
+    title: "100% onafhankelijk",
+    text: "We rangschikken objectief op prijs, capaciteit, garantie en reviews — niet op wie het meest betaalt.",
   },
   {
     icon: TrendingDown,
-    title: "Actuele prijzen",
-    text: "Prijshistorie en laagste prijs van 30 dagen.",
+    title: "Altijd actuele prijzen",
+    text: "Dagelijks bijgewerkte prijzen met volledige prijshistorie en de laagste prijs van 30 dagen.",
   },
-  { icon: ShieldCheck, title: "Betrouwbaar", text: "Transparant over aanbieders en advertenties." },
+  {
+    icon: ShieldCheck,
+    title: "Transparant & compleet",
+    text: "Alle specs, meerdere aanbieders per model en eerlijke uitleg over sponsoring.",
+  },
+];
+
+const steps = [
+  {
+    icon: Search,
+    title: "Vertel je situatie",
+    text: "Verbruik, zonnepanelen en wensen — in een paar tikken.",
+  },
+  {
+    icon: Sparkles,
+    title: "Krijg een persoonlijke match",
+    text: "Onze transparante beslishulp rangschikt de beste batterijen voor jou.",
+  },
+  {
+    icon: BadgeCheck,
+    title: "Vergelijk en kies",
+    text: "Bekijk specs naast elkaar en ga naar de aanbieder met de beste prijs.",
+  },
 ];
 
 export default async function HomePage() {
-  const [{ items: featured }, articles] = await Promise.all([
-    getProducts({ sort: "rating_desc", pageSize: 3 }),
+  const [{ items: featured, total }, articles] = await Promise.all([
+    getProducts({ sort: "rating_desc", pageSize: 8 }),
     getArticles(),
   ]);
 
@@ -35,116 +84,229 @@ export default async function HomePage() {
     <>
       <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
 
-      <section className="border-border from-primary/5 to-background border-b bg-gradient-to-b">
-        <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-6 px-4 py-20 text-center">
-          <span className="bg-accent text-accent-foreground inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium">
-            <Sparkles className="size-4" /> Onafhankelijk platform
-          </span>
-          <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-balance sm:text-5xl">
-            Vind de beste stekkerbatterij voor jouw situatie
-          </h1>
-          <p className="text-muted-foreground max-w-xl text-lg text-pretty">
-            Vergelijk plug-and-play thuisbatterijen op prijs, capaciteit, vermogen en garantie.
-            Onafhankelijk, actueel en compleet.
-          </p>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Link href="/beslishulp" className={cn(buttonVariants({ size: "lg" }))}>
-              Start de beslishulp <ArrowRight className="size-4" />
-            </Link>
-            <Link
-              href="/batterijen"
-              className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
-            >
-              Bekijk alle batterijen
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-6xl px-4 py-8">
-        <div className="grid gap-4 sm:grid-cols-3">
-          {trustItems.map((item) => (
-            <div
-              key={item.title}
-              className="border-border flex items-start gap-3 rounded-xl border p-4"
-            >
-              <item.icon className="text-primary mt-0.5 size-5 shrink-0" aria-hidden />
-              <div>
-                <p className="font-medium">{item.title}</p>
-                <p className="text-muted-foreground text-sm">{item.text}</p>
-              </div>
+      {/* HERO */}
+      <section className="relative overflow-hidden">
+        <div className="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)] opacity-60" />
+        <div className="from-primary/10 pointer-events-none absolute inset-0 bg-gradient-to-b to-transparent" />
+        <Container className="relative grid items-center gap-12 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:py-24">
+          <div className="flex flex-col gap-6">
+            <span className="border-border/70 bg-card/60 text-foreground inline-flex w-fit items-center gap-2 rounded-full border px-3 py-1 text-sm font-medium backdrop-blur">
+              <span className="bg-success size-2 animate-pulse rounded-full" />
+              Onafhankelijk vergelijkingsplatform
+            </span>
+            <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+              Vind de <span className="text-gradient">beste stekkerbatterij</span> voor jouw huis
+            </h1>
+            <p className="text-muted-foreground max-w-xl text-lg text-pretty">
+              Vergelijk plug-and-play thuisbatterijen op prijs, capaciteit, vermogen en garantie.
+              Onafhankelijk, actueel en compleet — zodat jij met vertrouwen kiest.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link href="/beslishulp" className={cn(buttonVariants({ size: "lg" }))}>
+                Start de beslishulp <ArrowRight className="size-4" />
+              </Link>
+              <Link
+                href="/batterijen"
+                className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
+              >
+                Bekijk alle batterijen
+              </Link>
             </div>
-          ))}
-        </div>
+            <dl className="border-border/70 mt-2 flex flex-wrap gap-x-10 gap-y-4 border-t pt-6">
+              <Stat value={total} label="Modellen vergeleken" />
+              <Stat value="6" label="Aanbieders" />
+              <Stat value="100%" label="Onafhankelijk" />
+            </dl>
+          </div>
+
+          <div className="lg:pl-4">
+            <HeroMatcher products={featured} />
+          </div>
+        </Container>
       </section>
 
-      {featured.length > 0 && (
-        <section className="mx-auto w-full max-w-6xl px-4 py-8">
-          <div className="mb-6 flex items-end justify-between">
-            <h2 className="text-2xl font-bold tracking-tight">Populaire batterijen</h2>
-            <Link href="/batterijen" className="text-primary text-sm font-medium hover:underline">
-              Alles bekijken
-            </Link>
-          </div>
-          <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((product) => (
-              <li key={product.id}>
-                <ProductCard product={product} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {articles.length > 0 && (
-        <section className="mx-auto w-full max-w-6xl px-4 py-8">
-          <div className="mb-6 flex items-end justify-between">
-            <h2 className="text-2xl font-bold tracking-tight">Uit onze kennisbank</h2>
-            <Link href="/gidsen" className="text-primary text-sm font-medium hover:underline">
-              Alle gidsen
-            </Link>
-          </div>
-          <ul className="grid gap-6 sm:grid-cols-2">
-            {articles.slice(0, 2).map((article) => (
-              <li key={article.id}>
-                <Card className="h-full transition-shadow hover:shadow-md">
-                  <CardHeader>
-                    <CardTitle>
-                      <Link href={`/gidsen/${article.slug}`} className="hover:underline">
-                        {article.title}
-                      </Link>
-                    </CardTitle>
-                    {article.excerpt && <CardDescription>{article.excerpt}</CardDescription>}
-                  </CardHeader>
-                  <CardContent>
-                    <Link
-                      href={`/gidsen/${article.slug}`}
-                      className="text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline"
-                    >
-                      Lees meer <ArrowRight className="size-4" />
-                    </Link>
-                  </CardContent>
-                </Card>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      <section className="mx-auto w-full max-w-6xl px-4 py-12">
-        <div className="bg-primary text-primary-foreground flex flex-col items-center gap-4 rounded-2xl px-6 py-12 text-center">
-          <h2 className="text-2xl font-bold">Niet zeker welke batterij past?</h2>
-          <p className="max-w-md opacity-90">
-            Onze beslishulp geeft je in vier stappen een persoonlijk advies.
+      {/* MERKEN */}
+      <div className="border-border/70 border-y py-6">
+        <Container>
+          <p className="text-muted-foreground mb-4 text-center text-xs font-semibold tracking-[0.2em] uppercase">
+            Alle grote merken op één plek
           </p>
-          <Link
-            href="/beslishulp"
-            className={cn(buttonVariants({ variant: "secondary", size: "lg" }))}
-          >
-            Start de beslishulp <ArrowRight className="size-4" />
-          </Link>
-        </div>
-      </section>
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+            {brands.map((brand) => (
+              <span key={brand} className="text-muted-foreground text-lg font-semibold">
+                {brand}
+              </span>
+            ))}
+          </div>
+        </Container>
+      </div>
+
+      {/* TRUST */}
+      <Section>
+        <Container>
+          <div className="grid gap-6 md:grid-cols-3">
+            {trustItems.map((item, i) => (
+              <Reveal key={item.title} delay={i * 80}>
+                <Card className="h-full p-6">
+                  <span className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-xl">
+                    <item.icon className="size-5" />
+                  </span>
+                  <h3 className="mt-4 font-semibold">{item.title}</h3>
+                  <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed">
+                    {item.text}
+                  </p>
+                </Card>
+              </Reveal>
+            ))}
+          </div>
+        </Container>
+      </Section>
+
+      {/* UITGELICHT */}
+      {featured.length > 0 && (
+        <Section className="pt-0">
+          <Container>
+            <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+              <SectionHeading
+                eyebrow="Best beoordeeld"
+                title="Populaire stekkerbatterijen"
+                description="De hoogst gewaardeerde modellen van dit moment, op basis van echte reviews."
+              />
+              <Link
+                href="/batterijen"
+                className={cn(buttonVariants({ variant: "outline" }), "shrink-0")}
+              >
+                Alles bekijken <ArrowRight className="size-4" />
+              </Link>
+            </div>
+            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {featured.slice(0, 4).map((product, i) => (
+                <Reveal as="li" key={product.id} delay={i * 60}>
+                  <ProductCard product={product} />
+                </Reveal>
+              ))}
+            </ul>
+          </Container>
+        </Section>
+      )}
+
+      {/* HOE WERKT HET */}
+      <Section className="bg-muted/40 border-border/70 border-y">
+        <Container>
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            <Reveal>
+              <div className="border-border/70 relative aspect-[4/3] overflow-hidden rounded-3xl border shadow-[var(--shadow-lg)]">
+                <Image
+                  src="/images/hero-home.png"
+                  alt="Stekkerbatterij aan de muur in een moderne bijkeuken"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
+                />
+              </div>
+            </Reveal>
+            <div>
+              <SectionHeading
+                eyebrow="Zo werkt het"
+                title="In drie stappen naar de juiste batterij"
+                description="Geen technisch jargon. Wij vertalen jouw situatie naar een helder, eerlijk advies."
+              />
+              <ol className="mt-8 space-y-6">
+                {steps.map((step, i) => (
+                  <li key={step.title} className="flex gap-4">
+                    <span className="bg-primary text-primary-foreground flex size-10 shrink-0 items-center justify-center rounded-xl font-bold">
+                      {i + 1}
+                    </span>
+                    <div>
+                      <h3 className="flex items-center gap-2 font-semibold">
+                        <step.icon className="text-primary size-4" /> {step.title}
+                      </h3>
+                      <p className="text-muted-foreground mt-1 text-sm">{step.text}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <Link href="/beslishulp" className={cn(buttonVariants({ size: "lg" }), "mt-8")}>
+                Start de beslishulp <ArrowRight className="size-4" />
+              </Link>
+            </div>
+          </div>
+        </Container>
+      </Section>
+
+      {/* KENNISBANK */}
+      {articles.length > 0 && (
+        <Section>
+          <Container>
+            <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+              <SectionHeading
+                eyebrow="Kennisbank"
+                title="Word wegwijs in energieopslag"
+                description="Onafhankelijke koopgidsen en uitleg, geschreven om je écht verder te helpen."
+              />
+              <Link
+                href="/gidsen"
+                className={cn(buttonVariants({ variant: "outline" }), "shrink-0")}
+              >
+                Alle gidsen <ArrowRight className="size-4" />
+              </Link>
+            </div>
+            <ul className="grid gap-6 md:grid-cols-3">
+              {articles.slice(0, 3).map((article, i) => (
+                <Reveal as="li" key={article.id} delay={i * 60}>
+                  <Card interactive className="group h-full">
+                    <CardContent className="flex h-full flex-col gap-3 p-6">
+                      <Badge variant="muted" className="w-fit">
+                        <LineChart className="size-3" /> Gids
+                      </Badge>
+                      <h3 className="group-hover:text-primary text-lg leading-tight font-semibold">
+                        <Link
+                          href={`/gidsen/${article.slug}`}
+                          className="after:absolute after:inset-0"
+                        >
+                          {article.title}
+                        </Link>
+                      </h3>
+                      {article.excerpt && (
+                        <p className="text-muted-foreground text-sm leading-relaxed">
+                          {article.excerpt}
+                        </p>
+                      )}
+                      <span className="text-primary mt-auto inline-flex items-center gap-1 text-sm font-semibold">
+                        Lees meer <ArrowRight className="size-4" />
+                      </span>
+                    </CardContent>
+                  </Card>
+                </Reveal>
+              ))}
+            </ul>
+          </Container>
+        </Section>
+      )}
+
+      {/* CTA */}
+      <Section className="pt-0">
+        <Container>
+          <div className="bg-primary text-primary-foreground relative overflow-hidden rounded-3xl px-6 py-14 text-center shadow-[var(--shadow-xl)] sm:px-12">
+            <BatteryCharging className="absolute -top-8 -right-8 size-48 opacity-10" />
+            <div className="relative mx-auto flex max-w-xl flex-col items-center gap-4">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                Niet zeker welke batterij past?
+              </h2>
+              <p className="text-lg opacity-90">
+                Onze beslishulp geeft je in vier korte stappen een persoonlijk, onafhankelijk
+                advies.
+              </p>
+              <Link
+                href="/beslishulp"
+                className={cn(buttonVariants({ variant: "secondary", size: "lg" }), "mt-2")}
+              >
+                Start de beslishulp <ArrowRight className="size-4" />
+              </Link>
+            </div>
+          </div>
+        </Container>
+      </Section>
     </>
   );
 }

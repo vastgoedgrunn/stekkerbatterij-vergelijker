@@ -1,6 +1,11 @@
 import Link from "next/link";
-import { BatteryCharging, Menu, User } from "lucide-react";
-import { siteConfig } from "@/config/site";
+import { User } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Logo } from "@/components/brand/logo";
+import { buttonVariants } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { MobileNav } from "@/components/layout/mobile-nav";
+import { NavLink } from "@/components/layout/nav-link";
 
 const navItems = [
   { href: "/batterijen", label: "Batterijen" },
@@ -11,57 +16,35 @@ const navItems = [
 
 export function SiteHeader() {
   return (
-    <header className="border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
+    <header className="border-border/70 bg-background/80 sticky top-0 z-40 border-b backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4">
-        <Link href="/" className="flex items-center gap-2 font-bold">
-          <span className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-lg">
-            <BatteryCharging className="size-5" />
-          </span>
-          <span className="hidden sm:inline">{siteConfig.shortName}</span>
+        <Link href="/" aria-label="Naar de homepage" className="shrink-0">
+          <Logo />
         </Link>
 
-        <nav aria-label="Hoofdmenu" className="hidden items-center gap-1 md:flex">
+        <nav aria-label="Hoofdmenu" className="hidden items-center gap-0.5 md:flex">
           {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="hover:bg-accent rounded-md px-3 py-2 text-sm font-medium transition-colors"
-            >
+            <NavLink key={item.href} href={item.href}>
               {item.label}
-            </Link>
+            </NavLink>
           ))}
+        </nav>
+
+        <div className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
           <Link
             href="/account"
-            className="hover:bg-accent ml-1 flex size-10 items-center justify-center rounded-md"
+            className="text-muted-foreground hover:bg-accent hover:text-foreground flex size-9 items-center justify-center rounded-lg transition-colors"
             aria-label="Mijn account"
           >
             <User className="size-5" />
           </Link>
-        </nav>
+          <Link href="/beslishulp" className={cn(buttonVariants({ size: "sm" }))}>
+            Beslishulp
+          </Link>
+        </div>
 
-        <details className="relative md:hidden">
-          <summary className="hover:bg-accent flex size-10 cursor-pointer list-none items-center justify-center rounded-md [&::-webkit-details-marker]:hidden">
-            <Menu className="size-5" />
-            <span className="sr-only">Menu openen</span>
-          </summary>
-          <div className="border-border bg-popover absolute right-0 mt-2 w-48 rounded-lg border p-1 shadow-md">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="hover:bg-accent block rounded-md px-3 py-2 text-sm font-medium"
-              >
-                {item.label}
-              </Link>
-            ))}
-            <Link
-              href="/account"
-              className="hover:bg-accent block rounded-md px-3 py-2 text-sm font-medium"
-            >
-              Account
-            </Link>
-          </div>
-        </details>
+        <MobileNav items={navItems} />
       </div>
     </header>
   );

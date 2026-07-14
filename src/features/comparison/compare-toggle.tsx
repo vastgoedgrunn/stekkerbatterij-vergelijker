@@ -23,10 +23,10 @@ export function CompareToggle({ slug, className }: { slug: string; className?: s
             : "Voeg toe aan vergelijking"
       }
       className={cn(
-        "focus-visible:ring-ring inline-flex size-8 items-center justify-center rounded-md border transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:opacity-40",
+        "focus-visible:ring-ring/50 inline-flex size-10 items-center justify-center rounded-xl border transition-all focus-visible:ring-4 focus-visible:outline-none disabled:opacity-40",
         selected
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-background hover:bg-accent",
+          ? "border-primary bg-primary text-primary-foreground shadow-sm"
+          : "border-border bg-background hover:border-primary/40 hover:bg-accent",
         className,
       )}
     >

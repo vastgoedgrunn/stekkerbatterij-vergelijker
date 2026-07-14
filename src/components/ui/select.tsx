@@ -14,8 +14,8 @@ export function Select({
     <div className="relative">
       <select
         className={cn(
-          "border-input bg-background h-10 w-full appearance-none rounded-md border px-3 pr-9 text-sm",
-          "focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none",
+          "border-input bg-background h-11 w-full appearance-none rounded-xl border px-3.5 pr-9 text-sm transition-colors",
+          "focus-visible:border-primary/40 focus-visible:ring-ring/40 focus-visible:ring-4 focus-visible:outline-none",
           "disabled:cursor-not-allowed disabled:opacity-50",
           className,
         )}

@@ -45,9 +45,18 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: siteConfig.themeColor,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f7f8f6" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f1512" },
+  ],
   colorScheme: "light dark",
 };
+
+/**
+ * Zet de thema-class vóór hydration zodat er geen flits van het verkeerde
+ * thema optreedt. Leest een opgeslagen voorkeur of valt terug op het systeem.
+ */
+const themeInitScript = `(function(){try{var t=localStorage.getItem("theme");var d=t?t==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.classList.toggle("dark",d);}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -58,8 +67,12 @@ export default function RootLayout({
     <html
       lang={siteConfig.language}
       data-scroll-behavior="smooth"
+      suppressHydrationWarning
       className={`${fontSans.variable} ${fontMono.variable} h-full antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="bg-background text-foreground flex min-h-full flex-col">
         <CompareProvider>
           <SiteHeader />

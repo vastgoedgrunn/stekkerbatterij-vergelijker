@@ -33,7 +33,7 @@ export function ReviewForm({ productId, productSlug }: { productId: string; prod
   }
 
   return (
-    <form action={formAction} className="border-border space-y-4 rounded-xl border p-4">
+    <form action={formAction} className="border-border bg-card space-y-4 rounded-2xl border p-5">
       <input type="hidden" name="productId" value={productId} />
       <input type="hidden" name="productSlug" value={productSlug} />
 

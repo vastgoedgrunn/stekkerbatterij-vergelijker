@@ -2,7 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { BatteryCharging } from "lucide-react";
+import {
+  BatteryCharging,
+  ChevronRight,
+  ExternalLink,
+  ShieldCheck,
+  Sparkles,
+  Truck,
+} from "lucide-react";
 import { getProductBySlug, getProductSlugs } from "@/features/products/queries";
 import { getFaqs } from "@/features/content/queries";
 import { getApprovedReviews } from "@/features/reviews/queries";
@@ -13,12 +20,15 @@ import { ReviewList } from "@/features/reviews/review-list";
 import { ReviewForm } from "@/features/reviews/review-form";
 import { RatingStars } from "@/components/patterns/rating-stars";
 import { FaqAccordion } from "@/components/patterns/faq-accordion";
+import { Container } from "@/components/patterns/section";
 import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
 import { CompareToggle } from "@/features/comparison/compare-toggle";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbJsonLd, faqJsonLd, productJsonLd } from "@/lib/seo/json-ld";
 import { getPublicImageUrl } from "@/lib/supabase/storage";
-import { formatPrice } from "@/lib/format";
+import { formatNumber, formatPrice } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
@@ -62,6 +72,26 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const [reviews, faqs] = await Promise.all([getApprovedReviews(product.id), getFaqs()]);
   const imageUrl = getPublicImageUrl(product.imagePath);
 
+  const bestOffer = [...product.offers].sort((a, b) => a.priceCents - b.priceCents)[0];
+
+  const quickSpecs = [
+    product.capacityKwh !== null && {
+      icon: BatteryCharging,
+      label: "Capaciteit",
+      value: `${formatNumber(product.capacityKwh)} kWh`,
+    },
+    product.powerKw !== null && {
+      icon: Sparkles,
+      label: "Vermogen",
+      value: `${formatNumber(product.powerKw)} kW`,
+    },
+    product.warrantyYears !== null && {
+      icon: ShieldCheck,
+      label: "Garantie",
+      value: `${product.warrantyYears} jaar`,
+    },
+  ].filter(Boolean) as { icon: typeof ShieldCheck; label: string; value: string }[];
+
   const structuredData: Record<string, unknown>[] = [
     productJsonLd(product),
     breadcrumbJsonLd([
@@ -74,120 +104,184 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   if (faqLd) structuredData.push(faqLd);
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-8">
+    <main>
       <JsonLd data={structuredData} />
 
-      <nav aria-label="Kruimelpad" className="text-muted-foreground mb-6 text-sm">
-        <ol className="flex flex-wrap items-center gap-1">
-          <li>
-            <Link href="/" className="hover:underline">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden>/</li>
-          <li>
-            <Link href="/batterijen" className="hover:underline">
-              Batterijen
-            </Link>
-          </li>
-          <li aria-hidden>/</li>
-          <li className="text-foreground">{product.name}</li>
-        </ol>
-      </nav>
+      <Container className="py-8">
+        <nav aria-label="Kruimelpad" className="text-muted-foreground mb-6 text-sm">
+          <ol className="flex flex-wrap items-center gap-1">
+            <li>
+              <Link href="/" className="hover:text-foreground">
+                Home
+              </Link>
+            </li>
+            <ChevronRight className="size-4" aria-hidden />
+            <li>
+              <Link href="/batterijen" className="hover:text-foreground">
+                Batterijen
+              </Link>
+            </li>
+            <ChevronRight className="size-4" aria-hidden />
+            <li className="text-foreground font-medium">{product.name}</li>
+          </ol>
+        </nav>
 
-      <div className="grid gap-8 lg:grid-cols-2">
-        <div className="bg-muted relative flex aspect-4/3 items-center justify-center rounded-xl">
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={product.name}
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-contain p-6"
-            />
-          ) : (
-            <BatteryCharging className="text-muted-foreground/40 size-24" aria-hidden />
-          )}
-        </div>
-
-        <div className="flex flex-col gap-4">
-          <div>
-            <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
-              {product.brand.name}
-            </p>
-            <h1 className="text-3xl font-bold tracking-tight">{product.name}</h1>
+        <div className="grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
+          {/* GALLERY */}
+          <div className="from-accent/50 via-muted border-border relative flex aspect-square items-center justify-center overflow-hidden rounded-3xl border bg-gradient-to-br to-transparent">
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={product.name}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-contain p-10"
+              />
+            ) : (
+              <BatteryCharging className="text-primary/25 size-24" aria-hidden />
+            )}
+            {product.expandable && (
+              <Badge variant="highlight" className="absolute top-4 left-4">
+                Uitbreidbaar
+              </Badge>
+            )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <RatingStars average={product.rating.average} count={product.rating.count} />
-            {product.expandable && <Badge variant="secondary">Uitbreidbaar</Badge>}
-          </div>
-
-          {product.summary && <p className="text-muted-foreground">{product.summary}</p>}
-
-          <div className="border-border flex items-end gap-4 rounded-xl border p-4">
+          {/* BUY INFO */}
+          <div className="flex flex-col gap-5">
             <div>
-              <p className="text-muted-foreground text-sm">Laagste prijs</p>
-              <p className="text-2xl font-bold">
-                {product.lowestPriceCents !== null ? formatPrice(product.lowestPriceCents) : "—"}
+              <p className="text-primary text-sm font-semibold tracking-wide uppercase">
+                {product.brand.name}
+              </p>
+              <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">{product.name}</h1>
+              <div className="mt-3">
+                <RatingStars average={product.rating.average} count={product.rating.count} />
+              </div>
+            </div>
+
+            {product.summary && (
+              <p className="text-muted-foreground leading-relaxed">{product.summary}</p>
+            )}
+
+            <div className="grid grid-cols-3 gap-3">
+              {quickSpecs.map((spec) => (
+                <div key={spec.label} className="border-border bg-card rounded-xl border p-3">
+                  <spec.icon className="text-primary size-4" />
+                  <p className="mt-2 text-sm font-bold">{spec.value}</p>
+                  <p className="text-muted-foreground text-xs">{spec.label}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="border-border bg-card rounded-2xl border p-5 shadow-[var(--shadow-sm)]">
+              <div className="flex items-end justify-between gap-4">
+                <div>
+                  <p className="text-muted-foreground text-sm">Laagste prijs</p>
+                  <p className="text-3xl font-bold tracking-tight">
+                    {product.lowestPriceCents !== null
+                      ? formatPrice(product.lowestPriceCents)
+                      : "—"}
+                  </p>
+                  {bestOffer && (
+                    <p className="text-muted-foreground mt-1 text-xs">
+                      bij {bestOffer.merchantName}
+                    </p>
+                  )}
+                </div>
+                {bestOffer?.deliveryDays != null && (
+                  <span className="text-muted-foreground inline-flex items-center gap-1 text-sm">
+                    <Truck className="size-4" /> {bestOffer.deliveryDays} werkdagen
+                  </span>
+                )}
+              </div>
+
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                {bestOffer?.affiliateUrl ? (
+                  <a
+                    href={bestOffer.affiliateUrl}
+                    target="_blank"
+                    rel={bestOffer.isSponsored ? "sponsored noopener" : "noopener"}
+                    className={cn(buttonVariants({ size: "lg" }), "flex-1")}
+                  >
+                    Bekijk beste prijs <ExternalLink className="size-4" />
+                  </a>
+                ) : (
+                  <a href="#aanbieders" className={cn(buttonVariants({ size: "lg" }), "flex-1")}>
+                    Bekijk aanbieders
+                  </a>
+                )}
+                <CompareToggle slug={product.slug} />
+              </div>
+              <p className="text-muted-foreground mt-3 text-center text-xs">
+                Prijs incl. btw · controleer de actuele prijs bij de aanbieder
               </p>
             </div>
-            <CompareToggle slug={product.slug} className="ml-auto" />
-          </div>
-
-          <SpecList product={product} />
-        </div>
-      </div>
-
-      <section className="mt-12" aria-labelledby="aanbieders">
-        <h2 id="aanbieders" className="mb-4 text-2xl font-bold">
-          Prijzen & aanbieders
-        </h2>
-        <OfferTable offers={product.offers} />
-      </section>
-
-      {product.priceHistory.length >= 2 && (
-        <section className="mt-12" aria-labelledby="prijsontwikkeling">
-          <h2 id="prijsontwikkeling" className="mb-4 text-2xl font-bold">
-            Prijsontwikkeling
-          </h2>
-          <div className="border-border rounded-xl border p-4">
-            <PriceHistoryChart points={product.priceHistory} />
-          </div>
-        </section>
-      )}
-
-      {product.description && (
-        <section className="mt-12" aria-labelledby="beschrijving">
-          <h2 id="beschrijving" className="mb-4 text-2xl font-bold">
-            Over deze batterij
-          </h2>
-          <p className="text-muted-foreground max-w-3xl leading-relaxed">{product.description}</p>
-        </section>
-      )}
-
-      <section className="mt-12" aria-labelledby="reviews">
-        <h2 id="reviews" className="mb-4 text-2xl font-bold">
-          Reviews
-        </h2>
-        <div className="grid gap-8 lg:grid-cols-[1fr_24rem]">
-          <ReviewList reviews={reviews} />
-          <div>
-            <h3 className="mb-3 text-lg font-semibold">Schrijf een review</h3>
-            <ReviewForm productId={product.id} productSlug={product.slug} />
           </div>
         </div>
-      </section>
 
-      {faqs.length > 0 && (
-        <section className="mt-12" aria-labelledby="faq">
-          <h2 id="faq" className="mb-4 text-2xl font-bold">
-            Veelgestelde vragen
-          </h2>
-          <FaqAccordion faqs={faqs} />
-        </section>
-      )}
+        <div className="mt-16 grid gap-16 lg:grid-cols-[1fr_20rem]">
+          <div className="space-y-16">
+            <section aria-labelledby="specificaties">
+              <h2 id="specificaties" className="mb-5 text-2xl font-bold tracking-tight">
+                Specificaties
+              </h2>
+              <SpecList product={product} />
+            </section>
+
+            <section aria-labelledby="aanbieders">
+              <h2 id="aanbieders" className="mb-5 text-2xl font-bold tracking-tight">
+                Prijzen &amp; aanbieders
+              </h2>
+              <OfferTable offers={product.offers} />
+            </section>
+
+            {product.priceHistory.length >= 2 && (
+              <section aria-labelledby="prijsontwikkeling">
+                <h2 id="prijsontwikkeling" className="mb-5 text-2xl font-bold tracking-tight">
+                  Prijsontwikkeling
+                </h2>
+                <div className="border-border bg-card rounded-2xl border p-5">
+                  <PriceHistoryChart points={product.priceHistory} />
+                </div>
+              </section>
+            )}
+
+            {product.description && (
+              <section aria-labelledby="beschrijving">
+                <h2 id="beschrijving" className="mb-5 text-2xl font-bold tracking-tight">
+                  Over deze batterij
+                </h2>
+                <p className="text-muted-foreground max-w-3xl leading-relaxed">
+                  {product.description}
+                </p>
+              </section>
+            )}
+
+            <section aria-labelledby="reviews">
+              <h2 id="reviews" className="mb-5 text-2xl font-bold tracking-tight">
+                Reviews
+              </h2>
+              <div className="grid gap-8 lg:grid-cols-[1fr_22rem]">
+                <ReviewList reviews={reviews} />
+                <div>
+                  <h3 className="mb-3 text-lg font-semibold">Schrijf een review</h3>
+                  <ReviewForm productId={product.id} productSlug={product.slug} />
+                </div>
+              </div>
+            </section>
+          </div>
+
+          {faqs.length > 0 && (
+            <aside className="lg:sticky lg:top-24 lg:self-start" aria-labelledby="faq">
+              <h2 id="faq" className="mb-5 text-2xl font-bold tracking-tight">
+                Veelgestelde vragen
+              </h2>
+              <FaqAccordion faqs={faqs} />
+            </aside>
+          )}
+        </div>
+      </Container>
     </main>
   );
 }

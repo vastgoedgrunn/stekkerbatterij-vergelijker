@@ -44,11 +44,14 @@ export function SpecList({ product }: { product: ProductDetail }) {
   const specs = [...buildCoreSpecs(product), ...product.specs];
 
   return (
-    <dl className="divide-border border-border divide-y rounded-xl border">
+    <dl className="border-border bg-card grid grid-cols-1 overflow-hidden rounded-2xl border sm:grid-cols-2">
       {specs.map((spec) => (
-        <div key={spec.key} className="flex items-center justify-between gap-4 px-4 py-3">
+        <div
+          key={spec.key}
+          className="border-border/70 flex items-center justify-between gap-4 border-b px-5 py-3.5"
+        >
           <dt className="text-muted-foreground text-sm">{spec.label}</dt>
-          <dd className="text-right text-sm font-medium">{spec.value}</dd>
+          <dd className="text-right text-sm font-semibold">{spec.value}</dd>
         </div>
       ))}
     </dl>

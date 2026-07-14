@@ -1,13 +1,15 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowLeft, ArrowRight, Check, RefreshCw } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
+import { getPublicImageUrl } from "@/lib/supabase/storage";
 import { trackEvent } from "@/lib/observability/analytics";
 import { rankProducts, type WizardPreferences } from "./ranking";
 import type { ProductListItem } from "@/features/products/types";
@@ -119,56 +121,84 @@ export function DecisionWizard({ products }: { products: ProductListItem[] }) {
 
       {isResult && (
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold">Onze aanbeveling</h2>
+          <div className="text-center">
+            <Badge variant="default" className="mb-2">
+              Klaar!
+            </Badge>
+            <h2 className="text-2xl font-bold tracking-tight">Onze aanbeveling voor jou</h2>
+          </div>
           {recommendations.length === 0 ? (
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-center">
               We konden nog geen aanbeveling doen. Bekijk het volledige aanbod in de catalogus.
             </p>
           ) : (
-            recommendations.map((rec, i) => (
-              <Card key={rec.product.id}>
-                <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      {i === 0 && <Badge variant="success">Beste match</Badge>}
-                      <p className="text-muted-foreground text-xs tracking-wide uppercase">
-                        {rec.product.brand.name}
-                      </p>
+            recommendations.map((rec, i) => {
+              const imageUrl = getPublicImageUrl(rec.product.imagePath);
+              return (
+                <Card
+                  key={rec.product.id}
+                  interactive
+                  className={cn(i === 0 && "border-primary/40 ring-primary/15 ring-2")}
+                >
+                  <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
+                    <div className="from-accent/50 to-muted relative size-24 shrink-0 self-center overflow-hidden rounded-2xl bg-gradient-to-br">
+                      {imageUrl && (
+                        <Image
+                          src={imageUrl}
+                          alt={rec.product.name}
+                          fill
+                          sizes="96px"
+                          className="object-contain p-2"
+                        />
+                      )}
                     </div>
-                    <Link
-                      href={`/batterijen/${rec.product.slug}`}
-                      className="text-lg font-semibold hover:underline"
-                    >
-                      {rec.product.name}
-                    </Link>
-                    <ul className="mt-2 space-y-1">
-                      {rec.reasons.map((reason) => (
-                        <li key={reason} className="text-muted-foreground text-sm">
-                          • {reason}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="text-right">
-                    {rec.product.lowestPriceCents !== null && (
-                      <p className="text-lg font-bold">
-                        {formatPrice(rec.product.lowestPriceCents)}
-                      </p>
-                    )}
-                    <Link
-                      href={`/batterijen/${rec.product.slug}`}
-                      className="text-primary text-sm hover:underline"
-                    >
-                      Bekijk details
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        {i === 0 && <Badge variant="default">Beste match</Badge>}
+                        <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+                          {rec.product.brand.name}
+                        </p>
+                      </div>
+                      <Link
+                        href={`/batterijen/${rec.product.slug}`}
+                        className="hover:text-primary text-lg font-semibold"
+                      >
+                        {rec.product.name}
+                      </Link>
+                      <ul className="mt-2 space-y-1">
+                        {rec.reasons.map((reason) => (
+                          <li
+                            key={reason}
+                            className="text-muted-foreground flex items-center gap-1.5 text-sm"
+                          >
+                            <Check className="text-success size-3.5 shrink-0" /> {reason}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="flex flex-col items-end gap-2 sm:text-right">
+                      {rec.product.lowestPriceCents !== null && (
+                        <p className="text-xl font-bold">
+                          {formatPrice(rec.product.lowestPriceCents)}
+                        </p>
+                      )}
+                      <Link
+                        href={`/batterijen/${rec.product.slug}`}
+                        className={cn(buttonVariants({ size: "sm" }))}
+                      >
+                        Bekijk details <ArrowRight className="size-4" />
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })
           )}
-          <Button variant="outline" onClick={restart}>
-            <RefreshCw className="size-4" /> Opnieuw beginnen
-          </Button>
+          <div className="flex justify-center pt-2">
+            <Button variant="outline" onClick={restart}>
+              <RefreshCw className="size-4" /> Opnieuw beginnen
+            </Button>
+          </div>
         </div>
       )}
 

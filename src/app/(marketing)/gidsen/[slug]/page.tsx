@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getArticleBySlug, getArticleSlugs } from "@/features/content/queries";
+import { Container } from "@/components/patterns/section";
+import { buttonVariants } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { formatDate } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
@@ -42,7 +46,7 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
   if (!article) notFound();
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-10">
+    <main>
       <JsonLd
         data={[
           articleJsonLd(article),
@@ -54,31 +58,52 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
         ]}
       />
 
-      <article className="prose-headings:font-bold">
-        <Link href="/gidsen" className="text-muted-foreground text-sm hover:underline">
-          ← Alle gidsen
-        </Link>
-        <h1 className="mt-4 text-3xl font-bold tracking-tight text-balance">{article.title}</h1>
-        {article.publishedAt && (
-          <p className="text-muted-foreground mt-2 text-sm">
-            Gepubliceerd op {formatDate(article.publishedAt)}
-          </p>
-        )}
+      <div className="border-border/70 from-primary/5 border-b bg-gradient-to-b to-transparent">
+        <Container className="max-w-3xl! py-10 sm:py-12">
+          <Link
+            href="/gidsen"
+            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm"
+          >
+            <ArrowLeft className="size-4" /> Alle gidsen
+          </Link>
+          <h1 className="mt-5 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+            {article.title}
+          </h1>
+          {article.publishedAt && (
+            <p className="text-muted-foreground mt-3 text-sm">
+              Gepubliceerd op {formatDate(article.publishedAt)}
+            </p>
+          )}
+        </Container>
+      </div>
 
-        <div className="mt-8 space-y-5">
+      <Container className="max-w-3xl! py-12">
+        <article className="space-y-6">
           {article.body.map((block, i) =>
             block.type === "heading" ? (
-              <h2 key={i} className="text-xl font-semibold">
+              <h2 key={i} className="mt-4 text-2xl font-bold tracking-tight">
                 {block.text}
               </h2>
             ) : (
-              <p key={i} className="text-muted-foreground leading-relaxed">
+              <p key={i} className="text-muted-foreground text-lg leading-relaxed">
                 {block.text}
               </p>
             ),
           )}
+        </article>
+
+        <div className="border-border mt-12 flex flex-col items-start gap-4 rounded-2xl border border-dashed p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-semibold">Klaar om te kiezen?</p>
+            <p className="text-muted-foreground text-sm">
+              Gebruik de beslishulp voor een persoonlijk advies.
+            </p>
+          </div>
+          <Link href="/beslishulp" className={cn(buttonVariants(), "shrink-0")}>
+            Start de beslishulp <ArrowRight className="size-4" />
+          </Link>
         </div>
-      </article>
+      </Container>
     </main>
   );
 }

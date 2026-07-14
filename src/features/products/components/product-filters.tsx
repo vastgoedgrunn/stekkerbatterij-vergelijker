@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,82 +14,93 @@ interface Props {
 
 export function ProductFilterPanel({ brands, categories, filters }: Props) {
   return (
-    <form method="get" action="/batterijen" className="space-y-5">
-      <div className="space-y-2">
-        <Label htmlFor="q">Zoeken</Label>
-        <Input id="q" name="q" defaultValue={filters.search ?? ""} placeholder="Merk of model" />
+    <form
+      method="get"
+      action="/batterijen"
+      className="border-border bg-card rounded-2xl border p-5 shadow-[var(--shadow-xs)]"
+    >
+      <div className="mb-4 flex items-center gap-2">
+        <SlidersHorizontal className="text-primary size-4" />
+        <h2 className="font-semibold">Filters</h2>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="merk">Merk</Label>
-        <Select id="merk" name="merk" defaultValue={filters.brandSlug ?? ""}>
-          <option value="">Alle merken</option>
-          {brands.map((b) => (
-            <option key={b.id} value={b.slug}>
-              {b.name}
-            </option>
-          ))}
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="categorie">Categorie</Label>
-        <Select id="categorie" name="categorie" defaultValue={filters.categorySlug ?? ""}>
-          <option value="">Alle categorieën</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.slug}>
-              {c.name}
-            </option>
-          ))}
-        </Select>
-      </div>
-
-      <fieldset className="space-y-2">
-        <legend className="text-sm font-medium">Capaciteit (kWh)</legend>
-        <div className="flex items-center gap-2">
-          <Input
-            type="number"
-            name="minCap"
-            min={0}
-            step="0.1"
-            defaultValue={filters.minCapacity ?? ""}
-            placeholder="min"
-            aria-label="Minimale capaciteit"
-          />
-          <span className="text-muted-foreground">–</span>
-          <Input
-            type="number"
-            name="maxCap"
-            min={0}
-            step="0.1"
-            defaultValue={filters.maxCapacity ?? ""}
-            placeholder="max"
-            aria-label="Maximale capaciteit"
-          />
+      <div className="space-y-5">
+        <div className="space-y-2">
+          <Label htmlFor="q">Zoeken</Label>
+          <Input id="q" name="q" defaultValue={filters.search ?? ""} placeholder="Merk of model" />
         </div>
-      </fieldset>
 
-      <label className="flex items-center gap-2 text-sm">
-        <input
-          type="checkbox"
-          name="uitbreidbaar"
-          value="1"
-          defaultChecked={filters.expandableOnly}
-          className="border-border size-4 rounded"
-        />
-        Alleen uitbreidbaar
-      </label>
+        <div className="space-y-2">
+          <Label htmlFor="merk">Merk</Label>
+          <Select id="merk" name="merk" defaultValue={filters.brandSlug ?? ""}>
+            <option value="">Alle merken</option>
+            {brands.map((b) => (
+              <option key={b.id} value={b.slug}>
+                {b.name}
+              </option>
+            ))}
+          </Select>
+        </div>
 
-      <input type="hidden" name="sorteer" value={filters.sort ?? "relevance"} />
+        <div className="space-y-2">
+          <Label htmlFor="categorie">Categorie</Label>
+          <Select id="categorie" name="categorie" defaultValue={filters.categorySlug ?? ""}>
+            <option value="">Alle categorieën</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.slug}>
+                {c.name}
+              </option>
+            ))}
+          </Select>
+        </div>
 
-      <div className="flex flex-col gap-2">
-        <Button type="submit">Filter toepassen</Button>
-        <Link
-          href="/batterijen"
-          className="text-muted-foreground text-center text-sm hover:underline"
-        >
-          Filters wissen
-        </Link>
+        <fieldset className="space-y-2">
+          <legend className="mb-2 text-sm font-medium">Capaciteit (kWh)</legend>
+          <div className="flex items-center gap-2">
+            <Input
+              type="number"
+              name="minCap"
+              min={0}
+              step="0.1"
+              defaultValue={filters.minCapacity ?? ""}
+              placeholder="min"
+              aria-label="Minimale capaciteit"
+            />
+            <span className="text-muted-foreground">–</span>
+            <Input
+              type="number"
+              name="maxCap"
+              min={0}
+              step="0.1"
+              defaultValue={filters.maxCapacity ?? ""}
+              placeholder="max"
+              aria-label="Maximale capaciteit"
+            />
+          </div>
+        </fieldset>
+
+        <label className="border-border hover:bg-accent flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-sm font-medium transition-colors">
+          <input
+            type="checkbox"
+            name="uitbreidbaar"
+            value="1"
+            defaultChecked={filters.expandableOnly}
+            className="accent-primary size-4 rounded"
+          />
+          Alleen uitbreidbaar
+        </label>
+
+        <input type="hidden" name="sorteer" value={filters.sort ?? "relevance"} />
+
+        <div className="flex flex-col gap-2 pt-1">
+          <Button type="submit">Filter toepassen</Button>
+          <Link
+            href="/batterijen"
+            className="text-muted-foreground hover:text-foreground text-center text-sm"
+          >
+            Filters wissen
+          </Link>
+        </div>
       </div>
     </form>
   );

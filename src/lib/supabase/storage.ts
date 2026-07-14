@@ -7,6 +7,11 @@ import { clientEnv } from "@/lib/env/client";
  */
 export function getPublicImageUrl(path: string | null, bucket = "products"): string | null {
   if (!path) return null;
+  // Lokale assets (in /public) of absolute URL's worden direct doorgegeven,
+  // zodat gegenereerde renders eenvoudig te vervangen zijn zonder Storage.
+  if (path.startsWith("/") || path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
   const base = clientEnv.NEXT_PUBLIC_SUPABASE_URL;
   if (!base) return null;
   return `${base}/storage/v1/object/public/${bucket}/${path}`;

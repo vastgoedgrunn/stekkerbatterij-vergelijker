@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { ShieldCheck, Scale, TrendingDown } from "lucide-react";
 import { siteConfig } from "@/config/site";
+import { Logo } from "@/components/brand/logo";
 
 const columns = [
   {
@@ -26,23 +28,42 @@ const columns = [
   },
 ] as const;
 
+const trust = [
+  { icon: Scale, label: "100% onafhankelijk" },
+  { icon: TrendingDown, label: "Dagelijks actuele prijzen" },
+  { icon: ShieldCheck, label: "Transparant over aanbieders" },
+];
+
 export function SiteFooter() {
   return (
-    <footer className="border-border bg-muted/30 mt-16 border-t">
-      <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 sm:grid-cols-2 md:grid-cols-4">
-        <div className="space-y-2">
-          <p className="font-bold">{siteConfig.shortName}</p>
-          <p className="text-muted-foreground text-sm">{siteConfig.description}</p>
+    <footer className="border-border bg-muted/40 mt-24 border-t">
+      <div className="border-border/70 border-b">
+        <ul className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-6 sm:flex-row sm:items-center sm:justify-center sm:gap-10">
+          {trust.map((item) => (
+            <li key={item.label} className="flex items-center gap-2.5 text-sm font-medium">
+              <span className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-full">
+                <item.icon className="size-4" />
+              </span>
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:grid-cols-2 md:grid-cols-4">
+        <div className="space-y-4 sm:col-span-2 md:col-span-1">
+          <Logo />
+          <p className="text-muted-foreground max-w-xs text-sm">{siteConfig.description}</p>
         </div>
         {columns.map((col) => (
           <div key={col.title}>
-            <p className="mb-3 text-sm font-semibold">{col.title}</p>
-            <ul className="space-y-2">
+            <p className="mb-4 text-sm font-semibold">{col.title}</p>
+            <ul className="space-y-3">
               {col.links.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-muted-foreground hover:text-foreground text-sm"
+                    className="text-muted-foreground hover:text-foreground text-sm transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -52,9 +73,10 @@ export function SiteFooter() {
           </div>
         ))}
       </div>
+
       <div className="border-border border-t">
         <p className="text-muted-foreground mx-auto w-full max-w-6xl px-4 py-6 text-xs">
-          © {new Date().getFullYear()} {siteConfig.name}. Onafhankelijk vergelijkingsplatform.
+          &copy; {new Date().getFullYear()} {siteConfig.name}. Onafhankelijk vergelijkingsplatform.
           Prijzen zijn indicatief en incl. btw; controleer altijd de actuele prijs bij de aanbieder.
         </p>
       </div>

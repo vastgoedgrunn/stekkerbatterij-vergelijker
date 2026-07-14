@@ -12,7 +12,8 @@ export const siteConfig = {
   url: clientEnv.NEXT_PUBLIC_SITE_URL,
   locale: "nl_NL",
   language: "nl",
-  themeColor: "#0b7d5a",
+  themeColor: "#0a6b4c",
+  contactEmail: "info@stekkerbatterij-vergelijker.nl",
   twitterHandle: undefined,
   keywords: [
     "stekkerbatterij",

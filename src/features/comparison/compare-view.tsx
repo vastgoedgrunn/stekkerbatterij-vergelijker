@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BatteryCharging, Check, Minus } from "lucide-react";
+import { BatteryCharging, Check, Minus, Trophy } from "lucide-react";
 import { RatingStars } from "@/components/patterns/rating-stars";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -62,7 +62,9 @@ const rows: Row[] = [
   {
     label: "Beoordeling",
     render: (p) => (
-      <RatingStars average={p.rating.average} count={p.rating.count} showCount={false} />
+      <div className="flex justify-center">
+        <RatingStars average={p.rating.average} count={p.rating.count} showCount={false} />
+      </div>
     ),
     value: (p) => p.rating.average,
     highlight: "max",
@@ -86,34 +88,37 @@ function bestIndex(products: ProductDetail[], row: Row): number | null {
 
 export function CompareView({ products }: { products: ProductDetail[] }) {
   return (
-    <div className="overflow-x-auto">
+    <div className="border-border bg-card overflow-x-auto rounded-2xl border shadow-[var(--shadow-xs)]">
       <table className="w-full border-collapse">
         <thead>
           <tr>
-            <th className="w-40 p-3 text-left align-bottom" scope="col">
+            <th
+              className="bg-card sticky left-0 z-10 w-36 p-4 text-left align-bottom sm:w-44"
+              scope="col"
+            >
               <span className="sr-only">Kenmerk</span>
             </th>
             {products.map((p) => {
               const imageUrl = getPublicImageUrl(p.imagePath);
               return (
-                <th key={p.id} scope="col" className="min-w-48 p-3 align-bottom">
-                  <div className="bg-muted relative mx-auto flex aspect-4/3 max-w-40 items-center justify-center rounded-lg">
+                <th key={p.id} scope="col" className="min-w-48 p-4 align-bottom">
+                  <div className="from-accent/50 to-muted relative mx-auto flex aspect-square max-w-32 items-center justify-center rounded-2xl bg-gradient-to-br">
                     {imageUrl ? (
                       <Image
                         src={imageUrl}
                         alt={p.name}
                         fill
-                        sizes="160px"
+                        sizes="128px"
                         className="object-contain p-2"
                       />
                     ) : (
-                      <BatteryCharging className="text-muted-foreground/40 size-10" aria-hidden />
+                      <BatteryCharging className="text-primary/25 size-10" aria-hidden />
                     )}
                   </div>
-                  <p className="text-muted-foreground mt-2 text-xs font-medium tracking-wide uppercase">
+                  <p className="text-muted-foreground mt-3 text-xs font-semibold tracking-wide uppercase">
                     {p.brand.name}
                   </p>
-                  <Link href={`/batterijen/${p.slug}`} className="font-semibold hover:underline">
+                  <Link href={`/batterijen/${p.slug}`} className="hover:text-primary font-semibold">
                     {p.name}
                   </Link>
                 </th>
@@ -126,27 +131,35 @@ export function CompareView({ products }: { products: ProductDetail[] }) {
             const best = bestIndex(products, row);
             return (
               <tr key={row.label} className="border-border border-t">
-                <th scope="row" className="text-muted-foreground p-3 text-left text-sm font-medium">
+                <th
+                  scope="row"
+                  className="bg-card text-muted-foreground sticky left-0 z-10 p-4 text-left text-sm font-medium"
+                >
                   {row.label}
                 </th>
                 {products.map((p, i) => (
                   <td
                     key={p.id}
                     className={cn(
-                      "p-3 text-center text-sm",
-                      best === i && "bg-success/10 font-semibold",
+                      "p-4 text-center text-sm",
+                      best === i && "bg-primary/10 text-foreground font-bold",
                     )}
                   >
-                    {row.render(p)}
+                    <span className="inline-flex items-center gap-1.5">
+                      {best === i && row.highlight !== "none" && (
+                        <Trophy className="text-primary size-3.5" aria-label="Beste" />
+                      )}
+                      {row.render(p)}
+                    </span>
                   </td>
                 ))}
               </tr>
             );
           })}
           <tr className="border-border border-t">
-            <td className="p-3" />
+            <td className="bg-card sticky left-0 z-10 p-4" />
             {products.map((p) => (
-              <td key={p.id} className="p-3 text-center">
+              <td key={p.id} className="p-4 text-center">
                 <Link href={`/batterijen/${p.slug}`} className={cn(buttonVariants({ size: "sm" }))}>
                   Bekijk
                 </Link>

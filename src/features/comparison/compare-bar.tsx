@@ -12,9 +12,9 @@ export function CompareBar() {
   if (slugs.length === 0) return null;
 
   return (
-    <div className="border-border bg-background/95 fixed inset-x-0 bottom-0 z-50 border-t backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-3 px-4 py-3">
-        <span className="flex items-center gap-2 text-sm font-medium">
+    <div className="animate-fade-up fixed inset-x-0 bottom-0 z-50 p-3 sm:p-4">
+      <div className="border-border bg-card/95 mx-auto flex w-full max-w-4xl flex-wrap items-center gap-3 rounded-2xl border px-4 py-3 shadow-[var(--shadow-xl)] backdrop-blur-xl">
+        <span className="text-primary flex items-center gap-2 text-sm font-semibold">
           <GitCompare className="size-4" />
           {slugs.length} geselecteerd
         </span>
