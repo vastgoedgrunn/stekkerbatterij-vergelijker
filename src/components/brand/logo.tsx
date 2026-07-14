@@ -14,8 +14,8 @@ const LOGO = {
   full: "/images/brand/logo.png",
   fullDark: "/images/brand/logo-dark.png",
   mark: "/images/brand/logo-mark.png",
-  // Intrinsieke verhouding van het horizontale lockup (~3.26:1).
-  width: 786,
+  // Intrinsieke verhouding van het horizontale lockup (~3.78:1).
+  width: 911,
   height: 241,
 } as const;
 
@@ -45,7 +45,7 @@ export function Logo({ className, priority = false }: { className?: string; prio
     width: LOGO.width,
     height: LOGO.height,
     priority,
-    sizes: "(max-width: 640px) 170px, 210px",
+    sizes: "(max-width: 640px) 110px, 130px",
   } as const;
 
   return (
