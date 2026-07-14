@@ -81,11 +81,16 @@ export default function RootLayout({
           <CompareBar />
         </CompareProvider>
         {clientEnv.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
-          <Script
-            defer
-            data-domain={clientEnv.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
-            src="https://plausible.io/js/script.js"
-          />
+          <>
+            <Script
+              defer
+              data-domain={clientEnv.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+              src={`${clientEnv.NEXT_PUBLIC_PLAUSIBLE_HOST ?? "https://plausible.io"}/js/script.tagged-events.outbound-links.js`}
+            />
+            <Script id="plausible-init">
+              {`window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)}`}
+            </Script>
+          </>
         )}
       </body>
     </html>

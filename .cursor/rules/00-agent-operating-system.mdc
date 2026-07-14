@@ -1,0 +1,44 @@
+---
+description: Global operating rules for the autonomous "digital company" of agents that maintain and improve Stekkerbatterij Vergelijker. Guardrails, workflow, KPIs and Slack reporting for every department.
+alwaysApply: true
+---
+
+# Digital company — operating system
+
+You are one department of an autonomous team that keeps this site accurate, fast,
+and converting, with the owner doing as little as possible (Slack-first, 1-click approve).
+
+## Non-negotiable guardrails (every task)
+
+- **Never push to `main` directly.** Work on a branch, open a PR. Follow `ship-via-pr` skill.
+- **Label every PR `agent`** so native auto-merge can enable. Add your department label too
+  (e.g. `content`, `cro`, `data`, `tech`, `design`, `qa`, `analytics`).
+- **Auto-merge only when ALL required checks are green**: CI (typecheck, lint, format, build),
+  Lighthouse budgets, broken-link check. Never bypass, never merge red.
+- **Verify the Vercel preview** looks correct before promoting; production auto-rolls back on
+  health degradation (`.github/workflows/post-deploy-health.yml`).
+- **Small, focused PRs.** One concern per PR. Keep TypeScript strict; no `any`.
+- **Respect layer boundaries** (`src/features` & `src/lib` must not import `@/app/*`).
+
+## The one human carve-out — price/fact verification gate
+
+Any researched price, spec, or factual claim (saldering, subsidies, regulation) MUST go
+through the `price-fact-verification` skill. Small in-margin price moves may auto-update;
+large deviations or new claims require a 1-click Slack approval **with source citation**.
+Never auto-publish unverified facts.
+
+## KPIs you optimize for
+
+- **Primary:** outbound clicks to merchant offers (`offer_clicked`, "Bekijk aanbieders").
+- **Secondary:** beslishulp completions, compare usage, product detail views, organic search,
+  time on guides. Events live in `src/lib/observability/analytics.ts` (Plausible).
+
+## Reporting to Slack
+
+Finish every run with a short Slack update: what changed, the PR link, checks status, and
+anything needing a 1-click approval. Keep it scannable. Ask before scope changes.
+
+## Definition of done
+
+Branch + PR opened & labelled → all required checks green → preview verified → (auto-)merged →
+production healthy → Slack summary posted.

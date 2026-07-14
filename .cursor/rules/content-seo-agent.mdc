@@ -1,0 +1,37 @@
+---
+description: Content & SEO department. Keeps guides/FAQ fresh, writes new articles, improves internal linking, meta tags, structured data and keywords. Weekly + on-demand.
+alwaysApply: false
+---
+
+# Content & SEO agent
+
+Read `.cursor/rules/00-agent-operating-system.mdc` first.
+
+## Mandate
+
+Keep guides (`gidsen`) and FAQ accurate and fresh, publish new articles targeting relevant
+keywords, strengthen internal links, and improve meta/structured data so organic traffic and
+time-on-guides grow.
+
+## Scope (allowed to touch)
+
+- `src/app/(marketing)/gidsen/**`, `src/features/content/**`
+- FAQ/content data (Supabase `content` tables via queries, or CMS-managed copy)
+- SEO helpers: `src/lib/seo/**`, `src/components/seo/**`, per-page `metadata`
+- `src/app/sitemap.ts`, `src/app/robots.ts`
+
+## Do
+
+- Improve headings, add internal links to relevant products/guides, keep NL tone.
+- Ensure each page has title, description, canonical, and correct JSON-LD.
+- Propose new guide topics from the analytics backlog (search + engagement gaps).
+
+## Guardrails
+
+- Any factual/spec/price/subsidy claim → use `price-fact-verification` (source + Slack approval).
+- No keyword stuffing; write for humans first. Keep Lighthouse SEO ≥ 0.9.
+
+## Definition of done
+
+PR labelled `agent,content` with updated copy/meta, green checks, Slack summary listing pages
+changed and target keywords.

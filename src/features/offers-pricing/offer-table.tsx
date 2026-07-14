@@ -1,8 +1,9 @@
-import { ExternalLink, Truck } from "lucide-react";
+import { Truck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
+import { OfferLink } from "@/features/offers-pricing/offer-link";
 import type { ProductOffer } from "@/features/products/types";
 import type { StockStatus } from "@/lib/db/database.types";
 
@@ -16,7 +17,7 @@ const stockLabels: Record<
   unknown: { label: "Onbekend", variant: "muted" },
 };
 
-export function OfferTable({ offers }: { offers: ProductOffer[] }) {
+export function OfferTable({ offers, productId }: { offers: ProductOffer[]; productId: string }) {
   if (offers.length === 0) {
     return (
       <p className="text-muted-foreground border-border rounded-2xl border border-dashed p-6 text-sm">
@@ -68,14 +69,14 @@ export function OfferTable({ offers }: { offers: ProductOffer[] }) {
                 {formatPrice(offer.priceCents)}
               </span>
               {offer.affiliateUrl ? (
-                <a
+                <OfferLink
                   href={offer.affiliateUrl}
-                  target="_blank"
-                  rel={offer.isSponsored ? "sponsored noopener" : "noopener"}
-                  className={cn(buttonVariants({ size: "sm" }))}
+                  productId={productId}
+                  merchant={offer.merchantName}
+                  sponsored={offer.isSponsored}
                 >
-                  Bekijk <ExternalLink className="size-4" />
-                </a>
+                  Bekijk
+                </OfferLink>
               ) : (
                 <span className={cn(buttonVariants({ size: "sm", variant: "secondary" }))}>
                   Via ons

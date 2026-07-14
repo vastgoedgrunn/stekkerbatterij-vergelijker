@@ -80,7 +80,12 @@ export function MobileNav({ items }: { items: readonly { href: Route; label: str
 
       {render && typeof document !== "undefined"
         ? createPortal(
-            <div className="fixed inset-0 z-[100]" role="dialog" aria-modal="true" aria-label="Menu">
+            <div
+              className="fixed inset-0 z-[100]"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Menu"
+            >
               <button
                 aria-label="Menu sluiten"
                 tabIndex={-1}

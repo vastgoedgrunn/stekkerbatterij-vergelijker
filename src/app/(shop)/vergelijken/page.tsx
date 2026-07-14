@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getProductBySlug } from "@/features/products/queries";
 import { CompareView } from "@/features/comparison/compare-view";
+import { TrackView } from "@/lib/observability/track-view";
 import { Container } from "@/components/patterns/section";
 import { buttonVariants } from "@/components/ui/button";
 import { businessRules } from "@/config/business-rules";
@@ -49,7 +50,10 @@ export default async function ComparePage({
 
       <Container className="py-8">
         {products.length >= 2 ? (
-          <CompareView products={products} />
+          <>
+            <TrackView event={{ name: "comparison_started", props: { count: products.length } }} />
+            <CompareView products={products} />
+          </>
         ) : (
           <div className="border-border rounded-2xl border border-dashed p-12 text-center">
             <p className="text-lg font-semibold">Selecteer minimaal twee batterijen</p>

@@ -1,0 +1,40 @@
+---
+description: Data & prices department. Keeps products, specs, merchants, prices and price history accurate. Daily. HARD verification gate on all researched prices and factual claims.
+alwaysApply: false
+---
+
+# Data & prices agent
+
+Read `.cursor/rules/00-agent-operating-system.mdc` first. This department has the strictest gate.
+
+## Mandate
+
+Keep product catalog, specs, merchants, offers, prices and price history current and correct.
+For now via careful web research (merchant/manufacturer pages); structured APIs come later.
+
+## Scope (allowed to touch)
+
+- Supabase data: `products`, `brands`, `merchants`, `offers`, `price_history`, `product_specs`
+  (via server actions / `*.server.ts` / migrations — never the client).
+- `src/features/products/**`, `src/features/offers-pricing/**` (only when data shape changes).
+
+## The verification gate (mandatory — follow `price-fact-verification`)
+
+- **May auto-update without approval:** a price change on an existing offer within a sane margin
+  (default ≤ 10% move) from a trusted, cited source. Record the source URL + timestamp.
+- **Requires 1-click Slack approval (with source citation):**
+  - price deviations larger than the margin,
+  - new products / merchants / offers,
+  - any new factual claim (saldering, subsidies, regulation, warranty terms).
+- **Never** publish a researched price or claim you cannot cite. When unsure, escalate to Slack.
+
+## Guardrails
+
+- Every price/claim carries a source URL and a checked-at timestamp.
+- Keep price history append-only; never rewrite historical points.
+- Flag stale offers (not seen in N days) rather than deleting silently.
+
+## Definition of done
+
+Auto-updates: PR labelled `agent,data`, green checks, Slack digest of what changed + sources.
+Gated changes: Slack approval request with diff + citations; only proceed after 1-click approve.

@@ -1,0 +1,36 @@
+name: Auto-merge agent PRs
+
+# Schakelt GitHub's native auto-merge in voor PR's van de digitale werkmaatschappij.
+# De merge gebeurt PAS wanneer ALLE verplichte checks (CI: quality, Lighthouse,
+# broken-links) groen zijn én branch-protection is voldaan. Zie AGENTS.md voor de
+# eenmalige repo-instellingen die de gebruiker moet aanzetten.
+
+on:
+  pull_request:
+    types: [opened, reopened, labeled, ready_for_review, synchronize]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  enable-auto-merge:
+    name: Enable native auto-merge (squash)
+    runs-on: ubuntu-latest
+    if: >-
+      github.event.pull_request.draft == false &&
+      (
+        contains(github.event.pull_request.labels.*.name, 'agent') ||
+        contains(github.event.pull_request.labels.*.name, 'automated') ||
+        contains(github.event.pull_request.labels.*.name, 'auto-merge')
+      )
+    steps:
+      - name: Enable auto-merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge "${{ github.event.pull_request.number }}" \
+            --repo "${{ github.repository }}" \
+            --auto \
+            --squash \
+            --delete-branch

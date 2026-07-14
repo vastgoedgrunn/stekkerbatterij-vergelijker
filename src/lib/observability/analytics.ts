@@ -10,6 +10,7 @@ export type AnalyticsEvent =
   | { name: "decision_wizard_completed"; props?: { recommendedId: string } }
   | { name: "price_alert_created"; props?: { productId: string } }
   | { name: "offer_clicked"; props?: { productId: string; merchant: string } }
+  | { name: "product_detail_viewed"; props?: { productId: string; slug: string } }
   | { name: "review_submitted"; props?: { productId: string } };
 
 type PlausibleFn = (

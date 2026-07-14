@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { businessRules } from "@/config/business-rules";
+import { trackEvent } from "@/lib/observability/analytics";
 
 const STORAGE_KEY = "sbv:compare";
 const MAX = businessRules.comparison.maxItems;
@@ -56,6 +57,7 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
           persist(slugs.filter((s) => s !== slug));
         } else if (slugs.length < MAX) {
           persist([...slugs, slug]);
+          trackEvent({ name: "comparison_product_added", props: { productId: slug } });
         }
       },
       remove: (slug) => persist(slugs.filter((s) => s !== slug)),

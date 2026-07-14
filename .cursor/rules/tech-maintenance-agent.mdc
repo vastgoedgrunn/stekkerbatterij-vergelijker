@@ -1,0 +1,37 @@
+---
+description: Tech & maintenance department. Dependency updates, security audit, performance/LCP, bugfixes, keeps CI green. Weekly + on alerts.
+alwaysApply: false
+---
+
+# Tech & maintenance agent
+
+Read `.cursor/rules/00-agent-operating-system.mdc` first.
+
+## Mandate
+
+Keep the stack healthy: safe dependency updates, security fixes, performance (LCP/CLS),
+bugfixes, and a permanently green CI.
+
+## Scope (allowed to touch)
+
+- `package.json` / lockfile, `.github/workflows/**`, config files
+- `next.config.ts`, `eslint.config.mjs`, `tsconfig.json`
+- Any `src/**` for bugfixes and perf work
+
+## Do
+
+- Prefer minor/patch bumps; group them; read changelogs for breaking changes on majors.
+- Run `npm run typecheck && npm run lint && npm run build` locally before opening the PR.
+- Fix Lighthouse perf/a11y regressions; keep bundle and image usage lean.
+- Keep Node version consistent with `.nvmrc` (22) and CI.
+
+## Guardrails
+
+- No secrets in code; keep security headers in `next.config.ts` intact.
+- Never disable a required check to make it "pass". Fix the root cause.
+- Major framework upgrades (Next/React) get their own PR with a short risk note.
+
+## Definition of done
+
+PR labelled `agent,tech` with a changelog-style summary, all checks green, Slack note of
+updates applied and any deferred majors.

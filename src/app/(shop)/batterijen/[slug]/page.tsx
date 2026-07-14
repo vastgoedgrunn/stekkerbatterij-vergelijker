@@ -2,19 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  BatteryCharging,
-  ChevronRight,
-  ExternalLink,
-  ShieldCheck,
-  Sparkles,
-  Truck,
-} from "lucide-react";
+import { BatteryCharging, ChevronRight, ShieldCheck, Sparkles, Truck } from "lucide-react";
 import { getProductBySlug, getProductSlugs } from "@/features/products/queries";
 import { getFaqs } from "@/features/content/queries";
 import { getApprovedReviews } from "@/features/reviews/queries";
 import { SpecList } from "@/features/products/components/spec-list";
 import { OfferTable } from "@/features/offers-pricing/offer-table";
+import { OfferLink } from "@/features/offers-pricing/offer-link";
+import { TrackView } from "@/lib/observability/track-view";
 import { PriceHistoryChart } from "@/features/offers-pricing/price-history-chart";
 import { ReviewList } from "@/features/reviews/review-list";
 import { ReviewForm } from "@/features/reviews/review-form";
@@ -106,6 +101,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   return (
     <main>
       <JsonLd data={structuredData} />
+      <TrackView
+        event={{
+          name: "product_detail_viewed",
+          props: { productId: product.id, slug: product.slug },
+        }}
+      />
 
       <Container className="py-8">
         <nav aria-label="Kruimelpad" className="text-muted-foreground mb-6 text-sm">
@@ -198,14 +199,16 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
               <div className="mt-4 flex flex-col gap-2 sm:flex-row">
                 {bestOffer?.affiliateUrl ? (
-                  <a
+                  <OfferLink
                     href={bestOffer.affiliateUrl}
-                    target="_blank"
-                    rel={bestOffer.isSponsored ? "sponsored noopener" : "noopener"}
-                    className={cn(buttonVariants({ size: "lg" }), "flex-1")}
+                    productId={product.id}
+                    merchant={bestOffer.merchantName}
+                    sponsored={bestOffer.isSponsored}
+                    size="lg"
+                    className="flex-1"
                   >
-                    Bekijk beste prijs <ExternalLink className="size-4" />
-                  </a>
+                    Bekijk beste prijs
+                  </OfferLink>
                 ) : (
                   <a href="#aanbieders" className={cn(buttonVariants({ size: "lg" }), "flex-1")}>
                     Bekijk aanbieders
@@ -233,7 +236,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               <h2 id="aanbieders" className="mb-5 text-2xl font-bold tracking-tight">
                 Prijzen &amp; aanbieders
               </h2>
-              <OfferTable offers={product.offers} />
+              <OfferTable offers={product.offers} productId={product.id} />
             </section>
 
             {product.priceHistory.length >= 2 && (

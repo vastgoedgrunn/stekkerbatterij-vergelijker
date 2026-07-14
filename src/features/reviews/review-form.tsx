@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
+import { trackEvent } from "@/lib/observability/analytics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,6 +24,14 @@ function SubmitButton() {
 
 export function ReviewForm({ productId, productSlug }: { productId: string; productSlug: string }) {
   const [state, formAction] = useActionState(submitReview, initialState);
+  const tracked = useRef(false);
+
+  useEffect(() => {
+    if (state.status === "success" && !tracked.current) {
+      tracked.current = true;
+      trackEvent({ name: "review_submitted", props: { productId } });
+    }
+  }, [state.status, productId]);
 
   if (state.status === "success") {
     return (

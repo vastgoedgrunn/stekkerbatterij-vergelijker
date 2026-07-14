@@ -1,0 +1,76 @@
+name: Post-deploy health & rollback
+
+# Verifieert de productie na elke deploy en periodiek (uptime). Bij degradatie:
+#  1) probeert automatisch terug te rollen naar de vorige productie-deploy
+#     (alleen als het secret VERCEL_TOKEN is ingesteld);
+#  2) opent een incident-issue zodat de QA/monitoring-agent het oppakt.
+# Handmatige rollback (1 commando): `vercel rollback` (rolt terug naar vorige prod).
+
+on:
+  deployment_status:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  health:
+    name: Health check
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name != 'deployment_status' ||
+      github.event.deployment_status.state == 'success'
+    steps:
+      - name: Bepaal doel-URL
+        id: target
+        run: |
+          URL="${{ github.event.deployment_status.environment_url }}"
+          if [ -z "$URL" ]; then
+            URL="https://stekkerbatterij-vergelijker.vercel.app"
+          fi
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+
+      - name: Controleer gezondheid
+        id: check
+        run: |
+          set +e
+          URL="${{ steps.target.outputs.url }}"
+          health=$(curl -s -m 15 -o /dev/null -w "%{http_code}" "$URL/api/health")
+          home=$(curl -s -m 15 -o /dev/null -w "%{http_code}" "$URL")
+          echo "health=$health home=$home url=$URL"
+          if [ "$health" = "200" ] && [ "$home" = "200" ]; then
+            echo "healthy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "healthy=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Auto-rollback productie (indien ongezond en token aanwezig)
+        if: >-
+          steps.check.outputs.healthy == 'false' &&
+          (github.event_name == 'schedule' ||
+           github.event_name == 'workflow_dispatch' ||
+           contains(github.event.deployment_status.environment, 'Production'))
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "Geen VERCEL_TOKEN secret; sla auto-rollback over. Handmatig: 'vercel rollback'."
+            exit 0
+          fi
+          SCOPE_ARG=""
+          if [ -n "$VERCEL_SCOPE" ]; then SCOPE_ARG="--scope $VERCEL_SCOPE"; fi
+          npx --yes vercel@latest rollback --yes --token "$VERCEL_TOKEN" $SCOPE_ARG
+
+      - name: Open incident-issue (indien ongezond)
+        if: steps.check.outputs.healthy == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "Incident: productie health check faalde ($(date -u +%FT%TZ))" \
+            --body "De health check op ${{ steps.target.outputs.url }} faalde. Auto-rollback is geprobeerd indien VERCEL_TOKEN aanwezig is. QA/monitoring-agent: onderzoek en herstel."

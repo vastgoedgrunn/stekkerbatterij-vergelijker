@@ -1,0 +1,58 @@
+# Stekkerbatterij Vergelijker — the digital company
+
+This repo is maintained and improved by an autonomous team of AI agents ("departments"), so the
+owner can stay in Slack-approve mode. This file is the map; the enforceable rules live in
+`.cursor/rules/` (the global guardrails in `.cursor/rules/00-agent-operating-system.mdc` always apply).
+
+## Departments (rules)
+
+| Department | Rule | Cadence |
+|---|---|---|
+| Content & SEO | `.cursor/rules/content-seo-agent.mdc` | weekly + on-demand |
+| Conversion / CRO | `.cursor/rules/conversion-cro-agent.mdc` | biweekly + after report |
+| Data & prices (verification gate) | `.cursor/rules/data-prices-agent.mdc` | daily |
+| Tech & maintenance | `.cursor/rules/tech-maintenance-agent.mdc` | weekly + on alerts |
+| Design & UX | `.cursor/rules/design-ux-agent.mdc` | biweekly + on-demand |
+| QA & monitoring | `.cursor/rules/qa-monitoring-agent.mdc` | daily + event-driven |
+| Analytics & reporting | `.cursor/rules/analytics-reporting-agent.mdc` | Monday |
+| Orchestrator (lead) | `.cursor/rules/orchestrator-agent.mdc` | Monday (after report) |
+
+Reusable skills: `.cursor/skills/ship-via-pr` (how work ships) and
+`.cursor/skills/price-fact-verification` (the human carve-out gate).
+Automation schedules to create in Cursor: `docs/agents/automations.md`.
+
+## Full-auto guardrails
+
+- All work via **branch + PR**, labelled `agent`. No direct pushes to `main`.
+- Auto-merge (`.github/workflows/auto-merge.yml`) enables **only** when ALL required checks pass:
+  CI (typecheck, lint, format, build), Lighthouse CI budgets, broken-link check.
+- Vercel preview verified before promote; production auto-rolls back on health degradation
+  (`.github/workflows/post-deploy-health.yml`).
+- Only human step: the **price/fact verification gate** (1-click Slack approve with source).
+
+## KPIs (Plausible custom events — `src/lib/observability/analytics.ts`)
+
+- **Primary:** `offer_clicked` (outbound "Bekijk aanbieders").
+- **Secondary:** `decision_wizard_completed`, `comparison_started`, `comparison_product_added`,
+  `product_detail_viewed`, `review_submitted`.
+
+## One-time manual setup (owner)
+
+1. **GitHub → Settings → General:** enable **Allow auto-merge**.
+2. **GitHub → Settings → Branches → `main` protection:** require pull request + require these
+   status checks to pass: `Typecheck, Lint, Format & Build`, `Lighthouse CI (perf/a11y/SEO budgets)`,
+   `Broken-link check`. (This is what makes auto-merge safe.)
+3. **Plausible:** create a site for the production domain and set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`
+   in Vercel (Production env). Analytics + events then activate automatically.
+4. **(Optional) Auto-rollback:** add repo secrets `VERCEL_TOKEN` (and `VERCEL_SCOPE` = team slug)
+   so `post-deploy-health.yml` can auto-roll back. Without them it still alerts + opens an issue.
+   Manual rollback is one command: `vercel rollback`.
+5. **Cursor Cloud Agents:** connect this GitHub repo and create the automations in
+   `docs/agents/automations.md`.
+6. **Later:** affiliate/merchant API keys and price-source API tokens for the Data agent.
+
+## One-command rollback
+
+```bash
+vercel rollback            # roll back production to the previous deployment
+```
