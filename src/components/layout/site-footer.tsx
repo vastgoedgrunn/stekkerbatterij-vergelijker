@@ -16,7 +16,7 @@ const columns = [
     title: "Kennis",
     links: [
       { href: "/gidsen", label: "Koopgidsen" },
-      { href: "/gidsen/stekkerbatterij-koopgids", label: "Koopgids 2026" },
+      { href: "/beslishulp", label: "Beslishulp" },
     ],
   },
   {
