@@ -26,6 +26,12 @@ const serverSchema = z.object({
   SENDCLOUD_API_KEY: z.string().min(1).optional(),
   SENDCLOUD_API_SECRET: z.string().min(1).optional(),
 
+  // Transactionele e-mail (release 2) — Resend.
+  // Ontbreekt de key of het afzenderadres, dan is e-mail een no-op (graceful).
+  // EMAIL_FROM bv. "Stekkerbatterij Vergelijker <noreply@jouwdomein.nl>".
+  RESEND_API_KEY: z.string().min(1).optional(),
+  EMAIL_FROM: z.string().min(1).optional(),
+
   // Observability
   SENTRY_AUTH_TOKEN: z.string().min(1).optional(),
 });
