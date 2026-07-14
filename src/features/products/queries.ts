@@ -49,6 +49,7 @@ interface RawProduct {
 }
 
 interface RawProductDetail extends Omit<RawProduct, "offers"> {
+  supplier_id: string | null;
   offers: RawOffer[] | null;
 }
 
@@ -263,7 +264,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   const { data, error } = await supabase
     .from("products")
     .select(
-      "id, slug, name, summary, description, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, brands(id, name, slug), offers(id, merchant_id, price_cents, stock_status, delivery_days, affiliate_url, is_sponsored, merchants(name, slug, is_self))",
+      "id, slug, name, summary, description, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, supplier_id, brands(id, name, slug), offers(id, merchant_id, price_cents, stock_status, delivery_days, affiliate_url, is_sponsored, merchants(name, slug, is_self))",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -312,6 +313,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
     warrantyYears: product.warranty_years,
     expandable: product.expandable,
     imagePath: product.image_path,
+    supplierId: product.supplier_id,
     lowestPriceCents: offers.length > 0 ? offers[0]!.priceCents : null,
     rating: ratings.get(product.id) ?? { average: null, count: 0 },
     categories,
