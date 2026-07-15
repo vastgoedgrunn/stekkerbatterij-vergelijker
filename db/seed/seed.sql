@@ -215,7 +215,7 @@ from (values
   ('sunology-storey','stekkerbatterij-shop', 99900, 'out_of_stock', null, false, null),
   ('sunology-storey','bol', 109900, 'out_of_stock', 2, false, 'https://www.bol.com'),
   ('sessy-thuisbatterij','stekkerbatterij-shop', 159900, 'in_stock', 5, false, null),
-  ('sessy-thuisbatterij','zonneplan', 164900, 'in_stock', 7, true, 'https://zonneplan.nl'),
+  -- sessy/zonneplan verwijderd: /thuisbatterij/sessy gaf 404
   ('marstek-jupiter-c-1024','stekkerbatterij-shop', 289900, 'in_stock', 7, false, null),
   ('marstek-jupiter-c-1024','solar-sale', 299900, 'in_stock', 10, false, 'https://solarsale.nl'),
   ('homewizard-plug-in-battery','stekkerbatterij-shop', 119900, 'preorder', 14, false, null),
