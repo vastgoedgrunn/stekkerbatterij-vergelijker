@@ -17,7 +17,7 @@ interface OfferDestination {
   affiliate_url: string | null;
   affiliate_deeplink: string | null;
   affiliate_params: Json | null;
-  products: { slug: string } | null;
+  products: { slug: string; status: string } | null;
   merchants: { website_url: string | null } | null;
 }
 
@@ -49,7 +49,7 @@ export async function GET(
   const { data, error } = await supabase
     .from("offers")
     .select(
-      "id, product_id, merchant_id, affiliate_url, affiliate_deeplink, affiliate_params, products(slug), merchants(website_url)",
+      "id, product_id, merchant_id, affiliate_url, affiliate_deeplink, affiliate_params, products(slug, status), merchants(website_url)",
     )
     .eq("id", offerId)
     .is("deleted_at", null)
@@ -61,6 +61,10 @@ export async function GET(
   if (error || !offer) {
     if (error)
       logger.warn("Kon offer voor redirect niet laden", { message: error.message, offerId });
+    return NextResponse.redirect(homepage, 302);
+  }
+
+  if (offer.products?.status !== "published") {
     return NextResponse.redirect(homepage, 302);
   }
 
