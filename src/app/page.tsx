@@ -84,8 +84,9 @@ export default async function HomePage() {
       <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
 
       {/* HERO */}
-      <section className="border-border/70 border-b">
-        <Container className="grid grid-cols-1 items-center gap-12 py-14 lg:grid-cols-[1.1fr_0.9fr] lg:py-20">
+      <section className="border-border/70 relative overflow-hidden border-b">
+        <div aria-hidden className="ambient-glow pointer-events-none absolute inset-0" />
+        <Container className="relative grid grid-cols-1 items-center gap-12 py-14 lg:grid-cols-[1.1fr_0.9fr] lg:py-20">
           <div className="flex min-w-0 flex-col gap-6">
             <span className="text-muted-foreground inline-flex w-fit items-center gap-2 text-sm font-semibold tracking-wide uppercase">
               <Scale className="text-primary size-4" />
@@ -111,23 +112,39 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="min-w-0 lg:pl-4">
-            <HeroMatcher products={featured} />
+          <div className="relative min-w-0 lg:pl-4">
+            <div
+              aria-hidden
+              className="animate-float pointer-events-none absolute -top-14 -right-3 hidden w-44 lg:block xl:-right-6 xl:w-52"
+            >
+              <Image
+                src="/images/hero-product.png"
+                alt=""
+                width={512}
+                height={512}
+                priority
+                sizes="(max-width: 1280px) 176px, 208px"
+                className="h-auto w-full drop-shadow-2xl"
+              />
+            </div>
+            <div className="relative z-10">
+              <HeroMatcher products={featured} />
+            </div>
           </div>
         </Container>
       </section>
 
       {/* MERKEN */}
-      <div className="border-border/70 border-y py-6">
+      <div className="border-border/70 border-y py-8">
         <Container>
-          <p className="text-muted-foreground mb-4 text-center text-xs font-semibold tracking-[0.2em] uppercase">
+          <p className="text-muted-foreground mb-5 text-center text-xs font-semibold tracking-[0.2em] uppercase">
             Alle grote merken op één plek
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
             {brands.map((brand) => (
               <span
                 key={brand}
-                className="text-muted-foreground/80 text-base font-semibold tracking-tight"
+                className="border-border/70 bg-card text-muted-foreground hover:text-foreground rounded-full border px-4 py-1.5 text-sm font-semibold tracking-tight shadow-[var(--shadow-xs)] transition-colors"
               >
                 {brand}
               </span>
@@ -159,7 +176,7 @@ export default async function HomePage() {
 
       {/* UITGELICHT */}
       {featured.length > 0 && (
-        <Section className="pt-0">
+        <Section tinted>
           <Container>
             <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
               <SectionHeading

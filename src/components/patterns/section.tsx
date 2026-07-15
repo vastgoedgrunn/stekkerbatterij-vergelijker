@@ -6,10 +6,15 @@ export function Container({ className, ...props }: React.HTMLAttributes<HTMLDivE
   return <div className={cn("mx-auto w-full max-w-6xl px-4 sm:px-6", className)} {...props} />;
 }
 
-/** Verticaal ritme voor pagina-secties. */
-export function Section({ className, children, ...props }: React.HTMLAttributes<HTMLElement>) {
+/** Verticaal ritme voor pagina-secties. `tinted` geeft een zachte warme achtergrond. */
+export function Section({
+  className,
+  children,
+  tinted = false,
+  ...props
+}: React.HTMLAttributes<HTMLElement> & { tinted?: boolean }) {
   return (
-    <section className={cn("py-14 sm:py-20", className)} {...props}>
+    <section className={cn("py-14 sm:py-20", tinted && "section-tinted", className)} {...props}>
       {children}
     </section>
   );
