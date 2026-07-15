@@ -70,7 +70,7 @@ Reageer ✅ om te publiceren · ❌ om af te wijzen
 
 Lead: Jan Jansen · jan@example.nl · 1234AB
 Bron: beslishulp · geschatte commissie €100
-Admin: https://stekkerbatterij-vergelijker.vercel.app/admin/leads
+Admin: https://stekkerbatterijvergelijker.com/admin/leads
 
 Reageer ✅ = markeer goedgekeurd in admin · agent stuurt NIET automatisch mail
 ```
