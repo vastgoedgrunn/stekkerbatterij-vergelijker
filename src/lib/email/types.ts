@@ -39,3 +39,19 @@ export interface ShippingEmailData extends OrderEmailData {
   trackingCode: string | null;
   trackingUrl: string | null;
 }
+
+export interface SupplierOrderEmailData {
+  orderNumber: number;
+  supplierName: string;
+  recipientEmail: string;
+  lines: { name: string; sku: string | null; quantity: number }[];
+  shippingAddress: {
+    fullName: string;
+    line1: string;
+    line2: string | null;
+    postalCode: string;
+    city: string;
+    country: string;
+    phone: string | null;
+  } | null;
+}

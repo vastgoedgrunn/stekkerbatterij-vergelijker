@@ -9,6 +9,7 @@ import { sendEmail } from "@/lib/email/provider";
 import { orderConfirmationEmail, paymentFailedEmail } from "@/lib/email/templates";
 import { logger } from "@/lib/observability/logger";
 import { getOrderSummary } from "./orders.server";
+import { queueFulfillmentOnPaidOrder } from "@/lib/commerce/fulfillment-queue.server";
 import type { OrderEmailData } from "@/lib/email/types";
 import type { Json, OrderStatus, PaymentStatus } from "@/lib/db/database.types";
 
@@ -124,6 +125,7 @@ export async function processMolliePayment(molliePaymentId: string): Promise<Ful
   // Transactionele e-mail (best-effort; mag de webhook nooit breken).
   if (becamePaid) {
     await sendOrderEmail(orderId, "paid");
+    await queueFulfillmentOnPaidOrder(orderId);
   } else if (becameFailed) {
     await sendOrderEmail(orderId, "failed");
   }

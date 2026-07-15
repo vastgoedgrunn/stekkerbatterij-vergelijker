@@ -20,6 +20,13 @@ export type ShipmentStatus = "pending" | "label_created" | "shipped" | "delivere
 
 /** Admin/ops (fase 3). */
 export type ChangeRequestStatus = "pending" | "approved" | "rejected" | "applied";
+export type ApprovalActionKind =
+  | "supplier_order_email"
+  | "shipment_tracking_email"
+  | "support_reply"
+  | "refund";
+export type ApprovalActionStatus = "pending" | "approved" | "rejected" | "sent" | "cancelled";
+export type SupportTicketStatus = "open" | "awaiting_reply" | "resolved" | "closed";
 
 interface TimestampFields {
   created_at: string;
@@ -294,6 +301,50 @@ export interface ChangeRequestRow {
   updated_at: string;
 }
 
+export interface ApprovalActionRow {
+  id: string;
+  kind: ApprovalActionKind;
+  status: ApprovalActionStatus;
+  order_id: string | null;
+  shipment_id: string | null;
+  support_ticket_id: string | null;
+  summary: string;
+  payload: Json;
+  recipient_email: string | null;
+  email_subject: string | null;
+  email_body_html: string | null;
+  email_body_text: string | null;
+  requested_by: string | null;
+  approved_by: string | null;
+  approved_at: string | null;
+  sent_at: string | null;
+  rejection_notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SupportTicketRow {
+  id: string;
+  order_id: string | null;
+  customer_email: string;
+  subject: string;
+  body: string;
+  status: SupportTicketStatus;
+  source: string;
+  external_message_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SupportReplyRow {
+  id: string;
+  ticket_id: string;
+  draft_body: string;
+  approval_action_id: string | null;
+  sent_at: string | null;
+  created_at: string;
+}
+
 type Table<Row, Insert = Partial<Row>, Update = Partial<Row>> = {
   Row: Row;
   Insert: Insert;
@@ -327,6 +378,9 @@ export interface Database {
       payments: Table<PaymentRow>;
       shipments: Table<ShipmentRow>;
       change_requests: Table<ChangeRequestRow>;
+      approval_actions: Table<ApprovalActionRow>;
+      support_tickets: Table<SupportTicketRow>;
+      support_replies: Table<SupportReplyRow>;
     };
     Views: {
       product_rating_stats: {
@@ -345,6 +399,9 @@ export interface Database {
       payment_status: PaymentStatus;
       shipment_status: ShipmentStatus;
       change_request_status: ChangeRequestStatus;
+      approval_action_kind: ApprovalActionKind;
+      approval_action_status: ApprovalActionStatus;
+      support_ticket_status: SupportTicketStatus;
     };
     CompositeTypes: Record<string, never>;
   };
