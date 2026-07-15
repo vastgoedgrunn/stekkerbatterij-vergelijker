@@ -5,6 +5,7 @@ import {
   CATALOG_TARGET_PRODUCTS_PER_BRAND,
   MARQUEE_BRAND_SLUGS,
 } from "@/config/marquee-brands";
+import { isEligibleOutboundOffer } from "@/features/offers-pricing/offer-eligibility";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type BrandCompleteness = {
@@ -128,12 +129,7 @@ export async function getCatalogCompletenessReport(): Promise<CatalogCompletenes
       }
       withOffer += 1;
 
-      const hasOutbound = productOffers.some((o) => {
-        const status = o.affiliate_link_status ?? "pending";
-        if (status === "broken") return false;
-        const dest = o.affiliate_deeplink || o.affiliate_url;
-        return typeof dest === "string" && dest.startsWith("https://");
-      });
+      const hasOutbound = productOffers.some(isEligibleOutboundOffer);
       if (hasOutbound) withOutboundOffer += 1;
       else issues.push(`${product.slug}: geen bruikbare outbound offer`);
     }
