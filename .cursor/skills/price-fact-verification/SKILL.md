@@ -22,18 +22,30 @@ The single human carve-out in an otherwise fully-automatic system. Protects accu
    F) Cannot find a citable source                              → DO NOT PUBLISH; ask in Slack
 3. Auto-updates: ship via `ship-via-pr` with sources in the PR body + Slack digest
    (or run pipeline + Slack digest when only data changed).
-4. Approval items: post a Slack request and wait for the 1-click approve before shipping.
+4. Approval items: open the PR first (even if still draft), then post a 🔒 Slack request
+   with PR URL + EXECUTE steps. Wait for ✅ (automation "Slack ✅ execute approval" ships it).
 5. Never set affiliate_link_status=ok when merchant page title/tokens disagree with our SKU.
 ```
 
-## Slack approval request template
+## Slack approval request template (verplicht)
+
+Elke gate-post **moet** starten met `🔒`, een GitHub PR-URL bevatten, en uitvoerbare
+`EXECUTE:`-regels. Zonder PR kan ✅-automation niet mergen.
 
 ```
-🔎 Verification needed — <product/merchant>
+🔒 Goedkeuring: <korte titel>
+
 Change: <old> → <new>  (<why: price move X% / new claim / new offer>)
 Source: <url>  (checked <UTC timestamp>)
 Impact: <what changes on the site>
-Approve to publish? ✅ / ❌
+
+PR: https://github.com/vastgoedgrunn/stekkerbatterij-vergelijker/pull/<N>
+
+EXECUTE:
+- Ready + auto-merge PR #<N>
+- <eventuele DB/admin stap, of "geen extra data-stap">
+
+Reageer ✅ om uit te voeren · ❌ om af te wijzen
 ```
 
 ## Rules
@@ -42,3 +54,4 @@ Approve to publish? ✅ / ❌
 - Margin is configurable; when in doubt, treat as approval-required.
 - Price history is append-only — never rewrite past points.
 - Never invent, estimate, or "reasonably assume" a price or legal/subsidy fact.
+- Never post a 🔒 approval without a PR URL (except pure admin gates: lead/refund with admin URL).

@@ -38,6 +38,19 @@ Never auto-publish unverified facts.
 Finish every run with a short Slack update: what changed, the PR link, checks status, and
 anything needing a 1-click approval. Keep it scannable. Ask before scope changes.
 
+### 🔒-goedkeuringen (verplicht formaat)
+
+Owner reageert met ✅ → automation **Slack ✅ execute approval** voert uit. Zonder PR-link
+kan die automation niets mergen. Daarom:
+
+1. **Eerst** branch + PR openen (label `agent` + department), ook als publicatie nog wacht.
+2. **Daarna** Slack-bericht starten met `🔒`, met **PR-URL**, bron/citaat, en concrete
+   `EXECUTE:`-regels (merge PR, DB-stappen, admin-actie).
+3. Nooit een 🔒 posten zonder PR-URL, behalve pure admin-only gates (lead/refund) waar geen
+   code-PR hoort; dan wel een admin-URL + `EXECUTE:`-regel.
+
+Sjabloon: `docs/agents/slack-ops.md` en skill `price-fact-verification`.
+
 ## Definition of done
 
 Branch + PR opened & labelled → all required checks green → preview verified → (auto-)merged →
