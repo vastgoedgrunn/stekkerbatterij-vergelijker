@@ -2,13 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
-  BadgeCheck,
   BatteryCharging,
   LineChart,
   Scale,
-  Search,
   ShieldCheck,
-  Sparkles,
   TrendingDown,
 } from "lucide-react";
 import { getProducts } from "@/features/products/queries";
@@ -61,17 +58,14 @@ const trustItems = [
 
 const steps = [
   {
-    icon: Search,
     title: "Vertel je situatie",
     text: "Verbruik, zonnepanelen en wensen, in een paar tikken.",
   },
   {
-    icon: Sparkles,
     title: "Krijg een persoonlijke match",
     text: "Onze transparante beslishulp rangschikt de beste batterijen voor jou.",
   },
   {
-    icon: BadgeCheck,
     title: "Vergelijk en kies",
     text: "Bekijk specs naast elkaar en ga naar de aanbieder met de beste prijs.",
   },
@@ -93,7 +87,6 @@ export default async function HomePage() {
         <Container className="relative grid grid-cols-1 items-center gap-12 py-14 lg:grid-cols-[1.1fr_0.9fr] lg:py-20">
           <div className="flex min-w-0 flex-col gap-6">
             <span className="text-muted-foreground inline-flex w-fit items-center gap-2 text-sm font-semibold tracking-wide uppercase">
-              <Scale className="text-primary size-4" />
               Onafhankelijk vergelijkingsplatform
             </span>
             <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
@@ -226,9 +219,7 @@ export default async function HomePage() {
                       {i + 1}
                     </span>
                     <div>
-                      <h3 className="flex items-center gap-2 font-semibold">
-                        <step.icon className="text-primary size-4" /> {step.title}
-                      </h3>
+                      <h3 className="font-semibold">{step.title}</h3>
                       <p className="text-muted-foreground mt-1 text-sm">{step.text}</p>
                     </div>
                   </li>

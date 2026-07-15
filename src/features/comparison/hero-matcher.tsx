@@ -3,7 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
 import { getPublicImageUrl } from "@/lib/supabase/storage";
@@ -37,10 +37,7 @@ export function HeroMatcher({ products }: { products: ProductListItem[] }) {
 
   return (
     <div className="border-border/70 bg-card/70 rounded-3xl border p-5 shadow-[var(--shadow-lg)] backdrop-blur-sm sm:p-6">
-      <div className="flex items-center gap-2 text-sm font-semibold">
-        <Sparkles className="text-primary size-4" />
-        Vind jouw batterij in 10 seconden
-      </div>
+      <div className="text-sm font-semibold">Vind jouw batterij in 10 seconden</div>
 
       <div className="mt-4 space-y-4">
         <Segment
