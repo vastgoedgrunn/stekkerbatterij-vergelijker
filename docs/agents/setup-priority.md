@@ -3,14 +3,15 @@
 Maak deze **in Cursor → Automations → New → Cloud agent**. Copy-paste prompt uit
 [automations.md](./automations.md). Slack: `#all-stekkerbatterij-vergelijker`.
 
-## Fase A: vandaag (4 stuks, ~10 min)
+## Fase A: vandaag (5 stuks, ~12 min)
 
 | # | Naam | Cron (UTC) | Waarom eerst |
 |---|------|------------|--------------|
-| 1 | **Data daily** | `0 6 * * *` | Affiliate + prijzen = geld |
-| 2 | **QA daily** | `0 7 * * *` | Site blijft online |
-| 3 | **Revenue refresh** | `0 6 * * *` | Klikken/leads zichtbaar |
-| 4 | **Orchestrator** | `0 8 * * 1` | Weekplan maandag |
+| 1 | **Data catalog morning** | `0 6 * * *` | Completeness + prijzen = claim + geld |
+| 2 | **Data affiliate evening** | `0 18 * * *` | Deeplink-health alsof affiliate live |
+| 3 | **QA daily** | `0 7 * * *` | Site blijft online |
+| 4 | **Analytics Monday** | `0 7 * * 1` | KPI-rapport voedt het team |
+| 5 | **Orchestrator** | `0 8 * * 1` | Weekplan / overleg maandag |
 
 Tools per automation: ✅ Post Slack · ✅ Read Slack · ✅ Comment PR · MCP: github, supabase, vercel
 

@@ -7,10 +7,10 @@ gebruikt UTC; hier de menselijke klok.
 
 | Tijd | Agent | Wat |
 |------|-------|-----|
-| **08:00** | Data & prices | Prijzen, deeplinks, commissie-check |
-| **08:00** | Revenue refresh | `/admin/revenue` + broken deeplinks |
+| **08:00** | Data catalog morning | Completeness gaps, prijzen, Slack-gates |
 | **08:00** | Commerce ops | Pending orders/refunds (indien checkout aan) |
 | **09:00** | QA & monitoring | Health, Sentry, broken links, deploy |
+| **20:00** | Data affiliate evening | Deeplink/HTTP health, pending/broken alerts |
 
 ## Wekelijks
 
