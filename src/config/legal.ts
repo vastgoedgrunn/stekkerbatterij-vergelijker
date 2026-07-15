@@ -30,8 +30,8 @@ export const legalConfig = {
 
   /** Vestigings-/bezoekadres. */
   address: {
-    street: "Helder Think 27a",
-    postalCode: "TODO — postcode (uit KvK)",
+    street: "Helper Brink 27a",
+    postalCode: "9722 EG",
     city: "Groningen",
     country: "Nederland",
   },
