@@ -42,22 +42,14 @@ export default async function EnergiePage() {
         </div>
 
         <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
-          {partners.length === 0 ? (
-            <p className="text-muted-foreground col-span-full text-center text-sm">
-              Energiepartners worden binnenkort toegevoegd zodra affiliate-campagnes live zijn.
-            </p>
-          ) : (
-            partners.map((partner) => (
-              <EnergyPartnerCard
-                key={partner.id}
-                slug={partner.slug}
-                name={partner.name}
-                description={partner.description}
-                commissionMin={partner.commission_cents_min}
-                commissionMax={partner.commission_cents_max}
-              />
-            ))
-          )}
+          {partners.map((partner) => (
+            <EnergyPartnerCard
+              key={partner.id}
+              slug={partner.slug}
+              name={partner.name}
+              description={partner.description}
+            />
+          ))}
         </div>
 
         <AffiliateDisclosure className="mx-auto mt-10 max-w-3xl" />

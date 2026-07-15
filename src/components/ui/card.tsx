@@ -9,9 +9,9 @@ export function Card({
   return (
     <div
       className={cn(
-        "bg-card text-card-foreground border-border rounded-2xl border shadow-[var(--shadow-xs)]",
+        "bg-card text-card-foreground border-border rounded-xl border shadow-[var(--shadow-xs)]",
         interactive &&
-          "hover:border-primary/25 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lg)]",
+          "hover:border-primary/30 transition-colors duration-150 hover:shadow-[var(--shadow-sm)]",
         className,
       )}
       {...props}

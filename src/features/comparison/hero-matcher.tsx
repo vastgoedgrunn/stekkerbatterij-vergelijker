@@ -148,7 +148,7 @@ function Segment({
             onClick={opt.onClick}
             aria-pressed={opt.active}
             className={cn(
-              "flex-1 rounded-lg px-2 py-1.5 text-sm font-medium transition-all",
+              "min-h-11 flex-1 rounded-lg px-2 py-1.5 text-sm font-medium transition-all",
               opt.active
                 ? "bg-background text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground",

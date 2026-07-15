@@ -12,7 +12,8 @@
  * zachte gelaagde elevatie en een subtiele CTA-highlight.
  */
 :root {
-  --radius: 0.875rem;
+  /* Soberder, gezaghebbender radius (pro-shift) — dichter bij Independer/Pricewise. */
+  --radius: 0.5rem;
 
   /* Warme, bijna-witte achtergrond i.p.v. steriel puur wit. */
   --background: oklch(0.994 0.002 106);
