@@ -84,12 +84,7 @@ export interface ProductDetail extends ProductListItem {
 }
 
 export type ProductSort =
-  | "relevance"
-  | "price_asc"
-  | "price_desc"
-  | "value_asc"
-  | "capacity_desc"
-  | "rating_desc";
+  "relevance" | "price_asc" | "price_desc" | "value_asc" | "capacity_desc" | "rating_desc";
 
 export interface ProductFilters {
   search?: string;

@@ -15,8 +15,7 @@ export function CompareBar() {
       document.body.style.removeProperty("padding-bottom");
       return;
     }
-    document.body.style.paddingBottom =
-      "calc(5.5rem + env(safe-area-inset-bottom, 0px))";
+    document.body.style.paddingBottom = "calc(5.5rem + env(safe-area-inset-bottom, 0px))";
     return () => {
       document.body.style.removeProperty("padding-bottom");
     };

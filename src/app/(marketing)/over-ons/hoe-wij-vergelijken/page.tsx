@@ -73,9 +73,10 @@ export default function HowWeComparePage() {
           <Card className="mt-8 p-6">
             <h2 className="font-semibold">Advertenties & affiliate</h2>
             <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-              Gesponsorde aanbiedingen zijn duidelijk gelabeld als &quot;Advertentie&quot;. Als je via
-              onze links koopt, kunnen wij een vergoeding ontvangen — dat verandert niets aan onze
-              ranking. We sturen je altijd naar de aanbieder voor de actuele prijs en voorwaarden.
+              Gesponsorde aanbiedingen zijn duidelijk gelabeld als &quot;Advertentie&quot;. Als je
+              via onze links koopt, kunnen wij een vergoeding ontvangen — dat verandert niets aan
+              onze ranking. We sturen je altijd naar de aanbieder voor de actuele prijs en
+              voorwaarden.
             </p>
           </Card>
         </Container>

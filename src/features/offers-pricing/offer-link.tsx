@@ -5,12 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/observability/analytics";
 
-export type OfferLinkPlacement =
-  | "pdp_hero"
-  | "pdp_table"
-  | "sticky_mobile"
-  | "wizard"
-  | "compare";
+export type OfferLinkPlacement = "pdp_hero" | "pdp_table" | "sticky_mobile" | "wizard" | "compare";
 
 /**
  * Affiliate-/aanbiederlink die de primaire conversie-KPI meet:

@@ -499,10 +499,7 @@ export async function getCatalogStats(): Promise<{
       .select("id", { count: "exact", head: true })
       .eq("status", "published")
       .is("deleted_at", null),
-    supabase
-      .from("merchants")
-      .select("id", { count: "exact", head: true })
-      .eq("is_self", false),
+    supabase.from("merchants").select("id", { count: "exact", head: true }).eq("is_self", false),
     getBrands(),
   ]);
 
