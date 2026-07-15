@@ -63,6 +63,9 @@ jobs:
       - name: Run Lighthouse CI
         run: npx --yes @lhci/cli@0.14.x autorun
 
+      - name: Run Lighthouse CI (mobile)
+        run: npx --yes @lhci/cli@0.14.x autorun --config=.lighthouserc.mobile.json
+
   links:
     name: Broken-link check
     runs-on: ubuntu-latest

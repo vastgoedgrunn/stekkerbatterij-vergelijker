@@ -7,10 +7,16 @@ import { trackEvent } from "@/lib/observability/analytics";
 const STORAGE_KEY = "sbv:compare";
 const MAX = businessRules.comparison.maxItems;
 
+export interface CompareItem {
+  slug: string;
+  name: string;
+}
+
 interface CompareContextValue {
+  items: CompareItem[];
   slugs: string[];
   isSelected: (slug: string) => boolean;
-  toggle: (slug: string) => void;
+  toggle: (item: CompareItem) => void;
   remove: (slug: string) => void;
   clear: () => void;
   max: number;
@@ -19,53 +25,73 @@ interface CompareContextValue {
 
 const CompareContext = React.createContext<CompareContextValue | null>(null);
 
+function parseStoredCompare(raw: string | null): CompareItem[] {
+  if (!raw) return [];
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .map((entry): CompareItem | null => {
+        if (typeof entry === "string") {
+          return { slug: entry, name: entry.replace(/-/g, " ") };
+        }
+        if (
+          entry &&
+          typeof entry === "object" &&
+          "slug" in entry &&
+          typeof (entry as CompareItem).slug === "string"
+        ) {
+          const item = entry as CompareItem;
+          return {
+            slug: item.slug,
+            name: typeof item.name === "string" ? item.name : item.slug.replace(/-/g, " "),
+          };
+        }
+        return null;
+      })
+      .filter((item): item is CompareItem => item !== null)
+      .slice(0, MAX);
+  } catch {
+    return [];
+  }
+}
+
 export function CompareProvider({ children }: { children: React.ReactNode }) {
-  const [slugs, setSlugs] = React.useState<string[]>([]);
+  const [items, setItems] = React.useState<CompareItem[]>([]);
 
   React.useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed: unknown = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          // Bewust: eenmalige hydratie uit localStorage na mount voorkomt
-          // hydration-mismatch (server rendert lege selectie).
-          // eslint-disable-next-line react-hooks/set-state-in-effect
-          setSlugs(parsed.filter((s): s is string => typeof s === "string").slice(0, MAX));
-        }
-      }
-    } catch {
-      // localStorage niet beschikbaar; negeer.
-    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydratie uit localStorage na mount
+    setItems(parseStoredCompare(window.localStorage.getItem(STORAGE_KEY)));
   }, []);
 
-  const persist = React.useCallback((next: string[]) => {
-    setSlugs(next);
+  const persist = React.useCallback((next: CompareItem[]) => {
+    setItems(next);
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     } catch {
-      // negeer
+      // localStorage niet beschikbaar
     }
   }, []);
 
   const value = React.useMemo<CompareContextValue>(
     () => ({
-      slugs,
-      isSelected: (slug) => slugs.includes(slug),
-      toggle: (slug) => {
-        if (slugs.includes(slug)) {
-          persist(slugs.filter((s) => s !== slug));
-        } else if (slugs.length < MAX) {
-          persist([...slugs, slug]);
-          trackEvent({ name: "comparison_product_added", props: { productId: slug } });
+      items,
+      slugs: items.map((item) => item.slug),
+      isSelected: (slug) => items.some((item) => item.slug === slug),
+      toggle: (item) => {
+        if (items.some((i) => i.slug === item.slug)) {
+          persist(items.filter((i) => i.slug !== item.slug));
+        } else if (items.length < MAX) {
+          persist([...items, item]);
+          trackEvent({ name: "comparison_product_added", props: { productId: item.slug } });
         }
       },
-      remove: (slug) => persist(slugs.filter((s) => s !== slug)),
+      remove: (slug) => persist(items.filter((i) => i.slug !== slug)),
       clear: () => persist([]),
       max: MAX,
-      isFull: slugs.length >= MAX,
+      isFull: items.length >= MAX,
     }),
-    [slugs, persist],
+    [items, persist],
   );
 
   return <CompareContext.Provider value={value}>{children}</CompareContext.Provider>;

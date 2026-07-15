@@ -11,7 +11,7 @@ import {
   Sparkles,
   TrendingDown,
 } from "lucide-react";
-import { getProducts } from "@/features/products/queries";
+import { getProducts, getCatalogStats } from "@/features/products/queries";
 import { getArticles } from "@/features/content/queries";
 import { ProductCard } from "@/components/patterns/product-card";
 import { HeroMatcher } from "@/features/comparison/hero-matcher";
@@ -75,9 +75,10 @@ const steps = [
 ];
 
 export default async function HomePage() {
-  const [{ items: featured, total }, articles] = await Promise.all([
+  const [{ items: featured, total }, articles, catalogStats] = await Promise.all([
     getProducts({ sort: "rating_desc", pageSize: 8 }),
     getArticles(),
+    getCatalogStats(),
   ]);
 
   return (
@@ -113,8 +114,8 @@ export default async function HomePage() {
               </Link>
             </div>
             <dl className="border-border/70 mt-2 flex flex-wrap gap-x-10 gap-y-4 border-t pt-6">
-              <Stat value={total} label="Modellen vergeleken" />
-              <Stat value="6" label="Aanbieders" />
+              <Stat value={catalogStats.modelCount || total} label="Modellen vergeleken" />
+              <Stat value={catalogStats.merchantCount} label="Aanbieders" />
               <Stat value="100%" label="Onafhankelijk" />
             </dl>
           </div>
@@ -294,7 +295,7 @@ export default async function HomePage() {
                 Niet zeker welke batterij past?
               </h2>
               <p className="text-lg opacity-90">
-                Onze beslishulp geeft je in vier korte stappen een persoonlijk, onafhankelijk
+                Onze beslishulp geeft je in vijf korte stappen een persoonlijk, onafhankelijk
                 advies.
               </p>
               <Link

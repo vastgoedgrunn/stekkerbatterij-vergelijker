@@ -53,7 +53,7 @@ export function ProductCard({ product }: { product: ProductListItem }) {
           {product.expandable && <Badge variant="highlight">Uitbreidbaar</Badge>}
         </div>
         <div className="absolute top-3 right-3">
-          <CompareToggle slug={product.slug} className="relative z-10" />
+          <CompareToggle slug={product.slug} name={product.name} className="relative z-10" />
         </div>
       </div>
 
@@ -86,11 +86,14 @@ export function ProductCard({ product }: { product: ProductListItem }) {
           ))}
         </ul>
 
-        <div className="border-border/70 mt-auto flex items-end justify-between border-t pt-4">
+        <div className="border-border/70 mt-auto flex items-end justify-between gap-3 border-t pt-4">
           <div>
             {product.lowestPriceCents !== null ? (
               <>
-                <span className="text-muted-foreground block text-xs">vanaf</span>
+                <span className="text-muted-foreground block text-xs">
+                  vanaf · {product.offerCount}{" "}
+                  {product.offerCount === 1 ? "aanbieder" : "aanbieders"}
+                </span>
                 <span className="text-xl font-bold tracking-tight">
                   {formatPrice(product.lowestPriceCents)}
                 </span>
@@ -100,7 +103,7 @@ export function ProductCard({ product }: { product: ProductListItem }) {
             )}
           </div>
           <span className="text-primary relative z-10 inline-flex items-center gap-1 text-sm font-semibold">
-            Bekijken
+            Bekijk aanbieders
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
           </span>
         </div>

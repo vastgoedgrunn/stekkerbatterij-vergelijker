@@ -9,6 +9,8 @@ import { getApprovedReviews } from "@/features/reviews/queries";
 import { SpecList } from "@/features/products/components/spec-list";
 import { OfferTable } from "@/features/offers-pricing/offer-table";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
+import { PdpStickyOfferAnchor } from "@/features/offers-pricing/pdp-sticky-offer-anchor";
+import { PriceCheckedLabel } from "@/features/offers-pricing/price-checked-label";
 import { TrackView } from "@/lib/observability/track-view";
 import { PriceHistoryChart } from "@/features/offers-pricing/price-history-chart";
 import { ReviewList } from "@/features/reviews/review-list";
@@ -166,7 +168,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               <p className="text-muted-foreground leading-relaxed">{product.summary}</p>
             )}
 
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {quickSpecs.map((spec) => (
                 <div key={spec.label} className="border-border bg-card rounded-xl border p-3">
                   <spec.icon className="text-primary size-4" />
@@ -176,53 +178,66 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               ))}
             </div>
 
-            <div className="border-border bg-card rounded-2xl border p-5 shadow-[var(--shadow-sm)]">
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-muted-foreground text-sm">Laagste prijs</p>
-                  <p className="text-3xl font-bold tracking-tight">
-                    {product.lowestPriceCents !== null
-                      ? formatPrice(product.lowestPriceCents)
-                      : "—"}
-                  </p>
-                  {bestOffer && (
-                    <p className="text-muted-foreground mt-1 text-xs">
-                      bij {bestOffer.merchantName}
+            <PdpStickyOfferAnchor
+              productId={product.id}
+              productName={product.name}
+              bestOffer={bestOffer}
+            >
+              <div className="border-border bg-card rounded-2xl border p-5 shadow-[var(--shadow-sm)]">
+                <div className="flex items-end justify-between gap-4">
+                  <div>
+                    <p className="text-muted-foreground text-sm">Laagste prijs</p>
+                    <p className="text-3xl font-bold tracking-tight">
+                      {product.lowestPriceCents !== null
+                        ? formatPrice(product.lowestPriceCents)
+                        : "—"}
                     </p>
+                    {bestOffer && (
+                      <p className="text-muted-foreground mt-1 text-xs">
+                        bij {bestOffer.merchantName}
+                      </p>
+                    )}
+                    {bestOffer && <PriceCheckedLabel checkedAt={bestOffer.lastCheckedAt} />}
+                  </div>
+                  {bestOffer?.deliveryDays != null && (
+                    <span className="text-muted-foreground inline-flex items-center gap-1 text-sm">
+                      <Truck className="size-4" /> {bestOffer.deliveryDays} werkdagen
+                    </span>
                   )}
                 </div>
-                {bestOffer?.deliveryDays != null && (
-                  <span className="text-muted-foreground inline-flex items-center gap-1 text-sm">
-                    <Truck className="size-4" /> {bestOffer.deliveryDays} werkdagen
-                  </span>
-                )}
-              </div>
 
-              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                {bestOffer?.affiliateUrl ? (
-                  <OfferLink
-                    offerId={bestOffer.id}
-                    productId={product.id}
-                    merchant={bestOffer.merchantName}
-                    sponsored={bestOffer.isSponsored}
-                    estimatedCommissionCents={bestOffer.estimatedCommissionCents}
-                    size="lg"
-                    className="flex-1"
-                  >
-                    Bekijk beste prijs
-                  </OfferLink>
-                ) : (
-                  <a href="#aanbieders" className={cn(buttonVariants({ size: "lg" }), "flex-1")}>
-                    Bekijk aanbieders
-                  </a>
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                  {bestOffer?.affiliateUrl ? (
+                    <OfferLink
+                      offerId={bestOffer.id}
+                      productId={product.id}
+                      merchant={bestOffer.merchantName}
+                      sponsored={bestOffer.isSponsored}
+                      estimatedCommissionCents={bestOffer.estimatedCommissionCents}
+                      placement="pdp_hero"
+                      size="lg"
+                      className="flex-1"
+                    >
+                      {bestOffer.isSponsored ? "Bekijk aanbod (advertentie)" : "Bekijk beste prijs"}
+                    </OfferLink>
+                  ) : (
+                    <a href="#aanbieders" className={cn(buttonVariants({ size: "lg" }), "flex-1")}>
+                      Bekijk aanbieders
+                    </a>
+                  )}
+                  <CompareToggle slug={product.slug} name={product.name} />
+                </div>
+                {bestOffer?.isSponsored && (
+                  <Badge variant="muted" className="mt-3">
+                    Advertentie
+                  </Badge>
                 )}
-                <CompareToggle slug={product.slug} />
+                <p className="text-muted-foreground mt-3 text-center text-xs">
+                  Prijs incl. btw · controleer de actuele prijs bij de aanbieder
+                </p>
+                <AffiliateDisclosure className="mt-3" />
               </div>
-              <p className="text-muted-foreground mt-3 text-center text-xs">
-                Prijs incl. btw · controleer de actuele prijs bij de aanbieder
-              </p>
-              <AffiliateDisclosure className="mt-3" />
-            </div>
+            </PdpStickyOfferAnchor>
           </div>
         </div>
 

@@ -8,6 +8,7 @@ import type {
   Category,
   ProductDetail,
   ProductFilters,
+  ProductListBestOffer,
   ProductListItem,
   ProductListResult,
   ProductOffer,
@@ -22,6 +23,18 @@ interface RawBrand {
   slug: string;
 }
 
+interface RawListOffer {
+  id: string;
+  price_cents: number;
+  affiliate_url: string | null;
+  affiliate_deeplink: string | null;
+  commission_type: "cps" | "cpa" | null;
+  commission_rate: number | null;
+  commission_cents_fixed: number | null;
+  is_sponsored: boolean;
+  merchants: { name: string } | null;
+}
+
 interface RawOffer {
   id: string;
   merchant_id: string;
@@ -34,6 +47,7 @@ interface RawOffer {
   commission_rate: number | null;
   commission_cents_fixed: number | null;
   is_sponsored: boolean;
+  last_checked_at: string | null;
   merchants: { name: string; slug: string; is_self: boolean } | null;
 }
 
@@ -50,7 +64,7 @@ interface RawProduct {
   expandable: boolean;
   image_path: string | null;
   brands: RawBrand | null;
-  offers: { price_cents: number }[] | null;
+  offers: RawListOffer[] | null;
 }
 
 interface RawProductDetail extends Omit<RawProduct, "offers"> {
@@ -72,6 +86,25 @@ function lowestPrice(offers: { price_cents: number }[] | null): number | null {
     (min, o) => (o.price_cents < min ? o.price_cents : min),
     offers[0]!.price_cents,
   );
+}
+
+function mapBestListOffer(offers: RawListOffer[] | null): ProductListBestOffer | null {
+  if (!offers || offers.length === 0) return null;
+  const sorted = [...offers].sort((a, b) => a.price_cents - b.price_cents);
+  const best = sorted[0]!;
+  return {
+    id: best.id,
+    merchantName: best.merchants?.name ?? "Onbekend",
+    priceCents: best.price_cents,
+    affiliateUrl: best.affiliate_deeplink ?? best.affiliate_url,
+    isSponsored: best.is_sponsored,
+    estimatedCommissionCents: estimateCommissionCents({
+      commissionType: best.commission_type,
+      commissionRate: best.commission_rate,
+      commissionCentsFixed: best.commission_cents_fixed,
+      priceCents: best.price_cents,
+    }),
+  };
 }
 
 async function fetchRatings(productIds: string[]): Promise<Map<string, ProductRating>> {
@@ -178,7 +211,7 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
   let query = supabase
     .from("products")
     .select(
-      "id, slug, name, summary, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, brands(id, name, slug), offers(price_cents)",
+      "id, slug, name, summary, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, brands(id, name, slug), offers(id, price_cents, affiliate_url, affiliate_deeplink, commission_type, commission_rate, commission_cents_fixed, is_sponsored, merchants(name))",
     )
     .eq("status", "published")
     .is("deleted_at", null);
@@ -239,6 +272,8 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
       expandable: r.expandable,
       imagePath: r.image_path,
       lowestPriceCents: lowestPrice(r.offers),
+      offerCount: r.offers?.length ?? 0,
+      bestOffer: mapBestListOffer(r.offers),
       rating: ratings.get(r.id) ?? { average: null, count: 0 },
     }));
 
@@ -270,7 +305,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   const { data, error } = await supabase
     .from("products")
     .select(
-      "id, slug, name, summary, description, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, supplier_id, sellable, brands(id, name, slug), offers(id, merchant_id, price_cents, stock_status, delivery_days, affiliate_url, affiliate_deeplink, commission_type, commission_rate, commission_cents_fixed, is_sponsored, merchants(name, slug, is_self))",
+      "id, slug, name, summary, description, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, supplier_id, sellable, brands(id, name, slug), offers(id, merchant_id, price_cents, stock_status, delivery_days, affiliate_url, affiliate_deeplink, commission_type, commission_rate, commission_cents_fixed, is_sponsored, last_checked_at, merchants(name, slug, is_self))",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -303,6 +338,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
       stockStatus: o.stock_status,
       deliveryDays: o.delivery_days,
       affiliateUrl: o.affiliate_deeplink ?? o.affiliate_url,
+      lastCheckedAt: o.last_checked_at,
       estimatedCommissionCents: estimateCommissionCents({
         commissionType: o.commission_type,
         commissionRate: o.commission_rate,
@@ -328,6 +364,18 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
     supplierId: product.supplier_id,
     sellable: product.sellable ?? false,
     lowestPriceCents: offers.length > 0 ? offers[0]!.priceCents : null,
+    offerCount: offers.length,
+    bestOffer:
+      offers.length > 0
+        ? {
+            id: offers[0]!.id,
+            merchantName: offers[0]!.merchantName,
+            priceCents: offers[0]!.priceCents,
+            affiliateUrl: offers[0]!.affiliateUrl,
+            isSponsored: offers[0]!.isSponsored,
+            estimatedCommissionCents: offers[0]!.estimatedCommissionCents,
+          }
+        : null,
     rating: ratings.get(product.id) ?? { average: null, count: 0 },
     categories,
     specs,
@@ -412,4 +460,32 @@ async function getPriceHistory(productId: string): Promise<ProductDetail["priceH
 
   if (error || !data) return [];
   return data.map((p) => ({ priceCents: p.price_cents, recordedAt: p.recorded_at }));
+}
+
+export async function getCatalogStats(): Promise<{
+  modelCount: number;
+  brandCount: number;
+  merchantCount: number;
+}> {
+  if (!isSupabaseConfigured()) return { modelCount: 0, brandCount: 0, merchantCount: 0 };
+
+  const supabase = createSupabasePublicClient();
+  const [{ count: modelCount }, { count: merchantCount }, brands] = await Promise.all([
+    supabase
+      .from("products")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "published")
+      .is("deleted_at", null),
+    supabase
+      .from("merchants")
+      .select("id", { count: "exact", head: true })
+      .eq("is_self", false),
+    getBrands(),
+  ]);
+
+  return {
+    modelCount: modelCount ?? 0,
+    brandCount: brands.length,
+    merchantCount: merchantCount ?? 0,
+  };
 }

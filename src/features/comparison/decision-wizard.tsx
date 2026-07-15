@@ -14,6 +14,7 @@ import { trackEvent } from "@/lib/observability/analytics";
 import { rankProducts, type WizardPreferences } from "./ranking";
 import { qualifyLeadPath } from "./qualification";
 import { LeadPanel } from "./lead-panel";
+import { OfferLink } from "@/features/offers-pricing/offer-link";
 import { EnergyUpsellStrip } from "@/components/patterns/energy-upsell-strip";
 import type { ProductListItem } from "@/features/products/types";
 
@@ -195,6 +196,12 @@ export function DecisionWizard({ products }: { products: ProductListItem[] }) {
             <LeadPanel qualification={qualification} source="wizard" />
           )}
 
+          {!showLeadPath && qualification.reasons.length > 0 && (
+            <p className="text-muted-foreground text-center text-sm leading-relaxed">
+              {qualification.reasons.slice(0, 2).join(" · ")}
+            </p>
+          )}
+
           {!showLeadPath && recommendations.length === 0 && (
             <p className="text-muted-foreground text-center">
               We konden nog geen aanbeveling doen. Bekijk het volledige aanbod in de catalogus.
@@ -245,18 +252,33 @@ export function DecisionWizard({ products }: { products: ProductListItem[] }) {
                       ))}
                     </ul>
                   </div>
-                  <div className="flex flex-col items-end gap-2 sm:text-right">
+                  <div className="flex flex-col items-stretch gap-2 sm:items-end sm:text-right">
                     {rec.product.lowestPriceCents !== null && (
                       <p className="text-xl font-bold">
                         {formatPrice(rec.product.lowestPriceCents)}
                       </p>
                     )}
-                    <Link
-                      href={`/batterijen/${rec.product.slug}`}
-                      className={cn(buttonVariants({ size: "sm" }))}
-                    >
-                      Bekijk details <ArrowRight className="size-4" />
-                    </Link>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+                      <Link
+                        href={`/batterijen/${rec.product.slug}`}
+                        className={cn(buttonVariants({ size: "sm", variant: "outline" }))}
+                      >
+                        Bekijk details
+                      </Link>
+                      {rec.product.bestOffer?.affiliateUrl && (
+                        <OfferLink
+                          offerId={rec.product.bestOffer.id}
+                          productId={rec.product.id}
+                          merchant={rec.product.bestOffer.merchantName}
+                          sponsored={rec.product.bestOffer.isSponsored}
+                          estimatedCommissionCents={rec.product.bestOffer.estimatedCommissionCents}
+                          placement="wizard"
+                          size="sm"
+                        >
+                          Naar {rec.product.bestOffer.merchantName}
+                        </OfferLink>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>

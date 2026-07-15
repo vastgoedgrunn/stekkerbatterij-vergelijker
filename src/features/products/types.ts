@@ -18,6 +18,15 @@ export interface ProductRating {
   count: number;
 }
 
+export interface ProductListBestOffer {
+  id: string;
+  merchantName: string;
+  priceCents: number;
+  affiliateUrl: string | null;
+  isSponsored: boolean;
+  estimatedCommissionCents: number | null;
+}
+
 export interface ProductListItem {
   id: string;
   slug: string;
@@ -31,6 +40,8 @@ export interface ProductListItem {
   expandable: boolean;
   imagePath: string | null;
   lowestPriceCents: number | null;
+  offerCount: number;
+  bestOffer: ProductListBestOffer | null;
   rating: ProductRating;
 }
 
@@ -51,6 +62,7 @@ export interface ProductOffer {
   stockStatus: StockStatus;
   deliveryDays: number | null;
   affiliateUrl: string | null;
+  lastCheckedAt: string | null;
   estimatedCommissionCents: number | null;
 }
 

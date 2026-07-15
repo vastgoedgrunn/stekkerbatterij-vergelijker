@@ -4,7 +4,15 @@ import { Check, GitCompare } from "lucide-react";
 import { useCompare } from "./compare-store";
 import { cn } from "@/lib/utils";
 
-export function CompareToggle({ slug, className }: { slug: string; className?: string }) {
+export function CompareToggle({
+  slug,
+  name,
+  className,
+}: {
+  slug: string;
+  name: string;
+  className?: string;
+}) {
   const { isSelected, toggle, isFull } = useCompare();
   const selected = isSelected(slug);
   const disabled = !selected && isFull;
@@ -12,7 +20,7 @@ export function CompareToggle({ slug, className }: { slug: string; className?: s
   return (
     <button
       type="button"
-      onClick={() => toggle(slug)}
+      onClick={() => toggle({ slug, name })}
       disabled={disabled}
       aria-pressed={selected}
       title={
@@ -23,7 +31,7 @@ export function CompareToggle({ slug, className }: { slug: string; className?: s
             : "Voeg toe aan vergelijking"
       }
       className={cn(
-        "focus-visible:ring-ring/50 inline-flex size-10 items-center justify-center rounded-xl border transition-all focus-visible:ring-4 focus-visible:outline-none disabled:opacity-40",
+        "focus-visible:ring-ring/50 inline-flex size-11 min-h-11 min-w-11 items-center justify-center rounded-xl border transition-all focus-visible:ring-4 focus-visible:outline-none disabled:opacity-40",
         selected
           ? "border-primary bg-primary text-primary-foreground shadow-sm"
           : "border-border bg-background hover:border-primary/40 hover:bg-accent",

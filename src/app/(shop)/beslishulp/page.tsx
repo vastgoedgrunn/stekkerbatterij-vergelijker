@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getProducts } from "@/features/products/queries";
 import { DecisionWizard } from "@/features/comparison/decision-wizard";
+import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { businessRules } from "@/config/business-rules";
 
 export const metadata: Metadata = {
@@ -25,12 +26,15 @@ export default async function DecisionAidPage() {
             Vind jouw ideale stekkerbatterij
           </h1>
           <p className="text-muted-foreground mx-auto mt-3 max-w-xl text-lg">
-            Beantwoord vier korte vragen en ontvang een onafhankelijk advies op maat.
+            Beantwoord vijf korte stappen en ontvang een onafhankelijk advies op maat.
           </p>
         </header>
 
         {items.length > 0 ? (
-          <DecisionWizard products={items} />
+          <>
+            <DecisionWizard products={items} />
+            <AffiliateDisclosure className="mt-8" />
+          </>
         ) : (
           <p className="text-muted-foreground text-center">
             Er zijn nog geen producten beschikbaar om een advies op te baseren.

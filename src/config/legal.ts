@@ -19,20 +19,20 @@ export const LEGAL_TODO = "TODO" as const;
 
 export const legalConfig = {
   /** Statutaire / handelsnaam zoals ingeschreven bij de KvK. */
-  companyName: "TODO — juridische bedrijfsnaam (zoals in KvK)",
+  companyName: "Stekkerbatterij Vergelijker",
   /** Handelsnaam / merknaam waaronder de webshop opereert. */
   tradeName: "Stekkerbatterij Vergelijker",
 
   /** KvK-nummer (8 cijfers). */
-  kvkNumber: "TODO — KvK-nummer (8 cijfers)",
+  kvkNumber: "93043809",
   /** Btw-identificatienummer (NL........B..). */
   vatNumber: "TODO — Btw-nummer (NL...B..)",
 
   /** Vestigings-/bezoekadres. */
   address: {
-    street: "TODO — straat + huisnummer",
-    postalCode: "TODO — postcode",
-    city: "TODO — plaats",
+    street: "Helder Think 27a",
+    postalCode: "TODO — postcode (uit KvK)",
+    city: "Groningen",
     country: "Nederland",
   },
 

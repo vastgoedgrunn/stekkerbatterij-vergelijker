@@ -4,6 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
+import { PriceCheckedLabel } from "@/features/offers-pricing/price-checked-label";
 import { AddToCartButton } from "@/features/checkout/add-to-cart-button";
 import { featureFlags } from "@/config/feature-flags";
 import type { ProductOffer } from "@/features/products/types";
@@ -91,11 +92,7 @@ export function OfferTable({
                 <span className="text-xl font-bold tracking-tight">
                   {formatPrice(offer.priceCents)}
                 </span>
-                {offer.estimatedCommissionCents != null && !offer.isSelf && (
-                  <p className="text-muted-foreground text-xs">
-                    ~{formatPrice(offer.estimatedCommissionCents)} affiliate
-                  </p>
-                )}
+                <PriceCheckedLabel checkedAt={offer.lastCheckedAt} />
               </div>
               {offer.affiliateUrl ? (
                 <OfferLink
@@ -104,8 +101,9 @@ export function OfferTable({
                   merchant={offer.merchantName}
                   sponsored={offer.isSponsored}
                   estimatedCommissionCents={offer.estimatedCommissionCents}
+                  placement="pdp_table"
                 >
-                  Bekijk
+                  Naar {offer.merchantName}
                 </OfferLink>
               ) : canSellSelf && offer.isSelf ? (
                 <AddToCartButton

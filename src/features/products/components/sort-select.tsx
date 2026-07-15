@@ -26,7 +26,7 @@ export function SortSelect({ current }: { current: string }) {
           params.delete("pagina");
           router.push(`/batterijen?${params.toString()}`);
         }}
-        className="w-52"
+        className="w-full sm:w-52"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>

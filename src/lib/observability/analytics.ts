@@ -15,6 +15,7 @@ export type AnalyticsEvent =
         productId: string;
         merchant: string;
         offerId?: string;
+        placement?: string;
         estimatedCommissionCents?: number;
       };
     }

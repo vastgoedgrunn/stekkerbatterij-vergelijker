@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getProductBySlug } from "@/features/products/queries";
 import { CompareView } from "@/features/comparison/compare-view";
+import { EnergyUpsellStrip } from "@/components/patterns/energy-upsell-strip";
+import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { TrackView } from "@/lib/observability/track-view";
 import { Container } from "@/components/patterns/section";
 import { buttonVariants } from "@/components/ui/button";
@@ -53,6 +55,8 @@ export default async function ComparePage({
           <>
             <TrackView event={{ name: "comparison_started", props: { count: products.length } }} />
             <CompareView products={products} />
+            <EnergyUpsellStrip className="mt-10" />
+            <AffiliateDisclosure className="mt-6" />
           </>
         ) : (
           <div className="border-border rounded-2xl border border-dashed p-12 text-center">
