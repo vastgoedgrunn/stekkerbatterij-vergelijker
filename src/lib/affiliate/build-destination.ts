@@ -42,7 +42,17 @@ export function buildAffiliateDestination(
       : null;
 
   const substituted = substituteClickRef(rawDestination, clickRef);
-  const url = new URL(substituted);
+  let url: URL;
+  try {
+    url = new URL(substituted);
+  } catch {
+    throw new Error("Ongeldige affiliate-bestemming: geen geldige URL.");
+  }
+  if (url.protocol !== "https:") {
+    throw new Error(
+      `Affiliate-bestemming moet https gebruiken (kreeg ${url.protocol || "geen protocol"}).`,
+    );
+  }
   applyParams(url, params, clickRef);
   return url.toString();
 }
