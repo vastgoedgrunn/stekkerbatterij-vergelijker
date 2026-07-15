@@ -205,6 +205,8 @@
 
   html {
     scroll-behavior: smooth;
+    /* Voorkom horizontaal schuiven op mobiel; clip breekt sticky-positionering niet. */
+    overflow-x: clip;
   }
 
   body {
@@ -214,6 +216,9 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     font-feature-settings: "cv11", "ss01";
+    /* Extra vangnet: geen enkel kind mag de viewport horizontaal oprekken. */
+    overflow-x: clip;
+    max-width: 100%;
   }
 
   /* Strakke, gezaghebbende koppen. */

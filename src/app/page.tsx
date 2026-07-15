@@ -87,8 +87,8 @@ export default async function HomePage() {
 
       {/* HERO */}
       <section className="border-border/70 border-b">
-        <Container className="grid items-center gap-12 py-14 lg:grid-cols-[1.1fr_0.9fr] lg:py-20">
-          <div className="flex flex-col gap-6">
+        <Container className="grid grid-cols-1 items-center gap-12 py-14 lg:grid-cols-[1.1fr_0.9fr] lg:py-20">
+          <div className="flex min-w-0 flex-col gap-6">
             <span className="text-muted-foreground inline-flex w-fit items-center gap-2 text-sm font-semibold tracking-wide uppercase">
               <Scale className="text-primary size-4" />
               Onafhankelijk vergelijkingsplatform
@@ -118,7 +118,7 @@ export default async function HomePage() {
             </dl>
           </div>
 
-          <div className="lg:pl-4">
+          <div className="min-w-0 lg:pl-4">
             <HeroMatcher products={featured} />
           </div>
         </Container>
@@ -195,7 +195,7 @@ export default async function HomePage() {
       {/* HOE WERKT HET */}
       <Section className="bg-muted/40 border-border/70 border-y">
         <Container>
-          <div className="grid items-center gap-12 lg:grid-cols-2">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
             <Reveal>
               <div className="border-border/70 relative aspect-[4/3] overflow-hidden rounded-3xl border shadow-[var(--shadow-lg)]">
                 <Image
