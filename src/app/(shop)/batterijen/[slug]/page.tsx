@@ -30,7 +30,7 @@ import { formatNumber, formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 
-export const revalidate = 3600;
+export const revalidate = 300;
 
 export async function generateStaticParams() {
   const slugs = await getProductSlugs();
