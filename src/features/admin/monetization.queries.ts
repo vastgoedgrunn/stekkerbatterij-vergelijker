@@ -98,7 +98,9 @@ export async function getRevenueSummary(): Promise<RevenueSummary> {
     db.from("leads").select("*", { count: "exact", head: true }),
     db.from("orders").select("total_cents").eq("status", "paid"),
     db.from("energy_clicks").select("*", { count: "exact", head: true }),
-    db.from("offers").select("id, price_cents, commission_type, commission_rate, commission_cents_fixed"),
+    db
+      .from("offers")
+      .select("id, price_cents, commission_type, commission_rate, commission_cents_fixed"),
   ]);
 
   const { count: totalClicks } = clicksRes;
@@ -118,9 +120,15 @@ export async function getRevenueSummary(): Promise<RevenueSummary> {
   let estimatedAffiliateCents = 0;
   if (recentClicks && offers) {
     const offerMap = new Map(
-      (offers as { id: string; price_cents: number; commission_type: string | null; commission_rate: number | null; commission_cents_fixed: number | null }[]).map(
-        (o) => [o.id, o],
-      ),
+      (
+        offers as {
+          id: string;
+          price_cents: number;
+          commission_type: string | null;
+          commission_rate: number | null;
+          commission_cents_fixed: number | null;
+        }[]
+      ).map((o) => [o.id, o]),
     );
     for (const click of recentClicks as { offer_id: string }[]) {
       const offer = offerMap.get(click.offer_id);

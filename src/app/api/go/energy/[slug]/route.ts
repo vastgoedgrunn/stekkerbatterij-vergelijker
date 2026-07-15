@@ -46,7 +46,11 @@ export async function GET(
   const clickRef = crypto.randomUUID();
   let destination: string;
   try {
-    destination = buildAffiliateDestination(partner.affiliate_url, partner.affiliate_params, clickRef);
+    destination = buildAffiliateDestination(
+      partner.affiliate_url,
+      partner.affiliate_params,
+      clickRef,
+    );
   } catch {
     return NextResponse.redirect(energiePage, 302);
   }

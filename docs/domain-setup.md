@@ -18,14 +18,15 @@
 | Variabele | Waarde |
 |-----------|--------|
 | `NEXT_PUBLIC_SITE_URL` | `https://stekkerbatterijvergelijker.com` |
-| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | `stekkerbatterijvergelijker.com` |
+| `NEXT_PUBLIC_PLAUSIBLE_SCRIPT_ID` | `pa-0ScGRl8JclM68agzcYVvN` (uit Plausible dashboard) |
 
 Preview/Development mogen `.vercel.app` blijven gebruiken.
 
 ## Plausible Analytics
 
-1. [Plausible](https://plausible.io) → Add site → `stekkerbatterijvergelijker.com`
-2. Zelfde domein in `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` (Production env).
+1. [Plausible](https://plausible.io) → site `stekkerbatterijvergelijker.com` is aangemaakt.
+2. Kopieer het **script-ID** uit de installatie-snippet (`pa-….js` → alleen het ID-deel).
+3. Zet `NEXT_PUBLIC_PLAUSIBLE_SCRIPT_ID` in Vercel Production (en lokaal in `.env.local` om te testen).
 
 ## Google Workspace (e-mail)
 

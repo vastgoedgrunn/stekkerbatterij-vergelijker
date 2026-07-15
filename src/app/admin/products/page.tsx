@@ -2,7 +2,14 @@ import Link from "next/link";
 import type { Route } from "next";
 import { listAdminProducts } from "@/features/admin/queries";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { formatPrice } from "@/lib/format";
 
 export const dynamic = "force-dynamic";

@@ -260,8 +260,14 @@ export async function executeApprovedRefund(
     .eq("id", actionId);
 
   if (action.order_id) {
-    await db.from("orders").update({ status: "refunded" } as never).eq("id", action.order_id);
-    await db.from("payments").update({ status: "refunded" } as never).eq("provider_payment_id", paymentId);
+    await db
+      .from("orders")
+      .update({ status: "refunded" } as never)
+      .eq("id", action.order_id);
+    await db
+      .from("payments")
+      .update({ status: "refunded" } as never)
+      .eq("provider_payment_id", paymentId);
   }
 
   return { ok: true };

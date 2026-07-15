@@ -3,7 +3,14 @@ import { updateLeadStatusAction } from "@/features/admin/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { formatPrice } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -98,7 +105,10 @@ export default async function AdminLeadsPage() {
                       </form>
                     )}
                     {lead.status !== "rejected" && lead.status !== "converted" && (
-                      <form action={updateLeadStatusAction} className="mt-2 flex items-center gap-2">
+                      <form
+                        action={updateLeadStatusAction}
+                        className="mt-2 flex items-center gap-2"
+                      >
                         <input type="hidden" name="leadId" value={lead.id} />
                         <input type="hidden" name="status" value="rejected" />
                         <Input name="notes" placeholder="Reden afwijzing" className="h-8 text-xs" />

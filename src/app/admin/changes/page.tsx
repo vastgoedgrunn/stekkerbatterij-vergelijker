@@ -40,13 +40,20 @@ export default async function AdminChangesPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge>{item.kind}</Badge>
                     <span className="text-muted-foreground text-xs">{item.source}</span>
-                    <span className="text-muted-foreground text-xs">{formatDate(item.created_at)}</span>
+                    <span className="text-muted-foreground text-xs">
+                      {formatDate(item.created_at)}
+                    </span>
                   </div>
                   <p className="mt-3 font-medium">{item.summary}</p>
                   {item.source_url && (
                     <p className="text-muted-foreground mt-2 text-sm">
                       Bron:{" "}
-                      <a href={item.source_url} className="text-primary underline" target="_blank" rel="noreferrer">
+                      <a
+                        href={item.source_url}
+                        className="text-primary underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
                         {item.source_url}
                       </a>
                     </p>
@@ -61,7 +68,13 @@ export default async function AdminChangesPage() {
                       <Button type="submit" name="decision" value="approved" size="sm">
                         Goedkeuren
                       </Button>
-                      <Button type="submit" name="decision" value="rejected" size="sm" variant="outline">
+                      <Button
+                        type="submit"
+                        name="decision"
+                        value="rejected"
+                        size="sm"
+                        variant="outline"
+                      >
                         Afwijzen
                       </Button>
                     </div>

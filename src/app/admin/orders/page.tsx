@@ -2,16 +2,20 @@ import Link from "next/link";
 import type { Route } from "next";
 import { listAdminOrders } from "@/features/admin/queries";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { formatDate, formatPrice } from "@/lib/format";
 import type { OrderStatus } from "@/lib/db/database.types";
 
 export const dynamic = "force-dynamic";
 
-const statusVariant: Record<
-  OrderStatus,
-  "default" | "success" | "warning" | "muted"
-> = {
+const statusVariant: Record<OrderStatus, "default" | "success" | "warning" | "muted"> = {
   pending: "warning",
   paid: "success",
   shipped: "success",

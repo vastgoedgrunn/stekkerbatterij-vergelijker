@@ -10,11 +10,7 @@ function substituteClickRef(value: string, clickRef: string): string {
   return value.replace(/\{click_ref\}/g, clickRef);
 }
 
-function applyParams(
-  url: URL,
-  params: Record<string, unknown> | null,
-  clickRef: string,
-): void {
+function applyParams(url: URL, params: Record<string, unknown> | null, clickRef: string): void {
   for (const [key, value] of Object.entries(DEFAULT_UTM)) {
     url.searchParams.set(key, value);
   }
@@ -39,7 +35,9 @@ export function buildAffiliateDestination(
   clickRef: string,
 ): string {
   const params =
-    affiliateParams !== null && typeof affiliateParams === "object" && !Array.isArray(affiliateParams)
+    affiliateParams !== null &&
+    typeof affiliateParams === "object" &&
+    !Array.isArray(affiliateParams)
       ? (affiliateParams as Record<string, unknown>)
       : null;
 

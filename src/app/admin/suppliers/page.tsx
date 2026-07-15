@@ -5,7 +5,14 @@ import { upsertSupplierAction } from "@/features/admin/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +32,10 @@ export default async function AdminSuppliersPage() {
         Dropship-partners voor eigen verkoop. Zet een contact-e-mail voor order-routing.
       </p>
 
-      <form action={upsertSupplierAction} className="border-border mt-8 space-y-4 rounded-2xl border p-6">
+      <form
+        action={upsertSupplierAction}
+        className="border-border mt-8 space-y-4 rounded-2xl border p-6"
+      >
         <h2 className="font-semibold">Nieuwe leverancier</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2 sm:col-span-2">
@@ -62,7 +72,10 @@ export default async function AdminSuppliersPage() {
               {suppliers.map((supplier) => (
                 <TableRow key={supplier.id}>
                   <TableCell>
-                    <Link href={`/admin/suppliers/${supplier.id}` as Route} className="font-medium hover:underline">
+                    <Link
+                      href={`/admin/suppliers/${supplier.id}` as Route}
+                      className="font-medium hover:underline"
+                    >
                       {supplier.name}
                     </Link>
                   </TableCell>

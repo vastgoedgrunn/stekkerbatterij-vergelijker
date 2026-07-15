@@ -21,10 +21,7 @@ export type ShipmentStatus = "pending" | "label_created" | "shipped" | "delivere
 /** Admin/ops (fase 3). */
 export type ChangeRequestStatus = "pending" | "approved" | "rejected" | "applied";
 export type ApprovalActionKind =
-  | "supplier_order_email"
-  | "shipment_tracking_email"
-  | "support_reply"
-  | "refund";
+  "supplier_order_email" | "shipment_tracking_email" | "support_reply" | "refund";
 export type ApprovalActionStatus = "pending" | "approved" | "rejected" | "sent" | "cancelled";
 export type SupportTicketStatus = "open" | "awaiting_reply" | "resolved" | "closed";
 

@@ -45,9 +45,7 @@ export function OfferLink({
             productId,
             merchant,
             offerId,
-            ...(estimatedCommissionCents != null
-              ? { estimatedCommissionCents }
-              : {}),
+            ...(estimatedCommissionCents != null ? { estimatedCommissionCents } : {}),
           },
         })
       }

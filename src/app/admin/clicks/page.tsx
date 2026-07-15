@@ -1,5 +1,12 @@
 import { listClickSummary, listRecentOfferClicks } from "@/features/admin/monetization.queries";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 
 export const dynamic = "force-dynamic";
@@ -48,9 +55,7 @@ export default async function AdminClicksPage() {
                     <Badge variant="default">{row.click_count}</Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground text-sm">
-                    {row.last_click_at
-                      ? new Date(row.last_click_at).toLocaleString("nl-NL")
-                      : "—"}
+                    {row.last_click_at ? new Date(row.last_click_at).toLocaleString("nl-NL") : "—"}
                   </TableCell>
                 </TableRow>
               ))
@@ -78,7 +83,9 @@ export default async function AdminClicksPage() {
                 </TableCell>
                 <TableCell>{click.products?.name ?? "—"}</TableCell>
                 <TableCell>{click.merchants?.name ?? "—"}</TableCell>
-                <TableCell className="font-mono text-xs">{click.click_ref?.slice(0, 8) ?? "—"}</TableCell>
+                <TableCell className="font-mono text-xs">
+                  {click.click_ref?.slice(0, 8) ?? "—"}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -38,8 +38,7 @@ export function OfferTable({
   product: OfferTableProduct;
 }) {
   // Verkoopbaar via eigen shop wanneer product sellable is én checkout aan staat.
-  const canSellSelf =
-    featureFlags.checkout && product.sellable && product.supplierId !== null;
+  const canSellSelf = featureFlags.checkout && product.sellable && product.supplierId !== null;
 
   if (offers.length === 0) {
     return (

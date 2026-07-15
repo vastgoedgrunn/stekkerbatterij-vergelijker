@@ -107,7 +107,10 @@ export async function markShipmentShipped(input: {
     } as never)
     .eq("id", input.shipmentId);
 
-  await db.from("orders").update({ status: "shipped" } as never).eq("id", input.orderId);
+  await db
+    .from("orders")
+    .update({ status: "shipped" } as never)
+    .eq("id", input.orderId);
 
   const summary = await getOrderSummary(input.orderId);
   if (!summary) return { sent: false };

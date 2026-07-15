@@ -25,7 +25,10 @@ export default async function AdminSupplierDetailPage({
 
   return (
     <div className="max-w-xl">
-      <Link href={"/admin/suppliers" as Route} className="text-muted-foreground hover:text-foreground text-sm">
+      <Link
+        href={"/admin/suppliers" as Route}
+        className="text-muted-foreground hover:text-foreground text-sm"
+      >
         ← Alle leveranciers
       </Link>
       <h1 className="mt-4 text-2xl font-bold tracking-tight">{supplier.name}</h1>

@@ -48,7 +48,10 @@ export default async function AdminOrderDetailPage({
 
   return (
     <div className="max-w-3xl">
-      <Link href={"/admin/orders" as Route} className="text-muted-foreground hover:text-foreground text-sm">
+      <Link
+        href={"/admin/orders" as Route}
+        className="text-muted-foreground hover:text-foreground text-sm"
+      >
         ← Alle orders
       </Link>
       <div className="mt-4 flex items-center gap-3">
@@ -100,7 +103,9 @@ export default async function AdminOrderDetailPage({
                 <p className="text-muted-foreground mt-2 text-sm">Naar: {action.recipient_email}</p>
               )}
               {action.email_subject && (
-                <p className="text-muted-foreground mt-1 text-sm">Onderwerp: {action.email_subject}</p>
+                <p className="text-muted-foreground mt-1 text-sm">
+                  Onderwerp: {action.email_subject}
+                </p>
               )}
               <form action={approveApprovalAction} className="mt-4">
                 <input type="hidden" name="actionId" value={action.id} />
@@ -163,7 +168,12 @@ export default async function AdminOrderDetailPage({
                   <input type="hidden" name="orderId" value={order.id} />
                   <div className="space-y-1">
                     <Label htmlFor={`carrier-${shipment.id}`}>Vervoerder</Label>
-                    <Input id={`carrier-${shipment.id}`} name="carrier" placeholder="PostNL" required />
+                    <Input
+                      id={`carrier-${shipment.id}`}
+                      name="carrier"
+                      placeholder="PostNL"
+                      required
+                    />
                   </div>
                   <div className="space-y-1">
                     <Label htmlFor={`track-${shipment.id}`}>Track &amp; trace-code</Label>

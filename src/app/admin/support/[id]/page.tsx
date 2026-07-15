@@ -3,10 +3,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { getAdminDb } from "@/features/admin/db.server";
 import { getSupportTicket } from "@/features/support/support.server";
-import {
-  approveSupportReplyAction,
-  draftSupportReplyAction,
-} from "@/features/support/actions";
+import { approveSupportReplyAction, draftSupportReplyAction } from "@/features/support/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -43,7 +40,10 @@ export default async function AdminSupportTicketPage({
 
   return (
     <div className="max-w-2xl">
-      <Link href={"/admin/support" as Route} className="text-muted-foreground hover:text-foreground text-sm">
+      <Link
+        href={"/admin/support" as Route}
+        className="text-muted-foreground hover:text-foreground text-sm"
+      >
         ← Alle tickets
       </Link>
       <div className="mt-4 flex items-center gap-2">
@@ -71,7 +71,10 @@ export default async function AdminSupportTicketPage({
           </form>
         </section>
       ) : (
-        <form action={draftSupportReplyAction} className="border-border mt-8 space-y-3 border-t pt-6">
+        <form
+          action={draftSupportReplyAction}
+          className="border-border mt-8 space-y-3 border-t pt-6"
+        >
           <input type="hidden" name="ticketId" value={ticket.id} />
           <h2 className="font-semibold">Concept-antwoord</h2>
           <Textarea name="draftBody" rows={5} placeholder="Schrijf een antwoord…" required />

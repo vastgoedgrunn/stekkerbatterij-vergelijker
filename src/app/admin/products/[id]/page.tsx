@@ -1,11 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Route } from "next";
-import {
-  getAdminProduct,
-  listAdminSuppliers,
-  listProductOffers,
-} from "@/features/admin/queries";
+import { getAdminProduct, listAdminSuppliers, listProductOffers } from "@/features/admin/queries";
 import { updateProductCommerceAction, updateOfferAffiliateAction } from "@/features/admin/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,13 +33,19 @@ export default async function AdminProductDetailPage({
 
   return (
     <div className="max-w-3xl">
-      <Link href={"/admin/products" as Route} className="text-muted-foreground hover:text-foreground text-sm">
+      <Link
+        href={"/admin/products" as Route}
+        className="text-muted-foreground hover:text-foreground text-sm"
+      >
         ← Alle producten
       </Link>
       <h1 className="mt-4 text-2xl font-bold tracking-tight">{product.name}</h1>
       <p className="text-muted-foreground text-sm">{product.brands?.name}</p>
 
-      <form action={updateProductCommerceAction} className="border-border mt-8 space-y-4 border-t pt-6">
+      <form
+        action={updateProductCommerceAction}
+        className="border-border mt-8 space-y-4 border-t pt-6"
+      >
         <input type="hidden" name="productId" value={product.id} />
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -147,7 +149,11 @@ export default async function AdminProductDetailPage({
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor={`type-${offer.id}`}>Commissietype</Label>
-                  <Select id={`type-${offer.id}`} name="commissionType" defaultValue={offer.commission_type ?? ""}>
+                  <Select
+                    id={`type-${offer.id}`}
+                    name="commissionType"
+                    defaultValue={offer.commission_type ?? ""}
+                  >
                     <option value="">—</option>
                     <option value="cps">CPS (%)</option>
                     <option value="cpa">CPA (vast)</option>

@@ -9,10 +9,7 @@ import {
   requireAdminUser,
 } from "@/features/auth/rbac";
 import { getAdminDb } from "./db.server";
-import {
-  approveAndSendAction,
-  markShipmentShipped,
-} from "./fulfillment.server";
+import { approveAndSendAction, markShipmentShipped } from "./fulfillment.server";
 import type { ChangeRequestStatus, CommissionType, ProductStatus } from "@/lib/db/database.types";
 
 async function assertCatalogAccess(): Promise<string> {
@@ -148,7 +145,10 @@ export async function updateOrderNotesAction(formData: FormData): Promise<void> 
     if (!orderId) return;
 
     const db = getAdminDb();
-    const { error } = await db.from("orders").update({ notes } as never).eq("id", orderId);
+    const { error } = await db
+      .from("orders")
+      .update({ notes } as never)
+      .eq("id", orderId);
     if (error) return;
 
     revalidatePath(`/admin/orders/${orderId}`);
@@ -239,10 +239,7 @@ export async function updateLeadStatusAction(formData: FormData): Promise<void> 
     const userId = await assertReviewAccess();
     const leadId = String(formData.get("leadId") ?? "");
     const status = String(formData.get("status") ?? "") as
-      | "approved"
-      | "sent"
-      | "converted"
-      | "rejected";
+      "approved" | "sent" | "converted" | "rejected";
     const notes = String(formData.get("notes") ?? "").trim() || null;
     if (!leadId || !status) return;
 
@@ -256,7 +253,10 @@ export async function updateLeadStatusAction(formData: FormData): Promise<void> 
       patch.sent_at = new Date().toISOString();
     }
 
-    const { error } = await db.from("leads").update(patch as never).eq("id", leadId);
+    const { error } = await db
+      .from("leads")
+      .update(patch as never)
+      .eq("id", leadId);
     if (error) return;
 
     revalidatePath("/admin/leads");

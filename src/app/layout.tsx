@@ -83,16 +83,30 @@ export default function RootLayout({
             <CompareBar />
           </CompareProvider>
         </CartProvider>
-        {clientEnv.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
+        {(clientEnv.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_ID || clientEnv.NEXT_PUBLIC_PLAUSIBLE_DOMAIN) && (
           <>
-            <Script
-              defer
-              data-domain={clientEnv.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
-              src={`${clientEnv.NEXT_PUBLIC_PLAUSIBLE_HOST ?? "https://plausible.io"}/js/script.tagged-events.outbound-links.js`}
-            />
-            <Script id="plausible-init">
-              {`window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)}`}
-            </Script>
+            {clientEnv.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_ID ? (
+              <>
+                <Script
+                  async
+                  src={`${clientEnv.NEXT_PUBLIC_PLAUSIBLE_HOST ?? "https://plausible.io"}/js/${clientEnv.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_ID}.js`}
+                />
+                <Script id="plausible-init">
+                  {`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()`}
+                </Script>
+              </>
+            ) : (
+              <>
+                <Script
+                  defer
+                  data-domain={clientEnv.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+                  src={`${clientEnv.NEXT_PUBLIC_PLAUSIBLE_HOST ?? "https://plausible.io"}/js/script.tagged-events.outbound-links.js`}
+                />
+                <Script id="plausible-init">
+                  {`window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)}`}
+                </Script>
+              </>
+            )}
           </>
         )}
       </body>

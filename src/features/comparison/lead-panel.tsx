@@ -59,8 +59,9 @@ export function LeadPanel({
           <div>
             <h3 className="text-lg font-bold">Vaste thuisbatterij past beter bij jou</h3>
             <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
-              Voor jouw situatie (warmtepomp, EV of hoog verbruik) is een geïnstalleerde thuisbatterij
-              vaak rendabeler dan een plug-in model. Wij helpen je verder — zonder verplichting.
+              Voor jouw situatie (warmtepomp, EV of hoog verbruik) is een geïnstalleerde
+              thuisbatterij vaak rendabeler dan een plug-in model. Wij helpen je verder — zonder
+              verplichting.
             </p>
             <ul className="text-muted-foreground mt-3 space-y-1 text-sm">
               {qualification.reasons.slice(0, 3).map((reason) => (
@@ -113,13 +114,7 @@ export function LeadPanel({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="lead-email">E-mail</Label>
-                <Input
-                  id="lead-email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                />
+                <Input id="lead-email" name="email" type="email" required autoComplete="email" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="lead-postal">Postcode</Label>
@@ -133,8 +128,8 @@ export function LeadPanel({
             <label className="text-muted-foreground flex items-start gap-2 text-xs">
               <input type="checkbox" name="consent" required className="mt-0.5" />
               <span>
-                Ik ga akkoord met het verwerken van mijn gegevens voor een vrijblijvend advies.
-                Zie ons privacybeleid.
+                Ik ga akkoord met het verwerken van mijn gegevens voor een vrijblijvend advies. Zie
+                ons privacybeleid.
               </span>
             </label>
             {error && <p className="text-destructive text-sm">{error}</p>}

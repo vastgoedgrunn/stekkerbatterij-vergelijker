@@ -241,7 +241,7 @@ from (values
   ('zonneplan', 'daisycon', '{"subid":"{click_ref}"}'::jsonb),
   ('solar-sale', 'daisycon', '{"subid":"{click_ref}"}'::jsonb)
 ) as v(mslug, network, params)
-join merchants m on m.slug = v.mslug;
+where merchants.slug = v.mslug;
 
 -- Product-deeplinks + commissie (placeholders tot publisher-ID's binnen zijn)
 update offers o set
