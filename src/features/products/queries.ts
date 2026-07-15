@@ -129,6 +129,13 @@ async function fetchRatings(productIds: string[]): Promise<Map<string, ProductRa
   return map;
 }
 
+function pricePerKwh(item: ProductListItem): number {
+  if (item.lowestPriceCents === null || !item.capacityKwh || item.capacityKwh <= 0) {
+    return Number.MAX_SAFE_INTEGER;
+  }
+  return item.lowestPriceCents / item.capacityKwh;
+}
+
 function sortItems(items: ProductListItem[], sort: ProductSort): ProductListItem[] {
   const byPrice = (a: ProductListItem, b: ProductListItem) =>
     (a.lowestPriceCents ?? Number.MAX_SAFE_INTEGER) -
@@ -139,6 +146,8 @@ function sortItems(items: ProductListItem[], sort: ProductSort): ProductListItem
       return [...items].sort(byPrice);
     case "price_desc":
       return [...items].sort((a, b) => byPrice(b, a));
+    case "value_asc":
+      return [...items].sort((a, b) => pricePerKwh(a) - pricePerKwh(b));
     case "capacity_desc":
       return [...items].sort((a, b) => (b.capacityKwh ?? 0) - (a.capacityKwh ?? 0));
     case "rating_desc":
@@ -277,7 +286,21 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
       rating: ratings.get(r.id) ?? { average: null, count: 0 },
     }));
 
-  const sorted = sortItems(mapped, filters.sort ?? "relevance");
+  const priceFiltered = mapped.filter((item) => {
+    if (typeof filters.minPrice === "number") {
+      if (item.lowestPriceCents === null || item.lowestPriceCents < filters.minPrice * 100) {
+        return false;
+      }
+    }
+    if (typeof filters.maxPrice === "number") {
+      if (item.lowestPriceCents === null || item.lowestPriceCents > filters.maxPrice * 100) {
+        return false;
+      }
+    }
+    return true;
+  });
+
+  const sorted = sortItems(priceFiltered, filters.sort ?? "relevance");
   const total = sorted.length;
   const start = (page - 1) * pageSize;
   const items = sorted.slice(start, start + pageSize);

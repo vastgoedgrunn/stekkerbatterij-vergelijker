@@ -84,7 +84,12 @@ export interface ProductDetail extends ProductListItem {
 }
 
 export type ProductSort =
-  "relevance" | "price_asc" | "price_desc" | "capacity_desc" | "rating_desc";
+  | "relevance"
+  | "price_asc"
+  | "price_desc"
+  | "value_asc"
+  | "capacity_desc"
+  | "rating_desc";
 
 export interface ProductFilters {
   search?: string;
@@ -92,6 +97,9 @@ export interface ProductFilters {
   categorySlug?: string;
   minCapacity?: number;
   maxCapacity?: number;
+  /** Laagste prijs in euro's. */
+  minPrice?: number;
+  maxPrice?: number;
   expandableOnly?: boolean;
   sort?: ProductSort;
   page?: number;

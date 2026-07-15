@@ -62,6 +62,8 @@ export default async function CatalogPage({
     },
     filters.minCapacity != null && { key: "minCap", label: `≥ ${filters.minCapacity} kWh` },
     filters.maxCapacity != null && { key: "maxCap", label: `≤ ${filters.maxCapacity} kWh` },
+    filters.minPrice != null && { key: "minPrijs", label: `≥ € ${filters.minPrice}` },
+    filters.maxPrice != null && { key: "maxPrijs", label: `≤ € ${filters.maxPrice}` },
     filters.expandableOnly && { key: "uitbreidbaar", label: "Uitbreidbaar" },
   ].filter(Boolean) as { key: string; label: string }[];
 
