@@ -4,15 +4,20 @@ These are the recurring **Cursor Automations** that drive the autonomous team. C
 Automations are not repo files — they are created in the **Automations editor** (Agents Window →
 Automations → New). This document is the ready-to-use spec: create each one and paste the prompt.
 
+**Slack setup:** read [slack-ops.md](./slack-ops.md) and [approval-playbook.md](./approval-playbook.md).
+Default channel: `#all-stekkerbatterij-vergelijker` (`C0BHETBV3EY`). Weekschema (CEST):
+[weekly-schedule.md](./weekly-schedule.md).
+
 For every automation set:
 
 - **Repo / branch:** `vastgoedgrunn/stekkerbatterij-vergelijker` on `main` (agents branch off it).
-- **Tools:** Post to Slack + Read Slack; Comment on PRs; use MCP servers (GitHub, Supabase,
-  Sentry where relevant). Slack channel: pick your ops channel in the editor.
+- **Tools:** Post to Slack + Read Slack; Comment on PRs; MCP: GitHub, Supabase, Vercel (Slack MCP
+  for discovery). Slack channel: `#all-stekkerbatterij-vergelijker` unless you create `#ops-…`.
 - **Compute:** Cloud agent (configure in the Cloud Agents dashboard) so it runs unattended.
 - Each prompt tells the agent to follow its rule in `.cursor/rules/` and ship via `ship-via-pr`.
+- **Slack format:** use templates in `docs/agents/slack-ops.md`; gate items need 🔒 + ✅/❌.
 
-> Cron is UTC-ish in the editor's display; adjust the hour to your timezone when creating.
+> Cron is UTC in the editor; see weekly-schedule.md for Amsterdam (CEST) times.
 
 ---
 
