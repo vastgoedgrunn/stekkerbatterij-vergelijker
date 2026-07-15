@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { siteConfig } from "@/config/site";
@@ -7,7 +6,6 @@ import { clientEnv } from "@/lib/env/client";
 import { getDaisyconMetaVerification } from "@/lib/affiliate/daisycon-verification";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
-import { TrustBar } from "@/components/patterns/trust-bar";
 import { CompareProvider } from "@/features/comparison/compare-store";
 import { CompareBar } from "@/features/comparison/compare-bar";
 import { CartProvider } from "@/features/checkout/cart-store";
@@ -84,9 +82,6 @@ export default function RootLayout({
         <CartProvider>
           <CompareProvider>
             <SiteHeader />
-            <Suspense fallback={null}>
-              <TrustBar />
-            </Suspense>
             <div className="flex flex-1 flex-col">{children}</div>
             <SiteFooter />
             <CompareBar />
