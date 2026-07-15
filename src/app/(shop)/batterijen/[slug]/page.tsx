@@ -11,6 +11,7 @@ import { OfferTable } from "@/features/offers-pricing/offer-table";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
 import { PdpStickyOfferAnchor } from "@/features/offers-pricing/pdp-sticky-offer-anchor";
 import { PriceCheckedLabel } from "@/features/offers-pricing/price-checked-label";
+import { DropshipPriceHint } from "@/features/offers-pricing/dropship-price-hint";
 import { TrackView } from "@/lib/observability/track-view";
 import { PriceHistoryChart } from "@/features/offers-pricing/price-history-chart";
 import { ReviewList } from "@/features/reviews/review-list";
@@ -204,6 +205,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                       <Truck className="size-4" /> {bestOffer.deliveryDays} werkdagen
                     </span>
                   )}
+                  <DropshipPriceHint sellable={product.sellable} offers={product.offers} />
                 </div>
 
                 <div className="mt-4 flex flex-col gap-2 sm:flex-row">
