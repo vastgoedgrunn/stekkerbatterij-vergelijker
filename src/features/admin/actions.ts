@@ -13,7 +13,7 @@ import {
   approveAndSendAction,
   markShipmentShipped,
 } from "./fulfillment.server";
-import type { ChangeRequestStatus, ProductStatus } from "@/lib/db/database.types";
+import type { ChangeRequestStatus, CommissionType, ProductStatus } from "@/lib/db/database.types";
 
 async function assertCatalogAccess(): Promise<string> {
   const user = await requireAdminUser();
@@ -58,6 +58,7 @@ export async function updateProductCommerceAction(formData: FormData): Promise<v
     const supplierId = String(formData.get("supplierId") ?? "").trim() || null;
     const handling_days = Math.max(0, Number(formData.get("handlingDays") ?? 0) || 0);
     const status = String(formData.get("status") ?? "published") as ProductStatus;
+    const sellable = formData.get("sellable") === "on";
 
     const db = getAdminDb();
     const { error } = await db
@@ -69,6 +70,7 @@ export async function updateProductCommerceAction(formData: FormData): Promise<v
         supplier_id: supplierId,
         handling_days,
         status,
+        sellable,
       } as never)
       .eq("id", productId);
     if (error) return;
@@ -188,6 +190,76 @@ export async function markShippedAction(formData: FormData): Promise<void> {
       approvedBy: userId,
     });
     revalidatePath(`/admin/orders/${orderId}`);
+  } catch {
+    // Auth failures redirect.
+  }
+}
+
+export async function updateOfferAffiliateAction(formData: FormData): Promise<void> {
+  try {
+    await assertCatalogAccess();
+    const offerId = String(formData.get("offerId") ?? "");
+    const productId = String(formData.get("productId") ?? "");
+    if (!offerId) return;
+
+    const affiliate_deeplink = String(formData.get("affiliateDeeplink") ?? "").trim() || null;
+    const affiliate_url = String(formData.get("affiliateUrl") ?? "").trim() || null;
+    const affiliate_network = String(formData.get("affiliateNetwork") ?? "").trim() || null;
+    const commission_type = String(formData.get("commissionType") ?? "").trim() as CommissionType;
+    const rateRaw = String(formData.get("commissionRate") ?? "").trim();
+    const commission_rate = rateRaw ? Number(rateRaw) : null;
+    const fixedRaw = String(formData.get("commissionCentsFixed") ?? "").trim();
+    const commission_cents_fixed = fixedRaw ? Math.round(Number(fixedRaw)) : null;
+    const commission_source_url = String(formData.get("commissionSourceUrl") ?? "").trim() || null;
+
+    const db = getAdminDb();
+    const { error } = await db
+      .from("offers")
+      .update({
+        affiliate_deeplink,
+        affiliate_url,
+        affiliate_network,
+        commission_type: commission_type || null,
+        commission_rate,
+        commission_cents_fixed,
+        commission_source_url,
+        last_commission_verified_at: commission_source_url ? new Date().toISOString() : null,
+      } as never)
+      .eq("id", offerId);
+    if (error) return;
+
+    revalidatePath(`/admin/products/${productId}`);
+  } catch {
+    // Auth failures redirect.
+  }
+}
+
+export async function updateLeadStatusAction(formData: FormData): Promise<void> {
+  try {
+    const userId = await assertReviewAccess();
+    const leadId = String(formData.get("leadId") ?? "");
+    const status = String(formData.get("status") ?? "") as
+      | "approved"
+      | "sent"
+      | "converted"
+      | "rejected";
+    const notes = String(formData.get("notes") ?? "").trim() || null;
+    if (!leadId || !status) return;
+
+    const db = getAdminDb();
+    const patch: Record<string, unknown> = { status, notes };
+    if (status === "approved") {
+      patch.approved_by = userId;
+      patch.approved_at = new Date().toISOString();
+    }
+    if (status === "sent") {
+      patch.sent_at = new Date().toISOString();
+    }
+
+    const { error } = await db.from("leads").update(patch as never).eq("id", leadId);
+    if (error) return;
+
+    revalidatePath("/admin/leads");
   } catch {
     // Auth failures redirect.
   }

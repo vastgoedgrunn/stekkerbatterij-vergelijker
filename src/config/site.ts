@@ -13,7 +13,8 @@ export const siteConfig = {
   locale: "nl_NL",
   language: "nl",
   themeColor: "#0a6b4c",
-  contactEmail: "info@stekkerbatterij-vergelijker.nl",
+  contactEmail: "info@stekkerbatterijvergelijker.com",
+  supportEmail: "support@stekkerbatterijvergelijker.com",
   twitterHandle: undefined,
   keywords: [
     "stekkerbatterij",

@@ -2,6 +2,7 @@ import { businessRules } from "@/config/business-rules";
 import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { logger } from "@/lib/observability/logger";
+import { estimateCommissionCents } from "@/lib/affiliate/commission";
 import type {
   Brand,
   Category,
@@ -28,6 +29,10 @@ interface RawOffer {
   stock_status: ProductOffer["stockStatus"];
   delivery_days: number | null;
   affiliate_url: string | null;
+  affiliate_deeplink: string | null;
+  commission_type: "cps" | "cpa" | null;
+  commission_rate: number | null;
+  commission_cents_fixed: number | null;
   is_sponsored: boolean;
   merchants: { name: string; slug: string; is_self: boolean } | null;
 }
@@ -50,6 +55,7 @@ interface RawProduct {
 
 interface RawProductDetail extends Omit<RawProduct, "offers"> {
   supplier_id: string | null;
+  sellable: boolean;
   offers: RawOffer[] | null;
 }
 
@@ -264,7 +270,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   const { data, error } = await supabase
     .from("products")
     .select(
-      "id, slug, name, summary, description, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, supplier_id, brands(id, name, slug), offers(id, merchant_id, price_cents, stock_status, delivery_days, affiliate_url, is_sponsored, merchants(name, slug, is_self))",
+      "id, slug, name, summary, description, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, supplier_id, sellable, brands(id, name, slug), offers(id, merchant_id, price_cents, stock_status, delivery_days, affiliate_url, affiliate_deeplink, commission_type, commission_rate, commission_cents_fixed, is_sponsored, merchants(name, slug, is_self))",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -296,7 +302,13 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
       priceCents: o.price_cents,
       stockStatus: o.stock_status,
       deliveryDays: o.delivery_days,
-      affiliateUrl: o.affiliate_url,
+      affiliateUrl: o.affiliate_deeplink ?? o.affiliate_url,
+      estimatedCommissionCents: estimateCommissionCents({
+        commissionType: o.commission_type,
+        commissionRate: o.commission_rate,
+        commissionCentsFixed: o.commission_cents_fixed,
+        priceCents: o.price_cents,
+      }),
     }))
     .sort((a, b) => a.priceCents - b.priceCents);
 
@@ -314,6 +326,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
     expandable: product.expandable,
     imagePath: product.image_path,
     supplierId: product.supplier_id,
+    sellable: product.sellable ?? false,
     lowestPriceCents: offers.length > 0 ? offers[0]!.priceCents : null,
     rating: ratings.get(product.id) ?? { average: null, count: 0 },
     categories,

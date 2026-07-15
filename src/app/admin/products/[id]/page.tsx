@@ -6,13 +6,11 @@ import {
   listAdminSuppliers,
   listProductOffers,
 } from "@/features/admin/queries";
-import { updateProductCommerceAction } from "@/features/admin/actions";
-import { Badge } from "@/components/ui/badge";
+import { updateProductCommerceAction, updateOfferAffiliateAction } from "@/features/admin/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatPrice } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -100,36 +98,93 @@ export default async function AdminProductDetailPage({
           </Select>
         </div>
 
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" name="sellable" defaultChecked={product.sellable} />
+          Verkoopbaar via eigen shop (checkout per product)
+        </label>
+
         <Button type="submit">Opslaan</Button>
       </form>
 
       {offers.length > 0 && (
-        <div className="mt-10">
-          <h2 className="text-lg font-semibold">Aanbiedingen</h2>
-          <div className="border-border mt-4 overflow-hidden rounded-2xl border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Prijs</TableHead>
-                  <TableHead>Voorraad</TableHead>
-                  <TableHead>Levertijd</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {offers.map((offer) => (
-                  <TableRow key={offer.id}>
-                    <TableCell>{formatPrice(offer.price_cents)}</TableCell>
-                    <TableCell>
-                      <Badge variant="muted">{offer.stock_status}</Badge>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {offer.delivery_days != null ? `${offer.delivery_days} dagen` : "—"}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+        <div className="mt-10 space-y-8">
+          <h2 className="text-lg font-semibold">Aanbiedingen &amp; affiliate</h2>
+          {offers.map((offer) => (
+            <form
+              key={offer.id}
+              action={updateOfferAffiliateAction}
+              className="border-border space-y-3 rounded-2xl border p-4"
+            >
+              <input type="hidden" name="offerId" value={offer.id} />
+              <input type="hidden" name="productId" value={product.id} />
+              <p className="font-medium">
+                {formatPrice(offer.price_cents)} · {offer.stock_status}
+              </p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="space-y-1">
+                  <Label htmlFor={`deeplink-${offer.id}`}>Product-deeplink</Label>
+                  <Input
+                    id={`deeplink-${offer.id}`}
+                    name="affiliateDeeplink"
+                    defaultValue={offer.affiliate_deeplink ?? ""}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor={`url-${offer.id}`}>Fallback URL</Label>
+                  <Input
+                    id={`url-${offer.id}`}
+                    name="affiliateUrl"
+                    defaultValue={offer.affiliate_url ?? ""}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor={`network-${offer.id}`}>Netwerk</Label>
+                  <Input
+                    id={`network-${offer.id}`}
+                    name="affiliateNetwork"
+                    defaultValue={offer.affiliate_network ?? ""}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor={`type-${offer.id}`}>Commissietype</Label>
+                  <Select id={`type-${offer.id}`} name="commissionType" defaultValue={offer.commission_type ?? ""}>
+                    <option value="">—</option>
+                    <option value="cps">CPS (%)</option>
+                    <option value="cpa">CPA (vast)</option>
+                  </Select>
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor={`rate-${offer.id}`}>Commissie % (decimal)</Label>
+                  <Input
+                    id={`rate-${offer.id}`}
+                    name="commissionRate"
+                    step="0.0001"
+                    defaultValue={offer.commission_rate ?? ""}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor={`fixed-${offer.id}`}>Vaste commissie (centen)</Label>
+                  <Input
+                    id={`fixed-${offer.id}`}
+                    name="commissionCentsFixed"
+                    type="number"
+                    defaultValue={offer.commission_cents_fixed ?? ""}
+                  />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor={`source-${offer.id}`}>Bron-URL (verification gate)</Label>
+                <Input
+                  id={`source-${offer.id}`}
+                  name="commissionSourceUrl"
+                  defaultValue={offer.commission_source_url ?? ""}
+                />
+              </div>
+              <Button type="submit" size="sm" variant="outline">
+                Affiliate opslaan
+              </Button>
+            </form>
+          ))}
         </div>
       )}
     </div>

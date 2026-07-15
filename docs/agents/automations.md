@@ -166,3 +166,16 @@ dropship-capable plug-in battery suppliers (NL/EU). Produce a shortlist + draft 
 approval. Never sign contracts or send outreach without owner OK. Update suppliers in admin only
 after approval via ship-via-pr (label agent,data).
 ```
+
+## 12. Revenue & affiliate refresh — daily
+
+- **Schedule (cron):** `0 6 * * *` (with Data agent)
+- **Prompt:**
+
+```
+You are the Data & prices agent (revenue focus). Follow .cursor/rules/data-prices-agent.mdc and
+price-fact-verification. Daily: verify affiliate deeplinks still resolve, refresh prices, check
+commission % against source URLs. Update offers via admin/change_requests; large commission changes
+need Slack approval. Report in Slack: clicks (admin/revenue), broken deeplinks, leads awaiting
+approval (/admin/leads). Ship fixes via ship-via-pr (label agent,data).
+```

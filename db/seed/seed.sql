@@ -227,6 +227,155 @@ on conflict (product_id, merchant_id) do update set
   delivery_days = excluded.delivery_days, is_sponsored = excluded.is_sponsored,
   affiliate_url = excluded.affiliate_url, last_checked_at = now();
 
+-- ---------------------------------------------------------------------------
+-- Monetization: affiliate metadata, energie-partners, dropship heroes
+-- ---------------------------------------------------------------------------
+
+update merchants set
+  default_affiliate_network = v.network,
+  deeplink_param_template = v.params::jsonb
+from (values
+  ('bol', 'bol-partner', '{"subid":"{click_ref}"}'::jsonb),
+  ('coolblue', 'awin', '{"clickref":"{click_ref}"}'::jsonb),
+  ('gamma', 'awin', '{"clickref":"{click_ref}"}'::jsonb),
+  ('zonneplan', 'daisycon', '{"subid":"{click_ref}"}'::jsonb),
+  ('solar-sale', 'daisycon', '{"subid":"{click_ref}"}'::jsonb)
+) as v(mslug, network, params)
+join merchants m on m.slug = v.mslug;
+
+-- Product-deeplinks + commissie (placeholders tot publisher-ID's binnen zijn)
+update offers o set
+  affiliate_deeplink = v.deeplink,
+  affiliate_url = coalesce(v.fallback, v.deeplink),
+  affiliate_network = v.network,
+  commission_type = v.ctype::commission_type,
+  commission_rate = v.rate,
+  commission_cents_fixed = v.fixed_cents,
+  commission_source_url = v.source,
+  affiliate_params = v.params::jsonb
+from (values
+  ('zendure-solarflow-800','coolblue',
+   'https://www.coolblue.nl/product/903456',
+   'https://www.coolblue.nl',
+   'awin', 'cps', 0.025, null,
+   'https://www.coolblue.nl',
+   '{"clickref":"{click_ref}"}'),
+  ('zendure-solarflow-800','bol',
+   'https://partner.bol.com/click/click?p=2&t=url&s=PUBLISHER_ID&url=https://www.bol.com/nl/nl/p/zendure-solarflow-800/0000000000/',
+   'https://www.bol.com',
+   'bol-partner', 'cps', 0.025, null,
+   'https://affiliate.bol.com/',
+   '{"subid":"{click_ref}"}'),
+  ('anker-solix-solarbank-2-e1600','coolblue',
+   'https://www.coolblue.nl/product/904321',
+   null, 'awin', 'cps', 0.08, null,
+   'https://www.ankersolix.com/eu/become-an-affiliate',
+   '{"clickref":"{click_ref}"}'),
+  ('anker-solix-solarbank-2-e1600','gamma',
+   'https://www.gamma.nl/assortiment/k/anker-solix-solarbank',
+   null, 'awin', 'cps', 0.08, null,
+   'https://www.ankersolix.com/eu/become-an-affiliate',
+   '{"clickref":"{click_ref}"}'),
+  ('ecoflow-powerstream-800','bol',
+   'https://partner.bol.com/click/click?p=2&t=url&s=PUBLISHER_ID&url=https://www.bol.com/nl/nl/p/ecoflow-powerstream/0000000000/',
+   'https://www.bol.com',
+   'bol-partner', 'cps', 0.025, null,
+   'https://affiliate.bol.com/',
+   '{"subid":"{click_ref}"}'),
+  ('ecoflow-powerstream-800','solar-sale',
+   'https://solarsale.nl/ecoflow-powerstream-800',
+   null, 'daisycon', 'cps', 0.05, null,
+   'https://solarsale.nl',
+   '{"subid":"{click_ref}"}'),
+  ('marstek-venus-512','zonneplan',
+   'https://zonneplan.nl/thuisbatterij/marstek-venus',
+   null, 'daisycon', 'cpa', null, 15000,
+   'https://zonneplan.nl',
+   '{"subid":"{click_ref}"}'),
+  ('growatt-noah-2000','solar-sale',
+   'https://solarsale.nl/growatt-noah-2000',
+   null, 'daisycon', 'cps', 0.05, null,
+   'https://solarsale.nl',
+   '{"subid":"{click_ref}"}'),
+  ('sunology-storey','bol',
+   'https://partner.bol.com/click/click?p=2&t=url&s=PUBLISHER_ID&url=https://www.bol.com/nl/nl/p/sunology-storey/0000000000/',
+   'https://www.bol.com',
+   'bol-partner', 'cps', 0.025, null,
+   'https://affiliate.bol.com/',
+   '{"subid":"{click_ref}"}'),
+  ('sessy-thuisbatterij','zonneplan',
+   'https://zonneplan.nl/thuisbatterij/sessy',
+   null, 'daisycon', 'cpa', null, 15000,
+   'https://zonneplan.nl',
+   '{"subid":"{click_ref}"}'),
+  ('homewizard-plug-in-battery','coolblue',
+   'https://www.coolblue.nl/product/905678',
+   null, 'awin', 'cps', 0.025, null,
+   'https://www.coolblue.nl',
+   '{"clickref":"{click_ref}"}')
+) as v(pslug, mslug, deeplink, fallback, network, ctype, rate, fixed_cents, source, params)
+join products p on p.slug = v.pslug
+join merchants m on m.slug = v.mslug
+where o.product_id = p.id and o.merchant_id = m.id;
+
+insert into partner_programs (slug, name, network, commission_type, commission_rate, cookie_days, signup_url, source_url) values
+  ('zendure-nl', 'Zendure NL Affiliate', 'awin', 'cps', 0.08, 30, 'https://www.zendure.nl/pages/affiliate-program', 'https://www.zendure.nl/pages/affiliate-program'),
+  ('anker-solix-eu', 'Anker SOLIX EU', 'impact', 'cps', 0.08, 30, 'https://www.ankersolix.com/eu/become-an-affiliate', 'https://www.ankersolix.com/eu/become-an-affiliate'),
+  ('bol-partner', 'Bol.com Partner', 'bol-partner', 'cps', 0.025, 7, 'https://affiliate.bol.com/', 'https://affiliate.bol.com/'),
+  ('daisycon-energy', 'Daisycon Energie', 'daisycon', 'cpa', null, 30, 'https://www.daisycon.com/nl/', 'https://affiliate-net.nl/programmas/frankenergie/'),
+  ('e-wndr-leads', 'e-WNDR Thuisbatterij leads', 'e-wndr', 'cpa', null, null, 'https://e-wndr.nl/affiliate-worden/', 'https://e-wndr.nl/affiliate-worden/')
+on conflict (slug) do update set
+  commission_rate = excluded.commission_rate,
+  signup_url = excluded.signup_url,
+  source_url = excluded.source_url,
+  updated_at = now();
+
+update partner_programs set
+  commission_cents_min = 3000, commission_cents_max = 9600
+where slug = 'daisycon-energy';
+
+update partner_programs set
+  commission_cents_min = 10000, commission_cents_max = 15000
+where slug = 'e-wndr-leads';
+
+insert into energy_partners (slug, name, description, affiliate_url, affiliate_network, affiliate_params, commission_type, commission_cents_min, commission_cents_max, commission_source_url, sort_order) values
+  ('frank-energie', 'Frank Energie',
+   'Dynamisch contract met transparante prijzen. Populair bij batterij-eigenaren.',
+   'https://www.daisycon.com/nl/publishers/deeplink/?program_id=FRANK_PLACEHOLDER&subid={click_ref}',
+   'daisycon', '{"subid":"{click_ref}"}'::jsonb, 'cpa', 3000, 6000,
+   'https://affiliate-net.nl/programmas/frankenergie/', 10),
+  ('vattenfall-flex', 'Vattenfall FlexPrijs',
+   'Flexibel dynamisch contract van een bekende energieleverancier.',
+   'https://www.daisycon.com/nl/publishers/deeplink/?program_id=VATTENFALL_PLACEHOLDER&subid={click_ref}',
+   'daisycon', '{"subid":"{click_ref}"}'::jsonb, 'cpa', 400, 9600,
+   'https://affiliate-net.nl/', 20)
+on conflict (slug) do update set
+  description = excluded.description,
+  affiliate_url = excluded.affiliate_url,
+  commission_cents_min = excluded.commission_cents_min,
+  commission_cents_max = excluded.commission_cents_max,
+  updated_at = now();
+
+-- Dropship heroes: leverancier + sellable (checkout blijft uit tot leverancier bevestigd)
+insert into suppliers (name, slug, contact_email, website_url) values
+  ('Plug-in Battery Groothandel NL', 'plug-in-groothandel', 'orders@example-groothandel.nl', 'https://example-groothandel.nl')
+on conflict (slug) do update set name = excluded.name;
+
+update products set
+  sellable = true,
+  sku = v.sku,
+  ean = v.ean,
+  cost_cents = v.cost,
+  handling_days = 3,
+  supplier_id = s.id
+from (values
+  ('zendure-solarflow-800', 'ZEN-SF800', '8712345678901', 64900),
+  ('ecoflow-powerstream-800', 'ECO-PS800', '8712345678902', 74900),
+  ('anker-solix-solarbank-2-e1600', 'ANK-E1600', '8712345678903', 59900)
+) as v(pslug, sku, ean, cost)
+join suppliers s on s.slug = 'plug-in-groothandel'
+where products.slug = v.pslug;
+
 -- Historische prijzen (trend voor de grafiek) op de eigen offers — opnieuw opbouwen
 delete from price_history;
 insert into price_history (offer_id, price_cents, recorded_at)

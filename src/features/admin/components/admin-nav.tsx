@@ -3,6 +3,9 @@ import { cn } from "@/lib/utils";
 import type { Route } from "next";
 
 const links: { href: Route; label: string }[] = [
+  { href: "/admin/revenue" as Route, label: "Omzet" },
+  { href: "/admin/clicks" as Route, label: "Affiliate-kliks" },
+  { href: "/admin/leads" as Route, label: "Leads" },
   { href: "/admin/orders" as Route, label: "Orders" },
   { href: "/admin/products" as Route, label: "Producten" },
   { href: "/admin/suppliers" as Route, label: "Leveranciers" },

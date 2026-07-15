@@ -25,6 +25,9 @@ export function HeroMatcher({ products }: { products: ProductListItem[] }) {
   const [prefs, setPrefs] = React.useState<WizardPreferences>({
     yearlyUsageKwh: 2750,
     hasSolar: true,
+    solarKwp: 4.5,
+    hasHeatPump: false,
+    hasEv: false,
     budgetCents: 0,
     wantExpandable: false,
   });

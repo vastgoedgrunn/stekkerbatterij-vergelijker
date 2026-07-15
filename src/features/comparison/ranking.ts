@@ -4,6 +4,10 @@ export interface WizardPreferences {
   /** Geschat jaarverbruik in kWh. */
   yearlyUsageKwh: number;
   hasSolar: boolean;
+  /** PV-capaciteit in kWp (0 = geen / onbekend). */
+  solarKwp: number;
+  hasHeatPump: boolean;
+  hasEv: boolean;
   /** Maximaal budget in centen (0 = geen limiet). */
   budgetCents: number;
   wantExpandable: boolean;
