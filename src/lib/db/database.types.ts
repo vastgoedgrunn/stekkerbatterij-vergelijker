@@ -33,12 +33,7 @@ export type AffiliateLinkStatus = "ok" | "pending" | "broken";
 
 /** Catalog Discovery Engine. */
 export type CatalogCandidateStatus =
-  | "discovered"
-  | "matched"
-  | "needs_review"
-  | "upserted"
-  | "published"
-  | "rejected";
+  "discovered" | "matched" | "needs_review" | "upserted" | "published" | "rejected";
 export type CatalogCandidateSource = "bol" | "merchant" | "research" | "manual";
 
 interface TimestampFields {

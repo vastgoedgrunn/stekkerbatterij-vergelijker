@@ -12,8 +12,7 @@ function getDb() {
 }
 
 export type PublishResult =
-  | { published: true; slug: string }
-  | { published: false; reason: string };
+  { published: true; slug: string } | { published: false; reason: string };
 
 /**
  * Publiceer product alleen met image + minstens één actieve offer met link status ok

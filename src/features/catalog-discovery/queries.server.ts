@@ -36,9 +36,7 @@ export async function listRecentCatalogRuns(limit = 10): Promise<CatalogRunRow[]
   return data ?? [];
 }
 
-export async function getCatalogCandidateById(
-  id: string,
-): Promise<CatalogCandidateRow | null> {
+export async function getCatalogCandidateById(id: string): Promise<CatalogCandidateRow | null> {
   const db = getDb();
   const { data, error } = await db
     .from("catalog_candidates")

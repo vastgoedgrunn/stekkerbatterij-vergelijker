@@ -135,8 +135,7 @@ export async function upsertProductFromCandidate(
   const merchantId = isBol ? bolMerchant?.id : null;
 
   if (merchantId && candidate.priceCents != null && candidate.priceCents > 0) {
-    const deeplink =
-      isBol ? buildBolPartnerDeeplink(candidate.url) : null;
+    const deeplink = isBol ? buildBolPartnerDeeplink(candidate.url) : null;
     const { data: offer, error: offerError } = await db
       .from("offers")
       .upsert(
@@ -178,9 +177,7 @@ export async function upsertProductFromCandidate(
           affiliate_network: isBol ? "bol-partner" : null,
           affiliate_link_status: verify.status === "ok" ? "pending" : verify.status,
           affiliate_link_note:
-            verify.status === "ok"
-              ? `${verify.note}; prijs nog invullen`
-              : verify.note,
+            verify.status === "ok" ? `${verify.note}; prijs nog invullen` : verify.note,
           affiliate_link_checked_at: new Date().toISOString(),
           last_checked_at: new Date().toISOString(),
           deleted_at: null,

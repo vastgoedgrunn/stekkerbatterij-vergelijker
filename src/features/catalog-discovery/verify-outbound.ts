@@ -81,9 +81,7 @@ export async function verifyOutboundForProduct(input: {
       }
       const html = (await res.text()).slice(0, 80_000);
       const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-      const ogMatch = html.match(
-        /property=["']og:title["']\s+content=["']([^"']+)["']/i,
-      );
+      const ogMatch = html.match(/property=["']og:title["']\s+content=["']([^"']+)["']/i);
       const pageTitle = (ogMatch?.[1] ?? titleMatch?.[1] ?? "").trim();
 
       if (pageTitle && titleMatchesProduct(pageTitle, productName)) {

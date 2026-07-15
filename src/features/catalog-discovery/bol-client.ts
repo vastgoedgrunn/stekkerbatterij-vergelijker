@@ -14,7 +14,8 @@ export function getBolClientStatus(): BolClientStatus {
     return {
       configured: true,
       mode: "live",
-      detail: "BOL_PRODUCT_FEED_URL gezet; feed-fetch actief wanneer runDiscoveryBol aangeroepen wordt.",
+      detail:
+        "BOL_PRODUCT_FEED_URL gezet; feed-fetch actief wanneer runDiscoveryBol aangeroepen wordt.",
     };
   }
   if (serverEnv.BOL_PARTNER_API_KEY) {
@@ -113,11 +114,7 @@ function normalizeBolJsonFeed(json: unknown, limit: number): DiscoveredCandidate
   return out;
 }
 
-function normalizeBolCsvFeed(
-  text: string,
-  limit: number,
-  query: string,
-): DiscoveredCandidate[] {
+function normalizeBolCsvFeed(text: string, limit: number, query: string): DiscoveredCandidate[] {
   const lines = text.split(/\r?\n/).filter(Boolean);
   if (lines.length < 2) return [];
   const header = lines[0]!.split(/[;,]/).map((h) => h.trim().toLowerCase());

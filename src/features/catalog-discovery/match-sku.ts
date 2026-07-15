@@ -1,4 +1,8 @@
-import { HIGH_CONFIDENCE_MATCH_SCORE, type DiscoveredCandidate, type SkuMatchResult } from "./types";
+import {
+  HIGH_CONFIDENCE_MATCH_SCORE,
+  type DiscoveredCandidate,
+  type SkuMatchResult,
+} from "./types";
 
 const STOP = new Set([
   "de",
@@ -33,9 +37,7 @@ export function tokenizeTitle(title: string): string[] {
 function isBolProductUrl(url: string): boolean {
   try {
     const u = new URL(url);
-    return (
-      u.hostname.endsWith("bol.com") && /\/p\/[^/]+\/\d{10,}\/?/i.test(u.pathname)
-    );
+    return u.hostname.endsWith("bol.com") && /\/p\/[^/]+\/\d{10,}\/?/i.test(u.pathname);
   } catch {
     return false;
   }
@@ -97,8 +99,7 @@ export function scoreSkuMatch(
   if (existingProduct) {
     const prodTokens = tokenizeTitle(existingProduct.name);
     const overlap = prodTokens.filter((t) => candTokens.includes(t));
-    const ratio =
-      prodTokens.length === 0 ? 0 : overlap.length / Math.max(prodTokens.length, 1);
+    const ratio = prodTokens.length === 0 ? 0 : overlap.length / Math.max(prodTokens.length, 1);
     score += Math.min(0.35, ratio * 0.35);
     notes.push(`Titel-overlap ${(ratio * 100).toFixed(0)}% (${overlap.join(", ") || "geen"})`);
 
@@ -117,8 +118,7 @@ export function scoreSkuMatch(
       existingProduct.capacityKwh > 0
     ) {
       const delta =
-        Math.abs(existingProduct.capacityKwh - candidate.capacityKwh) /
-        existingProduct.capacityKwh;
+        Math.abs(existingProduct.capacityKwh - candidate.capacityKwh) / existingProduct.capacityKwh;
       if (delta <= 0.12) {
         score += 0.15;
         notes.push("Capaciteit binnen 12%");
@@ -134,7 +134,7 @@ export function scoreSkuMatch(
     const alien = candTokens.filter(
       (t) =>
         /^(ab|sb|e)\d{3,}/i.test(t) ||
-        /\d{3,}/.test(t) && !prodTokens.includes(t) && t.length >= 4,
+        (/\d{3,}/.test(t) && !prodTokens.includes(t) && t.length >= 4),
     );
     if (alien.length > 0 && overlap.length < 2) {
       score -= 0.3;

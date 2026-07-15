@@ -333,9 +333,8 @@ export async function updateOfferAffiliateAction(formData: FormData): Promise<vo
 export async function runCatalogDiscoveryAction(): Promise<void> {
   try {
     await assertCatalogAccess();
-    const { runCatalogDiscoveryPipeline } = await import(
-      "@/features/catalog-discovery/run-pipeline.server"
-    );
+    const { runCatalogDiscoveryPipeline } =
+      await import("@/features/catalog-discovery/run-pipeline.server");
     await runCatalogDiscoveryPipeline({ triggerSource: "admin" });
     revalidatePath("/admin/catalog");
   } catch {
@@ -350,15 +349,10 @@ export async function approveCatalogCandidateAction(formData: FormData): Promise
     const candidateId = String(formData.get("candidateId") ?? "");
     if (!candidateId) return;
 
-    const { getCatalogCandidateById } = await import(
-      "@/features/catalog-discovery/queries.server"
-    );
-    const { upsertProductFromCandidate } = await import(
-      "@/features/catalog-discovery/upsert-product.server"
-    );
-    const { publishProductIfReady } = await import(
-      "@/features/catalog-discovery/publish.server"
-    );
+    const { getCatalogCandidateById } = await import("@/features/catalog-discovery/queries.server");
+    const { upsertProductFromCandidate } =
+      await import("@/features/catalog-discovery/upsert-product.server");
+    const { publishProductIfReady } = await import("@/features/catalog-discovery/publish.server");
     const db = getAdminDb();
 
     const candidate = await getCatalogCandidateById(candidateId);
