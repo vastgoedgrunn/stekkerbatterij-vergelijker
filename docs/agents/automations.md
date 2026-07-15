@@ -38,10 +38,13 @@ Morning checklist:
 1. Run Catalog Discovery: prefer admin "Run discovery nu" on /admin/catalog, or call
    runCatalogDiscoveryPipeline({ triggerSource: "automation" }) via a small ship-via-pr
    if you need to extend research seeds / Bol wiring.
-2. High-confidence SKU match + outbound verify ok → auto upsert/publish (image + priced ok-offer).
+2. High-confidence SKU match + outbound verify ok → auto upsert/publish (priced ok-offer).
+   Upsert must ingest product images via resolveAndIngestProductImage (Storage catalog/{slug}).
+   Never share one brand placeholder across SKUs.
 3. needs_review / broken / title mismatch → Slack 🔒 with our title vs merchant title + URL.
    NEVER set affiliate_link_status=ok on a wrong SKU (SolarFlow 800 ≠ AB3000X).
 4. Completeness: every marquee brand >= 2 published products with image + usable outbound.
+   Wrong/missing images: refreshAllProductImages or admin "Vernieuw productfoto's".
 5. Refresh prices on existing offers; auto only <=10% with citation.
 6. Bol: if BOL_PRODUCT_FEED_URL / BOL_PARTNER_API_KEY missing, say so and use research seeds;
    ask owner for keys when feed would unblock scale.

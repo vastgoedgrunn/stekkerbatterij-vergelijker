@@ -342,6 +342,24 @@ export async function runCatalogDiscoveryAction(): Promise<void> {
   }
 }
 
+/**
+ * Herlaad productfoto's: curated/merchant URL → Supabase Storage (of lokale slug-asset).
+ * Prefer local assets na cleanup in repo (deployed /public files).
+ */
+export async function refreshProductImagesAction(): Promise<void> {
+  try {
+    await assertCatalogAccess();
+    const { refreshAllProductImages } =
+      await import("@/features/catalog-discovery/refresh-product-images.server");
+    await refreshAllProductImages({ preferLocalAssets: true });
+    revalidatePath("/admin/catalog");
+    revalidatePath("/admin/products");
+    revalidatePublicCatalog();
+  } catch {
+    // Auth / storage errors: stil voor form post.
+  }
+}
+
 /** Owner-approve: upsert + force-publish candidate (bypass ok-offer eis). */
 export async function approveCatalogCandidateAction(formData: FormData): Promise<void> {
   try {
