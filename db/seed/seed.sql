@@ -286,11 +286,7 @@ from (values
    null, 'daisycon', 'cps', 0.05, null,
    'https://solarsale.nl',
    '{"subid":"{click_ref}"}'),
-  ('sessy-thuisbatterij','zonneplan',
-   'https://zonneplan.nl/thuisbatterij/sessy',
-   null, 'daisycon', 'cpa', null, 15000,
-   'https://zonneplan.nl',
-   '{"subid":"{click_ref}"}'),
+  -- sessy/zonneplan deeplink verwijderd (404 op /thuisbatterij/sessy)
   ('homewizard-plug-in-battery','coolblue',
    'https://www.coolblue.nl/product/905678',
    null, 'awin', 'cps', 0.025, null,
