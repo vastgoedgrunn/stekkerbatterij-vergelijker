@@ -42,6 +42,15 @@ function slugify(value: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+/** Publieke catalogus-routes na product/offer-mutaties. */
+function revalidatePublicCatalog(productSlug?: string | null): void {
+  revalidatePath("/");
+  revalidatePath("/batterijen");
+  if (productSlug) {
+    revalidatePath(`/batterijen/${productSlug}`);
+  }
+}
+
 export async function updateProductCommerceAction(formData: FormData): Promise<void> {
   try {
     await assertCatalogAccess();
@@ -58,7 +67,7 @@ export async function updateProductCommerceAction(formData: FormData): Promise<v
     const sellable = formData.get("sellable") === "on";
 
     const db = getAdminDb();
-    const { error } = await db
+    const { data, error } = await db
       .from("products")
       .update({
         sku,
@@ -69,11 +78,14 @@ export async function updateProductCommerceAction(formData: FormData): Promise<v
         status,
         sellable,
       } as never)
-      .eq("id", productId);
+      .eq("id", productId)
+      .select("slug")
+      .maybeSingle<{ slug: string }>();
     if (error) return;
 
     revalidatePath("/admin/products");
     revalidatePath(`/admin/products/${productId}`);
+    revalidatePublicCatalog(data?.slug ?? null);
   } catch {
     // Auth failures redirect; overige fouten blijven stil (form post).
   }
@@ -228,7 +240,18 @@ export async function updateOfferAffiliateAction(formData: FormData): Promise<vo
       .eq("id", offerId);
     if (error) return;
 
+    let productSlug: string | null = null;
+    if (productId) {
+      const { data: product } = await db
+        .from("products")
+        .select("slug")
+        .eq("id", productId)
+        .maybeSingle<{ slug: string }>();
+      productSlug = product?.slug ?? null;
+    }
+
     revalidatePath(`/admin/products/${productId}`);
+    revalidatePublicCatalog(productSlug);
   } catch {
     // Auth failures redirect.
   }
