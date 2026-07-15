@@ -5,6 +5,7 @@ import { serverEnv } from "@/lib/env/server";
 import { buildBolPartnerDeeplink } from "./bol-client";
 import { extractBolProductId } from "./match-sku";
 import { slugifyProductName } from "./slug";
+import { resolveAndIngestProductImage } from "./ingest-image.server";
 import { verifyOutboundForProduct } from "./verify-outbound";
 import type { DiscoveredCandidate } from "./types";
 
@@ -71,10 +72,24 @@ export async function upsertProductFromCandidate(
   const slug = slugifyProductName(candidate.rawTitle);
   const { data: existing } = await db
     .from("products")
-    .select("id, slug, name, status")
+    .select("id, slug, name, status, image_path")
     .eq("slug", slug)
     .is("deleted_at", null)
-    .maybeSingle<{ id: string; slug: string; name: string; status: string }>();
+    .maybeSingle<{
+      id: string;
+      slug: string;
+      name: string;
+      status: string;
+      image_path: string | null;
+    }>();
+
+  const imageResolved = await resolveAndIngestProductImage({
+    slug,
+    productPageUrl: candidate.url,
+    candidateImageUrl: candidate.imageUrl,
+    existingImagePath: existing?.image_path ?? null,
+  });
+  const imagePath = imageResolved.imagePath;
 
   let productId: string;
   let created = false;
@@ -88,7 +103,7 @@ export async function upsertProductFromCandidate(
         description: buildDescription(candidate),
         capacity_kwh: candidate.capacityKwh ?? null,
         power_kw: candidate.powerKw ?? null,
-        image_path: candidate.imageUrl ?? null,
+        image_path: imagePath,
         updated_at: new Date().toISOString(),
       } as never)
       .eq("id", productId);
@@ -105,7 +120,7 @@ export async function upsertProductFromCandidate(
         capacity_kwh: candidate.capacityKwh ?? null,
         power_kw: candidate.powerKw ?? null,
         expandable: true,
-        image_path: candidate.imageUrl ?? null,
+        image_path: imagePath,
       } as never)
       .select("id, slug")
       .single<{ id: string; slug: string }>();

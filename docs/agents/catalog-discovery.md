@@ -7,8 +7,10 @@ met geverifieerde outbound-links.
 
 - Pipeline: `src/features/catalog-discovery/run-pipeline.server.ts`
 - Bol stub/feed: `src/features/catalog-discovery/bol-client.ts`
-- Admin: `/admin/catalog` (Run discovery, review-queue, approve/reject)
-- Migratie: `db/migrations/0013_catalog_discovery.sql`
+- Image ingest: `ingest-image.server.ts` + `refresh-product-images.server.ts`
+  (download merchant/fabrikant-foto → Supabase Storage `products` / `catalog/{slug}.ext`)
+- Admin: `/admin/catalog` (Run discovery, Vernieuw productfoto's, review-queue)
+- Migraties: `0013_catalog_discovery.sql`, `0014_products_storage_bucket.sql`
 
 ## Env (Vercel)
 
