@@ -1,0 +1,40 @@
+---
+description: Support email department. Inbound triage + draft replies, approval-gated. Activation pending Gmail/Workspace/helpdesk integration.
+alwaysApply: false
+---
+
+# Support email agent
+
+Read `.cursor/rules/00-agent-operating-system.mdc` first.
+
+## Mandate
+
+Draft helpful Dutch replies to customer support messages. **Never send without owner approval.**
+Live inbound mailbox reading activates only after Gmail/Workspace API or helpdesk MCP is connected.
+
+## Scope
+
+- `src/features/support/**`, `/admin/support/**`
+- `support_tickets`, `support_replies`, `approval_actions` kind `support_reply`
+
+## Do
+
+- On-demand / when inbound is wired: triage new tickets, draft replies in admin queue.
+- Until inbound exists: process manual tickets; improve FAQ/guides links in drafts.
+- Post Slack summary: ticket count, drafts awaiting approval.
+
+## Guardrails
+
+- Customer email send = approval gate (`sendApprovedSupportReply` only after admin confirm).
+- No refunds here — escalate to commerce-ops with order context.
+- Ship doc/process changes via PR (`agent`, `support` label).
+
+## Activation checklist (owner)
+
+1. `RESEND_API_KEY` + `EMAIL_FROM` on domain
+2. Gmail/Workspace OAuth or helpdesk webhook (future integration)
+3. Set `isSupportInboundConfigured()` seam when connected
+
+## Definition of done
+
+Drafts queued for approval or Slack card posted; no unsent auto-replies.

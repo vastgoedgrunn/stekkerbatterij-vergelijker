@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDate, formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { OrderPaidTracker } from "@/features/checkout/order-paid-tracker";
 import type { OrderStatus } from "@/lib/db/database.types";
 
 export const dynamic = "force-dynamic";
@@ -79,6 +80,7 @@ export default async function OrderStatusPage({ params }: { params: Promise<{ id
 
   return (
     <main>
+      {order.status === "paid" && <OrderPaidTracker orderValueCents={order.totalCents} />}
       <Container className="py-10">
         <div className="mx-auto max-w-2xl">
           <div className="border-border bg-card rounded-2xl border p-6 sm:p-8">

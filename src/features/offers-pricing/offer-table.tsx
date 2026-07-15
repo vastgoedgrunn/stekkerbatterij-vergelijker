@@ -17,6 +17,7 @@ export interface OfferTableProduct {
   brandName: string | null;
   imagePath: string | null;
   supplierId: string | null;
+  sellable: boolean;
 }
 
 const stockLabels: Record<
@@ -36,10 +37,8 @@ export function OfferTable({
   offers: ProductOffer[];
   product: OfferTableProduct;
 }) {
-  // Verkoopbaar via de eigen shop? Alleen wanneer de checkout-flag aan staat
-  // én het product aan een dropship-leverancier gekoppeld is. Zo lang de flag
-  // uit is (productie), verandert er niets aan de zichtbare site.
-  const canSellSelf = featureFlags.checkout && product.supplierId !== null;
+  // Verkoopbaar via eigen shop wanneer product sellable is én checkout aan staat.
+  const canSellSelf = featureFlags.checkout && product.sellable && product.supplierId !== null;
 
   if (offers.length === 0) {
     return (
@@ -88,15 +87,23 @@ export function OfferTable({
             </div>
 
             <div className="flex items-center justify-between gap-4 sm:justify-end">
-              <span className="text-xl font-bold tracking-tight">
-                {formatPrice(offer.priceCents)}
-              </span>
+              <div className="text-right">
+                <span className="text-xl font-bold tracking-tight">
+                  {formatPrice(offer.priceCents)}
+                </span>
+                {offer.estimatedCommissionCents != null && !offer.isSelf && (
+                  <p className="text-muted-foreground text-xs">
+                    ~{formatPrice(offer.estimatedCommissionCents)} affiliate
+                  </p>
+                )}
+              </div>
               {offer.affiliateUrl ? (
                 <OfferLink
                   offerId={offer.id}
                   productId={product.id}
                   merchant={offer.merchantName}
                   sponsored={offer.isSponsored}
+                  estimatedCommissionCents={offer.estimatedCommissionCents}
                 >
                   Bekijk
                 </OfferLink>
@@ -114,7 +121,7 @@ export function OfferTable({
                 />
               ) : (
                 <span className={cn(buttonVariants({ size: "sm", variant: "secondary" }))}>
-                  Via ons
+                  Koop bij ons
                 </span>
               )}
             </div>

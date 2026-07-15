@@ -19,6 +19,7 @@ export function OfferLink({
   productId,
   merchant,
   sponsored,
+  estimatedCommissionCents,
   size = "sm",
   className,
   children,
@@ -27,6 +28,7 @@ export function OfferLink({
   productId: string;
   merchant: string;
   sponsored: boolean;
+  estimatedCommissionCents?: number | null;
   size?: "sm" | "lg";
   className?: string;
   children: React.ReactNode;
@@ -36,7 +38,17 @@ export function OfferLink({
       href={`/api/go/${offerId}`}
       target="_blank"
       rel={sponsored ? "sponsored nofollow noopener" : "nofollow noopener"}
-      onClick={() => trackEvent({ name: "offer_clicked", props: { productId, merchant } })}
+      onClick={() =>
+        trackEvent({
+          name: "offer_clicked",
+          props: {
+            productId,
+            merchant,
+            offerId,
+            ...(estimatedCommissionCents != null ? { estimatedCommissionCents } : {}),
+          },
+        })
+      }
       className={cn(buttonVariants({ size }), className)}
     >
       {children}

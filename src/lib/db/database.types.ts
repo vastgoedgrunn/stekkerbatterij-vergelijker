@@ -18,6 +18,17 @@ export type PaymentStatus =
   "open" | "pending" | "authorized" | "paid" | "failed" | "canceled" | "expired" | "refunded";
 export type ShipmentStatus = "pending" | "label_created" | "shipped" | "delivered" | "cancelled";
 
+/** Admin/ops (fase 3). */
+export type ChangeRequestStatus = "pending" | "approved" | "rejected" | "applied";
+export type ApprovalActionKind =
+  "supplier_order_email" | "shipment_tracking_email" | "support_reply" | "refund";
+export type ApprovalActionStatus = "pending" | "approved" | "rejected" | "sent" | "cancelled";
+export type SupportTicketStatus = "open" | "awaiting_reply" | "resolved" | "closed";
+
+/** Monetization (fase 1+). */
+export type CommissionType = "cps" | "cpa";
+export type LeadStatus = "new" | "approved" | "sent" | "converted" | "rejected";
+
 interface TimestampFields {
   created_at: string;
   updated_at: string;
@@ -62,6 +73,7 @@ export interface ProductRow extends TimestampFields {
   supplier_id: string | null;
   handling_days: number;
   weight_grams: number | null;
+  sellable: boolean;
 }
 
 export interface MerchantRow extends TimestampFields {
@@ -70,6 +82,9 @@ export interface MerchantRow extends TimestampFields {
   slug: string;
   is_self: boolean;
   website_url: string | null;
+  default_affiliate_network: string | null;
+  network_publisher_id: string | null;
+  deeplink_param_template: Json | null;
 }
 
 export interface OfferRow extends TimestampFields {
@@ -81,8 +96,14 @@ export interface OfferRow extends TimestampFields {
   stock_status: StockStatus;
   delivery_days: number | null;
   affiliate_url: string | null;
+  affiliate_deeplink: string | null;
   affiliate_network: string | null;
   affiliate_params: Json | null;
+  commission_type: CommissionType | null;
+  commission_rate: number | null;
+  commission_cents_fixed: number | null;
+  last_commission_verified_at: string | null;
+  commission_source_url: string | null;
   is_sponsored: boolean;
   last_checked_at: string;
 }
@@ -95,6 +116,7 @@ export interface OfferClickRow {
   referrer: string | null;
   user_agent: string | null;
   session_hash: string | null;
+  click_ref: string | null;
   created_at: string;
 }
 
@@ -274,6 +296,125 @@ export interface ShipmentRow {
   updated_at: string;
 }
 
+export interface ChangeRequestRow {
+  id: string;
+  kind: string;
+  target_table: string | null;
+  target_id: string | null;
+  summary: string;
+  proposed: Json;
+  source: string;
+  source_url: string | null;
+  status: ChangeRequestStatus;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  review_notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ApprovalActionRow {
+  id: string;
+  kind: ApprovalActionKind;
+  status: ApprovalActionStatus;
+  order_id: string | null;
+  shipment_id: string | null;
+  support_ticket_id: string | null;
+  summary: string;
+  payload: Json;
+  recipient_email: string | null;
+  email_subject: string | null;
+  email_body_html: string | null;
+  email_body_text: string | null;
+  requested_by: string | null;
+  approved_by: string | null;
+  approved_at: string | null;
+  sent_at: string | null;
+  rejection_notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SupportTicketRow {
+  id: string;
+  order_id: string | null;
+  customer_email: string;
+  subject: string;
+  body: string;
+  status: SupportTicketStatus;
+  source: string;
+  external_message_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SupportReplyRow {
+  id: string;
+  ticket_id: string;
+  draft_body: string;
+  approval_action_id: string | null;
+  sent_at: string | null;
+  created_at: string;
+}
+
+export interface PartnerProgramRow extends TimestampFields {
+  id: string;
+  slug: string;
+  name: string;
+  network: string;
+  program_id: string | null;
+  commission_type: CommissionType;
+  commission_rate: number | null;
+  commission_cents_min: number | null;
+  commission_cents_max: number | null;
+  cookie_days: number | null;
+  signup_url: string | null;
+  notes: string | null;
+  source_url: string | null;
+}
+
+export interface EnergyPartnerRow extends TimestampFields {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  affiliate_url: string;
+  affiliate_network: string | null;
+  affiliate_params: Json | null;
+  commission_type: CommissionType;
+  commission_cents_min: number | null;
+  commission_cents_max: number | null;
+  commission_source_url: string | null;
+  sort_order: number;
+  active: boolean;
+}
+
+export interface LeadRow extends TimestampFields {
+  id: string;
+  source: string;
+  customer_name: string | null;
+  customer_email: string;
+  phone: string | null;
+  postal_code: string | null;
+  qualification: Json;
+  status: LeadStatus;
+  partner_slug: string | null;
+  estimated_commission_cents: number | null;
+  notes: string | null;
+  approved_by: string | null;
+  approved_at: string | null;
+  sent_at: string | null;
+}
+
+export interface EnergyClickRow {
+  id: string;
+  energy_partner_id: string;
+  click_ref: string;
+  referrer: string | null;
+  user_agent: string | null;
+  created_at: string;
+}
+
 type Table<Row, Insert = Partial<Row>, Update = Partial<Row>> = {
   Row: Row;
   Insert: Insert;
@@ -306,6 +447,14 @@ export interface Database {
       order_lines: Table<OrderLineRow>;
       payments: Table<PaymentRow>;
       shipments: Table<ShipmentRow>;
+      change_requests: Table<ChangeRequestRow>;
+      approval_actions: Table<ApprovalActionRow>;
+      support_tickets: Table<SupportTicketRow>;
+      support_replies: Table<SupportReplyRow>;
+      partner_programs: Table<PartnerProgramRow>;
+      energy_partners: Table<EnergyPartnerRow>;
+      leads: Table<LeadRow>;
+      energy_clicks: Table<EnergyClickRow>;
     };
     Views: {
       product_rating_stats: {
@@ -323,6 +472,12 @@ export interface Database {
       order_status: OrderStatus;
       payment_status: PaymentStatus;
       shipment_status: ShipmentStatus;
+      change_request_status: ChangeRequestStatus;
+      approval_action_kind: ApprovalActionKind;
+      approval_action_status: ApprovalActionStatus;
+      support_ticket_status: SupportTicketStatus;
+      commission_type: CommissionType;
+      lead_status: LeadStatus;
     };
     CompositeTypes: Record<string, never>;
   };

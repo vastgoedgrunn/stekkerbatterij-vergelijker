@@ -51,6 +51,7 @@ export interface ProductOffer {
   stockStatus: StockStatus;
   deliveryDays: number | null;
   affiliateUrl: string | null;
+  estimatedCommissionCents: number | null;
 }
 
 export interface PricePoint {
@@ -62,6 +63,8 @@ export interface ProductDetail extends ProductListItem {
   description: string | null;
   /** Dropship-leverancier; gezet = verkoopbaar via de eigen shop (fase 2). */
   supplierId: string | null;
+  /** Per-product checkout wanneer sellable + checkout-flag aan. */
+  sellable: boolean;
   categories: Category[];
   specs: ProductSpec[];
   offers: ProductOffer[];

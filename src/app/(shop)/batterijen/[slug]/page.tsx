@@ -15,6 +15,7 @@ import { ReviewList } from "@/features/reviews/review-list";
 import { ReviewForm } from "@/features/reviews/review-form";
 import { RatingStars } from "@/components/patterns/rating-stars";
 import { FaqAccordion } from "@/components/patterns/faq-accordion";
+import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { Container } from "@/components/patterns/section";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -204,6 +205,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     productId={product.id}
                     merchant={bestOffer.merchantName}
                     sponsored={bestOffer.isSponsored}
+                    estimatedCommissionCents={bestOffer.estimatedCommissionCents}
                     size="lg"
                     className="flex-1"
                   >
@@ -219,6 +221,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               <p className="text-muted-foreground mt-3 text-center text-xs">
                 Prijs incl. btw · controleer de actuele prijs bij de aanbieder
               </p>
+              <AffiliateDisclosure className="mt-3" />
             </div>
           </div>
         </div>
@@ -245,8 +248,10 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                   brandName: product.brand.name,
                   imagePath: product.imagePath,
                   supplierId: product.supplierId,
+                  sellable: product.sellable,
                 }}
               />
+              <AffiliateDisclosure className="mt-4" />
             </section>
 
             {product.priceHistory.length >= 2 && (
