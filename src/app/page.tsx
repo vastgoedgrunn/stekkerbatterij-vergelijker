@@ -37,6 +37,9 @@ const brands = [
   "Sunology",
 ];
 
+const brandPillClass =
+  "border-border/70 bg-card text-muted-foreground hover:text-foreground hover:border-primary/30 inline-flex shrink-0 items-center rounded-full border px-4 py-1.5 text-sm font-semibold tracking-tight whitespace-nowrap shadow-[var(--shadow-xs)] transition-colors";
+
 const trustItems = [
   {
     icon: Scale,
@@ -120,19 +123,27 @@ export default async function HomePage() {
 
       {/* MERKEN */}
       <div className="border-border/70 border-y py-8">
-        <Container>
+        <Container className="min-w-0">
           <p className="text-muted-foreground mb-5 text-center text-xs font-semibold tracking-[0.2em] uppercase">
             Alle grote merken op één plek
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
-            {brands.map((brand) => (
-              <span
-                key={brand}
-                className="border-border/70 bg-card text-muted-foreground hover:text-foreground rounded-full border px-4 py-1.5 text-sm font-semibold tracking-tight shadow-[var(--shadow-xs)] transition-colors"
-              >
-                {brand}
-              </span>
-            ))}
+          <div className="marquee">
+            <div className="marquee-track">
+              <div className="marquee-group">
+                {brands.map((brand) => (
+                  <span key={brand} className={brandPillClass}>
+                    {brand}
+                  </span>
+                ))}
+              </div>
+              <div className="marquee-group" aria-hidden="true" data-marquee-clone>
+                {brands.map((brand) => (
+                  <span key={`clone-${brand}`} className={brandPillClass}>
+                    {brand}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </Container>
       </div>
