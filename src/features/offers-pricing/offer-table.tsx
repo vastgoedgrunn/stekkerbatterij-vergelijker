@@ -118,7 +118,7 @@ export function OfferTable({
                 />
               ) : (
                 <span className={cn(buttonVariants({ size: "sm", variant: "secondary" }))}>
-                  Koop bij ons
+                  {offer.isSelf ? "Koop bij ons" : "Link wordt gecontroleerd"}
                 </span>
               )}
             </div>
