@@ -30,12 +30,25 @@ function normalizeImageUrl(raw: string): string | null {
   return null;
 }
 
-/** Filter logo's / icons die geen productshot zijn. */
+/** Filter logo's, keurmerken en icons die geen productshot zijn. */
 function isLikelyProductImage(url: string): boolean {
   const lower = url.toLowerCase();
   if (lower.includes("logo") && !lower.includes("product")) return false;
   if (lower.includes("favicon") || lower.includes("icon.png")) return false;
   if (lower.includes("open-graph-sessy-logo")) return false;
+  // Award/keurmerk-badges (bijv. Computer Bild SEHR GUT) zijn geen productfoto.
+  if (
+    lower.includes("sehrgut") ||
+    lower.includes("sehr_gut") ||
+    lower.includes("praxistest") ||
+    lower.includes("testurteil") ||
+    lower.includes("/badge") ||
+    lower.includes("award") ||
+    lower.includes("cbde") ||
+    lower.includes("computerbild")
+  ) {
+    return false;
+  }
   return true;
 }
 

@@ -10,8 +10,9 @@ import { ingestProductImage, resolveAndIngestProductImage } from "./ingest-image
  */
 export const CURATED_PRODUCT_IMAGE_SOURCES: Record<string, string> = {
   "anker-solix-solarbank-2-e1600":
-    "https://cdn.shopify.com/s/files/1/0491/8227/7795/files/Anker_SOLIX_Solarbank_2_E1600_AC_SG_PT_cb.de_14112024.jpg?v=1732704937",
-  "anker-solix-solarbank-2-e1600-pro": "https://media.s-bol.com/m4XA0LnNw9kn/1j4x4jG/550x308.jpg",
+    "https://media.s-bol.com/mpv6XZLwRwAR/vgoZlEg/1200x822.jpg",
+  "anker-solix-solarbank-2-e1600-pro":
+    "https://media.s-bol.com/mpv6XZLwRwAR/vgoZlEg/1200x822.jpg",
   "ecoflow-powerstream-800":
     "https://eu.ecoflow.com/cdn/shop/files/ecoflow-powerstream-microinverter-53568681312599.png?v=1699882644",
   "ecoflow-stream-ac-pro": "https://media.s-bol.com/ZBAAV8y5oG3J/r02o9gk/550x800.jpg",
