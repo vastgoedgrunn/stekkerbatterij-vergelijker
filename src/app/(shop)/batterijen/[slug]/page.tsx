@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { BatteryCharging, ChevronRight, ShieldCheck, Sparkles, Truck } from "lucide-react";
+import { BatteryCharging, ChevronRight, ShieldCheck, Truck, Zap } from "lucide-react";
 import { getProductBySlug, getProductSlugs } from "@/features/products/queries";
 import { getFaqs } from "@/features/content/queries";
 import { getApprovedReviews } from "@/features/reviews/queries";
@@ -80,7 +80,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       value: `${formatNumber(product.capacityKwh)} kWh`,
     },
     product.powerKw !== null && {
-      icon: Sparkles,
+      icon: Zap,
       label: "Vermogen",
       value: `${formatNumber(product.powerKw)} kW`,
     },
