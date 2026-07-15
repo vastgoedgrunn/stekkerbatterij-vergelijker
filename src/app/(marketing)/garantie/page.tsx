@@ -80,7 +80,7 @@ export default function WarrantyPage() {
               video&apos;s.
             </>,
             "Houd je bestelnummer en aankoopbewijs bij de hand.",
-            "We beoordelen je melding en laten je weten hoe de afhandeling verloopt — herstel, vervanging of terugbetaling — en of het product moet worden teruggezonden of rechtstreeks door de fabrikant wordt afgehandeld.",
+            "We beoordelen je melding en laten je weten hoe de afhandeling verloopt (herstel, vervanging of terugbetaling) en of het product moet worden teruggezonden of rechtstreeks door de fabrikant wordt afgehandeld.",
           ]}
         />
         <LegalParagraph>

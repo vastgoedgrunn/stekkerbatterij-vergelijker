@@ -1,4 +1,4 @@
-# Commerce & ops — activatiechecklist (eigenaar)
+# Commerce & ops: activatiechecklist (eigenaar)
 
 De webshop-backend staat klaar maar is **standaard uit** (`featureFlags.checkout` / `shipping`).
 Geen geld- of klantactie gaat automatisch zonder jouw goedkeuring in admin (of Slack).
@@ -13,7 +13,7 @@ Geen geld- of klantactie gaat automatisch zonder jouw goedkeuring in admin (of S
 
 ## 2. Database
 
-Migraties `0006`–`0009` toegepast op Supabase (commerce, admin, fulfilment, support).
+Migraties `0006` t/m `0009` toegepast op Supabase (commerce, admin, fulfilment, support).
 
 ## 3. Leverancier
 
@@ -23,18 +23,18 @@ Migraties `0006`–`0009` toegepast op Supabase (commerce, admin, fulfilment, su
 
 ## 4. Feature flags (`src/config/feature-flags.ts`)
 
-- `checkout: true` — winkelmand/afrekenen zichtbaar
-- `shipping: true` — na betaling: shipment + leverancier-mail in goedkeuringswachtrij
+- `checkout: true`: winkelmand/afrekenen zichtbaar
+- `shipping: true`: na betaling: shipment + leverancier-mail in goedkeuringswachtrij
 
 ## 5. Goedkeuringsflow
 
 | Actie | Auto? |
 |---|---|
 | Orderbevestiging na betaling | Ja (transactie) |
-| Mail naar leverancier | **Nee** — admin “Goedkeuren & versturen” |
+| Mail naar leverancier | **Nee**, admin “Goedkeuren & versturen” |
 | Track & trace naar klant | Admin “Markeer verzonden” (= jouw OK) |
-| Support-antwoord | **Nee** — concept → goedkeuren |
-| Mollie-refund | **Nee** — aanvragen → goedkeuren |
+| Support-antwoord | **Nee**, concept → goedkeuren |
+| Mollie-refund | **Nee**, aanvragen → goedkeuren |
 
 ## 6. Support inbound (later)
 

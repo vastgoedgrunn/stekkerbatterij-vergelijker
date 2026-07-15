@@ -26,7 +26,7 @@ const fontMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} — onafhankelijk vergelijken`,
+    default: `${siteConfig.name}: onafhankelijk vergelijken`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,

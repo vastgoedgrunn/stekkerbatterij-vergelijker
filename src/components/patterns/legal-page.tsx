@@ -13,7 +13,7 @@ function ConceptNotice() {
     >
       <AlertTriangle className="text-warning mt-0.5 size-5 shrink-0" aria-hidden />
       <p className="text-sm leading-relaxed">
-        <strong className="font-semibold">Let op — concepttekst.</strong> Dit is een concept dat de
+        <strong className="font-semibold">Let op: concepttekst.</strong> Dit is een concept dat de
         eigenaar (of een jurist) definitief moet controleren en vaststellen voordat er producten
         worden verkocht. Aan deze tekst kunnen geen rechten worden ontleend zolang de definitieve
         versie niet is vastgesteld.
@@ -122,7 +122,7 @@ export function LegalList({
 }
 
 /**
- * Bedrijfsgegevens-kaart — leest álles uit `legalConfig`. Toont nog niet
+ * Bedrijfsgegevens-kaart: leest álles uit `legalConfig`. Toont nog niet
  * ingevulde velden zichtbaar als "nog invullen" zodat er geen dummy-data
  * ongemerkt live gaat.
  */

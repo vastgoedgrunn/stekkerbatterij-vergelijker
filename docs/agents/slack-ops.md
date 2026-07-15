@@ -1,4 +1,4 @@
-# Slack — jouw enige bedieningspaneel
+# Slack: jouw enige bedieningspaneel
 
 Agents doen het werk. Jij ziet updates in Slack en keurt alleen goed waar geld, klanten of
 juridische claims spelen. Geen dashboard-hopping.
@@ -28,7 +28,7 @@ Maak `#ops-stekkerbatterij` aan als je goedkeuringen wilt scheiden van nieuws.
 | `@Cursor CRO: sterkere CTA productpagina` | CRO-agent start run |
 | Niets | Agents draaien op schema; alleen gate-items wachten op jou |
 
-Geen Slack-app bouwen nodig — Cursor Automations met **Read Slack** leest threads en reacties.
+Geen Slack-app bouwen nodig, Cursor Automations met **Read Slack** leest threads en reacties.
 
 ---
 
@@ -37,7 +37,7 @@ Geen Slack-app bouwen nodig — Cursor Automations met **Read Slack** leest thre
 ### Dagelijkse digest (Data / QA / Commerce)
 
 ```
-📊 Stekkerbatterij — dagelijkse update (Data)
+📊 Stekkerbatterij: dagelijkse update (Data)
 
 ✅ Auto (geen actie nodig)
 • 3 prijzen bijgewerkt (binnen marge)
@@ -54,7 +54,7 @@ Geen Slack-app bouwen nodig — Cursor Automations met **Read Slack** leest thre
 ### Goedkeuring prijs/claim (verification gate)
 
 ```
-🔒 Goedkeuring — commissie % Anker SOLIX
+🔒 Goedkeuring: commissie % Anker SOLIX
 
 Voorstel: 8% CPS op offer `anker-solix × coolblue`
 Bron: https://www.ankersolix.com/eu/become-an-affiliate (2026-07-15)
@@ -66,7 +66,7 @@ Reageer ✅ om te publiceren · ❌ om af te wijzen
 ### Lead / fulfilment / refund (NOOIT auto)
 
 ```
-🔒 Goedkeuring — lead doorsturen
+🔒 Goedkeuring: lead doorsturen
 
 Lead: Jan Jansen · jan@example.nl · 1234AB
 Bron: beslishulp · geschatte commissie €100
@@ -78,7 +78,7 @@ Reageer ✅ = markeer goedgekeurd in admin · agent stuurt NIET automatisch mail
 ### Wekelijks plan (Orchestrator, maandag)
 
 ```
-📋 Weekplan — Stekkerbatterij Vergelijker
+📋 Weekplan: Stekkerbatterij Vergelijker
 
 1. [Data] Bol deeplinks live zodra publisher-ID binnen is → +affiliate clicks
 2. [CRO] Sterkere "Bekijk aanbieders" op PDP hero → offer_clicked
@@ -115,7 +115,7 @@ Schakel deze **Use MCP server** tools in:
 | **Vercel** | Deployments, env vars, logs |
 | **Slack** | Post + read (goedkeuringen) |
 
-Optioneel later: **Sentry** (QA), **Plausible** (Analytics — tot API gekoppeld).
+Optioneel later: **Sentry** (QA), **Plausible** (Analytics, tot API gekoppeld).
 
 ---
 

@@ -21,7 +21,7 @@ export function EnergyPartnerCard({
 }) {
   const commissionLabel =
     commissionMin != null && commissionMax != null
-      ? `${formatPrice(commissionMin)} – ${formatPrice(commissionMax)} CPA`
+      ? `${formatPrice(commissionMin)} tot ${formatPrice(commissionMax)} CPA`
       : commissionMin != null
         ? `vanaf ${formatPrice(commissionMin)} CPA`
         : null;

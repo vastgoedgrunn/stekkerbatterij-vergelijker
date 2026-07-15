@@ -9,7 +9,7 @@ export const featureFlags = {
   reviews: true,
   priceAlerts: true,
 
-  /** Commerce (release 2) — voorbereid, nog niet actief. */
+  /** Commerce (release 2): voorbereid, nog niet actief. */
   checkout: false,
   shipping: false,
 } as const;

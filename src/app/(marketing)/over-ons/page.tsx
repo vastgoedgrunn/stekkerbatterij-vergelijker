@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "Over ons — onafhankelijk vergelijken",
+  title: "Over ons: onafhankelijk vergelijken",
   description:
     "Waarom je ons kunt vertrouwen: transparante en onafhankelijke vergelijkingen van stekkerbatterijen.",
   alternates: { canonical: "/over-ons" },
@@ -18,7 +18,7 @@ const principles = [
   {
     icon: Scale,
     title: "Onafhankelijk",
-    text: "Onze rangschikking is gebaseerd op objectieve criteria — prijs, capaciteit, garantie en echte reviews — niet op wie het meest betaalt.",
+    text: "Onze rangschikking is gebaseerd op objectieve criteria zoals prijs, capaciteit, garantie en echte reviews, niet op wie het meest betaalt.",
   },
   {
     icon: Eye,
@@ -86,7 +86,7 @@ export default function AboutPage() {
             <div>
               <h2 className="text-2xl font-bold tracking-tight">Vragen of feedback?</h2>
               <p className="text-muted-foreground mt-1">
-                We horen graag van je — of het nu gaat om een product, een prijs of een suggestie.
+                We horen graag van je, of het nu gaat om een product, een prijs of een suggestie.
               </p>
             </div>
             <a

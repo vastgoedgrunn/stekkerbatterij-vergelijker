@@ -229,7 +229,7 @@ export function TerugverdientijdCalculator({ className }: { className?: string }
           <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
           <span>
             Deze uitkomsten zijn <strong>indicatief</strong> en sterk afhankelijk van je eigen
-            situatie en energieprijzen. Het zijn schattingen op basis van de ingevulde aannames —
+            situatie en energieprijzen. Het zijn schattingen op basis van de ingevulde aannames,
             geen garantie. Werkelijke besparing verschilt per huishouden, contract en
             verbruikspatroon.
           </span>

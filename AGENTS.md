@@ -20,6 +20,13 @@ owner can stay in Slack-approve mode. This file is the map; the enforceable rule
 | Support email | `.cursor/rules/support-email-agent.mdc` | on-demand (inbound pending) |
 | Supplier sourcing | `.cursor/rules/supplier-sourcing-agent.mdc` | weekly |
 
+## Schrijfstijl
+
+Geen AI-achtige gedachtestreepjes in zichtbare teksten. Em-dashes (`—`) en en-dashes (`–`) zijn
+verboden in UI-copy, metadata, content, koppen, alt-teksten, Slack-berichten en commit/PR-teksten;
+herschrijf met natuurlijk Nederlands (komma, punt, of woorden als "tot"). Zie de altijd geldende
+rule `.cursor/rules/copy-style-no-dashes.mdc`.
+
 Reusable skills: `.cursor/skills/ship-via-pr` (how work ships) and
 `.cursor/skills/price-fact-verification` (the human carve-out gate).
 Automation schedules to create in Cursor: `docs/agents/automations.md`.

@@ -1,9 +1,9 @@
-# Automations — aanmaakvolgorde (15 min)
+# Automations: aanmaakvolgorde (15 min)
 
 Maak deze **in Cursor → Automations → New → Cloud agent**. Copy-paste prompt uit
 [automations.md](./automations.md). Slack: `#all-stekkerbatterij-vergelijker`.
 
-## Fase A — vandaag (4 stuks, ~10 min)
+## Fase A: vandaag (4 stuks, ~10 min)
 
 | # | Naam | Cron (UTC) | Waarom eerst |
 |---|------|------------|--------------|
@@ -14,7 +14,7 @@ Maak deze **in Cursor → Automations → New → Cloud agent**. Copy-paste prom
 
 Tools per automation: ✅ Post Slack · ✅ Read Slack · ✅ Comment PR · MCP: github, supabase, vercel
 
-## Fase B — deze week (4 stuks)
+## Fase B: deze week (4 stuks)
 
 | # | Naam | Cron |
 |---|------|------|
@@ -23,14 +23,14 @@ Tools per automation: ✅ Post Slack · ✅ Read Slack · ✅ Comment PR · MCP:
 | 7 | Tech Wednesday | `0 8 * * 3` |
 | 8 | Supplier Thursday | `0 10 * * 4` |
 
-## Fase C — wanneer checkout aan gaat
+## Fase C: wanneer checkout aan gaat
 
 | # | Naam |
 |---|------|
 | 9 | Commerce ops daily |
 | 10 | Support on-demand |
 
-## Fase D — optimalisatie
+## Fase D: optimalisatie
 
 | # | Naam |
 |---|------|

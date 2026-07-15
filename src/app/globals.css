@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * DESIGN TOKENS — één bron van waarheid.
+ * DESIGN TOKENS: één bron van waarheid.
  * Semantische namen (background/primary/border) i.p.v. directe hues,
  * zodat rebrand en dark mode zonder codewijzigingen mogelijk zijn.
  * Kleuren in OKLCH voor perceptuele consistentie en WCAG-contrast.

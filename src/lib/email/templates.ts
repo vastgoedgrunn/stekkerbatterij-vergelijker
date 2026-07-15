@@ -100,7 +100,7 @@ export function orderConfirmationEmail(data: OrderEmailData): EmailMessage {
 
   return {
     to: data.email,
-    subject: `Bestelbevestiging #${data.orderNumber} — ${siteConfig.name}`,
+    subject: `Bestelbevestiging #${data.orderNumber} | ${siteConfig.name}`,
     html: layout("Bedankt voor je bestelling", bodyHtml),
     text,
   };
@@ -110,7 +110,7 @@ export function orderConfirmationEmail(data: OrderEmailData): EmailMessage {
 export function paymentFailedEmail(data: OrderEmailData): EmailMessage {
   const bodyHtml = `
     <p style="margin:0 0 12px;">De betaling voor je bestelling <strong>#${data.orderNumber}</strong> is niet afgerond.</p>
-    <p style="margin:0 0 12px;">Geen zorgen — je kunt de betaling opnieuw proberen via onderstaande knop.</p>
+    <p style="margin:0 0 12px;">Geen zorgen, je kunt de betaling opnieuw proberen via onderstaande knop.</p>
     <p style="margin:20px 0 0;">
       <a href="${data.statusUrl}" style="display:inline-block;background:#1f7a3d;color:#fff;text-decoration:none;padding:10px 18px;border-radius:999px;">Betaling opnieuw proberen</a>
     </p>`;
@@ -123,7 +123,7 @@ export function paymentFailedEmail(data: OrderEmailData): EmailMessage {
 
   return {
     to: data.email,
-    subject: `Betaling niet afgerond — bestelling #${data.orderNumber}`,
+    subject: `Betaling niet afgerond, bestelling #${data.orderNumber}`,
     html: layout("Betaling niet afgerond", bodyHtml),
     text,
   };
@@ -168,7 +168,7 @@ export function supplierOrderEmail(data: SupplierOrderEmailData): EmailMessage {
   const lineRows = data.lines
     .map(
       (l) =>
-        `<tr><td style="padding:4px 0;">${escapeHtml(l.name)}</td><td>${escapeHtml(l.sku ?? "—")}</td><td style="text-align:right;">${l.quantity}</td></tr>`,
+        `<tr><td style="padding:4px 0;">${escapeHtml(l.name)}</td><td>${escapeHtml(l.sku ?? "-")}</td><td style="text-align:right;">${l.quantity}</td></tr>`,
     )
     .join("");
 
@@ -220,7 +220,7 @@ export function supplierOrderEmail(data: SupplierOrderEmailData): EmailMessage {
 
   return {
     to: data.recipientEmail,
-    subject: `Dropship-order #${data.orderNumber} — ${siteConfig.name}`,
+    subject: `Dropship-order #${data.orderNumber} | ${siteConfig.name}`,
     html: layout(`Nieuwe dropship-order #${data.orderNumber}`, bodyHtml),
     text,
   };

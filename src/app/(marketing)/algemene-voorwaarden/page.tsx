@@ -25,7 +25,7 @@ export default function TermsPage() {
       title="Algemene voorwaarden"
       intro="Deze voorwaarden gelden voor iedere aanbieding en overeenkomst tussen onze webshop en een consument (koop van goederen op afstand). Ze zijn opgesteld met inachtneming van het Nederlandse consumentenrecht (Boek 6 en 7 BW) en de Europese richtlijn consumentenrechten."
     >
-      <LegalSection id="artikel-1" heading="Artikel 1 — Definities">
+      <LegalSection id="artikel-1" heading="Artikel 1: Definities">
         <LegalList
           items={[
             <>
@@ -48,7 +48,7 @@ export default function TermsPage() {
         />
       </LegalSection>
 
-      <LegalSection id="artikel-2" heading="Artikel 2 — Gegevens van de ondernemer">
+      <LegalSection id="artikel-2" heading="Artikel 2: Gegevens van de ondernemer">
         <LegalParagraph>
           De overeenkomst wordt gesloten met de onderstaande onderneming. Deze gegevens gelden als
           contact- en vestigingsgegevens.
@@ -56,7 +56,7 @@ export default function TermsPage() {
         <CompanyDetails />
       </LegalSection>
 
-      <LegalSection id="artikel-3" heading="Artikel 3 — Toepasselijkheid">
+      <LegalSection id="artikel-3" heading="Artikel 3: Toepasselijkheid">
         <LegalList
           items={[
             "Deze algemene voorwaarden zijn van toepassing op elk aanbod van de ondernemer en op elke tot stand gekomen overeenkomst op afstand tussen ondernemer en consument.",
@@ -66,7 +66,7 @@ export default function TermsPage() {
         />
       </LegalSection>
 
-      <LegalSection id="artikel-4" heading="Artikel 4 — Het aanbod">
+      <LegalSection id="artikel-4" heading="Artikel 4: Het aanbod">
         <LegalList
           items={[
             "Als een aanbod een beperkte geldigheidsduur heeft of onder voorwaarden geschiedt, wordt dit nadrukkelijk vermeld.",
@@ -77,7 +77,7 @@ export default function TermsPage() {
         />
       </LegalSection>
 
-      <LegalSection id="artikel-5" heading="Artikel 5 — De overeenkomst">
+      <LegalSection id="artikel-5" heading="Artikel 5: De overeenkomst">
         <LegalList
           items={[
             "De overeenkomst komt tot stand op het moment dat de consument het aanbod aanvaardt en aan de daarbij gestelde voorwaarden voldoet.",
@@ -87,7 +87,7 @@ export default function TermsPage() {
         />
       </LegalSection>
 
-      <LegalSection id="artikel-6" heading="Artikel 6 — Herroepingsrecht">
+      <LegalSection id="artikel-6" heading="Artikel 6: Herroepingsrecht">
         <LegalParagraph>
           De consument kan een overeenkomst met betrekking tot de aankoop van een product gedurende
           een bedenktijd van {legalConfig.withdrawalPeriodDays} dagen zonder opgave van redenen
@@ -97,7 +97,7 @@ export default function TermsPage() {
         </LegalParagraph>
       </LegalSection>
 
-      <LegalSection id="artikel-7" heading="Artikel 7 — De prijs">
+      <LegalSection id="artikel-7" heading="Artikel 7: De prijs">
         <LegalList
           items={[
             `Alle vermelde prijzen zijn in euro's en inclusief ${vatPercent}% btw, tenzij uitdrukkelijk anders vermeld. Eventuele verzendkosten worden vóór het afronden van de bestelling apart getoond.`,
@@ -107,7 +107,7 @@ export default function TermsPage() {
         />
       </LegalSection>
 
-      <LegalSection id="artikel-8" heading="Artikel 8 — Betaling">
+      <LegalSection id="artikel-8" heading="Artikel 8: Betaling">
         <LegalList
           items={[
             "Betaling verloopt via de bij het afrekenen aangeboden betaalmethoden. De betaling wordt afgehandeld door onze betaaldienstverlener Mollie.",
@@ -117,7 +117,7 @@ export default function TermsPage() {
         />
       </LegalSection>
 
-      <LegalSection id="artikel-9" heading="Artikel 9 — Levering en uitvoering">
+      <LegalSection id="artikel-9" heading="Artikel 9: Levering en uitvoering">
         <LegalList
           items={[
             "De ondernemer neemt de grootst mogelijke zorgvuldigheid in acht bij de uitvoering van bestellingen.",
@@ -129,7 +129,7 @@ export default function TermsPage() {
         />
       </LegalSection>
 
-      <LegalSection id="artikel-10" heading="Artikel 10 — Conformiteit en garantie">
+      <LegalSection id="artikel-10" heading="Artikel 10: Conformiteit en garantie">
         <LegalParagraph>
           De ondernemer staat ervoor in dat de producten voldoen aan de overeenkomst, aan de
           redelijke eisen van deugdelijkheid en/of bruikbaarheid en aan de wettelijke bepalingen die
@@ -139,7 +139,7 @@ export default function TermsPage() {
         </LegalParagraph>
       </LegalSection>
 
-      <LegalSection id="artikel-11" heading="Artikel 11 — Klachten">
+      <LegalSection id="artikel-11" heading="Artikel 11: Klachten">
         <LegalList
           items={[
             <>
@@ -166,7 +166,7 @@ export default function TermsPage() {
         />
       </LegalSection>
 
-      <LegalSection id="artikel-12" heading="Artikel 12 — Toepasselijk recht">
+      <LegalSection id="artikel-12" heading="Artikel 12: Toepasselijk recht">
         <LegalParagraph>
           Op overeenkomsten tussen de ondernemer en de consument waarop deze algemene voorwaarden
           betrekking hebben, is uitsluitend Nederlands recht van toepassing. Dwingendrechtelijke

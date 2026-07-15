@@ -1,0 +1,33 @@
+---
+description: Schrijfstijl voor alle zichtbare teksten. Verbiedt AI-achtige gedachtestreepjes (em-dash en en-dash) in UI-copy, metadata, content, koppen, alt-teksten, Slack-berichten en commit/PR-teksten. Geldt voor elke agent.
+globs: ""
+alwaysApply: true
+---
+
+# Schrijfstijl: geen gedachtestreepjes
+
+De eigenaar vindt "AI-achtige" streepjes lelijk en onprofessioneel. Houd zichtbare teksten
+natuurlijk Nederlands.
+
+## Verboden
+
+- Gebruik NOOIT een em-dash (`—`) of en-dash (`–`) als scheidingsteken of gedachtestreepje in
+  zichtbare teksten: UI-copy, metadata (titles/descriptions), content, koppen, alt-teksten,
+  Slack-berichten en commit/PR-teksten.
+
+## In plaats daarvan
+
+- Herschrijf de zin met natuurlijk Nederlands: gebruik een komma, punt, dubbele punt, haakjes,
+  of woorden als "en", "zoals" of "met".
+- Voorbeeld: "Onafhankelijk, actueel en compleet — zodat jij kiest." wordt
+  "Onafhankelijk, actueel en compleet, zodat jij met vertrouwen kiest."
+- Voor getalbereiken schrijf je "van X tot Y" of "X t/m Y" in plaats van "X–Y".
+  Openingstijden "9:00–17:00" worden "9:00 tot 17:00".
+
+## Wel toegestaan
+
+- Gewone koppelstreepjes (hyphen `-`) in samengestelde woorden en eigennamen die dat echt
+  vereisen, bijvoorbeeld "plug-and-play", "24-uurs" of "e-WNDR". Vermijd ze waar een net zo
+  natuurlijke variant bestaat.
+- Hyphens in slugs, route-paden, CSS-classes en identifiers blijven ongemoeid; dit is geen
+  zichtbare copy.

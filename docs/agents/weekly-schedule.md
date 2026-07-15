@@ -1,6 +1,6 @@
-# Agent-team — weekschema (CEST / Amsterdam)
+# Agent-team: weekschema (CEST / Amsterdam)
 
-Alle tijden zijn **lokaal (CEST, UTC+2)**. Cron in Cursor staat in UTC — automations.md
+Alle tijden zijn **lokaal (CEST, UTC+2)**. Cron in Cursor staat in UTC, automations.md
 gebruikt UTC; hier de menselijke klok.
 
 ## Dagelijks

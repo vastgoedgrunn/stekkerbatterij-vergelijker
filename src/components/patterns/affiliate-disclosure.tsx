@@ -15,7 +15,7 @@ export function AffiliateDisclosure({ className }: { className?: string }) {
       <Info className="text-primary mt-0.5 size-4 shrink-0" aria-hidden />
       <span>
         Sommige links op deze pagina zijn affiliate-links. Als je via ons koopt, ontvangen wij
-        mogelijk een vergoeding — zonder extra kosten voor jou. Prijzen controleren we regelmatig,
+        mogelijk een vergoeding, zonder extra kosten voor jou. Prijzen controleren we regelmatig,
         maar de actuele prijs geldt altijd bij de aanbieder.
       </span>
     </p>

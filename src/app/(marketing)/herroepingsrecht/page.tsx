@@ -30,7 +30,7 @@ export default function WithdrawalPage() {
             `Je hebt het recht de overeenkomst binnen ${days} dagen zonder opgave van redenen te ontbinden.`,
             `De bedenktijd gaat in op de dag nadat jij (of een door jou aangewezen derde, niet de vervoerder) het product hebt ontvangen.`,
             "Bestel je meerdere producten in één bestelling die apart worden geleverd? Dan gaat de bedenktijd in op de dag waarop je het laatste product hebt ontvangen.",
-            "Tijdens de bedenktijd ga je zorgvuldig om met het product en de verpakking. Je mag het product uitpakken en beoordelen zoals dat in een winkel zou mogen — verder gebruik dan nodig om de aard en werking vast te stellen kan leiden tot waardevermindering die voor jouw rekening komt.",
+            "Tijdens de bedenktijd ga je zorgvuldig om met het product en de verpakking. Je mag het product uitpakken en beoordelen zoals dat in een winkel zou mogen. Verder gebruik dan nodig om de aard en werking vast te stellen kan leiden tot waardevermindering die voor jouw rekening komt.",
           ]}
         />
       </LegalSection>
@@ -56,7 +56,7 @@ export default function WithdrawalPage() {
         <LegalList
           items={[
             "We betalen het aankoopbedrag inclusief de standaard leveringskosten uiterlijk 14 dagen na ontvangst van je herroeping terug.",
-            "We mogen wachten met terugbetalen tot we het product retour hebben ontvangen, of tot je hebt aangetoond dat je het hebt teruggezonden — afhankelijk van welk moment eerder valt.",
+            "We mogen wachten met terugbetalen tot we het product retour hebben ontvangen, of tot je hebt aangetoond dat je het hebt teruggezonden, afhankelijk van welk moment eerder valt.",
             "Terugbetaling gebeurt met hetzelfde betaalmiddel als waarmee je hebt betaald, tenzij je uitdrukkelijk met een andere methode instemt. Er worden geen kosten in rekening gebracht voor de terugbetaling.",
             "Koos je voor een duurdere leveringswijze dan de standaard? Dan hoeven de meerkosten van die duurdere levering niet te worden terugbetaald.",
           ]}
@@ -110,15 +110,15 @@ export default function WithdrawalPage() {
           </p>
           <div className="mt-4 space-y-3">
             <p>
-              — Ik/Wij (*) deel/delen (*) u hierbij mede dat ik/wij (*) onze overeenkomst
-              betreffende de verkoop van de volgende producten herroep/herroepen (*):
+              Ik/Wij (*) deel/delen (*) u hierbij mede dat ik/wij (*) onze overeenkomst betreffende
+              de verkoop van de volgende producten herroep/herroepen (*):
             </p>
             <p>_______________________________________________</p>
-            <p>— Besteld op (*)/Ontvangen op (*): _______________</p>
-            <p>— Naam consument(en): _______________</p>
-            <p>— Adres consument(en): _______________</p>
-            <p>— Handtekening consument(en) (alleen bij papieren formulier): _______________</p>
-            <p>— Datum: _______________</p>
+            <p>Besteld op (*)/Ontvangen op (*): _______________</p>
+            <p>Naam consument(en): _______________</p>
+            <p>Adres consument(en): _______________</p>
+            <p>Handtekening consument(en) (alleen bij papieren formulier): _______________</p>
+            <p>Datum: _______________</p>
             <p className="text-muted-foreground">(*) Doorhalen wat niet van toepassing is.</p>
           </div>
         </div>

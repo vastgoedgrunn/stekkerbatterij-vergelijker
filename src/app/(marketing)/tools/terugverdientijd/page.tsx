@@ -14,7 +14,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Terugverdientijd & jaarbesparing berekenen",
   description:
-    "Bereken transparant de geschatte terugverdientijd en jaarbesparing van een stekkerbatterij. Pas alle aannames zelf aan — prijs, verbruik, capaciteit en tarieven.",
+    "Bereken transparant de geschatte terugverdientijd en jaarbesparing van een stekkerbatterij. Pas alle aannames zelf aan: prijs, verbruik, capaciteit en tarieven.",
   alternates: { canonical: "/tools/terugverdientijd" },
   openGraph: {
     title: "Terugverdientijd-calculator stekkerbatterij",
@@ -74,7 +74,7 @@ export default function TerugverdientijdPage() {
           <SectionHeading
             eyebrow="Zo rekenen we"
             title="Transparant rekenmodel"
-            description="We tonen precies hoe de schatting tot stand komt. Het zijn aannames — geen garantie — die je zelf kunt bijstellen."
+            description="We tonen precies hoe de schatting tot stand komt. Het zijn aannames, geen garantie, die je zelf kunt bijstellen."
           />
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {uitleg.map((item) => (

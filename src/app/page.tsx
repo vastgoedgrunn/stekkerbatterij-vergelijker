@@ -42,7 +42,7 @@ const trustItems = [
   {
     icon: Scale,
     title: "100% onafhankelijk",
-    text: "We rangschikken objectief op prijs, capaciteit, garantie en reviews — niet op wie het meest betaalt.",
+    text: "We rangschikken objectief op prijs, capaciteit, garantie en reviews, niet op wie het meest betaalt.",
   },
   {
     icon: TrendingDown,
@@ -60,7 +60,7 @@ const steps = [
   {
     icon: Search,
     title: "Vertel je situatie",
-    text: "Verbruik, zonnepanelen en wensen — in een paar tikken.",
+    text: "Verbruik, zonnepanelen en wensen, in een paar tikken.",
   },
   {
     icon: Sparkles,
@@ -99,7 +99,7 @@ export default async function HomePage() {
             </h1>
             <p className="text-muted-foreground max-w-xl text-lg text-pretty">
               Vergelijk plug-and-play thuisbatterijen op prijs, capaciteit, vermogen en garantie.
-              Onafhankelijk, actueel en compleet — zodat jij met vertrouwen kiest.
+              Onafhankelijk, actueel en compleet, zodat jij met vertrouwen kiest.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link href="/beslishulp" className={cn(buttonVariants({ size: "lg" }))}>

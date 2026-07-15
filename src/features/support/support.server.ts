@@ -276,7 +276,7 @@ export async function executeApprovedRefund(
 export function supportReplyEmailTemplate(to: string, subject: string, body: string) {
   return {
     to,
-    subject: `${subject} — ${siteConfig.name}`,
+    subject: `${subject} | ${siteConfig.name}`,
     html: `<p>${body.replace(/\n/g, "<br/>")}</p>`,
     text: body,
   };

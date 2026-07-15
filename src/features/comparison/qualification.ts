@@ -17,10 +17,10 @@ export function qualifyLeadPath(prefs: WizardPreferences): QualificationResult {
 
   if (prefs.yearlyUsageKwh >= 3500) {
     fixedBatteryScore += 35;
-    reasons.push("Hoog jaarverbruik — vaste thuisbatterij kan meer besparen");
+    reasons.push("Hoog jaarverbruik, vaste thuisbatterij kan meer besparen");
   } else if (prefs.yearlyUsageKwh <= 2200) {
     plugInScore += 25;
-    reasons.push("Gemiddeld tot laag verbruik — plug-in batterij is vaak voldoende");
+    reasons.push("Gemiddeld tot laag verbruik, plug-in batterij is vaak voldoende");
   }
 
   if (prefs.hasHeatPump) {
@@ -38,7 +38,7 @@ export function qualifyLeadPath(prefs: WizardPreferences): QualificationResult {
     reasons.push("Grote zonnepanelen-opstelling levert veel overschot op");
   } else if (prefs.hasSolar && prefs.solarKwp > 0 && prefs.solarKwp < 3) {
     plugInScore += 15;
-    reasons.push("Compacte zonnepanelen-opstelling — balkonbatterij is ideaal");
+    reasons.push("Compacte zonnepanelen-opstelling, balkonbatterij is ideaal");
   }
 
   if (prefs.budgetCents > 0 && prefs.budgetCents <= 120000) {

@@ -3,7 +3,7 @@ import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Native select — bewust geen zware client-lib. Toegankelijk en snel.
+ * Native select, bewust geen zware client-lib. Toegankelijk en snel.
  */
 export function Select({
   className,
