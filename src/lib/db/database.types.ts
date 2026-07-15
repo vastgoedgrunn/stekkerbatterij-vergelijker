@@ -28,6 +28,8 @@ export type SupportTicketStatus = "open" | "awaiting_reply" | "resolved" | "clos
 /** Monetization (fase 1+). */
 export type CommissionType = "cps" | "cpa";
 export type LeadStatus = "new" | "approved" | "sent" | "converted" | "rejected";
+/** Affiliate hybrid: netwerk nog niet live / kapotte check. */
+export type AffiliateLinkStatus = "ok" | "pending" | "broken";
 
 interface TimestampFields {
   created_at: string;
@@ -104,6 +106,9 @@ export interface OfferRow extends TimestampFields {
   commission_cents_fixed: number | null;
   last_commission_verified_at: string | null;
   commission_source_url: string | null;
+  affiliate_link_status: AffiliateLinkStatus;
+  affiliate_link_checked_at: string | null;
+  affiliate_link_note: string | null;
   is_sponsored: boolean;
   last_checked_at: string;
 }

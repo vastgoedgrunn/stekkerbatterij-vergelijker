@@ -45,6 +45,7 @@ const brands = [
   { name: "HomeWizard", slug: "homewizard", width: 480, height: 64 },
   { name: "Sunology", slug: "sunology", width: 279, height: 64 },
 ] as const;
+// Houd gelijk aan src/config/marquee-brands.ts (completeness-check).
 
 const trustItems = [
   {

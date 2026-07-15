@@ -10,7 +10,12 @@ import {
 } from "@/features/auth/rbac";
 import { getAdminDb } from "./db.server";
 import { approveAndSendAction, markShipmentShipped } from "./fulfillment.server";
-import type { ChangeRequestStatus, CommissionType, ProductStatus } from "@/lib/db/database.types";
+import type {
+  AffiliateLinkStatus,
+  ChangeRequestStatus,
+  CommissionType,
+  ProductStatus,
+} from "@/lib/db/database.types";
 
 async function assertCatalogAccess(): Promise<string> {
   const user = await requireAdminUser();
@@ -48,6 +53,55 @@ function revalidatePublicCatalog(productSlug?: string | null): void {
   revalidatePath("/batterijen");
   if (productSlug) {
     revalidatePath(`/batterijen/${productSlug}`);
+  }
+}
+
+/** Content/specs die de Data-agent en admin nodig hebben voor catalogus-compleetheid. */
+export async function updateProductContentAction(formData: FormData): Promise<void> {
+  try {
+    await assertCatalogAccess();
+    const productId = String(formData.get("productId") ?? "");
+    if (!productId) return;
+
+    const name = String(formData.get("name") ?? "").trim();
+    const summary = String(formData.get("summary") ?? "").trim() || null;
+    const description = String(formData.get("description") ?? "").trim() || null;
+    const image_path = String(formData.get("imagePath") ?? "").trim() || null;
+    const status = String(formData.get("status") ?? "published") as ProductStatus;
+    const capacityRaw = String(formData.get("capacityKwh") ?? "").trim();
+    const powerRaw = String(formData.get("powerKw") ?? "").trim();
+    const cyclesRaw = String(formData.get("cycles") ?? "").trim();
+    const warrantyRaw = String(formData.get("warrantyYears") ?? "").trim();
+    const expandable = formData.get("expandable") === "on";
+
+    if (!name) return;
+
+    const db = getAdminDb();
+    const { data, error } = await db
+      .from("products")
+      .update({
+        name,
+        summary,
+        description,
+        image_path,
+        status,
+        capacity_kwh: capacityRaw ? Number(capacityRaw) : null,
+        power_kw: powerRaw ? Number(powerRaw) : null,
+        cycles: cyclesRaw ? Math.round(Number(cyclesRaw)) : null,
+        warranty_years: warrantyRaw ? Math.round(Number(warrantyRaw)) : null,
+        expandable,
+      } as never)
+      .eq("id", productId)
+      .select("slug")
+      .maybeSingle<{ slug: string }>();
+    if (error) return;
+
+    revalidatePath("/admin/products");
+    revalidatePath(`/admin/products/${productId}`);
+    revalidatePath("/admin/catalog");
+    revalidatePublicCatalog(data?.slug ?? null);
+  } catch {
+    // Auth failures redirect; overige fouten blijven stil (form post).
   }
 }
 
@@ -223,20 +277,38 @@ export async function updateOfferAffiliateAction(formData: FormData): Promise<vo
     const fixedRaw = String(formData.get("commissionCentsFixed") ?? "").trim();
     const commission_cents_fixed = fixedRaw ? Math.round(Number(fixedRaw)) : null;
     const commission_source_url = String(formData.get("commissionSourceUrl") ?? "").trim() || null;
+    const priceRaw = String(formData.get("priceCents") ?? "").trim();
+    const price_cents = priceRaw ? Math.max(0, Math.round(Number(priceRaw))) : null;
+    const affiliate_link_status = String(
+      formData.get("affiliateLinkStatus") ?? "pending",
+    ).trim() as AffiliateLinkStatus;
+    const affiliate_link_note = String(formData.get("affiliateLinkNote") ?? "").trim() || null;
 
     const db = getAdminDb();
+    const patch: Record<string, unknown> = {
+      affiliate_deeplink,
+      affiliate_url,
+      affiliate_network,
+      commission_type: commission_type || null,
+      commission_rate,
+      commission_cents_fixed,
+      commission_source_url,
+      last_commission_verified_at: commission_source_url ? new Date().toISOString() : null,
+      affiliate_link_status:
+        affiliate_link_status === "ok" ||
+        affiliate_link_status === "pending" ||
+        affiliate_link_status === "broken"
+          ? affiliate_link_status
+          : "pending",
+      affiliate_link_note,
+      affiliate_link_checked_at: new Date().toISOString(),
+      last_checked_at: new Date().toISOString(),
+    };
+    if (price_cents != null) patch.price_cents = price_cents;
+
     const { error } = await db
       .from("offers")
-      .update({
-        affiliate_deeplink,
-        affiliate_url,
-        affiliate_network,
-        commission_type: commission_type || null,
-        commission_rate,
-        commission_cents_fixed,
-        commission_source_url,
-        last_commission_verified_at: commission_source_url ? new Date().toISOString() : null,
-      } as never)
+      .update(patch as never)
       .eq("id", offerId);
     if (error) return;
 

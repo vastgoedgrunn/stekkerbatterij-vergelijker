@@ -8,6 +8,7 @@ const links: { href: Route; label: string }[] = [
   { href: "/admin/leads" as Route, label: "Leads" },
   { href: "/admin/orders" as Route, label: "Orders" },
   { href: "/admin/products" as Route, label: "Producten" },
+  { href: "/admin/catalog" as Route, label: "Catalogus-health" },
   { href: "/admin/suppliers" as Route, label: "Leveranciers" },
   { href: "/admin/support" as Route, label: "Support" },
   { href: "/admin/changes" as Route, label: "Reviewwachtrij" },
