@@ -7,18 +7,18 @@ Doel (plan): **2–4 published plug-and-play SKUs per marquee-merk**, met image,
 
 | Merk | Published | Draft klaar | Doel min. | Notes |
 |------|-----------|-------------|-----------|-------|
-| Anker SOLIX | 1 | +1 Pro | 2 | Solarbank 2 E1600 OK; deeplinks deels aanwezig |
-| EcoFlow | 1 | +1 STREAM AC Pro | 2 | PowerStream 800 OK |
-| Growatt | 1 | +1 NOAH 2000S | 2 | NOAH 2000 OK |
-| HomeWizard | 1 | +1 Bundle | 2 | Plug-In Battery OK |
+| Anker SOLIX | 2 | 0 | 2 | Solarbank 2 E1600 + Pro gepubliceerd |
+| EcoFlow | 2 | 0 | 2 | PowerStream 800 + STREAM AC Pro gepubliceerd |
+| Growatt | 2 | 0 | 2 | NOAH 2000 + NOAH 2000S gepubliceerd |
+| HomeWizard | 2 | 0 | 2 | Plug-In Battery + Bundle gepubliceerd |
 | Marstek | 2 | 0 | 2 | Venus + Jupiter; Jupiter product-URL gefixt/pending |
-| Sessy | 1 | +1 Duo | 2 | Thuisbatterij OK |
-| Sunology | 1 | +1 PLAY | 2 | Storey bol-URL gefixt/pending |
-| Zendure | 1 | +1 Hyper 2000 | 2 | SolarFlow 800 OK |
+| Sessy | 2 | 0 | 2 | Thuisbatterij + Duo gepubliceerd |
+| Sunology | 2 | 0 | 2 | Storey + PLAY gepubliceerd |
+| Zendure | 2 | 0 | 2 | SolarFlow 800 + Hyper 2000 gepubliceerd |
 
-**Totaal published:** 9 · Na publish van drafts: ≥16 (claim ≥2 per merk).
+**Totaal published:** 16 (2 per marquee-merk, claim "alle grote merken" gehaald).
 
-## Draft SKUs (wacht op Slack 🔒 approve om te publiceren)
+## Top-model SKUs (gepubliceerd na Slack ✅ approve 2026-07-15)
 
 | Slug | Merk |
 |------|------|
@@ -30,24 +30,12 @@ Doel (plan): **2–4 published plug-and-play SKUs per marquee-merk**, met image,
 | `sessy-thuisbatterij-duo` | Sessy |
 | `homewizard-plug-in-battery-bundle` | HomeWizard |
 
-Seed: [`db/seed/0013_top_models_draft.sql`](../../db/seed/0013_top_models_draft.sql).
+Seeds: [`db/seed/0013_top_models_draft.sql`](../../db/seed/0013_top_models_draft.sql) (insert als draft),
+[`db/seed/0014_publish_top_models.sql`](../../db/seed/0014_publish_top_models.sql) (publish na approve).
 
-Na approve:
-
-```sql
-update products
-set status = 'published', published_at = now()
-where status = 'draft'
-  and slug in (
-    'zendure-solarflow-hyper-2000',
-    'ecoflow-stream-ac-pro',
-    'anker-solix-solarbank-2-e1600-pro',
-    'growatt-noah-2000s',
-    'sunology-play',
-    'sessy-thuisbatterij-duo',
-    'homewizard-plug-in-battery-bundle'
-  );
-```
+Owner-approve via 1-klik ✅ in Slack op 2026-07-15; toegepast op productie-DB.
+Prijzen/URLs blijven indicatief (`affiliate_link_status = pending`) tot Bol/Awin/Daisycon-deeplinks
+geverifieerd zijn.
 
 ## Offer / affiliate health
 
