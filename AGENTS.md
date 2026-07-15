@@ -23,6 +23,7 @@ owner can stay in Slack-approve mode. This file is the map; the enforceable rule
 Reusable skills: `.cursor/skills/ship-via-pr` (how work ships) and
 `.cursor/skills/price-fact-verification` (the human carve-out gate).
 Automation schedules to create in Cursor: `docs/agents/automations.md`.
+Slack ops + 1-click approvals: `docs/agents/slack-ops.md`, `docs/agents/approval-playbook.md`.
 
 ## Full-auto guardrails
 
