@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { siteConfig } from "@/config/site";
 import { clientEnv } from "@/lib/env/client";
+import { getDaisyconMetaVerification } from "@/lib/affiliate/daisycon-verification";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { CompareProvider } from "@/features/comparison/compare-store";
@@ -64,6 +65,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const daisyconVerify = getDaisyconMetaVerification();
+
   return (
     <html
       lang={siteConfig.language}
@@ -73,6 +76,9 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        {daisyconVerify && (
+          <meta name={daisyconVerify.name} content={daisyconVerify.content} />
+        )}
       </head>
       <body className="bg-background text-foreground flex min-h-full flex-col">
         <CartProvider>

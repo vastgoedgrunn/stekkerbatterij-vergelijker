@@ -38,9 +38,20 @@ aan (Slack of admin). Wij vullen ze in via admin/seed en testen elke outbound li
 ### Daisycon (energie)
 
 1. Publisher-account op [daisycon.com](https://www.daisycon.com/nl/).
-2. Meld je aan voor **Frank Energie** en **Vattenfall FlexPrijs**.
-3. Noteer **program_id** per campagne → wij zetten die in `energy_partners.affiliate_url`.
-4. Test subid-tracking: `subid={click_ref}`.
+2. **Media verifiëren** (jouw media-ID: `423132`, site moet publiek bereikbaar zijn):
+   - Kies **Verifieer via metatag** (aanbevolen).
+   - Kopieer de `content`-waarde uit de metatag → zet in Vercel als
+     `NEXT_PUBLIC_DAISYCON_VERIFY_CONTENT` (Production + Preview).
+   - Deploy afwachten → klik **Verifieer media** in Daisycon.
+   - Alternatief: **Verifieer via bestand** → zet `DAISYCON_VERIFY_FILENAME` +
+     `DAISYCON_VERIFY_FILE_BODY` in Vercel.
+3. Wacht op media-goedkeuring (1–2 werkdagen).
+4. Meld je aan voor **Frank Energie** en **Vattenfall FlexPrijs** in het Daisycon-dashboard.
+5. Noteer **`program_id`** per campagne → wij zetten die in `energy_partners.affiliate_url`.
+6. Test subid-tracking: `subid={click_ref}` via `/api/go/energy/frank-energie`.
+
+**Tip:** gebruik `https://stekkerbatterijvergelijker.com` als media-URL zodra DNS/SSL klaar is
+(in plaats van alleen `.vercel.app`).
 
 ### e-WNDR (vaste batterij-leads)
 

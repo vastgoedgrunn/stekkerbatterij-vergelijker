@@ -34,6 +34,10 @@ const serverSchema = z.object({
 
   // Observability
   SENTRY_AUTH_TOKEN: z.string().min(1).optional(),
+
+  /** Daisycon bestandsverificatie: body + bestandsnaam (rewrite in next.config). */
+  DAISYCON_VERIFY_FILENAME: z.string().min(1).optional(),
+  DAISYCON_VERIFY_FILE_BODY: z.string().min(1).optional(),
 });
 
 const skipValidation = process.env.SKIP_ENV_VALIDATION === "true";
