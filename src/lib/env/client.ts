@@ -16,6 +16,10 @@ const clientSchema = z.object({
   NEXT_PUBLIC_PLAUSIBLE_SCRIPT_ID: z.string().min(1).optional(),
   NEXT_PUBLIC_PLAUSIBLE_HOST: z.string().url().optional(),
   NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
+  /** Daisycon media-verificatie: content-waarde uit publisher-dashboard (metatag). */
+  NEXT_PUBLIC_DAISYCON_VERIFY_CONTENT: z.string().min(1).optional(),
+  /** Meta name; default daisycon-site-verification. */
+  NEXT_PUBLIC_DAISYCON_VERIFY_NAME: z.string().min(1).optional(),
 });
 
 const parsed = clientSchema.safeParse({
@@ -26,6 +30,8 @@ const parsed = clientSchema.safeParse({
   NEXT_PUBLIC_PLAUSIBLE_SCRIPT_ID: process.env.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_ID,
   NEXT_PUBLIC_PLAUSIBLE_HOST: process.env.NEXT_PUBLIC_PLAUSIBLE_HOST,
   NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  NEXT_PUBLIC_DAISYCON_VERIFY_CONTENT: process.env.NEXT_PUBLIC_DAISYCON_VERIFY_CONTENT,
+  NEXT_PUBLIC_DAISYCON_VERIFY_NAME: process.env.NEXT_PUBLIC_DAISYCON_VERIFY_NAME,
 });
 
 if (!parsed.success) {

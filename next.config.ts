@@ -20,6 +20,8 @@ const securityHeaders = [
   },
 ];
 
+const daisyconVerifyFilename = process.env.DAISYCON_VERIFY_FILENAME;
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
@@ -40,6 +42,15 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: securityHeaders,
+      },
+    ];
+  },
+  async rewrites() {
+    if (!daisyconVerifyFilename) return [];
+    return [
+      {
+        source: `/${daisyconVerifyFilename}`,
+        destination: "/api/internal/daisycon-verify",
       },
     ];
   },
