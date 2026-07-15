@@ -4,6 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
+import { MerchantLogo } from "@/features/offers-pricing/merchant-logo";
 import { PriceCheckedLabel } from "@/features/offers-pricing/price-checked-label";
 import { AddToCartButton } from "@/features/checkout/add-to-cart-button";
 import { featureFlags } from "@/config/feature-flags";
@@ -66,9 +67,7 @@ export function OfferTable({
             )}
           >
             <div className="flex flex-1 items-center gap-3">
-              <span className="bg-muted text-foreground flex size-11 shrink-0 items-center justify-center rounded-xl text-lg font-bold">
-                {offer.merchantName.charAt(0)}
-              </span>
+              <MerchantLogo slug={offer.merchantSlug} name={offer.merchantName} />
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-semibold">{offer.merchantName}</span>
