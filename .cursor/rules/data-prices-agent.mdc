@@ -36,8 +36,9 @@ outbound (never wrong Bol SKU).
 2. High-confidence SKU match (`match_score >= 0.85` + product URL): upsert draft/product +
    offer, run `verifyOutboundForProduct`, auto-publish only when >=1 offer has
    `affiliate_link_status = ok`, image present, and price > 0.
-3. Low confidence / homepage/search URL / title mismatch: leave `needs_review`, Slack 🔒
-   with our title vs merchant title. Never set `ok` on a mismatched link.
+3. Low confidence / homepage/search URL / title mismatch: leave `needs_review`, open a PR
+   (or point to the existing candidate PR), then Slack 🔒 with PR URL, our title vs merchant
+   title, and EXECUTE steps. Never set `ok` on a mismatched link.
 4. Completeness: every marquee brand ≥ 2 published products with image + usable outbound
    (`src/config/marquee-brands.ts`, `/admin/catalog`).
 5. Prices: auto-update existing offers within ≤10% with source URL + timestamp.
@@ -70,4 +71,5 @@ outbound (never wrong Bol SKU).
 
 Auto path: pipeline stats in Slack (discovered / upserted / published / needs_review /
 broken) + PR only if code/seeds change (`agent`,`data`).
-Gated: Slack 🔒 with candidate URL, score, notes; proceed after ✅ or admin Approve & publish.
+Gated: Slack 🔒 with PR URL + candidate URL, score, notes, EXECUTE; proceed after ✅
+(automation ships) or admin Approve & publish.

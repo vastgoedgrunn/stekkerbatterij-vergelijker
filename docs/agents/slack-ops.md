@@ -22,13 +22,14 @@ Maak `#ops-stekkerbatterij` aan als je goedkeuringen wilt scheiden van nieuws.
 
 | Jij doet | Agent doet daarna |
 |----------|-------------------|
-| Reageer **✅** op een goedkeuringsbericht | Implementeert + shipt PR + bevestigt in thread |
+| Reageer **✅** op een 🔒-bericht | Automation **Slack ✅ execute approval** start: Ready + auto-merge PR, EXECUTE-stappen, bevestigt in thread |
 | Reageer **❌** + korte reden | Sluit af of vraagt om verduidelijking |
 | `@Cursor Data: refresh Bol prijzen` | Data-agent start on-demand run |
 | `@Cursor CRO: sterkere CTA productpagina` | CRO-agent start run |
 | Niets | Agents draaien op schema; alleen gate-items wachten op jou |
 
-Geen Slack-app bouwen nodig, Cursor Automations met **Read Slack** leest threads en reacties.
+**Verplicht voor agents:** elk 🔒-bericht heeft een **PR-URL** (of admin-URL bij lead/refund)
+plus `EXECUTE:`-regels. Zonder PR kan ✅ niet mergen. Eerst PR openen, dan pas 🔒 posten.
 
 ---
 
@@ -53,6 +54,8 @@ Geen Slack-app bouwen nodig, Cursor Automations met **Read Slack** leest threads
 
 ### Goedkeuring prijs/claim (verification gate)
 
+Altijd: `🔒` + PR-URL + `EXECUTE:`. Geen uitzonderingen voor data/content/code.
+
 ```
 🔒 Goedkeuring: commissie % Anker SOLIX
 
@@ -60,10 +63,18 @@ Voorstel: 8% CPS op offer `anker-solix × coolblue`
 Bron: https://www.ankersolix.com/eu/become-an-affiliate (2026-07-15)
 Huidige waarde in DB: 8% (ongewijzigd) / NIEUW: 10%
 
-Reageer ✅ om te publiceren · ❌ om af te wijzen
+PR: https://github.com/vastgoedgrunn/stekkerbatterij-vergelijker/pull/XX
+
+EXECUTE:
+- Ready + auto-merge PR #XX
+- Update commissie in Supabase offers zoals in PR-body
+
+Reageer ✅ om uit te voeren · ❌ om af te wijzen
 ```
 
-### Lead / fulfilment / refund (NOOIT auto)
+### Lead / fulfilment / refund (NOOIT auto-mail)
+
+Geen code-PR verplicht; wel admin-URL + EXECUTE. Agent stuurt nooit zelf mail naar klant.
 
 ```
 🔒 Goedkeuring: lead doorsturen
@@ -72,7 +83,10 @@ Lead: Jan Jansen · jan@example.nl · 1234AB
 Bron: beslishulp · geschatte commissie €100
 Admin: https://stekkerbatterijvergelijker.com/admin/leads
 
-Reageer ✅ = markeer goedgekeurd in admin · agent stuurt NIET automatisch mail
+EXECUTE:
+- Markeer lead goedgekeurd in admin (geen auto-mail)
+
+Reageer ✅ = EXECUTE · ❌ = afwijzen
 ```
 
 ### Wekelijks plan (Orchestrator, maandag)

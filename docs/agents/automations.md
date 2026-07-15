@@ -227,3 +227,10 @@ Evening checklist:
 
 If you prefer a separate Automation name "Revenue refresh", reuse prompt #12. Do not run two
 identical evening jobs.
+
+## 13. Slack ✅ execute approval (event-driven, al live)
+
+- **Trigger:** reactie `white_check_mark` (✅) in `#all-stekkerbatterij-vergelijker`
+- **Doel:** 1-klik van owner → Ready + auto-merge + EXECUTE-stappen uit het 🔒-bericht
+- **Vereiste aan agents:** elk 🔒-bericht heeft PR-URL + `EXECUTE:` (zie `slack-ops.md`).
+  Zonder PR stopt de executor en vraagt verduidelijking in de thread.
