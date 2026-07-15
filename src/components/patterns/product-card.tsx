@@ -12,6 +12,11 @@ import type { ProductListItem } from "@/features/products/types";
 export function ProductCard({ product }: { product: ProductListItem }) {
   const imageUrl = getPublicImageUrl(product.imagePath);
 
+  const pricePerKwh =
+    product.lowestPriceCents !== null && product.capacityKwh && product.capacityKwh > 0
+      ? Math.round(product.lowestPriceCents / product.capacityKwh)
+      : null;
+
   const specs = [
     product.capacityKwh !== null && {
       icon: BatteryCharging,
@@ -42,7 +47,7 @@ export function ProductCard({ product }: { product: ProductListItem }) {
               alt={product.name}
               fill
               sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-contain p-6 transition-transform duration-500 group-hover:scale-105"
+              className="object-contain p-6 transition-transform duration-300 group-hover:scale-[1.02]"
             />
           ) : (
             <BatteryCharging className="text-primary/25 size-20" aria-hidden />
@@ -86,23 +91,39 @@ export function ProductCard({ product }: { product: ProductListItem }) {
           ))}
         </ul>
 
-        <div className="border-border/70 mt-auto flex items-end justify-between gap-3 border-t pt-4">
-          <div>
-            {product.lowestPriceCents !== null ? (
-              <>
+        <div className="border-border/70 mt-auto space-y-3 border-t pt-4">
+          {product.lowestPriceCents !== null ? (
+            <div className="flex items-end justify-between gap-3">
+              <div>
                 <span className="text-muted-foreground block text-xs">
                   vanaf · {product.offerCount}{" "}
                   {product.offerCount === 1 ? "aanbieder" : "aanbieders"}
                 </span>
-                <span className="text-xl font-bold tracking-tight">
+                <span className="text-2xl font-bold tracking-tight">
                   {formatPrice(product.lowestPriceCents)}
                 </span>
-              </>
-            ) : (
-              <span className="text-muted-foreground text-sm">Prijs volgt</span>
-            )}
-          </div>
-          <span className="text-primary relative z-10 inline-flex items-center gap-1 text-sm font-semibold">
+              </div>
+              {pricePerKwh !== null && (
+                <span className="text-muted-foreground text-right text-xs leading-tight">
+                  <span className="text-foreground block font-semibold">
+                    {formatPrice(pricePerKwh)}
+                  </span>
+                  per kWh
+                </span>
+              )}
+            </div>
+          ) : (
+            <span className="text-muted-foreground block text-sm">Prijs volgt</span>
+          )}
+
+          {product.bestOffer && (
+            <p className="text-muted-foreground text-xs">
+              Laagste prijs bij{" "}
+              <span className="text-foreground font-medium">{product.bestOffer.merchantName}</span>
+            </p>
+          )}
+
+          <span className="border-primary/30 text-primary group-hover:bg-primary group-hover:text-primary-foreground relative z-10 flex w-full items-center justify-center gap-1.5 rounded-md border px-4 py-2 text-sm font-semibold transition-colors">
             Bekijk aanbieders
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
           </span>

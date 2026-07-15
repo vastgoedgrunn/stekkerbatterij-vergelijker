@@ -86,17 +86,15 @@ export default async function HomePage() {
       <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
 
       {/* HERO */}
-      <section className="relative overflow-hidden">
-        <div className="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)] opacity-60" />
-        <div className="from-primary/10 pointer-events-none absolute inset-0 bg-gradient-to-b to-transparent" />
-        <Container className="relative grid items-center gap-12 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:py-24">
+      <section className="border-border/70 border-b">
+        <Container className="grid items-center gap-12 py-14 lg:grid-cols-[1.1fr_0.9fr] lg:py-20">
           <div className="flex flex-col gap-6">
-            <span className="border-border/70 bg-card/60 text-foreground inline-flex w-fit items-center gap-2 rounded-full border px-3 py-1 text-sm font-medium backdrop-blur">
-              <span className="bg-success size-2 animate-pulse rounded-full" />
+            <span className="text-muted-foreground inline-flex w-fit items-center gap-2 text-sm font-semibold tracking-wide uppercase">
+              <Scale className="text-primary size-4" />
               Onafhankelijk vergelijkingsplatform
             </span>
             <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-              Vind de <span className="text-gradient">beste stekkerbatterij</span> voor jouw huis
+              Vind de <span className="text-primary">beste stekkerbatterij</span> voor jouw huis
             </h1>
             <p className="text-muted-foreground max-w-xl text-lg text-pretty">
               Vergelijk plug-and-play thuisbatterijen op prijs, capaciteit, vermogen en garantie.
@@ -132,9 +130,12 @@ export default async function HomePage() {
           <p className="text-muted-foreground mb-4 text-center text-xs font-semibold tracking-[0.2em] uppercase">
             Alle grote merken op één plek
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
             {brands.map((brand) => (
-              <span key={brand} className="text-muted-foreground text-lg font-semibold">
+              <span
+                key={brand}
+                className="text-muted-foreground/80 text-base font-semibold tracking-tight"
+              >
                 {brand}
               </span>
             ))}
