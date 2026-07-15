@@ -195,6 +195,7 @@
   --animate-slide-in-right: slide-in-right 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-marquee: marquee 40s linear infinite;
   --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-ambient-breathe: ambient-breathe 14s ease-in-out infinite;
 }
 
 @layer base {
@@ -318,6 +319,83 @@
         color-mix(in oklch, var(--color-highlight) 8%, transparent),
         transparent 66%
       );
+    /* Heel trage "ademende" drift: geeft de hero leven zonder af te leiden. */
+    animation: var(--animate-ambient-breathe);
+    transform-origin: 70% 20%;
+    will-change: opacity, transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ambient-glow {
+      animation: none;
+    }
+  }
+
+  /*
+   * Merken-marquee: naadloze, luxe carrousel. CSS-only (geen client-component).
+   * De viewport klipt intern; alleen de track schuift, dus geen horizontale
+   * pagina-scroll. Randen faden via mask voor een rustige, premium uitstraling.
+   */
+  .marquee {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    align-items: center;
+    animation: var(--animate-marquee);
+  }
+
+  /* Pauzeer bij hover zodat een naam rustig te lezen is. */
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+
+  .marquee-group {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Gelijke marge op elk item (ook het eerste) zodat de -50%-loop naadloos sluit. */
+  .marquee-group > * {
+    margin-left: 0.625rem;
+  }
+
+  @media (min-width: 640px) {
+    .marquee-group > * {
+      margin-left: 0.75rem;
+    }
+  }
+
+  /*
+   * Reduced motion: geen beweging. Val terug op een nette, gecentreerde,
+   * gewrapte pill-rij (statisch) zonder afkappen of overlopen.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+    .marquee-track {
+      width: 100%;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: none;
+    }
+    .marquee-group {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.625rem;
+    }
+    .marquee-group > * {
+      margin-left: 0;
+    }
+    .marquee-group[data-marquee-clone] {
+      display: none;
+    }
   }
 }
 
@@ -378,5 +456,17 @@
   }
   100% {
     background-position: 200% 0;
+  }
+}
+
+@keyframes ambient-breathe {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(0.99);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
   }
 }
