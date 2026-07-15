@@ -112,24 +112,8 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="relative min-w-0 lg:pl-4">
-            <div
-              aria-hidden
-              className="animate-float pointer-events-none absolute -top-14 -right-3 hidden w-44 lg:block xl:-right-6 xl:w-52"
-            >
-              <Image
-                src="/images/hero-product.png"
-                alt=""
-                width={512}
-                height={512}
-                priority
-                sizes="(max-width: 1280px) 176px, 208px"
-                className="h-auto w-full drop-shadow-2xl"
-              />
-            </div>
-            <div className="relative z-10">
-              <HeroMatcher products={featured} />
-            </div>
+          <div className="min-w-0 lg:pl-4">
+            <HeroMatcher products={featured} />
           </div>
         </Container>
       </section>

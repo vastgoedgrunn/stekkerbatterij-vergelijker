@@ -195,7 +195,6 @@
   --animate-slide-in-right: slide-in-right 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-marquee: marquee 40s linear infinite;
   --animate-shimmer: shimmer 1.6s ease-in-out infinite;
-  --animate-float: float 7s ease-in-out infinite;
 }
 
 @layer base {
@@ -320,17 +319,6 @@
         transparent 66%
       );
   }
-
-  /* Subtiel zweven voor uitgelicht hero-productbeeld. */
-  .animate-float {
-    animation: var(--animate-float);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .animate-float {
-      animation: none;
-    }
-  }
 }
 
 @keyframes fade-up {
@@ -390,15 +378,5 @@
   }
   100% {
     background-position: 200% 0;
-  }
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
   }
 }
