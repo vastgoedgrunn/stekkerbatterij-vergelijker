@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
-import { getProductSlugs } from "@/features/products/queries";
+import { getBrands, getProductSlugs } from "@/features/products/queries";
 import { getArticleSlugs } from "@/features/content/queries";
 
 export const revalidate = 3600;
@@ -12,18 +12,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${base}/`, lastModified: now, changeFrequency: "daily", priority: 1 },
     { url: `${base}/batterijen`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
+    { url: `${base}/merken`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    {
+      url: `${base}/beste-stekkerbatterij-2026`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
     { url: `${base}/beslishulp`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/gidsen`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/over-ons`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
   ];
 
-  const [productSlugs, articleSlugs] = await Promise.all([getProductSlugs(), getArticleSlugs()]);
+  const [productSlugs, articleSlugs, brands] = await Promise.all([
+    getProductSlugs(),
+    getArticleSlugs(),
+    getBrands(),
+  ]);
 
   const productRoutes: MetadataRoute.Sitemap = productSlugs.map((slug) => ({
     url: `${base}/batterijen/${slug}`,
     lastModified: now,
     changeFrequency: "weekly",
     priority: 0.8,
+  }));
+
+  const brandRoutes: MetadataRoute.Sitemap = brands.map((brand) => ({
+    url: `${base}/merken/${brand.slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.6,
   }));
 
   const articleRoutes: MetadataRoute.Sitemap = articleSlugs.map((slug) => ({
@@ -33,5 +51,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticRoutes, ...productRoutes, ...articleRoutes];
+  return [...staticRoutes, ...brandRoutes, ...productRoutes, ...articleRoutes];
 }

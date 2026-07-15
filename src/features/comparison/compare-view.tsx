@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { BatteryCharging, Check, Minus, Trophy } from "lucide-react";
 import { RatingStars } from "@/components/patterns/rating-stars";
+import { OfferLink } from "@/features/offers-pricing/offer-link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatNumber, formatPrice } from "@/lib/format";
@@ -158,13 +159,38 @@ export function CompareView({ products }: { products: ProductDetail[] }) {
           })}
           <tr className="border-border border-t">
             <td className="bg-card sticky left-0 z-10 p-4" />
-            {products.map((p) => (
-              <td key={p.id} className="p-4 text-center">
-                <Link href={`/batterijen/${p.slug}`} className={cn(buttonVariants({ size: "sm" }))}>
-                  Bekijk
-                </Link>
-              </td>
-            ))}
+            {products.map((p) => {
+              const bestOffer = [...p.offers].sort((a, b) => a.priceCents - b.priceCents)[0];
+              return (
+                <td key={p.id} className="space-y-2 p-4 text-center">
+                  {bestOffer?.affiliateUrl ? (
+                    <>
+                      <p className="text-sm font-bold">{formatPrice(bestOffer.priceCents)}</p>
+                      <p className="text-muted-foreground text-xs">bij {bestOffer.merchantName}</p>
+                      <OfferLink
+                        offerId={bestOffer.id}
+                        productId={p.id}
+                        merchant={bestOffer.merchantName}
+                        sponsored={bestOffer.isSponsored}
+                        estimatedCommissionCents={bestOffer.estimatedCommissionCents}
+                        placement="compare"
+                        size="sm"
+                        className="w-full"
+                      >
+                        Naar {bestOffer.merchantName}
+                      </OfferLink>
+                    </>
+                  ) : (
+                    <Link
+                      href={`/batterijen/${p.slug}`}
+                      className={cn(buttonVariants({ size: "sm" }))}
+                    >
+                      Bekijk details
+                    </Link>
+                  )}
+                </td>
+              );
+            })}
           </tr>
         </tbody>
       </table>

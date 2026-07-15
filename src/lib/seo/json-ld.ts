@@ -42,6 +42,19 @@ export function breadcrumbJsonLd(items: { name: string; url: string }[]): JsonLd
   };
 }
 
+export function itemListJsonLd(items: { name: string; url: string }[]): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: `${siteConfig.url}${item.url}`,
+    })),
+  };
+}
+
 export function productJsonLd(product: ProductDetail): JsonLdObject {
   const offers = product.offers.map((offer) => ({
     "@type": "Offer",

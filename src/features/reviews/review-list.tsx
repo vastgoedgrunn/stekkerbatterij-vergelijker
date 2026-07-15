@@ -1,4 +1,3 @@
-import { BadgeCheck } from "lucide-react";
 import { RatingStars } from "@/components/patterns/rating-stars";
 import { formatDate } from "@/lib/format";
 import type { Review } from "./types";
@@ -22,9 +21,6 @@ export function ReviewList({ reviews }: { reviews: Review[] }) {
           </div>
           {review.title && <p className="mt-3 font-semibold">{review.title}</p>}
           <p className="text-muted-foreground mt-1 text-sm leading-relaxed">{review.body}</p>
-          <p className="text-success mt-3 inline-flex items-center gap-1 text-xs font-medium">
-            <BadgeCheck className="size-3.5" /> Geverifieerde aankoop
-          </p>
         </li>
       ))}
     </ul>

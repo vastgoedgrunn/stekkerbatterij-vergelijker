@@ -26,7 +26,7 @@ export default async function DecisionAidPage() {
             Vind jouw ideale stekkerbatterij
           </h1>
           <p className="text-muted-foreground mx-auto mt-3 max-w-xl text-lg">
-            Beantwoord vier korte vragen en ontvang een onafhankelijk advies op maat.
+            Beantwoord vijf korte stappen en ontvang een onafhankelijk advies op maat.
           </p>
         </header>
 

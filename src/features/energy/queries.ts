@@ -13,5 +13,10 @@ export async function listActiveEnergyPartners(): Promise<EnergyPartnerRow[]> {
     .order("sort_order")
     .returns<EnergyPartnerRow[]>();
   if (error) return [];
-  return data ?? [];
+  return (data ?? []).filter(
+    (partner) =>
+      partner.affiliate_url &&
+      !partner.affiliate_url.includes("PLACEHOLDER") &&
+      !partner.affiliate_url.includes("program_id=FRANK_PLACEHOLDER"),
+  );
 }

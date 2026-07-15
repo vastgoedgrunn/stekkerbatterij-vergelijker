@@ -18,6 +18,15 @@ export interface ProductRating {
   count: number;
 }
 
+export interface ProductListBestOffer {
+  id: string;
+  merchantName: string;
+  priceCents: number;
+  affiliateUrl: string | null;
+  isSponsored: boolean;
+  estimatedCommissionCents: number | null;
+}
+
 export interface ProductListItem {
   id: string;
   slug: string;
@@ -31,6 +40,8 @@ export interface ProductListItem {
   expandable: boolean;
   imagePath: string | null;
   lowestPriceCents: number | null;
+  offerCount: number;
+  bestOffer: ProductListBestOffer | null;
   rating: ProductRating;
 }
 
@@ -51,6 +62,7 @@ export interface ProductOffer {
   stockStatus: StockStatus;
   deliveryDays: number | null;
   affiliateUrl: string | null;
+  lastCheckedAt: string | null;
   estimatedCommissionCents: number | null;
 }
 
@@ -72,7 +84,7 @@ export interface ProductDetail extends ProductListItem {
 }
 
 export type ProductSort =
-  "relevance" | "price_asc" | "price_desc" | "capacity_desc" | "rating_desc";
+  "relevance" | "price_asc" | "price_desc" | "value_asc" | "capacity_desc" | "rating_desc";
 
 export interface ProductFilters {
   search?: string;
@@ -80,6 +92,9 @@ export interface ProductFilters {
   categorySlug?: string;
   minCapacity?: number;
   maxCapacity?: number;
+  /** Laagste prijs in euro's. */
+  minPrice?: number;
+  maxPrice?: number;
   expandableOnly?: boolean;
   sort?: ProductSort;
   page?: number;

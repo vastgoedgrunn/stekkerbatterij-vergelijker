@@ -79,6 +79,31 @@ export function ProductFilterPanel({ brands, categories, filters }: Props) {
           </div>
         </fieldset>
 
+        <fieldset className="space-y-2">
+          <legend className="mb-2 text-sm font-medium">Prijs (€)</legend>
+          <div className="flex items-center gap-2">
+            <Input
+              type="number"
+              name="minPrijs"
+              min={0}
+              step="10"
+              defaultValue={filters.minPrice ?? ""}
+              placeholder="min"
+              aria-label="Minimale prijs"
+            />
+            <span className="text-muted-foreground">tot</span>
+            <Input
+              type="number"
+              name="maxPrijs"
+              min={0}
+              step="10"
+              defaultValue={filters.maxPrice ?? ""}
+              placeholder="max"
+              aria-label="Maximale prijs"
+            />
+          </div>
+        </fieldset>
+
         <label className="border-border hover:bg-accent flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-sm font-medium transition-colors">
           <input
             type="checkbox"

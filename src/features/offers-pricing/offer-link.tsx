@@ -5,14 +5,12 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/observability/analytics";
 
+export type OfferLinkPlacement = "pdp_hero" | "pdp_table" | "sticky_mobile" | "wizard" | "compare";
+
 /**
  * Affiliate-/aanbiederlink die de primaire conversie-KPI meet:
  * uitgaande kliks naar een aanbieder ("offer_clicked"). Client component zodat
  * we het event kunnen afvuren; de omliggende tabel blijft een server component.
- *
- * De link wijst naar onze eigen redirect `/api/go/{offerId}` die de klik
- * server-side registreert, tracking-parameters toevoegt en doorstuurt naar de
- * aanbieder. Zo blijft de affiliate-URL uit de HTML en meten we elke klik.
  */
 export function OfferLink({
   offerId,
@@ -20,6 +18,7 @@ export function OfferLink({
   merchant,
   sponsored,
   estimatedCommissionCents,
+  placement,
   size = "sm",
   className,
   children,
@@ -29,6 +28,7 @@ export function OfferLink({
   merchant: string;
   sponsored: boolean;
   estimatedCommissionCents?: number | null;
+  placement?: OfferLinkPlacement;
   size?: "sm" | "lg";
   className?: string;
   children: React.ReactNode;
@@ -45,6 +45,7 @@ export function OfferLink({
             productId,
             merchant,
             offerId,
+            ...(placement ? { placement } : {}),
             ...(estimatedCommissionCents != null ? { estimatedCommissionCents } : {}),
           },
         })

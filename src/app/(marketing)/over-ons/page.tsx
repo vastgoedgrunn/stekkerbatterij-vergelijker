@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { ShieldCheck, Scale, Eye, Mail } from "lucide-react";
+import Link from "next/link";
+import type { Route } from "next";
+import { ShieldCheck, Scale, Eye, Mail, ArrowRight } from "lucide-react";
 import { Container, Section, SectionHeading } from "@/components/patterns/section";
 import { Card } from "@/components/ui/card";
 import { Stat } from "@/components/patterns/stat";
@@ -47,6 +49,12 @@ export default function AboutPage() {
               groeit snel en is onoverzichtelijk. Wij brengen prijzen, specificaties en ervaringen
               onafhankelijk bij elkaar, zodat jij met vertrouwen kiest.
             </p>
+            <Link
+              href={"/over-ons/hoe-wij-vergelijken" as Route}
+              className="text-primary mt-4 inline-flex items-center gap-1 text-sm font-semibold hover:underline"
+            >
+              Hoe wij vergelijken <ArrowRight className="size-4" />
+            </Link>
           </div>
           <dl className="border-border/70 mt-10 flex flex-wrap gap-x-12 gap-y-6 border-t pt-8">
             <Stat value="100%" label="Onafhankelijk" />

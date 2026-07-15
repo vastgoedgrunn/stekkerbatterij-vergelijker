@@ -7,6 +7,7 @@ const options: { value: string; label: string }[] = [
   { value: "relevance", label: "Relevantie" },
   { value: "price_asc", label: "Prijs (laag → hoog)" },
   { value: "price_desc", label: "Prijs (hoog → laag)" },
+  { value: "value_asc", label: "Prijs per kWh (laag → hoog)" },
   { value: "capacity_desc", label: "Capaciteit (hoog → laag)" },
   { value: "rating_desc", label: "Best beoordeeld" },
 ];
@@ -26,7 +27,7 @@ export function SortSelect({ current }: { current: string }) {
           params.delete("pagina");
           router.push(`/batterijen?${params.toString()}`);
         }}
-        className="w-52"
+        className="w-full sm:w-52"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>

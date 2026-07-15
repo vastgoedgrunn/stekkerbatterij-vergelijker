@@ -3,9 +3,10 @@ import Link from "next/link";
 import { X } from "lucide-react";
 import { getBrands, getCategories, getProducts } from "@/features/products/queries";
 import { parseProductFilters } from "@/features/products/search-params";
-import { ProductFilterPanel } from "@/features/products/components/product-filters";
+import { ProductFiltersDrawer } from "@/features/products/components/product-filters-drawer";
 import { SortSelect } from "@/features/products/components/sort-select";
 import { ProductCard } from "@/components/patterns/product-card";
+import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { Container } from "@/components/patterns/section";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -61,6 +62,8 @@ export default async function CatalogPage({
     },
     filters.minCapacity != null && { key: "minCap", label: `≥ ${filters.minCapacity} kWh` },
     filters.maxCapacity != null && { key: "maxCap", label: `≤ ${filters.maxCapacity} kWh` },
+    filters.minPrice != null && { key: "minPrijs", label: `≥ € ${filters.minPrice}` },
+    filters.maxPrice != null && { key: "maxPrijs", label: `≤ € ${filters.maxPrice}` },
     filters.expandableOnly && { key: "uitbreidbaar", label: "Uitbreidbaar" },
   ].filter(Boolean) as { key: string; label: string }[];
 
@@ -81,9 +84,7 @@ export default async function CatalogPage({
 
       <Container className="py-8">
         <div className="grid gap-8 md:grid-cols-[17rem_1fr]">
-          <aside className="md:sticky md:top-20 md:self-start">
-            <ProductFilterPanel brands={brands} categories={categories} filters={filters} />
-          </aside>
+          <ProductFiltersDrawer brands={brands} categories={categories} filters={filters} />
 
           <section>
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -156,6 +157,7 @@ export default async function CatalogPage({
             )}
           </section>
         </div>
+        <AffiliateDisclosure className="mt-8" />
       </Container>
     </main>
   );
