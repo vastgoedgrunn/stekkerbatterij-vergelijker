@@ -134,7 +134,10 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         <div className="grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
           {/* GALLERY (klaar voor uitbreiding naar meerdere afbeeldingen) */}
           <div className="from-accent/50 via-muted border-border relative flex aspect-square items-center justify-center overflow-hidden rounded-3xl border bg-gradient-to-br to-transparent">
-            <div aria-hidden className="ambient-glow pointer-events-none absolute inset-0 opacity-60" />
+            <div
+              aria-hidden
+              className="ambient-glow pointer-events-none absolute inset-0 opacity-60"
+            />
             {imageUrl ? (
               <Image
                 src={imageUrl}
