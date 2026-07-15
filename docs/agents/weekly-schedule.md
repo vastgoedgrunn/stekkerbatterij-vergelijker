@@ -19,9 +19,12 @@ gebruikt UTC; hier de menselijke klok.
 |-----|------|-------|-----|
 | **Ma** | 09:00 | Analytics | KPI-rapport + backlog |
 | **Ma** | 10:00 | Orchestrator | Weekplan → Slack |
-| **Di** | 10:00 | Content & SEO | Gidsen, meta, internal links |
+| **Di** | 10:00 | Content & SEO ship | 1 pagina/refresh (gidsen, meta, internal links) |
 | **Wo** | 10:00 | Tech | Deps, security, CI |
+| **Do** | 10:00 | Content & SEO ship | 1 pagina/refresh |
 | **Do** | 12:00 | Supplier sourcing | Leveranciers research + outreach concept |
+| **Do** | 13:00 | SEO linkbuilding scout | Backlink-kansen + outreach-drafts (🔒) |
+| **Za** | 10:00 | Content & SEO ship | 1 pagina/refresh |
 | **1e & 15e** | 11:00 | CRO | Conversie-experiment |
 | **8e & 22e** | 11:00 | Design & UX | A11y, mobile, tokens |
 

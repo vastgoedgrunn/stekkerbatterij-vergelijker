@@ -16,14 +16,14 @@ Maak deze **in Cursor → Automations → New → Cloud agent**. Copy-paste prom
 
 Tools per automation: ✅ Post Slack · ✅ Read Slack · ✅ Comment PR · MCP: github, supabase, vercel
 
-## Fase B: deze week (4 stuks)
+## Fase B: SEO-snelheid + weekteam
 
-| # | Naam | Cron |
-|---|------|------|
-| 5 | Analytics Monday | `0 7 * * 1` |
-| 6 | Content Tuesday | `0 8 * * 2` |
-| 7 | Tech Wednesday | `0 8 * * 3` |
-| 8 | Supplier Thursday | `0 10 * * 4` |
+| # | Naam | Cron (UTC) | Notitie |
+|---|------|------------|---------|
+| 6 | **Content SEO ship** | `0 8 * * 2,4,6` | Vervangt Content Tuesday (die verwijderen) |
+| 6b | **SEO linkbuilding scout** | `0 11 * * 4` | Alleen shortlist + drafts, geen mail |
+| 7 | Tech Wednesday | `0 8 * * 3` | |
+| 8 | Supplier Thursday | `0 10 * * 4` | |
 
 ## Fase C: wanneer checkout aan gaat
 
