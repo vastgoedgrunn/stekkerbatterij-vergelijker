@@ -195,6 +195,7 @@
   --animate-slide-in-right: slide-in-right 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-marquee: marquee 40s linear infinite;
   --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-float: float 7s ease-in-out infinite;
 }
 
 @layer base {
@@ -296,6 +297,40 @@
     background-clip: text;
     color: transparent;
   }
+
+  /* Warme, zachte sectie-tint voor ritme tussen witte secties. */
+  .section-tinted {
+    background-color: color-mix(in oklch, var(--color-accent) 32%, var(--color-background));
+  }
+
+  /*
+   * Subtiele merk-groene ambient gloed. Bedoeld voor een absoluut gepositioneerd
+   * kind achter hero-content; blijft laag in intensiteit (sober, geen luide gradient).
+   */
+  .ambient-glow {
+    background:
+      radial-gradient(
+        42rem 28rem at 78% 12%,
+        color-mix(in oklch, var(--color-primary) 12%, transparent),
+        transparent 68%
+      ),
+      radial-gradient(
+        30rem 24rem at 8% 92%,
+        color-mix(in oklch, var(--color-highlight) 8%, transparent),
+        transparent 66%
+      );
+  }
+
+  /* Subtiel zweven voor uitgelicht hero-productbeeld. */
+  .animate-float {
+    animation: var(--animate-float);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float {
+      animation: none;
+    }
+  }
 }
 
 @keyframes fade-up {
@@ -355,5 +390,15 @@
   }
   100% {
     background-position: 200% 0;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
   }
 }
