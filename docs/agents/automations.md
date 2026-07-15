@@ -21,27 +21,49 @@ For every automation set:
 
 ---
 
-## 1. Data & catalog: daily morning (completeness + prices)
+## 1. Catalog Discovery daily (ochtend, primaire data-run)
+
+Vervangt de dunne "alleen prijzen"-ochtend. Kern van het bedrijf: vind NL SKUs, match, verify, publish.
+
+- **Schedule (cron):** `0 5 * * *` (07:00 CEST)
+- **Prompt:**
+
+```
+You are the Data & prices agent (Catalog Discovery Engine). Follow
+.cursor/rules/data-prices-agent.mdc and .cursor/skills/price-fact-verification strictly.
+Also read src/features/catalog-discovery/**, docs/agents/catalog-gap-matrix.md,
+src/config/marquee-brands.ts.
+
+Morning checklist:
+1. Run Catalog Discovery: prefer admin "Run discovery nu" on /admin/catalog, or call
+   runCatalogDiscoveryPipeline({ triggerSource: "automation" }) via a small ship-via-pr
+   if you need to extend research seeds / Bol wiring.
+2. High-confidence SKU match + outbound verify ok → auto upsert/publish (image + priced ok-offer).
+3. needs_review / broken / title mismatch → Slack 🔒 with our title vs merchant title + URL.
+   NEVER set affiliate_link_status=ok on a wrong SKU (SolarFlow 800 ≠ AB3000X).
+4. Completeness: every marquee brand >= 2 published products with image + usable outbound.
+5. Refresh prices on existing offers; auto only <=10% with citation.
+6. Bol: if BOL_PRODUCT_FEED_URL / BOL_PARTNER_API_KEY missing, say so and use research seeds;
+   ask owner for keys when feed would unblock scale.
+7. Slack digest: discovered, upserted, published, needs_review, broken, Bol configured yes/no.
+```
+
+## 1b. Data & catalog: daily morning follow-up (completeness + prices)
 
 - **Schedule (cron):** `0 6 * * *` (08:00 CEST)
 - **Prompt:**
 
 ```
-You are the Data & prices agent (ochtend: catalogus-compleetheid). Follow
-.cursor/rules/data-prices-agent.mdc and .cursor/skills/price-fact-verification strictly.
-Also read docs/agents/catalog-gap-matrix.md and src/config/marquee-brands.ts.
+You are the Data & prices agent (ochtend follow-up). Follow
+.cursor/rules/data-prices-agent.mdc and price-fact-verification.
+Assume Catalog Discovery already ran at 05:00 UTC.
 
-Morning checklist:
-1. Run / use getCatalogCompletenessReport (or /admin/catalog logic): every marquee brand needs
-   >= 2 published products with image_path and >= 1 usable outbound offer.
-2. List SKU gaps and draft products waiting for publish approval.
-3. Refresh prices for existing offers via web research. Auto-update only in-margin moves (<=10%)
-   with source URL + timestamp. Large moves / new products / new offers / factual claims:
-   Slack 1-click approve and wait.
-4. Treat missing affiliate deeplinks as P0 alerts (hybrid: Bol/Awin/Daisycon may still be pending).
-   Do NOT pretend links are fine. Post product/offer + "plak deeplink zodra netwerk open is".
-5. Ship auto/approved changes via ship-via-pr (labels agent + data if available, else agent).
-6. Slack digest: auto updates, approvals needed, completeness gaps, pending/broken offers.
+Checklist:
+1. Read /admin/catalog: process leftover needs_review (Slack 🔒) and completeness gaps.
+2. Price refresh in-margin only; large moves → Slack approve.
+3. Missing deeplinks = P0 pending alerts (hybrid affiliate).
+4. Ship code/seed fixes via ship-via-pr (labels agent,data).
+5. Short Slack digest of what still blocks offer_clicked quality.
 ```
 
 ## 2. QA & monitoring: daily (+ event-driven)

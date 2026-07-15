@@ -329,6 +329,87 @@ export async function updateOfferAffiliateAction(formData: FormData): Promise<vo
   }
 }
 
+/** Start een Catalog Discovery-run (Data-agent / admin). */
+export async function runCatalogDiscoveryAction(): Promise<void> {
+  try {
+    await assertCatalogAccess();
+    const { runCatalogDiscoveryPipeline } =
+      await import("@/features/catalog-discovery/run-pipeline.server");
+    await runCatalogDiscoveryPipeline({ triggerSource: "admin" });
+    revalidatePath("/admin/catalog");
+  } catch {
+    // Auth failures redirect.
+  }
+}
+
+/** Owner-approve: upsert + force-publish candidate (bypass ok-offer eis). */
+export async function approveCatalogCandidateAction(formData: FormData): Promise<void> {
+  try {
+    await assertCatalogAccess();
+    const candidateId = String(formData.get("candidateId") ?? "");
+    if (!candidateId) return;
+
+    const { getCatalogCandidateById } = await import("@/features/catalog-discovery/queries.server");
+    const { upsertProductFromCandidate } =
+      await import("@/features/catalog-discovery/upsert-product.server");
+    const { publishProductIfReady } = await import("@/features/catalog-discovery/publish.server");
+    const db = getAdminDb();
+
+    const candidate = await getCatalogCandidateById(candidateId);
+    if (!candidate) return;
+
+    const upserted = await upsertProductFromCandidate({
+      source: candidate.source,
+      externalId: candidate.external_id,
+      brandSlug: candidate.brand_slug,
+      rawTitle: candidate.raw_title,
+      rawDescription: candidate.raw_description,
+      capacityKwh: candidate.capacity_kwh,
+      powerKw: candidate.power_kw,
+      url: candidate.url,
+      imageUrl: candidate.image_url,
+      priceCents: candidate.price_cents,
+      currency: candidate.currency,
+    });
+
+    await publishProductIfReady(upserted.productId, { force: true });
+
+    await db
+      .from("catalog_candidates")
+      .update({
+        status: "published",
+        product_id: upserted.productId,
+        offer_id: upserted.offerId,
+        updated_at: new Date().toISOString(),
+      } as never)
+      .eq("id", candidateId);
+
+    revalidatePath("/admin/catalog");
+    revalidatePublicCatalog(upserted.slug);
+  } catch {
+    // Auth / pipeline errors: stil voor form post.
+  }
+}
+
+export async function rejectCatalogCandidateAction(formData: FormData): Promise<void> {
+  try {
+    await assertCatalogAccess();
+    const candidateId = String(formData.get("candidateId") ?? "");
+    if (!candidateId) return;
+    const db = getAdminDb();
+    await db
+      .from("catalog_candidates")
+      .update({
+        status: "rejected",
+        updated_at: new Date().toISOString(),
+      } as never)
+      .eq("id", candidateId);
+    revalidatePath("/admin/catalog");
+  } catch {
+    // Auth failures redirect.
+  }
+}
+
 export async function updateLeadStatusAction(formData: FormData): Promise<void> {
   try {
     const userId = await assertReviewAccess();

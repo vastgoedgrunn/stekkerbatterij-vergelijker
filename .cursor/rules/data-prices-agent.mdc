@@ -1,5 +1,5 @@
 ---
-description: Data & prices department. Keeps products, specs, merchants, prices and price history accurate. Daily. HARD verification gate on all researched prices and factual claims.
+description: Data & prices department. Catalog Discovery Engine daily: find NL stekkerbatterijen, SKU-match, verify outbound, auto-publish high-confidence. HARD gate on mismatches.
 alwaysApply: false
 ---
 
@@ -9,32 +9,65 @@ Read `.cursor/rules/00-agent-operating-system.mdc` first. This department has th
 
 ## Mandate
 
-Keep product catalog, specs, merchants, offers, prices and price history current and correct.
-For now via careful web research (merchant/manufacturer pages); structured APIs come later.
+Run and maintain the **Catalog Discovery Engine**: discover relevant NL plug-and-play
+stekkerbatterijen, fill specs/copy/image/offers, and publish only when the affiliate/
+merchant URL hard-matches the SKU. Keep prices and price history accurate.
+
+Primary KPI support: complete catalog → product views → `offer_clicked` with **correct**
+outbound (never wrong Bol SKU).
+
+## Cadence
+
+- **Daily (05:00 UTC / 07:00 CEST):** Catalog Discovery pipeline + completeness + prices.
+- **Daily evening:** Affiliate/outbound health (see automation #12).
 
 ## Scope (allowed to touch)
 
-- Supabase data: `products`, `brands`, `merchants`, `offers`, `price_history`, `product_specs`
-  (via server actions / `*.server.ts` / migrations — never the client).
-- `src/features/products/**`, `src/features/offers-pricing/**` (only when data shape changes).
+- Supabase: `catalog_runs`, `catalog_candidates`, `products`, `brands`, `merchants`,
+  `offers`, `price_history`, `product_specs` (via server actions / `*.server.ts` /
+  `src/features/catalog-discovery/**` — never the client).
+- `src/features/products/**`, `src/features/offers-pricing/**`, `src/features/catalog-discovery/**`
+  when data shape or match rules change.
+- Docs: `docs/agents/catalog-gap-matrix.md`, discovery seeds in `discover.ts`.
+
+## Pipeline (do this first every morning)
+
+1. Prefer `runCatalogDiscoveryPipeline` (admin "Run discovery" or code path) over ad-hoc SQL.
+2. High-confidence SKU match (`match_score >= 0.85` + product URL): upsert draft/product +
+   offer, run `verifyOutboundForProduct`, auto-publish only when >=1 offer has
+   `affiliate_link_status = ok`, image present, and price > 0.
+3. Low confidence / homepage/search URL / title mismatch: leave `needs_review`, Slack 🔒
+   with our title vs merchant title. Never set `ok` on a mismatched link.
+4. Completeness: every marquee brand ≥ 2 published products with image + usable outbound
+   (`src/config/marquee-brands.ts`, `/admin/catalog`).
+5. Prices: auto-update existing offers within ≤10% with source URL + timestamp.
 
 ## The verification gate (mandatory — follow `price-fact-verification`)
 
-- **May auto-update without approval:** a price change on an existing offer within a sane margin
-  (default ≤ 10% move) from a trusted, cited source. Record the source URL + timestamp.
+- **May auto-update without approval:**
+  - price change on an existing offer within margin (≤ 10%) from a trusted cited source;
+  - **new product/offer publish** only when Catalog Discovery reports high-confidence SKU
+    match **and** outbound verify status `ok` (merchant page title/tokens match our product).
 - **Requires 1-click Slack approval (with source citation):**
-  - price deviations larger than the margin,
-  - new products / merchants / offers,
-  - any new factual claim (saldering, subsidies, regulation, warranty terms).
-- **Never** publish a researched price or claim you cannot cite. When unsure, escalate to Slack.
+  - price deviations larger than the margin;
+  - low-confidence candidates (`needs_review`);
+  - any new factual claim (saldering, subsidies, regulation, warranty terms);
+  - force-publish without `ok` outbound.
+- **Never** publish a researched price or claim you cannot cite. When unsure, escalate.
+- **Never** mark `affiliate_link_status = ok` if page title/SKU tokens disagree with our
+  product name (SolarFlow 800 ≠ AB3000X lesson).
 
 ## Guardrails
 
 - Every price/claim carries a source URL and a checked-at timestamp.
 - Keep price history append-only; never rewrite historical points.
-- Flag stale offers (not seen in N days) rather than deleting silently.
+- Broken/pending offers must not power "Bekijk beste prijs"
+  (`offer-eligibility.ts` + `/api/go`).
+- Bol feed: use `BOL_PRODUCT_FEED_URL` / `BOL_PARTNER_API_KEY` when set; otherwise research
+  seeds + web research with citations.
 
 ## Definition of done
 
-Auto-updates: PR labelled `agent,data`, green checks, Slack digest of what changed + sources.
-Gated changes: Slack approval request with diff + citations; only proceed after 1-click approve.
+Auto path: pipeline stats in Slack (discovered / upserted / published / needs_review /
+broken) + PR only if code/seeds change (`agent`,`data`).
+Gated: Slack 🔒 with candidate URL, score, notes; proceed after ✅ or admin Approve & publish.
