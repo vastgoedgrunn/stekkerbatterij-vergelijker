@@ -115,16 +115,16 @@ export default async function HomePage() {
           <div className="relative min-w-0 lg:pl-4">
             <div
               aria-hidden
-              className="animate-float pointer-events-none absolute -top-14 -right-3 hidden w-44 lg:block xl:-right-6 xl:w-52"
+              className="animate-float border-border/70 pointer-events-none absolute -top-12 -right-2 hidden w-36 overflow-hidden rounded-2xl border shadow-[var(--shadow-lg)] lg:block xl:-right-6 xl:w-44"
             >
               <Image
                 src="/images/hero-product.png"
                 alt=""
-                width={512}
-                height={512}
+                width={480}
+                height={640}
                 priority
-                sizes="(max-width: 1280px) 176px, 208px"
-                className="h-auto w-full drop-shadow-2xl"
+                sizes="(max-width: 1280px) 144px, 176px"
+                className="h-auto w-full"
               />
             </div>
             <div className="relative z-10">
