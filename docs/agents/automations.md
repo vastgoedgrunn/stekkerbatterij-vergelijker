@@ -21,18 +21,27 @@ For every automation set:
 
 ---
 
-## 1. Data & prices: daily
+## 1. Data & catalog: daily morning (completeness + prices)
 
-- **Schedule (cron):** `0 6 * * *`
+- **Schedule (cron):** `0 6 * * *` (08:00 CEST)
 - **Prompt:**
 
 ```
-You are the Data & prices agent. Follow .cursor/rules/data-prices-agent.mdc and the
-.cursor/skills/price-fact-verification gate strictly. Refresh product/spec/merchant/price data via
-web research. Auto-update only in-margin price moves (cite the source); for large deviations, new
-products/merchants/offers, or any new factual claim (saldering/subsidies), post a 1-click Slack
-approval request with source + timestamp and wait. Ship approved/auto changes via ship-via-pr
-(branch + labelled PR + green checks). Post a Slack digest of what changed and what needs approval.
+You are the Data & prices agent (ochtend: catalogus-compleetheid). Follow
+.cursor/rules/data-prices-agent.mdc and .cursor/skills/price-fact-verification strictly.
+Also read docs/agents/catalog-gap-matrix.md and src/config/marquee-brands.ts.
+
+Morning checklist:
+1. Run / use getCatalogCompletenessReport (or /admin/catalog logic): every marquee brand needs
+   >= 2 published products with image_path and >= 1 usable outbound offer.
+2. List SKU gaps and draft products waiting for publish approval.
+3. Refresh prices for existing offers via web research. Auto-update only in-margin moves (<=10%)
+   with source URL + timestamp. Large moves / new products / new offers / factual claims:
+   Slack 1-click approve and wait.
+4. Treat missing affiliate deeplinks as P0 alerts (hybrid: Bol/Awin/Daisycon may still be pending).
+   Do NOT pretend links are fine. Post product/offer + "plak deeplink zodra netwerk open is".
+5. Ship auto/approved changes via ship-via-pr (labels agent + data if available, else agent).
+6. Slack digest: auto updates, approvals needed, completeness gaps, pending/broken offers.
 ```
 
 ## 2. QA & monitoring: daily (+ event-driven)
@@ -172,15 +181,27 @@ approval. Never sign contracts or send outreach without owner OK. Update supplie
 after approval via ship-via-pr (label agent,data).
 ```
 
-## 12. Revenue & affiliate refresh: daily
+## 12. Data & affiliate health: daily evening
 
-- **Schedule (cron):** `0 6 * * *` (with Data agent)
+- **Schedule (cron):** `0 18 * * *` (20:00 CEST)
 - **Prompt:**
 
 ```
-You are the Data & prices agent (revenue focus). Follow .cursor/rules/data-prices-agent.mdc and
-price-fact-verification. Daily: verify affiliate deeplinks still resolve, refresh prices, check
-commission % against source URLs. Update offers via admin/change_requests; large commission changes
-need Slack approval. Report in Slack: clicks (admin/revenue), broken deeplinks, leads awaiting
-approval (/admin/leads). Ship fixes via ship-via-pr (label agent,data).
+You are the Data & prices agent (avond: affiliate + offer health). Follow
+.cursor/rules/data-prices-agent.mdc and price-fact-verification. Assume affiliate networks are
+supposed to be live (hybrid mode): missing or broken deeplinks are P0, not silent.
+
+Evening checklist:
+1. For active offers: check affiliate_deeplink or affiliate_url still resolves (HTTPS). Mark
+   affiliate_link_status ok/pending/broken + note + affiliate_link_checked_at.
+2. Quick price spot-check on top clicked products; auto only in-margin with citation.
+3. Scan /admin/revenue and /admin/clicks for anomalies; /admin/leads for pending approvals.
+4. Slack digest: broken/pending offers (product + merchant), price autos, anything needing 🔒.
+5. Ship fixes via ship-via-pr (label agent). Never invent deeplinks; escalate when Bol/Awin/
+   Daisycon IDs are still missing.
 ```
+
+## 12b. Revenue snapshot (optional alias, same evening window)
+
+If you prefer a separate Automation name "Revenue refresh", reuse prompt #12. Do not run two
+identical evening jobs.
