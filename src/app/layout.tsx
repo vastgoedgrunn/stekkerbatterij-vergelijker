@@ -86,7 +86,7 @@ export default function RootLayout({
       >
         <a
           href="#main-content"
-          className="bg-primary text-primary-foreground focus-visible:ring-ring absolute top-3 left-3 z-[200] -translate-y-[120%] rounded-md px-4 py-2.5 text-sm font-semibold shadow-lg transition-transform focus:translate-y-0 focus-visible:ring-2 focus-visible:outline-none"
+          className="bg-primary text-primary-foreground focus-visible:ring-ring sr-only z-[200] rounded-md px-4 py-2.5 text-sm font-semibold shadow-lg focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus-visible:ring-2 focus-visible:outline-none"
         >
           Ga naar inhoud
         </a>
