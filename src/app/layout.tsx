@@ -76,9 +76,7 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        {daisyconVerify && (
-          <meta name={daisyconVerify.name} content={daisyconVerify.content} />
-        )}
+        {daisyconVerify && <meta name={daisyconVerify.name} content={daisyconVerify.content} />}
       </head>
       <body className="bg-background text-foreground flex min-h-full flex-col">
         <CartProvider>
