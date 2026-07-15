@@ -43,14 +43,15 @@ export function isProductSpecificOutboundUrl(rawUrl: string): boolean {
     if (hostname === "solarsale.nl" || hostname === "www.solarsale.nl") return false;
     if (BLOCKED_DESTINATIONS.has(destinationKey)) return false;
     if (pathname === "/") return false;
-    if (url.searchParams.has("searchtext") || url.searchParams.has("s")) return false;
-    if (pathname === "/zoeken" || pathname.includes("/search")) return false;
-    if (pathname.includes("/assortiment/k/")) return false;
 
     if (hostname === "partner.bol.com") {
       const innerDestination = url.searchParams.get("url");
       return innerDestination ? isProductSpecificOutboundUrl(innerDestination) : false;
     }
+
+    if (url.searchParams.has("searchtext") || url.searchParams.has("s")) return false;
+    if (pathname === "/zoeken" || pathname.includes("/search")) return false;
+    if (pathname.includes("/assortiment/k/")) return false;
 
     if (hostname === "bol.com" || hostname === "www.bol.com") {
       return pathname.startsWith("/nl/nl/p/");
