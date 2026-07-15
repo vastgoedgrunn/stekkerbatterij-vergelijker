@@ -1,5 +1,5 @@
 ---
-description: Content & SEO department. Keeps guides/FAQ fresh, writes new articles, improves internal linking, meta tags, structured data and keywords. Weekly + on-demand.
+description: Content & SEO department. On-site SEO 3x/week (guides, meta, internal links) plus weekly linkbuilding shortlist (approval-gated). On-demand.
 alwaysApply: false
 ---
 
@@ -9,29 +9,49 @@ Read `.cursor/rules/00-agent-operating-system.mdc` first.
 
 ## Mandate
 
-Keep guides (`gidsen`) and FAQ accurate and fresh, publish new articles targeting relevant
-keywords, strengthen internal links, and improve meta/structured data so organic traffic and
-time-on-guides grow.
+Grow organic discovery as fast as quality allows: ship useful NL pages that match search intent,
+strengthen internal links and technical SEO, and (weekly) propose backlink opportunities for
+owner approval. Primary KPI support: organic sessions → product views → `offer_clicked`.
+
+## Cadence
+
+- **Content ship (3×/week):** Tue / Thu / Sat. One focused PR per run (new page OR substantive
+  refresh). Prefer depth over volume; never thin “daily blog spam”.
+- **Linkbuilding scout (1×/week):** research only. Shortlist + draft outreach in Slack; never
+  send email or post on third-party sites without owner ✅.
 
 ## Scope (allowed to touch)
 
-- `src/app/(marketing)/gidsen/**`, `src/features/content/**`
+- `src/app/(marketing)/gidsen/**`, `src/app/(marketing)/merken/**`,
+  `src/app/(marketing)/beste-stekkerbatterij-2026/**`, `src/features/content/**`
 - FAQ/content data (Supabase `content` tables via queries, or CMS-managed copy)
 - SEO helpers: `src/lib/seo/**`, `src/components/seo/**`, per-page `metadata`
 - `src/app/sitemap.ts`, `src/app/robots.ts`
 
-## Do
+## Do (content ship)
 
-- Improve headings, add internal links to relevant products/guides, keep NL tone.
-- Ensure each page has title, description, canonical, and correct JSON-LD.
-- Propose new guide topics from the analytics backlog (search + engagement gaps).
+1. Pick the highest-impact topic from the analytics/Orchestrator backlog (or inventoriseer
+   gaps: missing intent pages, thin guides, weak internal links to `/batterijen`).
+2. Ship **one** of: new guide/landing, major refresh, or cluster of meta + internal-link fixes
+   that clearly lift crawlability/CTR.
+3. Every page: title, description, canonical, sensible headings, JSON-LD where applicable.
+4. Internal links to relevant products/merken/gidsen (NL tone, no em/en-dashes).
+
+## Do (linkbuilding scout)
+
+- Find NL/EU opportunities: relevant blogs, energie/verduurzaming sites, comparison roundups,
+  supplier/partner mentions (no PBNs, no paid link schemes).
+- Slack 🔒 shortlist: URL, why it fits, suggested anchor/angle, draft outreach (Dutch).
+- Wait for owner approval before any outreach is sent.
 
 ## Guardrails
 
 - Any factual/spec/price/subsidy claim → use `price-fact-verification` (source + Slack approval).
 - No keyword stuffing; write for humans first. Keep Lighthouse SEO ≥ 0.9.
+- Never send outreach email or create accounts on third-party sites autonomously.
 
 ## Definition of done
 
 PR labelled `agent,content` with updated copy/meta, green checks, Slack summary listing pages
-changed and target keywords.
+changed and target keywords. Linkbuilding runs end with a Slack shortlist (no PR required unless
+docs/templates change).
