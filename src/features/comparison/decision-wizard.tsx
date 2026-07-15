@@ -20,19 +20,19 @@ import type { ProductListItem } from "@/features/products/types";
 
 const usageOptions = [
   { label: "Laag (< 2.000 kWh)", value: 1800 },
-  { label: "Gemiddeld (2.000–3.500 kWh)", value: 2750 },
+  { label: "Gemiddeld (2.000 tot 3.500 kWh)", value: 2750 },
   { label: "Hoog (> 3.500 kWh)", value: 4500 },
 ];
 
 const solarKwpOptions = [
   { label: "Klein (< 3 kWp)", value: 2 },
-  { label: "Gemiddeld (3–6 kWp)", value: 4.5 },
+  { label: "Gemiddeld (3 tot 6 kWp)", value: 4.5 },
   { label: "Groot (> 6 kWp)", value: 8 },
 ];
 
 const budgetOptions = [
   { label: "Tot € 900", value: 90000 },
-  { label: "€ 900 – € 1.500", value: 150000 },
+  { label: "€ 900 tot € 1.500", value: 150000 },
   { label: "Geen limiet", value: 0 },
 ];
 
@@ -137,7 +137,7 @@ export function DecisionWizard({ products }: { products: ProductListItem[] }) {
       {step === 2 && (
         <WizardStep title="Warmtepomp of elektrische auto?">
           <p className="text-muted-foreground mb-4 text-sm">
-            Deze apparaten verhogen je piekverbruik — relevant voor de juiste batterijkeuze.
+            Deze apparaten verhogen je piekverbruik, relevant voor de juiste batterijkeuze.
           </p>
           <p className="mb-2 text-sm font-medium">Heb je een warmtepomp?</p>
           <OptionGroup

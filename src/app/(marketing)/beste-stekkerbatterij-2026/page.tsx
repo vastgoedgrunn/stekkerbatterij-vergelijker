@@ -16,7 +16,7 @@ import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
-const title = "Beste stekkerbatterij 2026 — onze top 10";
+const title = "Beste stekkerbatterij 2026: onze top 10";
 const description =
   "Onze onafhankelijke ranglijst van de beste plug-and-play stekkerbatterijen van 2026, geordend op gebruikersbeoordeling. Vergelijk capaciteit, vermogen, garantie en prijs.";
 

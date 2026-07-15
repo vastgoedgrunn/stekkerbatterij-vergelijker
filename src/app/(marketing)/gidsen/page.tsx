@@ -29,7 +29,7 @@ export default async function GuidesPage() {
             Gidsen &amp; kennis
           </h1>
           <p className="text-muted-foreground mt-2 max-w-2xl text-lg">
-            Onafhankelijke uitleg om de juiste keuze te maken — van capaciteit en veiligheid tot de
+            Onafhankelijke uitleg om de juiste keuze te maken, van capaciteit en veiligheid tot de
             afbouw van de salderingsregeling.
           </p>
         </Container>

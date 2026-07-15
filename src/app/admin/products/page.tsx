@@ -61,12 +61,12 @@ export default async function AdminProductsPage() {
                       {product.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{product.sku ?? "—"}</TableCell>
+                  <TableCell className="text-muted-foreground">{product.sku ?? "-"}</TableCell>
                   <TableCell className="text-muted-foreground">
-                    {product.suppliers?.name ?? "—"}
+                    {product.suppliers?.name ?? "-"}
                   </TableCell>
                   <TableCell className="text-right">
-                    {product.cost_cents != null ? formatPrice(product.cost_cents) : "—"}
+                    {product.cost_cents != null ? formatPrice(product.cost_cents) : "-"}
                   </TableCell>
                 </TableRow>
               ))}

@@ -35,7 +35,7 @@ export default async function AdminLeadsPage() {
     <div>
       <h1 className="text-2xl font-bold tracking-tight">Leads</h1>
       <p className="text-muted-foreground mt-1 text-sm">
-        Vaste thuisbatterij-aanvragen — doorsturen pas na goedkeuring.
+        Vaste thuisbatterij-aanvragen, doorsturen pas na goedkeuring.
       </p>
 
       <div className="border-border mt-8 overflow-hidden rounded-2xl border">
@@ -74,7 +74,7 @@ export default async function AdminLeadsPage() {
                   <TableCell>
                     {lead.estimated_commission_cents != null
                       ? formatPrice(lead.estimated_commission_cents)
-                      : "—"}
+                      : "-"}
                   </TableCell>
                   <TableCell>
                     {lead.status === "new" && (

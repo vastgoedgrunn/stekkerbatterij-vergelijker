@@ -30,7 +30,7 @@ interface OrderWithLines {
 /**
  * Na succesvolle betaling: shipment-records aanmaken en (indien leverancier +
  * contact-e-mail) een dropship-ordermail in de goedkeuringswachtrij zetten.
- * Geen auto-verzending — admin keurt goed in /admin/orders/[id].
+ * Geen auto-verzending, admin keurt goed in /admin/orders/[id].
  */
 export async function queueFulfillmentOnPaidOrder(orderId: string): Promise<void> {
   if (!isFeatureEnabled("shipping")) return;

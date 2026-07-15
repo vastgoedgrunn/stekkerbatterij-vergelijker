@@ -103,22 +103,22 @@ export default function PrivacyPage() {
         <LegalList
           items={[
             <>
-              <strong>Supabase</strong> — database, authenticatie en opslag van account-, bestel- en
+              <strong>Supabase</strong>: database, authenticatie en opslag van account-, bestel- en
               reviewgegevens.
             </>,
             <>
-              <strong>Vercel</strong> — hosting van de website en verwerking van technische
+              <strong>Vercel</strong>: hosting van de website en verwerking van technische
               logbestanden.
             </>,
             <>
-              <strong>Mollie</strong> — afhandeling van betalingen.
+              <strong>Mollie</strong>: afhandeling van betalingen.
             </>,
             <>
-              <strong>Resend</strong> — verzending van transactionele e-mails (zoals order- en
+              <strong>Resend</strong>: verzending van transactionele e-mails (zoals order- en
               verzendbevestigingen).
             </>,
             <>
-              <strong>Plausible Analytics</strong> — cookieloze, privacyvriendelijke
+              <strong>Plausible Analytics</strong>: cookieloze, privacyvriendelijke
               websitestatistieken (verwerkt binnen de EU).
             </>,
           ]}

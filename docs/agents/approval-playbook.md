@@ -22,7 +22,7 @@ Alles wat geld, klanten of juridische aansprakelijkheid raakt, stopt bij jou. Ag
 
 **Jij (1× per netwerk):**
 
-1. Account aanmaken (Bol, Awin, Daisycon — zie `docs/affiliate-signup.md`)
+1. Account aanmaken (Bol, Awin, Daisycon, zie `docs/affiliate-signup.md`)
 2. In Slack posten:
 
 ```
@@ -50,15 +50,15 @@ Agent post altijd:
 |-----------|-------|
 | Prijs <5% vs gisteren, zelfde merchant | Ja |
 | Commissie % ongewijzigd, deeplink fix | Ja |
-| Nieuwe commissie % of saldering/subsidie claim | **Nee — ✅** |
-| Nieuwe merchant/offer | **Nee — ✅** |
+| Nieuwe commissie % of saldering/subsidie claim | **Nee, ✅** |
+| Nieuwe merchant/offer | **Nee, ✅** |
 
 ---
 
 ## Leads (vaste batterij)
 
 1. Lead komt binnen via beslishulp → `/admin/leads` status `new`
-2. Slack: "Nieuwe lead — [naam] — admin link"
+2. Slack: "Nieuwe lead, [naam], admin link"
 3. Jij: bekijk kwalificatie → **Goedkeuren** in admin
 4. Jij: bel/mail klant zelf (of partner e-WNDR affiliate link)
 5. **Markeer verzonden** → **Geconverteerd** wanneer deal rond is
@@ -74,9 +74,9 @@ Wanneer Mollie + leverancier live:
 | Stap | Auto? |
 |------|-------|
 | Orderbevestiging na betaling | Ja (transactiemail) |
-| Mail naar leverancier | **Nee — admin ✅** |
+| Mail naar leverancier | **Nee, admin ✅** |
 | Track & trace naar klant | Admin "Markeer verzonden" |
-| Refund | **Nee — ✅ in Slack** |
+| Refund | **Nee, ✅ in Slack** |
 
 ---
 
@@ -84,9 +84,9 @@ Wanneer Mollie + leverancier live:
 
 | Reactie | Betekenis |
 |---------|-----------|
-| ✅ | Goedgekeurd — agent mag uitvoeren |
-| ❌ | Afwijzen — agent stopt of past aan |
-| 💬 | Vraag — agent antwoordt in thread, wacht op ✅ |
+| ✅ | Goedgekeurd, agent mag uitvoeren |
+| ❌ | Afwijzen, agent stopt of past aan |
+| 💬 | Vraag, agent antwoordt in thread, wacht op ✅ |
 
 Bij twijfel: **❌** is altijd veilig. Agents mogen nooit boos worden.
 
@@ -97,7 +97,7 @@ Bij twijfel: **❌** is altijd veilig. Agents mogen nooit boos worden.
 Als een agent 24u geen reactie krijgt op een 🔒-bericht:
 
 - Herinnering in Slack (automation kan daily digest herhalen)
-- Geen auto-execute — item blijft pending
+- Geen auto-execute, item blijft pending
 
 Als productie down is:
 

@@ -1,4 +1,4 @@
-# Domein & e-mail — stekkerbatterijvergelijker.com
+# Domein & e-mail: stekkerbatterijvergelijker.com
 
 ## Vercel (domein koppelen)
 
@@ -7,14 +7,14 @@
 
 | Type | Host/Naam | Waarde | Opmerking |
 |------|-----------|--------|-----------|
-| **A** | `@` (leeg) | `76.76.21.21` | Vercel apex — **vervang** huidige `213.249.67.10` |
+| **A** | `@` (leeg) | `76.76.21.21` | Vercel apex, **vervang** huidige `213.249.67.10` |
 | **CNAME** | `www` | `cname.vercel-dns.com` | www-subdomein |
 
 **Alternatief:** wijzig nameservers naar `ns1.vercel-dns.com` + `ns2.vercel-dns.com` (Vercel beheert dan alles).
 
-3. Wacht 5–30 min op DNS + SSL (Vercel stuurt e-mail bij succes).
+3. Wacht 5 tot 30 min op DNS + SSL (Vercel stuurt e-mail bij succes).
 
-### Mijndomein — waar klikken
+### Mijndomein: waar klikken
 
 1. Inloggen op [mijndomein.nl](https://www.mijndomein.nl)
 2. **Mijn domeinen** → `stekkerbatterijvergelijker.com` → **DNS beheren**
@@ -41,8 +41,8 @@ Preview/Development mogen `.vercel.app` blijven gebruiken.
 
 Aanbevolen adressen (al in `src/config/site.ts`):
 
-- `info@stekkerbatterijvergelijker.com` — algemeen contact
-- `support@stekkerbatterijvergelijker.com` — klantenservice / transactiemail reply-to
+- `info@stekkerbatterijvergelijker.com`: algemeen contact
+- `support@stekkerbatterijvergelijker.com`: klantenservice / transactiemail reply-to
 
 ### DNS voor betrouwbare bezorging
 

@@ -16,7 +16,7 @@ const serverSchema = z.object({
   DATABASE_URL: z.string().url().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
 
-  // Payments (release 2) — Mollie.
+  // Payments (release 2): Mollie.
   // De webhook her-bevraagt de betaalstatus via de Mollie API (geen aparte
   // webhook-secret nodig); daarom volstaat de API-key. Ontbreekt de key, dan
   // is de betaalintegratie een no-op (graceful, net als Supabase).
@@ -26,7 +26,7 @@ const serverSchema = z.object({
   SENDCLOUD_API_KEY: z.string().min(1).optional(),
   SENDCLOUD_API_SECRET: z.string().min(1).optional(),
 
-  // Transactionele e-mail (release 2) — Resend.
+  // Transactionele e-mail (release 2): Resend.
   // Ontbreekt de key of het afzenderadres, dan is e-mail een no-op (graceful).
   // EMAIL_FROM bv. "Stekkerbatterij Vergelijker <noreply@jouwdomein.nl>".
   RESEND_API_KEY: z.string().min(1).optional(),

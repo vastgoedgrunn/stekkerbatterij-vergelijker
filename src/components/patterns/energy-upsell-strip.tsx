@@ -20,7 +20,7 @@ export function EnergyUpsellStrip({ className }: { className?: string }) {
           <div>
             <p className="font-semibold">Past een dynamisch energiecontract bij jouw batterij?</p>
             <p className="text-muted-foreground mt-0.5 text-sm">
-              Met dynamische tarieven laad je goedkoper — ideaal in combinatie met opslag.
+              Met dynamische tarieven laad je goedkoper, ideaal in combinatie met opslag.
             </p>
           </div>
         </div>

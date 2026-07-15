@@ -66,7 +66,7 @@ export function ProductFilterPanel({ brands, categories, filters }: Props) {
               placeholder="min"
               aria-label="Minimale capaciteit"
             />
-            <span className="text-muted-foreground">–</span>
+            <span className="text-muted-foreground">tot</span>
             <Input
               type="number"
               name="maxCap"
@@ -91,7 +91,7 @@ export function ProductFilterPanel({ brands, categories, filters }: Props) {
               placeholder="min"
               aria-label="Minimale prijs"
             />
-            <span className="text-muted-foreground">–</span>
+            <span className="text-muted-foreground">tot</span>
             <Input
               type="number"
               name="maxPrijs"

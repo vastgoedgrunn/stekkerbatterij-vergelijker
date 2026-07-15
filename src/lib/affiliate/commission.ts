@@ -1,6 +1,6 @@
 import type { CommissionType } from "@/lib/db/database.types";
 
-/** Schat commissie in centen (geen garantie — alleen voor analytics/admin). */
+/** Schat commissie in centen (geen garantie, alleen voor analytics/admin). */
 export function estimateCommissionCents(input: {
   commissionType: CommissionType | null;
   commissionRate: number | null;

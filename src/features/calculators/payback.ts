@@ -1,5 +1,5 @@
 /**
- * Terugverdientijd- & besparingscalculator — puur rekenmodel.
+ * Terugverdientijd- en besparingscalculator: puur rekenmodel.
  *
  * BELANGRIJK: alle uitkomsten zijn SCHATTINGEN op basis van de aannames
  * hieronder. Dit zijn geen geverifieerde feiten. Er worden bewust GEEN
@@ -124,7 +124,7 @@ export function computePaybackYears(input: PaybackInput): number | null {
  * Cumulatieve (bruto) besparing over een aantal jaren.
  *
  * Simpel lineair model: jaarbesparing × jaren. Houdt bewust géén rekening met
- * prijsstijgingen, degradatie of rente — het is een indicatieve schatting.
+ * prijsstijgingen, degradatie of rente. Het is een indicatieve schatting.
  */
 export function computeSavingsOverYears(
   input: PaybackInput,

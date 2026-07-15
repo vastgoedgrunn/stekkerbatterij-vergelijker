@@ -1,7 +1,7 @@
-# Cursor Automations — schedules for the digital company
+# Cursor Automations: schedules for the digital company
 
 These are the recurring **Cursor Automations** that drive the autonomous team. Cursor
-Automations are not repo files — they are created in the **Automations editor** (Agents Window →
+Automations are not repo files, they are created in the **Automations editor** (Agents Window →
 Automations → New). This document is the ready-to-use spec: create each one and paste the prompt.
 
 **Slack setup:** read [slack-ops.md](./slack-ops.md) and [approval-playbook.md](./approval-playbook.md).
@@ -21,7 +21,7 @@ For every automation set:
 
 ---
 
-## 1. Data & prices — daily
+## 1. Data & prices: daily
 
 - **Schedule (cron):** `0 6 * * *`
 - **Prompt:**
@@ -35,7 +35,7 @@ approval request with source + timestamp and wait. Ship approved/auto changes vi
 (branch + labelled PR + green checks). Post a Slack digest of what changed and what needs approval.
 ```
 
-## 2. QA & monitoring — daily (+ event-driven)
+## 2. QA & monitoring: daily (+ event-driven)
 
 - **Schedule (cron):** `0 7 * * *`
 - **Also event-driven:** the `post-deploy-health.yml` workflow and Sentry issue alerts.
@@ -49,7 +49,7 @@ right department. Verify auto-rollback ran if production degraded; otherwise run
 Post a short Slack status with anything found and actions taken.
 ```
 
-## 3. Content & SEO — weekly
+## 3. Content & SEO: weekly
 
 - **Schedule (cron):** `0 8 * * 2` (Tuesday)
 - **Prompt:**
@@ -62,7 +62,7 @@ price-fact-verification. Ship via ship-via-pr (label agent,content). Post a Slac
 changed and target keywords.
 ```
 
-## 4. Tech & maintenance — weekly
+## 4. Tech & maintenance: weekly
 
 - **Schedule (cron):** `0 8 * * 3` (Wednesday)
 - **Prompt:**
@@ -74,7 +74,7 @@ keep CI green. Verify locally (typecheck, lint, build). Majors get their own PR 
 Ship via ship-via-pr (label agent,tech). Post a Slack changelog of what was updated and deferred.
 ```
 
-## 5. Conversion / CRO — biweekly (+ after each analytics report)
+## 5. Conversion / CRO: biweekly (+ after each analytics report)
 
 - **Schedule (cron):** `0 9 1,15 * *` (1st & 15th ≈ biweekly)
 - **Prompt:**
@@ -87,7 +87,7 @@ state the hypothesis + expected KPI in the PR. Ship via ship-via-pr (label agent
 hypothesis and PR link to Slack.
 ```
 
-## 6. Design & UX — biweekly
+## 6. Design & UX: biweekly
 
 - **Schedule (cron):** `0 9 8,22 * *` (8th & 22nd ≈ biweekly, offset from CRO)
 - **Prompt:**
@@ -99,7 +99,7 @@ keep light + dark correct and budgets green. Coordinate with CRO before changing
 Ship via ship-via-pr (label agent,design). Post a Slack summary with before/after notes.
 ```
 
-## 7. Analytics & reporting — Monday morning
+## 7. Analytics & reporting: Monday morning
 
 - **Schedule (cron):** `0 7 * * 1` (Monday)
 - **Prompt:**
@@ -108,12 +108,12 @@ Ship via ship-via-pr (label agent,design). Post a Slack summary with before/afte
 You are the Analytics & reporting agent. Follow .cursor/rules/analytics-reporting-agent.mdc. From
 Plausible, build the weekly KPI report (primary: outbound offer clicks + CTR; secondary: beslishulp
 completions, compare usage, product detail views, organic share, time on guides) versus last week,
-top pages, movers and drop-offs. Produce a prioritized backlog (3–7 items) each tagged with the
+top pages, movers and drop-offs. Produce a prioritized backlog (3 to 7 items) each tagged with the
 owning department + expected impact. Post the report + backlog to Slack and hand off to the
 orchestrator. Report only real numbers; if Plausible is not configured yet, say so.
 ```
 
-## 8. Orchestrator (lead) — Monday, after the report
+## 8. Orchestrator (lead): Monday, after the report
 
 - **Schedule (cron):** `0 8 * * 1` (Monday, one hour after the report)
 - **Prompt:**
@@ -136,7 +136,7 @@ prices". The relevant agent should follow its rule file and ship via `ship-via-p
 
 ---
 
-## 9. Commerce ops — daily (+ on paid orders)
+## 9. Commerce ops: daily (+ on paid orders)
 
 - **Schedule (cron):** `0 6 * * *` (same window as Data; runs after nightly orders)
 - **Prompt:**
@@ -148,7 +148,7 @@ approval_actions (supplier orders, refunds). Post a Slack digest with order # an
 approval. Ship safe fixes via ship-via-pr (label agent,commerce-ops). See docs/commerce-activation.md.
 ```
 
-## 10. Support email — on-demand (inbound pending)
+## 10. Support email: on-demand (inbound pending)
 
 - **Schedule:** on-demand until Gmail/Workspace/helpdesk is connected
 - **Prompt:**
@@ -160,7 +160,7 @@ without owner approval. Post Slack summary of drafts awaiting approval. Ship via
 (label agent,support) when changing templates or support code.
 ```
 
-## 11. Supplier sourcing — weekly
+## 11. Supplier sourcing: weekly
 
 - **Schedule (cron):** `0 10 * * 4` (Thursday)
 - **Prompt:**
@@ -172,7 +172,7 @@ approval. Never sign contracts or send outreach without owner OK. Update supplie
 after approval via ship-via-pr (label agent,data).
 ```
 
-## 12. Revenue & affiliate refresh — daily
+## 12. Revenue & affiliate refresh: daily
 
 - **Schedule (cron):** `0 6 * * *` (with Data agent)
 - **Prompt:**

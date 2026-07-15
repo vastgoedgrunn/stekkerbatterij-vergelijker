@@ -21,31 +21,31 @@ interface Row {
 const rows: Row[] = [
   {
     label: "Laagste prijs",
-    render: (p) => (p.lowestPriceCents !== null ? formatPrice(p.lowestPriceCents) : "—"),
+    render: (p) => (p.lowestPriceCents !== null ? formatPrice(p.lowestPriceCents) : "-"),
     value: (p) => p.lowestPriceCents,
     highlight: "min",
   },
   {
     label: "Capaciteit",
-    render: (p) => (p.capacityKwh !== null ? `${formatNumber(p.capacityKwh)} kWh` : "—"),
+    render: (p) => (p.capacityKwh !== null ? `${formatNumber(p.capacityKwh)} kWh` : "-"),
     value: (p) => p.capacityKwh,
     highlight: "max",
   },
   {
     label: "Vermogen",
-    render: (p) => (p.powerKw !== null ? `${formatNumber(p.powerKw)} kW` : "—"),
+    render: (p) => (p.powerKw !== null ? `${formatNumber(p.powerKw)} kW` : "-"),
     value: (p) => p.powerKw,
     highlight: "max",
   },
   {
     label: "Levensduur",
-    render: (p) => (p.cycles !== null ? `${formatNumber(p.cycles)} cycli` : "—"),
+    render: (p) => (p.cycles !== null ? `${formatNumber(p.cycles)} cycli` : "-"),
     value: (p) => p.cycles,
     highlight: "max",
   },
   {
     label: "Garantie",
-    render: (p) => (p.warrantyYears !== null ? `${p.warrantyYears} jaar` : "—"),
+    render: (p) => (p.warrantyYears !== null ? `${p.warrantyYears} jaar` : "-"),
     value: (p) => p.warrantyYears,
     highlight: "max",
   },

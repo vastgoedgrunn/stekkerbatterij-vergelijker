@@ -9,7 +9,7 @@ import { siteConfig } from "@/config/site";
 export const metadata: Metadata = {
   title: "Hoe wij vergelijken",
   description:
-    "Onze transparante methodologie voor het rangschikken van stekkerbatterijen — geen black box.",
+    "Onze transparante methodologie voor het rangschikken van stekkerbatterijen, geen black box.",
   alternates: { canonical: "/over-ons/hoe-wij-vergelijken" },
   openGraph: {
     title: "Hoe wij vergelijken",
@@ -28,7 +28,7 @@ const criteria = [
   },
   {
     title: "Zonnepanelen & vermogen",
-    text: "Met zonnepanelen weegt het vermogen (kW) zwaarder — zo vang je overschot beter op.",
+    text: "Met zonnepanelen weegt het vermogen (kW) zwaarder, zo vang je overschot beter op.",
   },
   {
     title: "Uitbreidbaarheid",
@@ -74,7 +74,7 @@ export default function HowWeComparePage() {
             <h2 className="font-semibold">Advertenties & affiliate</h2>
             <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
               Gesponsorde aanbiedingen zijn duidelijk gelabeld als &quot;Advertentie&quot;. Als je
-              via onze links koopt, kunnen wij een vergoeding ontvangen — dat verandert niets aan
+              via onze links koopt, kunnen wij een vergoeding ontvangen, dat verandert niets aan
               onze ranking. We sturen je altijd naar de aanbieder voor de actuele prijs en
               voorwaarden.
             </p>

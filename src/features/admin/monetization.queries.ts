@@ -57,8 +57,8 @@ export async function listClickSummary(): Promise<ClickSummaryRow[]> {
       } else {
         map.set(key, {
           offer_id: click.offer_id,
-          product_name: click.products?.name ?? "—",
-          merchant_name: click.merchants?.name ?? "—",
+          product_name: click.products?.name ?? "-",
+          merchant_name: click.merchants?.name ?? "-",
           click_count: 1,
           last_click_at: click.created_at,
         });

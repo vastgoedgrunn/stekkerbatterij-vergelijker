@@ -51,7 +51,7 @@ export async function generateMetadata({
     `Bekijk specificaties, prijzen en reviews van de ${product.name} van ${product.brand.name}.`;
 
   return {
-    title: `${product.name} — specificaties & prijzen`,
+    title: `${product.name}: specificaties en prijzen`,
     description,
     alternates: { canonical: `/batterijen/${product.slug}` },
     openGraph: {
@@ -191,7 +191,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     <p className="text-3xl font-bold tracking-tight">
                       {product.lowestPriceCents !== null
                         ? formatPrice(product.lowestPriceCents)
-                        : "—"}
+                        : "-"}
                     </p>
                     {bestOffer && (
                       <p className="text-muted-foreground mt-1 text-xs">

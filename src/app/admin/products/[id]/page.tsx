@@ -154,7 +154,7 @@ export default async function AdminProductDetailPage({
                     name="commissionType"
                     defaultValue={offer.commission_type ?? ""}
                   >
-                    <option value="">—</option>
+                    <option value="">-</option>
                     <option value="cps">CPS (%)</option>
                     <option value="cpa">CPA (vast)</option>
                   </Select>

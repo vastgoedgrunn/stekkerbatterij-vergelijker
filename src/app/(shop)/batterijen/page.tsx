@@ -76,7 +76,7 @@ export default async function CatalogPage({
             Alle stekkerbatterijen
           </h1>
           <p className="text-muted-foreground mt-2 max-w-2xl text-lg">
-            Onafhankelijk vergelijken op prijs, capaciteit, vermogen en garantie — met echte reviews
+            Onafhankelijk vergelijken op prijs, capaciteit, vermogen en garantie, met echte reviews
             en actuele prijzen.
           </p>
         </Container>

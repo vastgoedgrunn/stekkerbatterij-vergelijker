@@ -153,7 +153,7 @@ export async function createCheckout(
     vatRate,
   );
 
-  // Ingelogde gebruiker koppelen (optioneel — gast-checkout is toegestaan).
+  // Ingelogde gebruiker koppelen (optioneel, gast-checkout is toegestaan).
   const supabaseAuth = await createSupabaseServerClient();
   const {
     data: { user },
@@ -235,7 +235,7 @@ export async function createCheckout(
   try {
     const molliePayment = await getMollieClient().payments.create({
       amount: { currency: businessRules.currency, value: toMollieAmountValue(totals.totalCents) },
-      description: `Bestelling ${orderRow.order_number} — Stekkerbatterij Vergelijker`,
+      description: `Bestelling ${orderRow.order_number} van Stekkerbatterij Vergelijker`,
       redirectUrl: `${baseUrl}/bestelling/${orderRow.id}`,
       webhookUrl: `${baseUrl}/api/webhooks/mollie`,
       metadata: { order_id: orderRow.id },

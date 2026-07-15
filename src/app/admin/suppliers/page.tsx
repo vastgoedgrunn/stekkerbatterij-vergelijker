@@ -80,10 +80,10 @@ export default async function AdminSuppliersPage() {
                     </Link>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {supplier.contact_email ?? "—"}
+                    {supplier.contact_email ?? "-"}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {supplier.website_url ?? "—"}
+                    {supplier.website_url ?? "-"}
                   </TableCell>
                 </TableRow>
               ))}

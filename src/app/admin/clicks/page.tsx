@@ -55,7 +55,7 @@ export default async function AdminClicksPage() {
                     <Badge variant="default">{row.click_count}</Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground text-sm">
-                    {row.last_click_at ? new Date(row.last_click_at).toLocaleString("nl-NL") : "—"}
+                    {row.last_click_at ? new Date(row.last_click_at).toLocaleString("nl-NL") : "-"}
                   </TableCell>
                 </TableRow>
               ))
@@ -81,10 +81,10 @@ export default async function AdminClicksPage() {
                 <TableCell className="text-muted-foreground text-sm">
                   {new Date(click.created_at).toLocaleString("nl-NL")}
                 </TableCell>
-                <TableCell>{click.products?.name ?? "—"}</TableCell>
-                <TableCell>{click.merchants?.name ?? "—"}</TableCell>
+                <TableCell>{click.products?.name ?? "-"}</TableCell>
+                <TableCell>{click.merchants?.name ?? "-"}</TableCell>
                 <TableCell className="font-mono text-xs">
-                  {click.click_ref?.slice(0, 8) ?? "—"}
+                  {click.click_ref?.slice(0, 8) ?? "-"}
                 </TableCell>
               </TableRow>
             ))}

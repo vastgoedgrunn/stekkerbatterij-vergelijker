@@ -67,11 +67,11 @@ export default async function AdminOrderDetailPage({
         </div>
         <div>
           <dt className="text-muted-foreground">Betaald</dt>
-          <dd>{order.paid_at ? formatDate(order.paid_at) : "—"}</dd>
+          <dd>{order.paid_at ? formatDate(order.paid_at) : "-"}</dd>
         </div>
         <div>
           <dt className="text-muted-foreground">Factuurnummer</dt>
-          <dd>{order.invoice_number ?? "—"}</dd>
+          <dd>{order.invoice_number ?? "-"}</dd>
         </div>
         <div>
           <dt className="text-muted-foreground">Totaal</dt>
@@ -121,7 +121,7 @@ export default async function AdminOrderDetailPage({
 
       {pendingRefunds.length > 0 && (
         <section className="border-border mt-8 space-y-4 border-t pt-6">
-          <h2 className="font-semibold">Terugbetaling — goedkeuring vereist</h2>
+          <h2 className="font-semibold">Terugbetaling: goedkeuring vereist</h2>
           {pendingRefunds.map((action) => (
             <article key={action.id} className="border-border rounded-xl border p-4">
               <p className="text-sm font-medium">{action.summary}</p>
@@ -142,7 +142,7 @@ export default async function AdminOrderDetailPage({
           <input type="hidden" name="orderId" value={order.id} />
           <h2 className="font-semibold">Terugbetaling aanvragen</h2>
           <p className="text-muted-foreground text-sm">
-            Maakt een goedkeuringsverzoek aan — geen automatische refund.
+            Maakt een goedkeuringsverzoek aan, geen automatische refund.
           </p>
           <Input name="reason" placeholder="Reden (optioneel)" />
           <Button type="submit" size="sm" variant="outline">

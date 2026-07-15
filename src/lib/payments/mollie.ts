@@ -19,7 +19,7 @@ let cached: MollieClient | null = null;
 export function getMollieClient(): MollieClient {
   const apiKey = serverEnv.MOLLIE_API_KEY;
   if (!apiKey) {
-    throw new Error("MOLLIE_API_KEY ontbreekt — betaalintegratie is niet geconfigureerd.");
+    throw new Error("MOLLIE_API_KEY ontbreekt, betaalintegratie is niet geconfigureerd.");
   }
   cached ??= createMollieClient({ apiKey });
   return cached;

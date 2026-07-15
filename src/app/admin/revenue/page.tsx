@@ -31,7 +31,7 @@ export default async function AdminRevenuePage() {
     <div>
       <h1 className="text-2xl font-bold tracking-tight">Omzet &amp; revenue</h1>
       <p className="text-muted-foreground mt-1 text-sm">
-        Geschatte affiliate-commissie op basis van geverifieerde tarieven — geen
+        Geschatte affiliate-commissie op basis van geverifieerde tarieven, zonder
         netwerk-bevestiging.
       </p>
 

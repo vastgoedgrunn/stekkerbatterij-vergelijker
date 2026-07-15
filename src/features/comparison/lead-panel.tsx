@@ -58,7 +58,7 @@ export function LeadPanel({
             <h3 className="text-lg font-bold">Vaste thuisbatterij past beter bij jou</h3>
             <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
               Voor jouw situatie (warmtepomp, EV of hoog verbruik) is een geïnstalleerde
-              thuisbatterij vaak rendabeler dan een plug-in model. Wij helpen je verder — zonder
+              thuisbatterij vaak rendabeler dan een plug-in model. Wij helpen je verder, zonder
               verplichting.
             </p>
             <ul className="text-muted-foreground mt-3 space-y-1 text-sm">
@@ -94,7 +94,7 @@ export function LeadPanel({
           <div className="border-border rounded-xl border p-4">
             <p className="text-sm font-semibold">Persoonlijk advies van ons</p>
             <p className="text-muted-foreground mt-1 text-xs">
-              Laat je gegevens achter — wij bellen of mailen je binnen 2 werkdagen.
+              Laat je gegevens achter, wij bellen of mailen je binnen 2 werkdagen.
             </p>
           </div>
         </div>

@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * DESIGN TOKENS — één bron van waarheid.
+ * DESIGN TOKENS: één bron van waarheid.
  * Semantische namen (background/primary/border) i.p.v. directe hues,
  * zodat rebrand en dark mode zonder codewijzigingen mogelijk zijn.
  * Kleuren in OKLCH voor perceptuele consistentie en WCAG-contrast.
@@ -12,7 +12,7 @@
  * zachte gelaagde elevatie en een subtiele CTA-highlight.
  */
 :root {
-  /* Soberder, gezaghebbender radius (pro-shift) — dichter bij Independer/Pricewise. */
+  /* Soberder, gezaghebbender radius (pro-shift), dichter bij Independer/Pricewise. */
   --radius: 0.5rem;
 
   /* Warme, bijna-witte achtergrond i.p.v. steriel puur wit. */
