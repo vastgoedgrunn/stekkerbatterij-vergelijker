@@ -1,6 +1,11 @@
 import { formatPrice } from "@/lib/format";
 import { siteConfig } from "@/config/site";
-import type { EmailMessage, OrderEmailData, ShippingEmailData } from "./types";
+import type {
+  EmailMessage,
+  OrderEmailData,
+  ShippingEmailData,
+  SupplierOrderEmailData,
+} from "./types";
 
 function layout(heading: string, bodyHtml: string): string {
   return `<!doctype html>
@@ -154,6 +159,69 @@ export function shippingEmail(data: ShippingEmailData): EmailMessage {
     to: data.email,
     subject: `Je bestelling #${data.orderNumber} is verzonden`,
     html: layout("Je bestelling is onderweg", bodyHtml),
+    text,
+  };
+}
+
+/** Dropship-bestelling naar leverancier (wacht op admin-goedkeuring vóór verzending). */
+export function supplierOrderEmail(data: SupplierOrderEmailData): EmailMessage {
+  const lineRows = data.lines
+    .map(
+      (l) =>
+        `<tr><td style="padding:4px 0;">${escapeHtml(l.name)}</td><td>${escapeHtml(l.sku ?? "—")}</td><td style="text-align:right;">${l.quantity}</td></tr>`,
+    )
+    .join("");
+
+  const addressBlock = data.shippingAddress
+    ? `<p style="margin:12px 0 0;"><strong>Verzendadres</strong><br/>
+        ${escapeHtml(data.shippingAddress.fullName)}<br/>
+        ${escapeHtml(data.shippingAddress.line1)}<br/>
+        ${data.shippingAddress.line2 ? `${escapeHtml(data.shippingAddress.line2)}<br/>` : ""}
+        ${escapeHtml(data.shippingAddress.postalCode)} ${escapeHtml(data.shippingAddress.city)}<br/>
+        ${escapeHtml(data.shippingAddress.country)}
+        ${data.shippingAddress.phone ? `<br/>Tel: ${escapeHtml(data.shippingAddress.phone)}` : ""}
+      </p>`
+    : `<p style="margin:12px 0 0;color:#6b7280;">Verzendadres: nog niet beschikbaar in het systeem.</p>`;
+
+  const bodyHtml = `
+    <p style="margin:0 0 12px;">Beste ${escapeHtml(data.supplierName)},</p>
+    <p style="margin:0 0 12px;">Graag de onderstaande order verzenden voor onze klantbestelling <strong>#${data.orderNumber}</strong> (${siteConfig.name}).</p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:8px;">
+      <thead><tr><th align="left">Product</th><th align="left">SKU</th><th align="right">Aantal</th></tr></thead>
+      <tbody>${lineRows}</tbody>
+    </table>
+    ${addressBlock}
+    <p style="margin:16px 0 0;font-size:13px;color:#6b7280;">Stuur track &amp; trace terug zodra verzonden.</p>`;
+
+  const textLines = data.lines.map(
+    (l) => `- ${l.quantity}x ${l.name}${l.sku ? ` (${l.sku})` : ""}`,
+  );
+
+  const text = [
+    `Beste ${data.supplierName},`,
+    "",
+    `Graag order verzenden voor klantbestelling #${data.orderNumber} (${siteConfig.name}).`,
+    "",
+    ...textLines,
+    "",
+    data.shippingAddress
+      ? [
+          "Verzendadres:",
+          data.shippingAddress.fullName,
+          data.shippingAddress.line1,
+          data.shippingAddress.line2 ?? "",
+          `${data.shippingAddress.postalCode} ${data.shippingAddress.city}`,
+          data.shippingAddress.country,
+        ]
+          .filter(Boolean)
+          .join("\n")
+      : "Verzendadres: nog niet beschikbaar.",
+  ].join("\n");
+
+  return {
+    to: data.recipientEmail,
+    subject: `Dropship-order #${data.orderNumber} — ${siteConfig.name}`,
+    html: layout(`Nieuwe dropship-order #${data.orderNumber}`, bodyHtml),
     text,
   };
 }

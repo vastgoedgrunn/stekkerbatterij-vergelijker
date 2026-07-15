@@ -9,6 +9,10 @@ import {
   requireAdminUser,
 } from "@/features/auth/rbac";
 import { getAdminDb } from "./db.server";
+import {
+  approveAndSendAction,
+  markShipmentShipped,
+} from "./fulfillment.server";
 import type { ChangeRequestStatus, ProductStatus } from "@/lib/db/database.types";
 
 async function assertCatalogAccess(): Promise<string> {
@@ -145,6 +149,44 @@ export async function updateOrderNotesAction(formData: FormData): Promise<void> 
     const { error } = await db.from("orders").update({ notes } as never).eq("id", orderId);
     if (error) return;
 
+    revalidatePath(`/admin/orders/${orderId}`);
+  } catch {
+    // Auth failures redirect.
+  }
+}
+
+export async function approveApprovalAction(formData: FormData): Promise<void> {
+  try {
+    const userId = await assertOrderAccess();
+    const actionId = String(formData.get("actionId") ?? "");
+    const orderId = String(formData.get("orderId") ?? "");
+    if (!actionId || !orderId) return;
+
+    await approveAndSendAction(actionId, userId);
+    revalidatePath(`/admin/orders/${orderId}`);
+  } catch {
+    // Auth failures redirect.
+  }
+}
+
+export async function markShippedAction(formData: FormData): Promise<void> {
+  try {
+    const userId = await assertOrderAccess();
+    const shipmentId = String(formData.get("shipmentId") ?? "");
+    const orderId = String(formData.get("orderId") ?? "");
+    const carrier = String(formData.get("carrier") ?? "").trim();
+    const trackingCode = String(formData.get("trackingCode") ?? "").trim();
+    const trackingUrl = String(formData.get("trackingUrl") ?? "").trim() || null;
+    if (!shipmentId || !orderId || !carrier || !trackingCode) return;
+
+    await markShipmentShipped({
+      shipmentId,
+      orderId,
+      carrier,
+      trackingCode,
+      trackingUrl,
+      approvedBy: userId,
+    });
     revalidatePath(`/admin/orders/${orderId}`);
   } catch {
     // Auth failures redirect.

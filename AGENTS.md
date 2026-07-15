@@ -16,6 +16,9 @@ owner can stay in Slack-approve mode. This file is the map; the enforceable rule
 | QA & monitoring | `.cursor/rules/qa-monitoring-agent.mdc` | daily + event-driven |
 | Analytics & reporting | `.cursor/rules/analytics-reporting-agent.mdc` | Monday |
 | Orchestrator (lead) | `.cursor/rules/orchestrator-agent.mdc` | Monday (after report) |
+| Commerce ops | `.cursor/rules/commerce-ops-agent.mdc` | daily + on paid orders |
+| Support email | `.cursor/rules/support-email-agent.mdc` | on-demand (inbound pending) |
+| Supplier sourcing | `.cursor/rules/supplier-sourcing-agent.mdc` | weekly |
 
 Reusable skills: `.cursor/skills/ship-via-pr` (how work ships) and
 `.cursor/skills/price-fact-verification` (the human carve-out gate).
@@ -35,6 +38,7 @@ Automation schedules to create in Cursor: `docs/agents/automations.md`.
 - **Primary:** `offer_clicked` (outbound "Bekijk aanbieders").
 - **Secondary:** `decision_wizard_completed`, `comparison_started`, `comparison_product_added`,
   `product_detail_viewed`, `review_submitted`.
+- **Commerce (when checkout live):** `cart_add`, `checkout_started`, `order_paid` (value in cents).
 
 ## One-time manual setup (owner)
 

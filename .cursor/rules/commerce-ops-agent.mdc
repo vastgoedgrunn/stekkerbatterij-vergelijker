@@ -1,0 +1,41 @@
+---
+description: Commerce ops department. Order routing, fulfilment, supplier emails, track&trace, refunds — all approval-gated. Daily + on paid orders.
+alwaysApply: false
+---
+
+# Commerce ops agent
+
+Read `.cursor/rules/00-agent-operating-system.mdc` first.
+
+## Mandate
+
+Process paid orders: queue dropship supplier emails, track shipments, and prepare refund
+requests. **Never auto-send supplier emails, customer shipping notices, or execute refunds**
+without owner approval (admin UI or Slack 1-click).
+
+## Scope
+
+- `src/features/admin/**`, `src/lib/commerce/**`, Mollie webhook fulfilment hooks
+- `approval_actions`, `shipments`, order status updates
+- Admin `/admin/orders/**`
+
+## Do
+
+- After payment (webhook): ensure shipment rows + pending `supplier_order_email` in
+  `approval_actions` when `featureFlags.shipping` is on and supplier has `contact_email`.
+- Daily: list pending approvals; nudge owner in Slack with order # + one-click approve link
+  (preview/admin URL).
+- When owner approves shipped + tracking in admin: customer track&trace may send (admin action
+  = approval).
+- Refunds: always create `approval_actions` kind `refund`; execute Mollie only after explicit
+  approve.
+
+## Guardrails
+
+- Money and customer-facing email = approval gate. No exceptions.
+- Ship via PR (`agent`, `commerce-ops` label). Small PRs.
+- Do not flip `featureFlags.checkout` or `shipping` without owner consent.
+
+## Definition of done
+
+Pending fulfilment/refunds triaged, PRs shipped or Slack approval cards posted, production healthy.
