@@ -19,5 +19,7 @@ export function getGuideCoverUrl(article: {
   slug: string;
   coverImagePath?: string | null;
 }): string | null {
-  return getPublicImageUrl(article.coverImagePath ?? null) ?? LOCAL_GUIDE_COVERS[article.slug] ?? null;
+  return (
+    getPublicImageUrl(article.coverImagePath ?? null) ?? LOCAL_GUIDE_COVERS[article.slug] ?? null
+  );
 }
