@@ -22,7 +22,7 @@ export default async function EnergiePage() {
   const partners = await listActiveEnergyPartners();
 
   return (
-    <main>
+    <main id="main-content">
       <Container className="py-12">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">

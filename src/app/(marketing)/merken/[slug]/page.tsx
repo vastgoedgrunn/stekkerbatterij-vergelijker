@@ -75,7 +75,7 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ sl
   ];
 
   return (
-    <main>
+    <main id="main-content">
       <JsonLd data={structuredData} />
 
       <Container className="py-8">

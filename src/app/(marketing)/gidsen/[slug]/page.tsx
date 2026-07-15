@@ -50,7 +50,7 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
   const cover = getGuideCoverUrl(article);
 
   return (
-    <main>
+    <main id="main-content">
       <JsonLd
         data={[
           articleJsonLd(article),

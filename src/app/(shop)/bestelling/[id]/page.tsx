@@ -79,7 +79,7 @@ export default async function OrderStatusPage({ params }: { params: Promise<{ id
     (order.status === "pending" || order.status === "failed") && order.payment?.checkoutUrl;
 
   return (
-    <main>
+    <main id="main-content">
       {order.status === "paid" && <OrderPaidTracker orderValueCents={order.totalCents} />}
       <Container className="py-10">
         <div className="mx-auto max-w-2xl">

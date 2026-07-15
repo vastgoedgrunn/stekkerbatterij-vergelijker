@@ -15,7 +15,7 @@ export default async function DecisionAidPage() {
   const { items } = await getProducts({ pageSize: businessRules.catalog.maxPageSize });
 
   return (
-    <main className="relative overflow-hidden">
+    <main id="main-content" className="relative overflow-hidden">
       <div className="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,black,transparent_65%)] opacity-50" />
       <div className="relative mx-auto w-full max-w-3xl px-4 py-14">
         <header className="mb-10 text-center">

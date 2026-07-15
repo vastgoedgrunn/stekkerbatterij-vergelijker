@@ -42,7 +42,7 @@ const criteria = [
 
 export default function HowWeComparePage() {
   return (
-    <main>
+    <main id="main-content">
       <Container className="py-10 sm:py-14">
         <Link
           href="/over-ons"

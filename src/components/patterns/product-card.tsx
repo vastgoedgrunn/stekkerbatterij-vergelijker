@@ -5,12 +5,14 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { RatingStars } from "@/components/patterns/rating-stars";
 import { CompareToggle } from "@/features/comparison/compare-toggle";
+import { OfferLink } from "@/features/offers-pricing/offer-link";
 import { formatNumber, formatPrice } from "@/lib/format";
 import { getPublicImageUrl } from "@/lib/supabase/storage";
 import type { ProductListItem } from "@/features/products/types";
 
 export function ProductCard({ product }: { product: ProductListItem }) {
   const imageUrl = getPublicImageUrl(product.imagePath);
+  const outboundOffer = product.bestOffer?.id ? product.bestOffer : null;
 
   const pricePerKwh =
     product.lowestPriceCents !== null && product.capacityKwh && product.capacityKwh > 0
@@ -35,12 +37,15 @@ export function ProductCard({ product }: { product: ProductListItem }) {
 
   return (
     <Card interactive className="group relative flex h-full flex-col overflow-hidden">
-      <div className="from-accent/60 via-muted to-background relative aspect-[4/3] overflow-hidden bg-gradient-to-br">
-        <Link
-          href={`/batterijen/${product.slug}`}
-          className="flex h-full w-full items-center justify-center focus-visible:outline-none"
-          aria-label={product.name}
-        >
+      <div className="absolute top-3 right-3 z-20">
+        <CompareToggle slug={product.slug} name={product.name} />
+      </div>
+
+      <Link
+        href={`/batterijen/${product.slug}`}
+        className="focus-visible:ring-ring flex flex-1 flex-col rounded-[inherit] focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
+      >
+        <div className="from-accent/60 via-muted to-background relative aspect-[4/3] overflow-hidden bg-gradient-to-br">
           {imageUrl ? (
             <Image
               src={imageUrl}
@@ -50,85 +55,97 @@ export function ProductCard({ product }: { product: ProductListItem }) {
               className="object-contain p-6 transition-transform duration-300 group-hover:scale-[1.02]"
             />
           ) : (
-            <BatteryCharging className="text-primary/25 size-20" aria-hidden />
-          )}
-        </Link>
-
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-          {product.expandable && <Badge variant="highlight">Uitbreidbaar</Badge>}
-        </div>
-        <div className="absolute top-3 right-3">
-          <CompareToggle slug={product.slug} name={product.name} className="relative z-10" />
-        </div>
-      </div>
-
-      <div className="flex flex-1 flex-col gap-3 p-5">
-        <div>
-          <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
-            {product.brand.name}
-          </p>
-          <h3 className="mt-0.5 leading-tight font-semibold">
-            <Link
-              href={`/batterijen/${product.slug}`}
-              className="group-hover:text-primary transition-colors after:absolute after:inset-0"
-            >
-              {product.name}
-            </Link>
-          </h3>
-        </div>
-
-        <RatingStars average={product.rating.average} count={product.rating.count} />
-
-        <ul className="flex flex-wrap gap-1.5">
-          {specs.map((spec) => (
-            <li
-              key={spec.label}
-              className="bg-muted text-muted-foreground inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium"
-            >
-              <spec.icon className="size-3.5" aria-hidden />
-              {spec.label}
-            </li>
-          ))}
-        </ul>
-
-        <div className="border-border/70 mt-auto space-y-3 border-t pt-4">
-          {product.lowestPriceCents !== null ? (
-            <div className="flex items-end justify-between gap-3">
-              <div>
-                <span className="text-muted-foreground block text-xs">
-                  vanaf · {product.offerCount}{" "}
-                  {product.offerCount === 1 ? "aanbieder" : "aanbieders"}
-                </span>
-                <span className="text-2xl font-bold tracking-tight">
-                  {formatPrice(product.lowestPriceCents)}
-                </span>
-              </div>
-              {pricePerKwh !== null && (
-                <span className="text-muted-foreground text-right text-xs leading-tight">
-                  <span className="text-foreground block font-semibold">
-                    {formatPrice(pricePerKwh)}
-                  </span>
-                  per kWh
-                </span>
-              )}
-            </div>
-          ) : (
-            <span className="text-muted-foreground block text-sm">Prijs volgt</span>
+            <span className="flex h-full w-full items-center justify-center">
+              <BatteryCharging className="text-primary/25 size-20" aria-hidden />
+            </span>
           )}
 
-          {product.bestOffer && (
-            <p className="text-muted-foreground text-xs">
-              Laagste prijs bij{" "}
-              <span className="text-foreground font-medium">{product.bestOffer.merchantName}</span>
+          <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+            {product.expandable && <Badge variant="highlight">Uitbreidbaar</Badge>}
+          </div>
+        </div>
+
+        <div className="flex flex-1 flex-col gap-3 p-5">
+          <div>
+            <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+              {product.brand.name}
             </p>
-          )}
+            <h3 className="group-hover:text-primary mt-0.5 leading-tight font-semibold transition-colors">
+              {product.name}
+            </h3>
+          </div>
 
-          <span className="border-primary/30 text-primary group-hover:bg-primary group-hover:text-primary-foreground relative z-10 flex w-full items-center justify-center gap-1.5 rounded-md border px-4 py-2 text-sm font-semibold transition-colors">
-            Bekijk aanbieders
-            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-          </span>
+          <RatingStars average={product.rating.average} count={product.rating.count} />
+
+          <ul className="flex flex-wrap gap-1.5">
+            {specs.map((spec) => (
+              <li
+                key={spec.label}
+                className="bg-muted text-muted-foreground inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium"
+              >
+                <spec.icon className="size-3.5" aria-hidden />
+                {spec.label}
+              </li>
+            ))}
+          </ul>
+
+          <div className="border-border/70 mt-auto space-y-3 border-t pt-4">
+            {product.lowestPriceCents !== null ? (
+              <div className="flex items-end justify-between gap-3">
+                <div>
+                  <span className="text-muted-foreground block text-xs">
+                    vanaf · {product.offerCount}{" "}
+                    {product.offerCount === 1 ? "aanbieder" : "aanbieders"}
+                  </span>
+                  <span className="text-2xl font-bold tracking-tight">
+                    {formatPrice(product.lowestPriceCents)}
+                  </span>
+                </div>
+                {pricePerKwh !== null && (
+                  <span className="text-muted-foreground text-right text-xs leading-tight">
+                    <span className="text-foreground block font-semibold">
+                      {formatPrice(pricePerKwh)}
+                    </span>
+                    per kWh
+                  </span>
+                )}
+              </div>
+            ) : (
+              <span className="text-muted-foreground block text-sm">Prijs volgt</span>
+            )}
+
+            {outboundOffer && (
+              <p className="text-muted-foreground text-xs">
+                Laagste prijs bij{" "}
+                <span className="text-foreground font-medium">{outboundOffer.merchantName}</span>
+              </p>
+            )}
+
+            <span className="border-primary/30 text-primary group-hover:bg-primary group-hover:text-primary-foreground flex w-full items-center justify-center gap-1.5 rounded-md border px-4 py-2 text-sm font-semibold transition-colors">
+              Bekijk details
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </div>
         </div>
-      </div>
+      </Link>
+
+      {outboundOffer && (
+        <div className="relative z-10 px-5 pb-5">
+          <OfferLink
+            offerId={outboundOffer.id}
+            productId={product.id}
+            merchant={outboundOffer.merchantName}
+            sponsored={outboundOffer.isSponsored}
+            estimatedCommissionCents={outboundOffer.estimatedCommissionCents}
+            placement="catalog_card"
+            size="sm"
+            variant="outline"
+            className="w-full"
+          >
+            Naar {outboundOffer.merchantName}
+          </OfferLink>
+        </div>
+      )}
     </Card>
   );
 }

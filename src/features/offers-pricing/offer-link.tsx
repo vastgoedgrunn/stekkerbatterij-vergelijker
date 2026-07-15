@@ -5,7 +5,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/observability/analytics";
 
-export type OfferLinkPlacement = "pdp_hero" | "pdp_table" | "sticky_mobile" | "wizard" | "compare";
+export type OfferLinkPlacement =
+  "pdp_hero" | "pdp_table" | "sticky_mobile" | "wizard" | "compare" | "catalog_card";
 
 /**
  * Affiliate-/aanbiederlink die de primaire conversie-KPI meet:
@@ -20,6 +21,7 @@ export function OfferLink({
   estimatedCommissionCents,
   placement,
   size = "sm",
+  variant = "primary",
   className,
   children,
 }: {
@@ -30,6 +32,7 @@ export function OfferLink({
   estimatedCommissionCents?: number | null;
   placement?: OfferLinkPlacement;
   size?: "sm" | "lg";
+  variant?: "primary" | "outline";
   className?: string;
   children: React.ReactNode;
 }) {
@@ -50,7 +53,7 @@ export function OfferLink({
           },
         })
       }
-      className={cn(buttonVariants({ size }), className)}
+      className={cn(buttonVariants({ size, variant }), className)}
     >
       {children}
       <ExternalLink className="size-4" />

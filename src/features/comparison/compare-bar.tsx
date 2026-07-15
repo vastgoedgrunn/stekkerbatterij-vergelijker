@@ -7,17 +7,19 @@ import { useCompare } from "./compare-store";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+const COMPARE_BAR_SPACE = "calc(5.5rem + env(safe-area-inset-bottom, 0px))";
+
 export function CompareBar() {
   const { items, slugs, clear, remove } = useCompare();
 
   React.useEffect(() => {
     if (slugs.length === 0) {
-      document.body.style.removeProperty("padding-bottom");
+      document.documentElement.style.setProperty("--compare-bar-space", "0px");
       return;
     }
-    document.body.style.paddingBottom = "calc(5.5rem + env(safe-area-inset-bottom, 0px))";
+    document.documentElement.style.setProperty("--compare-bar-space", COMPARE_BAR_SPACE);
     return () => {
-      document.body.style.removeProperty("padding-bottom");
+      document.documentElement.style.setProperty("--compare-bar-space", "0px");
     };
   }, [slugs.length]);
 

@@ -77,7 +77,7 @@ export default async function BestBatteryPage() {
   );
 
   return (
-    <main>
+    <main id="main-content">
       <JsonLd data={structuredData} />
 
       <div className="border-border/70 from-primary/5 border-b bg-gradient-to-b to-transparent">

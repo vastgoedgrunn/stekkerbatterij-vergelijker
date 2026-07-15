@@ -13,7 +13,7 @@ export default function CheckoutPage() {
   if (!isFeatureEnabled("checkout")) notFound();
 
   return (
-    <main>
+    <main id="main-content">
       <CheckoutView />
     </main>
   );

@@ -78,7 +78,18 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         {daisyconVerify && <meta name={daisyconVerify.name} content={daisyconVerify.content} />}
       </head>
-      <body className="bg-background text-foreground flex min-h-full flex-col">
+      <body
+        className="bg-background text-foreground flex min-h-full flex-col"
+        style={{
+          paddingBottom: "calc(var(--compare-bar-space) + var(--sticky-offer-space))",
+        }}
+      >
+        <a
+          href="#main-content"
+          className="bg-primary text-primary-foreground focus-visible:ring-ring absolute top-3 left-3 z-[200] -translate-y-[120%] rounded-md px-4 py-2.5 text-sm font-semibold shadow-lg transition-transform focus:translate-y-0 focus-visible:ring-2 focus-visible:outline-none"
+        >
+          Ga naar inhoud
+        </a>
         <CartProvider>
           <CompareProvider>
             <SiteHeader />
