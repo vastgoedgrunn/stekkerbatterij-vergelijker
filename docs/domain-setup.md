@@ -2,16 +2,25 @@
 
 ## Vercel (domein koppelen)
 
-1. Vercel → Project → **Settings → Domains**
-2. Voeg toe: `stekkerbatterijvergelijker.com` en `www.stekkerbatterijvergelijker.com`
-3. Zet DNS-records bij je registrar (Vercel toont de exacte waarden):
+1. Vercel → Project → **Settings → Domains** (al gekoppeld: apex + www).
+2. Zet DNS-records bij **Mijndomein** (registrar):
 
-| Type | Naam | Waarde |
-|------|------|--------|
-| A | `@` | `76.76.21.21` |
-| CNAME | `www` | `cname.vercel-dns.com` |
+| Type | Host/Naam | Waarde | Opmerking |
+|------|-----------|--------|-----------|
+| **A** | `@` (leeg) | `76.76.21.21` | Vercel apex — **vervang** huidige `213.249.67.10` |
+| **CNAME** | `www` | `cname.vercel-dns.com` | www-subdomein |
 
-4. Wacht op SSL-provisioning (automatisch).
+**Alternatief:** wijzig nameservers naar `ns1.vercel-dns.com` + `ns2.vercel-dns.com` (Vercel beheert dan alles).
+
+3. Wacht 5–30 min op DNS + SSL (Vercel stuurt e-mail bij succes).
+
+### Mijndomein — waar klikken
+
+1. Inloggen op [mijndomein.nl](https://www.mijndomein.nl)
+2. **Mijn domeinen** → `stekkerbatterijvergelijker.com` → **DNS beheren**
+3. Verwijder/wijzig het **A-record** dat naar `213.249.67.10` wijst
+4. Voeg A `@` → `76.76.21.21` toe
+5. Voeg CNAME `www` → `cname.vercel-dns.com` toe
 
 ## Environment variables (Vercel Production)
 

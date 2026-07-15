@@ -29,7 +29,7 @@ jobs:
         run: |
           URL="${{ github.event.deployment_status.environment_url }}"
           if [ -z "$URL" ]; then
-            URL="https://stekkerbatterij-vergelijker.vercel.app"
+            URL="https://stekkerbatterijvergelijker.com"
           fi
           echo "url=$URL" >> "$GITHUB_OUTPUT"
 
