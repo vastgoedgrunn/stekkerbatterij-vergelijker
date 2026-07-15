@@ -51,6 +51,7 @@ export default function HowWeComparePage() {
           <ArrowLeft className="size-4" /> Over ons
         </Link>
         <SectionHeading
+          as="h1"
           className="mt-6 max-w-3xl"
           eyebrow="Methodologie"
           title="Hoe wij vergelijken"
