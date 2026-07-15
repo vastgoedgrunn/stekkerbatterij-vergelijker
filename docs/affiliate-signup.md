@@ -56,8 +56,9 @@ aan (Slack of admin). Wij vullen ze in via admin/seed en testen elke outbound li
 ### e-WNDR (vaste batterij-leads)
 
 1. Affiliate aanvragen via [e-wndr.nl/affiliate-worden](https://e-wndr.nl/affiliate-worden/).
-2. Ontvang tracking-URL voor lead-formulier.
-3. Wij koppelen die in `LeadPanel` zodra goedgekeurd.
+2. Ontvang **consumer quote-URL** (niet de affiliate-worden-pagina).
+3. Zet in Vercel als `EWNDR_LEAD_AFFILIATE_URL` (Production + Preview).
+4. Beslishulp stuurt door via `/api/go/lead/e-wndr` met subid-tracking.
 
 ## Na goedkeuring
 
@@ -70,7 +71,6 @@ aan (Slack of admin). Wij vullen ze in via admin/seed en testen elke outbound li
 
 Tot jouw IDs binnen zijn staan in `db/seed/seed.sql`:
 
-- `PUBLISHER_ID` in Bol-deeplinks
 - `FRANK_PLACEHOLDER` / `VATTENFALL_PLACEHOLDER` in energie-URLs
 
 Vervang deze vóór productie-traffic.

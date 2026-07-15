@@ -9,6 +9,7 @@ import { getApprovedReviews } from "@/features/reviews/queries";
 import { SpecList } from "@/features/products/components/spec-list";
 import { OfferTable } from "@/features/offers-pricing/offer-table";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
+import { DropshipPriceHint } from "@/features/offers-pricing/dropship-price-hint";
 import { TrackView } from "@/lib/observability/track-view";
 import { PriceHistoryChart } from "@/features/offers-pricing/price-history-chart";
 import { ReviewList } from "@/features/reviews/review-list";
@@ -190,6 +191,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                       bij {bestOffer.merchantName}
                     </p>
                   )}
+                  <DropshipPriceHint sellable={product.sellable} offers={product.offers} />
                 </div>
                 {bestOffer?.deliveryDays != null && (
                   <span className="text-muted-foreground inline-flex items-center gap-1 text-sm">
