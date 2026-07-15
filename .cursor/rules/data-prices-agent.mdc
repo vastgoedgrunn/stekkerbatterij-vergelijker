@@ -36,6 +36,10 @@ outbound (never wrong Bol SKU).
 2. High-confidence SKU match (`match_score >= 0.85` + product URL): upsert draft/product +
    offer, run `verifyOutboundForProduct`, auto-publish only when >=1 offer has
    `affiliate_link_status = ok`, image present, and price > 0.
+2b. **Product images (optie 3):** bij elke upsert remote merchant/fabrikant-foto downloaden
+   via `resolveAndIngestProductImage` naar Supabase Storage bucket `products`
+   (`catalog/{slug}.ext`). Nooit merk-brede placeholders delen tussen SKUs. Bij mismatch of
+   ontbrekende foto: admin "Vernieuw productfoto's" of `refreshAllProductImages`.
 3. Low confidence / homepage/search URL / title mismatch: leave `needs_review`, open a PR
    (or point to the existing candidate PR), then Slack 🔒 with PR URL, our title vs merchant
    title, and EXECUTE steps. Never set `ok` on a mismatched link.

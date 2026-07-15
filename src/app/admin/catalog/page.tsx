@@ -8,6 +8,7 @@ import {
 import { getBolClientStatus } from "@/features/catalog-discovery/bol-client";
 import {
   approveCatalogCandidateAction,
+  refreshProductImagesAction,
   rejectCatalogCandidateAction,
   runCatalogDiscoveryAction,
 } from "@/features/admin/actions";
@@ -51,11 +52,18 @@ export default async function AdminCatalogHealthPage() {
               {bolStatus.detail}
             </p>
           </div>
-          <form action={runCatalogDiscoveryAction}>
-            <Button type="submit" size="sm">
-              Run discovery nu
-            </Button>
-          </form>
+          <div className="flex flex-wrap gap-2">
+            <form action={runCatalogDiscoveryAction}>
+              <Button type="submit" size="sm">
+                Run discovery nu
+              </Button>
+            </form>
+            <form action={refreshProductImagesAction}>
+              <Button type="submit" size="sm" variant="outline">
+                Vernieuw productfoto&apos;s
+              </Button>
+            </form>
+          </div>
         </div>
         {runs.length > 0 && (
           <ul className="text-muted-foreground mt-3 space-y-1 text-xs">
