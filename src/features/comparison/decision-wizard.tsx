@@ -24,10 +24,11 @@ const usageOptions = [
   { label: "Hoog (> 3.500 kWh)", value: 4500 },
 ];
 
+/** Waarden blijven kWp voor ranking; labels in aantal panelen (begrijpelijker). */
 const solarKwpOptions = [
-  { label: "Klein (< 3 kWp)", value: 2 },
-  { label: "Gemiddeld (3 tot 6 kWp)", value: 4.5 },
-  { label: "Groot (> 6 kWp)", value: 8 },
+  { label: "Weinig (tot ongeveer 8 panelen)", value: 2 },
+  { label: "Gemiddeld (ongeveer 8 tot 15 panelen)", value: 4.5 },
+  { label: "Veel (meer dan 15 panelen)", value: 8 },
 ];
 
 const budgetOptions = [
@@ -123,7 +124,7 @@ export function DecisionWizard({ products }: { products: ProductListItem[] }) {
           />
           {prefs.hasSolar && (
             <div className="mt-6">
-              <p className="mb-3 text-sm font-medium">Hoeveel kWp heb je ongeveer?</p>
+              <p className="mb-3 text-sm font-medium">Hoeveel zonnepanelen heb je ongeveer?</p>
               <OptionGroup
                 options={solarKwpOptions}
                 selected={prefs.solarKwp}
