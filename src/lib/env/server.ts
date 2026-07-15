@@ -38,6 +38,9 @@ const serverSchema = z.object({
   /** Daisycon bestandsverificatie: body + bestandsnaam (rewrite in next.config). */
   DAISYCON_VERIFY_FILENAME: z.string().min(1).optional(),
   DAISYCON_VERIFY_FILE_BODY: z.string().min(1).optional(),
+
+  /** e-WNDR thuisbatterij-lead affiliate quote-URL (consumer landing, niet affiliate-worden). */
+  EWNDR_LEAD_AFFILIATE_URL: z.string().url().optional(),
 });
 
 const skipValidation = process.env.SKIP_ENV_VALIDATION === "true";

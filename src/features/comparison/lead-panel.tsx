@@ -11,8 +11,6 @@ import { trackEvent } from "@/lib/observability/analytics";
 import { submitLeadAction } from "@/features/leads/actions";
 import type { QualificationResult } from "./qualification";
 
-const EWNDR_AFFILIATE_URL = "https://e-wndr.nl/affiliate-worden/";
-
 export function LeadPanel({
   qualification,
   source = "wizard",
@@ -81,7 +79,7 @@ export function LeadPanel({
               Gratis oriëntatiegesprek via onze installatie-partner (affiliate).
             </p>
             <a
-              href={EWNDR_AFFILIATE_URL}
+              href="/api/go/lead/e-wndr"
               target="_blank"
               rel="nofollow sponsored noopener"
               onClick={() =>
