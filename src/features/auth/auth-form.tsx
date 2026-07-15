@@ -7,8 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { clientEnv } from "@/lib/env/client";
 
 type Mode = "signin" | "signup";
+
+function authCallbackUrl(): string {
+  const base = clientEnv.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+  return `${base}/auth/callback`;
+}
 
 export function AuthForm() {
   const router = useRouter();
@@ -34,7 +40,11 @@ export function AuthForm() {
         if (error) throw error;
         router.refresh();
       } else {
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: authCallbackUrl() },
+        });
         if (error) throw error;
         setMessage("Bevestig je e-mailadres via de link die we je hebben gestuurd.");
       }

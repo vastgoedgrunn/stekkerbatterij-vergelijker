@@ -73,6 +73,9 @@ De site leest de basis-URL uit `NEXT_PUBLIC_SITE_URL`. Na domein-migratie:
 - [ ] DNS apex + www naar Vercel
 - [ ] Production env vars gezet
 - [ ] Plausible site aangemaakt
+- [ ] **Supabase Auth → URL Configuration:**
+  - Site URL: `https://stekkerbatterijvergelijker.com`
+  - Redirect URLs: `https://stekkerbatterijvergelijker.com/**`
 - [ ] Workspace MX + SPF + DKIM + DMARC
 - [ ] Testmail verstuurd (Resend of Workspace SMTP)
 - [ ] Homepage + `/api/health` OK op productiedomein
