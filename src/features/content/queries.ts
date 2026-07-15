@@ -28,7 +28,7 @@ export async function getArticles(): Promise<ArticleListItem[]> {
   const supabase = createSupabasePublicClient();
   const { data, error } = await supabase
     .from("content_articles")
-    .select("id, title, slug, excerpt, published_at")
+    .select("id, title, slug, excerpt, cover_image_path, published_at")
     .eq("status", "published")
     .is("deleted_at", null)
     .order("published_at", { ascending: false })
@@ -38,6 +38,7 @@ export async function getArticles(): Promise<ArticleListItem[]> {
         title: string;
         slug: string;
         excerpt: string | null;
+        cover_image_path: string | null;
         published_at: string | null;
       }[]
     >();
@@ -51,6 +52,7 @@ export async function getArticles(): Promise<ArticleListItem[]> {
     title: a.title,
     slug: a.slug,
     excerpt: a.excerpt,
+    coverImagePath: a.cover_image_path,
     publishedAt: a.published_at,
   }));
 }
