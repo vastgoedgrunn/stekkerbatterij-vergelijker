@@ -71,7 +71,10 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const [reviews, faqs] = await Promise.all([getApprovedReviews(product.id), getFaqs()]);
   const imageUrl = getPublicImageUrl(product.imagePath);
 
-  const bestOffer = [...product.offers].sort((a, b) => a.priceCents - b.priceCents)[0];
+  // Alleen offers met https-outbound; nooit broken/SKU-mismatch achter de CTA.
+  const bestOffer = [...product.offers]
+    .filter((o) => o.affiliateUrl)
+    .sort((a, b) => a.priceCents - b.priceCents)[0];
 
   const quickSpecs = [
     product.capacityKwh !== null && {
