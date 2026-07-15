@@ -1,6 +1,7 @@
 import { siteConfig } from "@/config/site";
 import type { ProductDetail } from "@/features/products/types";
 import type { Faq } from "@/features/content/types";
+import { getPublicImageUrl } from "@/lib/supabase/storage";
 
 type JsonLdObject = Record<string, unknown>;
 
@@ -56,18 +57,27 @@ export function itemListJsonLd(items: { name: string; url: string }[]): JsonLdOb
 }
 
 export function productJsonLd(product: ProductDetail): JsonLdObject {
-  const offers = product.offers.map((offer) => ({
-    "@type": "Offer",
-    price: (offer.priceCents / 100).toFixed(2),
-    priceCurrency: "EUR",
-    availability:
-      offer.stockStatus === "in_stock"
-        ? "https://schema.org/InStock"
-        : offer.stockStatus === "preorder"
-          ? "https://schema.org/PreOrder"
-          : "https://schema.org/OutOfStock",
-    seller: { "@type": "Organization", name: offer.merchantName },
-  }));
+  const productUrl = `${siteConfig.url}/batterijen/${product.slug}`;
+  const imageUrl = getPublicImageUrl(product.imagePath);
+
+  const offers = product.offers.map((offer) => {
+    const offerLd: JsonLdObject = {
+      "@type": "Offer",
+      price: (offer.priceCents / 100).toFixed(2),
+      priceCurrency: "EUR",
+      availability:
+        offer.stockStatus === "in_stock"
+          ? "https://schema.org/InStock"
+          : offer.stockStatus === "preorder"
+            ? "https://schema.org/PreOrder"
+            : "https://schema.org/OutOfStock",
+      seller: { "@type": "Organization", name: offer.merchantName },
+    };
+    if (offer.affiliateUrl) {
+      offerLd.url = offer.affiliateUrl;
+    }
+    return offerLd;
+  });
 
   const base: JsonLdObject = {
     "@context": "https://schema.org",
@@ -75,8 +85,13 @@ export function productJsonLd(product: ProductDetail): JsonLdObject {
     name: product.name,
     brand: { "@type": "Brand", name: product.brand.name },
     description: product.summary ?? product.description ?? undefined,
+    url: productUrl,
     offers,
   };
+
+  if (imageUrl) {
+    base.image = imageUrl;
+  }
 
   // AggregateRating uitsluitend bij échte reviews (voorkomt Google-penalty).
   if (product.rating.average !== null && product.rating.count > 0) {

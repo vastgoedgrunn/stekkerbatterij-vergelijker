@@ -21,7 +21,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     { url: `${base}/beslishulp`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/gidsen`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    {
+      url: `${base}/tools/terugverdientijd`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    { url: `${base}/energie`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/over-ons`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    {
+      url: `${base}/over-ons/hoe-wij-vergelijken`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.4,
+    },
+    { url: `${base}/garantie`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/privacybeleid`, lastModified: now, changeFrequency: "yearly", priority: 0.2 },
+    {
+      url: `${base}/algemene-voorwaarden`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.2,
+    },
+    {
+      url: `${base}/herroepingsrecht`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.2,
+    },
   ];
 
   const [productSlugs, articleSlugs, brands] = await Promise.all([

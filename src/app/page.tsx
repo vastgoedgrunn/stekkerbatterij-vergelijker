@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -20,9 +21,18 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/json-ld";
+import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
 export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: {
+    absolute: `${siteConfig.name}: onafhankelijk vergelijken`,
+  },
+  description: siteConfig.description,
+  alternates: { canonical: "/" },
+};
 
 const brands = [
   "Zendure",
