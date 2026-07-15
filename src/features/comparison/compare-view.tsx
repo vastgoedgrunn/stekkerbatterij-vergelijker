@@ -160,7 +160,9 @@ export function CompareView({ products }: { products: ProductDetail[] }) {
           <tr className="border-border border-t">
             <td className="bg-card sticky left-0 z-10 p-4" />
             {products.map((p) => {
-              const bestOffer = [...p.offers].sort((a, b) => a.priceCents - b.priceCents)[0];
+              const bestOffer = [...p.offers]
+                .filter((o) => o.affiliateUrl)
+                .sort((a, b) => a.priceCents - b.priceCents)[0];
               return (
                 <td key={p.id} className="space-y-2 p-4 text-center">
                   {bestOffer?.affiliateUrl ? (
