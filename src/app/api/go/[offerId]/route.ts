@@ -6,6 +6,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { serverEnv } from "@/lib/env/server";
 import { logger } from "@/lib/observability/logger";
 import { buildAffiliateDestination } from "@/lib/affiliate/build-destination";
+import { isEligibleOutboundOffer } from "@/features/offers-pricing/offer-eligibility";
 import type { Json } from "@/lib/db/database.types";
 
 export const dynamic = "force-dynamic";
@@ -16,6 +17,8 @@ interface OfferDestination {
   merchant_id: string;
   affiliate_url: string | null;
   affiliate_deeplink: string | null;
+  affiliate_link_status: "ok" | "pending" | "broken" | null;
+  deleted_at: string | null;
   affiliate_params: Json | null;
   products: { slug: string; status: string } | null;
   merchants: { website_url: string | null } | null;
@@ -49,7 +52,7 @@ export async function GET(
   const { data, error } = await supabase
     .from("offers")
     .select(
-      "id, product_id, merchant_id, affiliate_url, affiliate_deeplink, affiliate_params, products(slug, status), merchants(website_url)",
+      "id, product_id, merchant_id, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, affiliate_params, products(slug, status), merchants(website_url)",
     )
     .eq("id", offerId)
     .is("deleted_at", null)
@@ -72,8 +75,16 @@ export async function GET(
     ? new URL(`/batterijen/${offer.products.slug}`, request.nextUrl.origin)
     : homepage;
 
-  const rawDestination =
-    offer.affiliate_deeplink ?? offer.affiliate_url ?? offer.merchants?.website_url ?? null;
+  // Nooit doorsturen bij broken/SKU-mismatch; liever terug naar PDP.
+  if (!isEligibleOutboundOffer(offer)) {
+    logger.warn("Outbound geweigerd: offer niet eligible", {
+      offerId,
+      status: offer.affiliate_link_status,
+    });
+    return NextResponse.redirect(fallback, 302);
+  }
+
+  const rawDestination = offer.affiliate_deeplink ?? offer.affiliate_url;
   if (!rawDestination) {
     return NextResponse.redirect(fallback, 302);
   }

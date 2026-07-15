@@ -3,6 +3,11 @@ import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { logger } from "@/lib/observability/logger";
 import { estimateCommissionCents } from "@/lib/affiliate/commission";
+import {
+  isActiveOffer,
+  isEligibleOutboundOffer,
+  offerOutboundUrl,
+} from "@/features/offers-pricing/offer-eligibility";
 import type {
   Brand,
   Category,
@@ -28,6 +33,8 @@ interface RawListOffer {
   price_cents: number;
   affiliate_url: string | null;
   affiliate_deeplink: string | null;
+  affiliate_link_status: "ok" | "pending" | "broken" | null;
+  deleted_at: string | null;
   commission_type: "cps" | "cpa" | null;
   commission_rate: number | null;
   commission_cents_fixed: number | null;
@@ -43,6 +50,8 @@ interface RawOffer {
   delivery_days: number | null;
   affiliate_url: string | null;
   affiliate_deeplink: string | null;
+  affiliate_link_status: "ok" | "pending" | "broken" | null;
+  deleted_at: string | null;
   commission_type: "cps" | "cpa" | null;
   commission_rate: number | null;
   commission_cents_fixed: number | null;
@@ -80,6 +89,14 @@ const emptyResult = (filters: ProductFilters): ProductListResult => ({
   pageSize: filters.pageSize ?? businessRules.catalog.defaultPageSize,
 });
 
+function activeOffers<T extends RawListOffer | RawOffer>(offers: T[] | null): T[] {
+  return (offers ?? []).filter(isActiveOffer);
+}
+
+function outboundOffers<T extends RawListOffer | RawOffer>(offers: T[] | null): T[] {
+  return (offers ?? []).filter(isEligibleOutboundOffer);
+}
+
 function lowestPrice(offers: { price_cents: number }[] | null): number | null {
   if (!offers || offers.length === 0) return null;
   return offers.reduce(
@@ -89,14 +106,15 @@ function lowestPrice(offers: { price_cents: number }[] | null): number | null {
 }
 
 function mapBestListOffer(offers: RawListOffer[] | null): ProductListBestOffer | null {
-  if (!offers || offers.length === 0) return null;
-  const sorted = [...offers].sort((a, b) => a.price_cents - b.price_cents);
+  const usable = outboundOffers(offers);
+  if (usable.length === 0) return null;
+  const sorted = [...usable].sort((a, b) => a.price_cents - b.price_cents);
   const best = sorted[0]!;
   return {
     id: best.id,
     merchantName: best.merchants?.name ?? "Onbekend",
     priceCents: best.price_cents,
-    affiliateUrl: best.affiliate_deeplink ?? best.affiliate_url,
+    affiliateUrl: offerOutboundUrl(best),
     isSponsored: best.is_sponsored,
     estimatedCommissionCents: estimateCommissionCents({
       commissionType: best.commission_type,
@@ -220,7 +238,7 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
   let query = supabase
     .from("products")
     .select(
-      "id, slug, name, summary, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, brands(id, name, slug), offers(id, price_cents, affiliate_url, affiliate_deeplink, commission_type, commission_rate, commission_cents_fixed, is_sponsored, merchants(name))",
+      "id, slug, name, summary, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, brands(id, name, slug), offers(id, price_cents, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, merchants(name))",
     )
     .eq("status", "published")
     .is("deleted_at", null);
@@ -280,8 +298,8 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
       warrantyYears: r.warranty_years,
       expandable: r.expandable,
       imagePath: r.image_path,
-      lowestPriceCents: lowestPrice(r.offers),
-      offerCount: r.offers?.length ?? 0,
+      lowestPriceCents: lowestPrice(activeOffers(r.offers)),
+      offerCount: activeOffers(r.offers).length,
       bestOffer: mapBestListOffer(r.offers),
       rating: ratings.get(r.id) ?? { average: null, count: 0 },
     }));
@@ -328,7 +346,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   const { data, error } = await supabase
     .from("products")
     .select(
-      "id, slug, name, summary, description, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, supplier_id, sellable, brands(id, name, slug), offers(id, merchant_id, price_cents, stock_status, delivery_days, affiliate_url, affiliate_deeplink, commission_type, commission_rate, commission_cents_fixed, is_sponsored, last_checked_at, merchants(name, slug, is_self))",
+      "id, slug, name, summary, description, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, supplier_id, sellable, brands(id, name, slug), offers(id, merchant_id, price_cents, stock_status, delivery_days, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, last_checked_at, merchants(name, slug, is_self))",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -350,7 +368,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
     getPriceHistory(product.id),
   ]);
 
-  const offers: ProductOffer[] = (product.offers ?? [])
+  const offers: ProductOffer[] = activeOffers(product.offers)
     .map((o) => ({
       id: o.id,
       merchantName: o.merchants?.name ?? "Onbekend",
@@ -360,7 +378,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
       priceCents: o.price_cents,
       stockStatus: o.stock_status,
       deliveryDays: o.delivery_days,
-      affiliateUrl: o.affiliate_deeplink ?? o.affiliate_url,
+      affiliateUrl: offerOutboundUrl(o),
       lastCheckedAt: o.last_checked_at,
       estimatedCommissionCents: estimateCommissionCents({
         commissionType: o.commission_type,
@@ -370,6 +388,8 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
       }),
     }))
     .sort((a, b) => a.priceCents - b.priceCents);
+
+  const bestOutbound = offers.find((o) => o.affiliateUrl);
 
   return {
     id: product.id,
@@ -388,17 +408,16 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
     sellable: product.sellable ?? false,
     lowestPriceCents: offers.length > 0 ? offers[0]!.priceCents : null,
     offerCount: offers.length,
-    bestOffer:
-      offers.length > 0
-        ? {
-            id: offers[0]!.id,
-            merchantName: offers[0]!.merchantName,
-            priceCents: offers[0]!.priceCents,
-            affiliateUrl: offers[0]!.affiliateUrl,
-            isSponsored: offers[0]!.isSponsored,
-            estimatedCommissionCents: offers[0]!.estimatedCommissionCents,
-          }
-        : null,
+    bestOffer: bestOutbound
+      ? {
+          id: bestOutbound.id,
+          merchantName: bestOutbound.merchantName,
+          priceCents: bestOutbound.priceCents,
+          affiliateUrl: bestOutbound.affiliateUrl,
+          isSponsored: bestOutbound.isSponsored,
+          estimatedCommissionCents: bestOutbound.estimatedCommissionCents,
+        }
+      : null,
     rating: ratings.get(product.id) ?? { average: null, count: 0 },
     categories,
     specs,
