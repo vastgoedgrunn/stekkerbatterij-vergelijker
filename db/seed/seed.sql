@@ -198,16 +198,15 @@ on conflict (product_id, spec_id) do update set
 insert into offers (product_id, merchant_id, price_cents, stock_status, delivery_days, is_sponsored, affiliate_url)
 select p.id, m.id, v.price_cents, v.stock, v.delivery, v.sponsored, v.url
 from (values
+  -- Geen Bol/Coolblue voor SolarFlow 800 tot SKU geverifieerd is (was AB3000X mismatch).
   ('zendure-solarflow-800','stekkerbatterij-shop', 89900, 'in_stock', 2, false, null),
-  ('zendure-solarflow-800','coolblue', 94900, 'in_stock', 1, true, 'https://coolblue.nl'),
-  ('zendure-solarflow-800','bol', 82900, 'in_stock', 2, false, 'https://www.bol.com/nl/nl/p/zendure-solarflow-batterij-2-88kwh-6000-cycli/9300000247284343/'),
   ('ecoflow-powerstream-800','stekkerbatterij-shop', 99900, 'in_stock', 3, false, null),
-  ('ecoflow-powerstream-800','bol', 69900, 'in_stock', 2, true, 'https://www.bol.com/nl/nl/p/ecoflow-stream-ac-pro-thuisbatterij/9300000232241116/'),
+  -- Geen Bol PowerStream→STREAM AC Pro mismatch.
   ('ecoflow-powerstream-800','solar-sale', 98900, 'in_stock', 4, false, 'https://solarsale.nl'),
   ('anker-solix-solarbank-2-e1600','stekkerbatterij-shop', 84900, 'in_stock', 2, false, null),
   ('anker-solix-solarbank-2-e1600','coolblue', 87900, 'preorder', 7, true, 'https://coolblue.nl'),
   ('anker-solix-solarbank-2-e1600','gamma', 89900, 'in_stock', 3, false, 'https://gamma.nl'),
-  ('anker-solix-solarbank-2-e1600','bol', 69900, 'in_stock', 2, false, 'https://www.bol.com/nl/nl/p/anker-solix-solarbank-2-e1600-pro/9300000185730379/'),
+  -- Geen Bol E1600→E1600 Pro mismatch.
   ('marstek-venus-512','stekkerbatterij-shop', 189900, 'in_stock', 5, false, null),
   ('marstek-venus-512','zonneplan', 199900, 'in_stock', 5, true, 'https://zonneplan.nl'),
   ('marstek-venus-512','bol', 121000, 'in_stock', 5, false, 'https://www.bol.com/nl/nl/p/duravolt-plug-in-thuisbatterij-5-12kw/9300000185746060/'),
@@ -256,24 +255,6 @@ update offers o set
   commission_source_url = v.source,
   affiliate_params = v.params::jsonb
 from (values
-  ('zendure-solarflow-800','coolblue',
-   'https://www.coolblue.nl/product/903456',
-   'https://www.coolblue.nl',
-   'awin', 'cps', 0.025, null,
-   'https://www.coolblue.nl',
-   '{"clickref":"{click_ref}"}'),
-  ('zendure-solarflow-800','bol',
-   'https://partner.bol.com/click/click?p=2&t=url&s=1532194&url=https%3A%2F%2Fwww.bol.com%2Fnl%2Fnl%2Fp%2Fzendure-solarflow-batterij-2-88kwh-6000-cycli%2F9300000247284343%2F',
-   'https://www.bol.com/nl/nl/p/zendure-solarflow-batterij-2-88kwh-6000-cycli/9300000247284343/',
-   'bol-partner', 'cps', 0.025, null,
-   'https://www.bol.com/nl/nl/p/zendure-solarflow-batterij-2-88kwh-6000-cycli/9300000247284343/',
-   '{"subid":"{click_ref}"}'),
-  ('anker-solix-solarbank-2-e1600','bol',
-   'https://partner.bol.com/click/click?p=2&t=url&s=1532194&url=https%3A%2F%2Fwww.bol.com%2Fnl%2Fnl%2Fp%2Fanker-solix-solarbank-2-e1600-pro%2F9300000185730379%2F',
-   'https://www.bol.com/nl/nl/p/anker-solix-solarbank-2-e1600-pro/9300000185730379/',
-   'bol-partner', 'cps', 0.025, null,
-   'https://www.bol.com/nl/nl/p/anker-solix-solarbank-2-e1600-pro/9300000185730379/',
-   '{"subid":"{click_ref}"}'),
   ('anker-solix-solarbank-2-e1600','coolblue',
    'https://www.coolblue.nl/product/904321',
    null, 'awin', 'cps', 0.08, null,
@@ -284,12 +265,6 @@ from (values
    null, 'awin', 'cps', 0.08, null,
    'https://www.ankersolix.com/eu/become-an-affiliate',
    '{"clickref":"{click_ref}"}'),
-  ('ecoflow-powerstream-800','bol',
-   'https://partner.bol.com/click/click?p=2&t=url&s=1532194&url=https%3A%2F%2Fwww.bol.com%2Fnl%2Fnl%2Fp%2Fecoflow-stream-ac-pro-thuisbatterij%2F9300000232241116%2F',
-   'https://www.bol.com/nl/nl/p/ecoflow-stream-ac-pro-thuisbatterij/9300000232241116/',
-   'bol-partner', 'cps', 0.025, null,
-   'https://www.bol.com/nl/nl/p/ecoflow-stream-ac-pro-thuisbatterij/9300000232241116/',
-   '{"subid":"{click_ref}"}'),
   ('ecoflow-powerstream-800','solar-sale',
    'https://solarsale.nl/ecoflow-powerstream-800',
    null, 'daisycon', 'cps', 0.05, null,
