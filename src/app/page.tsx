@@ -34,19 +34,17 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+/** Witte merklogo's (transparante PNG). Bestandsnaam = slug; later 1-op-1 vervangbaar. */
 const brands = [
-  "Zendure",
-  "EcoFlow",
-  "Anker SOLIX",
-  "Marstek",
-  "Growatt",
-  "Sessy",
-  "HomeWizard",
-  "Sunology",
-];
-
-const brandPillClass =
-  "border-border/70 bg-card text-muted-foreground hover:text-foreground hover:border-primary/30 inline-flex shrink-0 items-center rounded-full border px-4 py-1.5 text-sm font-semibold tracking-tight whitespace-nowrap shadow-[var(--shadow-xs)] transition-colors";
+  { name: "Zendure", slug: "zendure", width: 327, height: 64 },
+  { name: "EcoFlow", slug: "ecoflow", width: 375, height: 64 },
+  { name: "Anker SOLIX", slug: "anker-solix", width: 468, height: 64 },
+  { name: "Marstek", slug: "marstek", width: 360, height: 64 },
+  { name: "Growatt", slug: "growatt", width: 295, height: 64 },
+  { name: "Sessy", slug: "sessy", width: 180, height: 64 },
+  { name: "HomeWizard", slug: "homewizard", width: 480, height: 64 },
+  { name: "Sunology", slug: "sunology", width: 279, height: 64 },
+] as const;
 
 const trustItems = [
   {
@@ -126,24 +124,36 @@ export default async function HomePage() {
       </section>
 
       {/* MERKEN */}
-      <div className="border-border/70 border-y py-8">
+      <div className="marquee-band py-10">
         <Container className="min-w-0">
-          <p className="text-muted-foreground mb-5 text-center text-xs font-semibold tracking-[0.2em] uppercase">
+          <p className="mb-6 text-center text-xs font-semibold tracking-[0.2em] text-white/55 uppercase">
             Alle grote merken op één plek
           </p>
           <div className="marquee">
             <div className="marquee-track">
               <div className="marquee-group">
                 {brands.map((brand) => (
-                  <span key={brand} className={brandPillClass}>
-                    {brand}
+                  <span key={brand.slug} className="marquee-logo">
+                    <Image
+                      src={`/logos/brands/${brand.slug}.png`}
+                      alt={brand.name}
+                      width={brand.width}
+                      height={brand.height}
+                      sizes="160px"
+                    />
                   </span>
                 ))}
               </div>
               <div className="marquee-group" aria-hidden="true" data-marquee-clone>
                 {brands.map((brand) => (
-                  <span key={`clone-${brand}`} className={brandPillClass}>
-                    {brand}
+                  <span key={`clone-${brand.slug}`} className="marquee-logo">
+                    <Image
+                      src={`/logos/brands/${brand.slug}.png`}
+                      alt=""
+                      width={brand.width}
+                      height={brand.height}
+                      sizes="160px"
+                    />
                   </span>
                 ))}
               </div>

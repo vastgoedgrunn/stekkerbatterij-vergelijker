@@ -197,7 +197,8 @@
   --animate-fade-in: fade-in 0.5s ease both;
   --animate-scale-in: scale-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-slide-in-right: slide-in-right 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
-  --animate-marquee: marquee 40s linear infinite;
+  /* Langer + GPU-vriendelijk: rustiger en soepeler dan 40s. */
+  --animate-marquee: marquee 55s linear infinite;
   --animate-shimmer: shimmer 1.6s ease-in-out infinite;
   --animate-ambient-breathe: ambient-breathe 14s ease-in-out infinite;
 }
@@ -336,24 +337,55 @@
   }
 
   /*
-   * Merken-marquee: naadloze, luxe carrousel. CSS-only (geen client-component).
-   * De viewport klipt intern; alleen de track schuift, dus geen horizontale
-   * pagina-scroll. Randen faden via mask voor een rustige, premium uitstraling.
+   * Donkere merkenband: vaste diepgroene tint (werkt in light én dark mode).
+   */
+  .marquee-band {
+    background: oklch(0.22 0.028 160);
+    color: oklch(0.97 0.005 140);
+  }
+
+  /*
+   * Merken-marquee: naadloze carrousel. CSS-only (geen client-component).
+   * GPU-composited via translate3d + will-change. Randen faden via lichte
+   * overlays (goedkoper dan mask-image op veel Safari/CPU-pads).
    */
   .marquee {
+    position: relative;
     overflow: hidden;
-    -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
-    mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  }
+
+  .marquee::before,
+  .marquee::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    width: 4.5rem;
+    pointer-events: none;
+  }
+
+  .marquee::before {
+    left: 0;
+    background: linear-gradient(to right, oklch(0.22 0.028 160), transparent);
+  }
+
+  .marquee::after {
+    right: 0;
+    background: linear-gradient(to left, oklch(0.22 0.028 160), transparent);
   }
 
   .marquee-track {
     display: flex;
     width: max-content;
     align-items: center;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    will-change: transform;
     animation: var(--animate-marquee);
   }
 
-  /* Pauzeer bij hover zodat een naam rustig te lezen is. */
+  /* Pauzeer bij hover zodat een logo rustig te bekijken is. */
   .marquee-track:hover {
     animation-play-state: paused;
   }
@@ -365,34 +397,55 @@
 
   /* Gelijke marge op elk item (ook het eerste) zodat de -50%-loop naadloos sluit. */
   .marquee-group > * {
-    margin-left: 0.625rem;
+    margin-left: 2.25rem;
   }
 
   @media (min-width: 640px) {
     .marquee-group > * {
-      margin-left: 0.75rem;
+      margin-left: 3rem;
     }
+  }
+
+  .marquee-logo {
+    display: flex;
+    height: 1.75rem;
+    width: auto;
+    align-items: center;
+    opacity: 0.88;
+    transition: opacity 150ms ease;
+  }
+
+  .marquee-logo:hover {
+    opacity: 1;
+  }
+
+  .marquee-logo img {
+    height: 100%;
+    width: auto;
+    max-width: 9.5rem;
+    object-fit: contain;
   }
 
   /*
    * Reduced motion: geen beweging. Val terug op een nette, gecentreerde,
-   * gewrapte pill-rij (statisch) zonder afkappen of overlopen.
+   * gewrapte logo-rij (statisch) zonder afkappen of overlopen.
    */
   @media (prefers-reduced-motion: reduce) {
-    .marquee {
-      -webkit-mask-image: none;
-      mask-image: none;
+    .marquee::before,
+    .marquee::after {
+      display: none;
     }
     .marquee-track {
       width: 100%;
       flex-wrap: wrap;
       justify-content: center;
+      will-change: auto;
       animation: none;
     }
     .marquee-group {
       flex-wrap: wrap;
       justify-content: center;
-      gap: 0.625rem;
+      gap: 1.5rem 2rem;
     }
     .marquee-group > * {
       margin-left: 0;
@@ -447,10 +500,10 @@
 
 @keyframes marquee {
   from {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
