@@ -11,13 +11,12 @@ import {
   Sparkles,
   TrendingDown,
 } from "lucide-react";
-import { getProducts, getCatalogStats } from "@/features/products/queries";
+import { getProducts } from "@/features/products/queries";
 import { getArticles } from "@/features/content/queries";
 import { ProductCard } from "@/components/patterns/product-card";
 import { HeroMatcher } from "@/features/comparison/hero-matcher";
 import { Container, Section, SectionHeading } from "@/components/patterns/section";
 import { Reveal } from "@/components/patterns/reveal";
-import { Stat } from "@/components/patterns/stat";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -75,10 +74,9 @@ const steps = [
 ];
 
 export default async function HomePage() {
-  const [{ items: featured, total }, articles, catalogStats] = await Promise.all([
+  const [{ items: featured }, articles] = await Promise.all([
     getProducts({ sort: "rating_desc", pageSize: 8 }),
     getArticles(),
-    getCatalogStats(),
   ]);
 
   return (
@@ -111,11 +109,6 @@ export default async function HomePage() {
                 Bekijk alle batterijen
               </Link>
             </div>
-            <dl className="border-border/70 mt-2 flex flex-wrap gap-x-10 gap-y-4 border-t pt-6">
-              <Stat value={catalogStats.modelCount || total} label="Modellen vergeleken" />
-              <Stat value={catalogStats.merchantCount} label="Aanbieders" />
-              <Stat value="100%" label="Onafhankelijk" />
-            </dl>
           </div>
 
           <div className="min-w-0 lg:pl-4">
