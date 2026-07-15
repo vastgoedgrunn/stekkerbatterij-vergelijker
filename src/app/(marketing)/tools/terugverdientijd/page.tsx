@@ -44,7 +44,7 @@ const uitleg = [
 
 export default function TerugverdientijdPage() {
   return (
-    <main>
+    <main id="main-content">
       <div className="border-border/70 from-primary/5 border-b bg-gradient-to-b to-transparent">
         <Container className="py-14 sm:py-20">
           <div className="max-w-3xl">

@@ -13,7 +13,7 @@ export default function CartPage() {
   if (!isFeatureEnabled("checkout")) notFound();
 
   return (
-    <main>
+    <main id="main-content">
       <CartView />
     </main>
   );

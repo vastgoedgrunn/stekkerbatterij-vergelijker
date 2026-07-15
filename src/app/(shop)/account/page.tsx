@@ -13,7 +13,7 @@ export default async function AccountPage() {
   const user = await getCurrentUser();
 
   return (
-    <main className="mx-auto w-full max-w-md px-4 py-12">
+    <main id="main-content" className="mx-auto w-full max-w-md px-4 py-12">
       <h1 className="mb-6 text-3xl font-bold tracking-tight">Mijn account</h1>
 
       {user ? (

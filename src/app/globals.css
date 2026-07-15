@@ -77,6 +77,10 @@
     0 12px 28px -6px hsl(var(--shadow-color) / 0.14),
     0 6px 12px -6px hsl(var(--shadow-color) / 0.08);
   --shadow-xl: 0 24px 56px -12px hsl(var(--shadow-color) / 0.2);
+
+  /* Ruimte voor fixed compare-bar + sticky offer-bar (gestapeld). */
+  --compare-bar-space: 0px;
+  --sticky-offer-space: 0px;
 }
 
 .dark {

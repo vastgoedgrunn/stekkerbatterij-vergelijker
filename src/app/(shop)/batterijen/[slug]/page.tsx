@@ -103,7 +103,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   if (faqLd) structuredData.push(faqLd);
 
   return (
-    <main>
+    <main id="main-content">
       <JsonLd data={structuredData} />
       <TrackView
         event={{

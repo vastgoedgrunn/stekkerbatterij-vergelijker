@@ -29,7 +29,7 @@ export default async function BrandsHubPage() {
   const brands = await getBrands();
 
   return (
-    <main>
+    <main id="main-content">
       <div className="border-border/70 from-primary/5 border-b bg-gradient-to-b to-transparent">
         <Container className="py-10 sm:py-14">
           <p className="text-primary text-sm font-semibold tracking-wide uppercase">Merken</p>

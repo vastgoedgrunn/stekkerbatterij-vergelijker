@@ -78,7 +78,7 @@ export default async function HomePage() {
   ]);
 
   return (
-    <>
+    <main id="main-content">
       <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
 
       {/* HERO */}
@@ -324,6 +324,6 @@ export default async function HomePage() {
           </div>
         </Container>
       </Section>
-    </>
+    </main>
   );
 }
