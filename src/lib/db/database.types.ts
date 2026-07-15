@@ -31,6 +31,11 @@ export type LeadStatus = "new" | "approved" | "sent" | "converted" | "rejected";
 /** Affiliate hybrid: netwerk nog niet live / kapotte check. */
 export type AffiliateLinkStatus = "ok" | "pending" | "broken";
 
+/** Catalog Discovery Engine. */
+export type CatalogCandidateStatus =
+  "discovered" | "matched" | "needs_review" | "upserted" | "published" | "rejected";
+export type CatalogCandidateSource = "bol" | "merchant" | "research" | "manual";
+
 interface TimestampFields {
   created_at: string;
   updated_at: string;
@@ -87,6 +92,41 @@ export interface MerchantRow extends TimestampFields {
   default_affiliate_network: string | null;
   network_publisher_id: string | null;
   deeplink_param_template: Json | null;
+}
+
+export interface CatalogRunRow {
+  id: string;
+  started_at: string;
+  finished_at: string | null;
+  trigger_source: string;
+  stats: Json;
+  error_message: string | null;
+  created_at: string;
+}
+
+export interface CatalogCandidateRow {
+  id: string;
+  run_id: string | null;
+  source: CatalogCandidateSource;
+  external_id: string | null;
+  brand_slug: string | null;
+  raw_title: string;
+  raw_description: string | null;
+  capacity_kwh: number | null;
+  power_kw: number | null;
+  url: string;
+  image_url: string | null;
+  price_cents: number | null;
+  currency: string;
+  match_score: number | null;
+  match_notes: string | null;
+  status: CatalogCandidateStatus;
+  product_id: string | null;
+  offer_id: string | null;
+  payload: Json;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
 }
 
 export interface OfferRow extends TimestampFields {
@@ -460,6 +500,8 @@ export interface Database {
       energy_partners: Table<EnergyPartnerRow>;
       leads: Table<LeadRow>;
       energy_clicks: Table<EnergyClickRow>;
+      catalog_runs: Table<CatalogRunRow>;
+      catalog_candidates: Table<CatalogCandidateRow>;
     };
     Views: {
       product_rating_stats: {

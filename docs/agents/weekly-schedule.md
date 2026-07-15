@@ -7,7 +7,8 @@ gebruikt UTC; hier de menselijke klok.
 
 | Tijd | Agent | Wat |
 |------|-------|-----|
-| **08:00** | Data catalog morning | Completeness gaps, prijzen, Slack-gates |
+| **07:00** | Catalog Discovery | NL SKUs zoeken, SKU-match, verify, auto-publish |
+| **08:00** | Data catalog follow-up | Completeness gaps, prijzen, review-queue |
 | **08:00** | Commerce ops | Pending orders/refunds (indien checkout aan) |
 | **09:00** | QA & monitoring | Health, Sentry, broken links, deploy |
 | **20:00** | Data affiliate evening | Deeplink/HTTP health, pending/broken alerts |

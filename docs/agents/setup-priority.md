@@ -7,7 +7,8 @@ Maak deze **in Cursor → Automations → New → Cloud agent**. Copy-paste prom
 
 | # | Naam | Cron (UTC) | Waarom eerst |
 |---|------|------------|--------------|
-| 1 | **Data catalog morning** | `0 6 * * *` | Completeness + prijzen = claim + geld |
+| 1 | **Catalog Discovery daily** | `0 5 * * *` | Kern: NL SKUs + SKU-match + publish |
+| 1b | **Data catalog morning** | `0 6 * * *` | Completeness + prijzen follow-up |
 | 2 | **Data affiliate evening** | `0 18 * * *` | Deeplink-health alsof affiliate live |
 | 3 | **QA daily** | `0 7 * * *` | Site blijft online |
 | 4 | **Analytics Monday** | `0 7 * * 1` | KPI-rapport voedt het team |
