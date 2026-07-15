@@ -18,6 +18,9 @@ export type PaymentStatus =
   "open" | "pending" | "authorized" | "paid" | "failed" | "canceled" | "expired" | "refunded";
 export type ShipmentStatus = "pending" | "label_created" | "shipped" | "delivered" | "cancelled";
 
+/** Admin/ops (fase 3). */
+export type ChangeRequestStatus = "pending" | "approved" | "rejected" | "applied";
+
 interface TimestampFields {
   created_at: string;
   updated_at: string;
@@ -274,6 +277,23 @@ export interface ShipmentRow {
   updated_at: string;
 }
 
+export interface ChangeRequestRow {
+  id: string;
+  kind: string;
+  target_table: string | null;
+  target_id: string | null;
+  summary: string;
+  proposed: Json;
+  source: string;
+  source_url: string | null;
+  status: ChangeRequestStatus;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  review_notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 type Table<Row, Insert = Partial<Row>, Update = Partial<Row>> = {
   Row: Row;
   Insert: Insert;
@@ -306,6 +326,7 @@ export interface Database {
       order_lines: Table<OrderLineRow>;
       payments: Table<PaymentRow>;
       shipments: Table<ShipmentRow>;
+      change_requests: Table<ChangeRequestRow>;
     };
     Views: {
       product_rating_stats: {
@@ -323,6 +344,7 @@ export interface Database {
       order_status: OrderStatus;
       payment_status: PaymentStatus;
       shipment_status: ShipmentStatus;
+      change_request_status: ChangeRequestStatus;
     };
     CompositeTypes: Record<string, never>;
   };
