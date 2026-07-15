@@ -378,7 +378,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
       priceCents: o.price_cents,
       stockStatus: o.stock_status,
       deliveryDays: o.delivery_days,
-      affiliateUrl: offerOutboundUrl(o),
+      affiliateUrl: isEligibleOutboundOffer(o) ? offerOutboundUrl(o) : null,
       lastCheckedAt: o.last_checked_at,
       estimatedCommissionCents: estimateCommissionCents({
         commissionType: o.commission_type,
