@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BookOpen } from "lucide-react";
 import { getArticles } from "@/features/content/queries";
+import { getGuideCoverUrl } from "@/features/content/covers";
 import { Container } from "@/components/patterns/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -46,8 +48,23 @@ export default async function GuidesPage() {
                   interactive
                   className="from-primary/5 grid gap-6 overflow-hidden bg-gradient-to-br to-transparent p-6 sm:p-8 md:grid-cols-2 md:items-center"
                 >
-                  <div className="from-primary/20 to-primary/5 flex aspect-[16/10] items-center justify-center rounded-2xl bg-gradient-to-br">
-                    <BookOpen className="text-primary/50 size-16" />
+                  <div className="from-primary/20 to-primary/5 relative aspect-[16/10] overflow-hidden rounded-2xl bg-gradient-to-br">
+                    {(() => {
+                      const cover = getGuideCoverUrl(featured);
+                      return cover ? (
+                        <Image
+                          src={cover}
+                          alt=""
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        />
+                      ) : (
+                        <span className="flex h-full items-center justify-center">
+                          <BookOpen className="text-primary/50 size-16" />
+                        </span>
+                      );
+                    })()}
                   </div>
                   <div>
                     <Badge variant="highlight" className="mb-3">
@@ -71,38 +88,56 @@ export default async function GuidesPage() {
 
             {rest.length > 0 && (
               <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {rest.map((article) => (
-                  <li key={article.id}>
-                    <Card interactive className="group h-full">
-                      <CardContent className="flex h-full flex-col gap-3 p-6">
-                        <Badge variant="muted" className="w-fit">
-                          <BookOpen className="size-3" /> Gids
-                        </Badge>
-                        {article.publishedAt && (
-                          <p className="text-muted-foreground text-xs">
-                            {formatDate(article.publishedAt)}
-                          </p>
-                        )}
-                        <h3 className="group-hover:text-primary text-lg leading-tight font-semibold">
-                          <Link
-                            href={`/gidsen/${article.slug}`}
-                            className="after:absolute after:inset-0"
-                          >
-                            {article.title}
-                          </Link>
-                        </h3>
-                        {article.excerpt && (
-                          <p className="text-muted-foreground text-sm leading-relaxed">
-                            {article.excerpt}
-                          </p>
-                        )}
-                        <span className="text-primary mt-auto inline-flex items-center gap-1 text-sm font-semibold">
-                          Lees de gids <ArrowRight className="size-4" />
-                        </span>
-                      </CardContent>
-                    </Card>
-                  </li>
-                ))}
+                {rest.map((article) => {
+                  const cover = getGuideCoverUrl(article);
+                  return (
+                    <li key={article.id}>
+                      <Card interactive className="group h-full overflow-hidden">
+                        <div className="bg-muted relative aspect-[16/10] overflow-hidden">
+                          {cover ? (
+                            <Image
+                              src={cover}
+                              alt=""
+                              fill
+                              sizes="(max-width: 640px) 100vw, 33vw"
+                              className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                            />
+                          ) : (
+                            <span className="text-primary/25 flex h-full items-center justify-center">
+                              <BookOpen className="size-12" aria-hidden />
+                            </span>
+                          )}
+                        </div>
+                        <CardContent className="flex flex-col gap-3 p-6">
+                          <Badge variant="muted" className="w-fit">
+                            <BookOpen className="size-3" /> Gids
+                          </Badge>
+                          {article.publishedAt && (
+                            <p className="text-muted-foreground text-xs">
+                              {formatDate(article.publishedAt)}
+                            </p>
+                          )}
+                          <h3 className="group-hover:text-primary text-lg leading-tight font-semibold">
+                            <Link
+                              href={`/gidsen/${article.slug}`}
+                              className="after:absolute after:inset-0"
+                            >
+                              {article.title}
+                            </Link>
+                          </h3>
+                          {article.excerpt && (
+                            <p className="text-muted-foreground text-sm leading-relaxed">
+                              {article.excerpt}
+                            </p>
+                          )}
+                          <span className="text-primary mt-auto inline-flex items-center gap-1 text-sm font-semibold">
+                            Lees de gids <ArrowRight className="size-4" />
+                          </span>
+                        </CardContent>
+                      </Card>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>

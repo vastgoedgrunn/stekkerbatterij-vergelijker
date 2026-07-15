@@ -9,11 +9,11 @@ export interface ArticleListItem {
   slug: string;
   excerpt: string | null;
   publishedAt: string | null;
+  coverImagePath: string | null;
 }
 
 export interface Article extends ArticleListItem {
   body: ContentBlock[];
-  coverImagePath: string | null;
 }
 
 export interface Faq {

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getArticleBySlug, getArticleSlugs } from "@/features/content/queries";
+import { getGuideCoverUrl } from "@/features/content/covers";
 import { Container } from "@/components/patterns/section";
 import { buttonVariants } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -45,6 +47,8 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
 
+  const cover = getGuideCoverUrl(article);
+
   return (
     <main>
       <JsonLd
@@ -76,6 +80,21 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
           )}
         </Container>
       </div>
+
+      {cover && (
+        <Container className="max-w-3xl! pt-8">
+          <div className="border-border/70 relative aspect-[16/9] overflow-hidden rounded-2xl border shadow-[var(--shadow-md)]">
+            <Image
+              src={cover}
+              alt=""
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 768px"
+              className="object-cover"
+            />
+          </div>
+        </Container>
+      )}
 
       <Container className="max-w-3xl! py-12">
         <article className="space-y-6">

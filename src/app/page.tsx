@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { getProducts } from "@/features/products/queries";
 import { getArticles } from "@/features/content/queries";
+import { getGuideCoverUrl } from "@/features/content/covers";
 import { ProductCard } from "@/components/patterns/product-card";
 import { HeroMatcher } from "@/features/comparison/hero-matcher";
 import { Container, Section, SectionHeading } from "@/components/patterns/section";
@@ -250,33 +251,51 @@ export default async function HomePage() {
               </Link>
             </div>
             <ul className="grid gap-6 md:grid-cols-3">
-              {articles.slice(0, 3).map((article, i) => (
-                <Reveal as="li" key={article.id} delay={i * 60}>
-                  <Card interactive className="group h-full">
-                    <CardContent className="flex h-full flex-col gap-3 p-6">
-                      <Badge variant="muted" className="w-fit">
-                        <LineChart className="size-3" /> Gids
-                      </Badge>
-                      <h3 className="group-hover:text-primary text-lg leading-tight font-semibold">
-                        <Link
-                          href={`/gidsen/${article.slug}`}
-                          className="after:absolute after:inset-0"
-                        >
-                          {article.title}
-                        </Link>
-                      </h3>
-                      {article.excerpt && (
-                        <p className="text-muted-foreground text-sm leading-relaxed">
-                          {article.excerpt}
-                        </p>
-                      )}
-                      <span className="text-primary mt-auto inline-flex items-center gap-1 text-sm font-semibold">
-                        Lees meer <ArrowRight className="size-4" />
-                      </span>
-                    </CardContent>
-                  </Card>
-                </Reveal>
-              ))}
+              {articles.slice(0, 3).map((article, i) => {
+                const cover = getGuideCoverUrl(article);
+                return (
+                  <Reveal as="li" key={article.id} delay={i * 60}>
+                    <Card interactive className="group h-full overflow-hidden">
+                      <div className="bg-muted relative aspect-[16/10] overflow-hidden">
+                        {cover ? (
+                          <Image
+                            src={cover}
+                            alt=""
+                            fill
+                            sizes="(max-width: 768px) 100vw, 33vw"
+                            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                          />
+                        ) : (
+                          <span className="text-primary/25 flex h-full items-center justify-center">
+                            <LineChart className="size-12" aria-hidden />
+                          </span>
+                        )}
+                      </div>
+                      <CardContent className="flex flex-col gap-3 p-6">
+                        <Badge variant="muted" className="w-fit">
+                          <LineChart className="size-3" /> Gids
+                        </Badge>
+                        <h3 className="group-hover:text-primary text-lg leading-tight font-semibold">
+                          <Link
+                            href={`/gidsen/${article.slug}`}
+                            className="after:absolute after:inset-0"
+                          >
+                            {article.title}
+                          </Link>
+                        </h3>
+                        {article.excerpt && (
+                          <p className="text-muted-foreground text-sm leading-relaxed">
+                            {article.excerpt}
+                          </p>
+                        )}
+                        <span className="text-primary mt-auto inline-flex items-center gap-1 text-sm font-semibold">
+                          Lees meer <ArrowRight className="size-4" />
+                        </span>
+                      </CardContent>
+                    </Card>
+                  </Reveal>
+                );
+              })}
             </ul>
           </Container>
         </Section>
