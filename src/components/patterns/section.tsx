@@ -38,12 +38,15 @@ export function SectionHeading({
   title,
   description,
   align = "left",
+  as: TitleTag = "h2",
   className,
 }: {
   eyebrow?: string;
   title: React.ReactNode;
   description?: React.ReactNode;
   align?: "left" | "center";
+  /** Pagina-titel: gebruik `h1`. Sectiekoppen blijven standaard `h2`. */
+  as?: "h1" | "h2";
   className?: string;
 }) {
   return (
@@ -55,7 +58,9 @@ export function SectionHeading({
       )}
     >
       {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-      <h2 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl">{title}</h2>
+      <TitleTag className="text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+        {title}
+      </TitleTag>
       {description && (
         <p
           className={cn(
