@@ -132,8 +132,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         </nav>
 
         <div className="grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
-          {/* GALLERY */}
+          {/* GALLERY (klaar voor uitbreiding naar meerdere afbeeldingen) */}
           <div className="from-accent/50 via-muted border-border relative flex aspect-square items-center justify-center overflow-hidden rounded-3xl border bg-gradient-to-br to-transparent">
+            <div
+              aria-hidden
+              className="ambient-glow pointer-events-none absolute inset-0 opacity-60"
+            />
             {imageUrl ? (
               <Image
                 src={imageUrl}
@@ -141,10 +145,10 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-contain p-10"
+                className="relative object-contain p-8 drop-shadow-[0_24px_48px_rgba(16,40,32,0.18)]"
               />
             ) : (
-              <BatteryCharging className="text-primary/25 size-24" aria-hidden />
+              <BatteryCharging className="text-primary/25 relative size-24" aria-hidden />
             )}
             {product.expandable && (
               <Badge variant="highlight" className="absolute top-4 left-4">
