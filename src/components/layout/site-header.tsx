@@ -34,7 +34,7 @@ export function SiteHeader() {
           <ThemeToggle />
           <Link
             href="/account"
-            className="text-muted-foreground hover:bg-accent hover:text-foreground flex size-9 items-center justify-center rounded-lg transition-colors"
+            className="text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:ring-ring/50 flex size-10 items-center justify-center rounded-lg transition-colors outline-none focus-visible:ring-[3px]"
             aria-label="Mijn account"
           >
             <User className="size-5" />
