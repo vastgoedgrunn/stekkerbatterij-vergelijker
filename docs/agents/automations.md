@@ -41,6 +41,8 @@ Morning checklist:
 2. High-confidence SKU match + outbound verify ok → auto upsert/publish (priced ok-offer).
    Upsert must ingest product images via resolveAndIngestProductImage (Storage catalog/{slug}).
    Never share one brand placeholder across SKUs.
+2b. **P0:** no search/listing URLs as offers (bol `/s/`, Coolblue zoeken, `?s=`). Only `/p/` or
+   `/product/` + Bol partner deeplink. Soft-delete search leftovers immediately.
 3. needs_review / broken / title mismatch → Slack 🔒 with our title vs merchant title + URL.
    NEVER set affiliate_link_status=ok on a wrong SKU (SolarFlow 800 ≠ AB3000X).
 4. Completeness: every marquee brand >= 2 published products with image + usable outbound.
@@ -48,7 +50,8 @@ Morning checklist:
 5. Refresh prices on existing offers; auto only <=10% with citation.
 6. Bol: if BOL_PRODUCT_FEED_URL / BOL_PARTNER_API_KEY missing, say so and use research seeds;
    ask owner for keys when feed would unblock scale.
-7. Slack digest: discovered, upserted, published, needs_review, broken, Bol configured yes/no.
+7. Slack digest: discovered, upserted, published, needs_review, broken, Bol configured yes/no,
+   P0 search-URL count (must be 0).
 ```
 
 ## 1b. Data & catalog: daily morning follow-up (completeness + prices)
@@ -78,8 +81,10 @@ Checklist:
 ```
 You are the QA & monitoring agent. Follow .cursor/rules/qa-monitoring-agent.mdc. Check production
 health (GET /api/health + homepage), open Sentry issues, broken links, and recent deploy status.
-Triage: fix small issues via ship-via-pr (label agent,qa) or escalate with a clear repro to the
-right department. Verify auto-rollback ran if production degraded; otherwise run `vercel rollback`.
+Also P0: scan active offers for search/listing URLs (bol /s/, Coolblue zoeken, ?s=, Gamma
+assortiment). If any exist, soft-delete/broken immediately and Slack the data agent, or fix via
+ship-via-pr. Triage other issues via ship-via-pr (label agent,qa) or escalate. Verify
+auto-rollback ran if production degraded; otherwise run `vercel rollback`.
 Post a short Slack status with anything found and actions taken.
 ```
 
@@ -216,13 +221,16 @@ You are the Data & prices agent (avond: affiliate + offer health). Follow
 .cursor/rules/data-prices-agent.mdc and price-fact-verification. Assume affiliate networks are
 supposed to be live (hybrid mode): missing or broken deeplinks are P0, not silent.
 
-Evening checklist:
-1. For active offers: check affiliate_deeplink or affiliate_url still resolves (HTTPS). Mark
-   affiliate_link_status ok/pending/broken + note + affiliate_link_checked_at.
-2. Quick price spot-check on top clicked products; auto only in-margin with citation.
-3. Scan /admin/revenue and /admin/clicks for anomalies; /admin/leads for pending approvals.
-4. Slack digest: broken/pending offers (product + merchant), price autos, anything needing 🔒.
-5. Ship fixes via ship-via-pr (label agent). Never invent deeplinks; escalate when Bol/Awin/
+Evening checklist (P0 first):
+1. **P0 zoek-URL scan:** any offer with bol `/s/?searchtext=`, Coolblue `/zoeken`, or `?s=`
+   search → soft-delete/broken immediately. Replace with real `/p/` or `/product/` URL +
+   Bol partner deeplink when found. Never leave search URLs as outbound CTAs.
+2. For remaining active offers: check affiliate_deeplink or affiliate_url still resolves
+   (HTTPS). Mark affiliate_link_status ok/pending/broken + note + checked_at.
+3. Shop offers without URL: soft-delete (do not count as merchant).
+4. Quick price spot-check on top clicked products; auto only in-margin with citation.
+5. Slack digest: P0 search-URL fixes, broken/pending, price autos, anything needing 🔒.
+6. Ship fixes via ship-via-pr (label agent). Never invent deeplinks; escalate when Bol/Awin/
    Daisycon IDs are still missing.
 ```
 

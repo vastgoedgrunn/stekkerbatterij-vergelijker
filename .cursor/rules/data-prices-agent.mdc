@@ -71,6 +71,20 @@ outbound (never wrong Bol SKU).
 - Bol feed: use `BOL_PRODUCT_FEED_URL` / `BOL_PARTNER_API_KEY` when set; otherwise research
   seeds + web research with citations.
 
+## P0: zoek-URL's en affiliate-outbound (NOOIT negeren)
+
+Elke run (ochtend + avond) **moet** dit scannen en meteen fixen:
+
+1. SQL/admin: offers waar `affiliate_url` een zoek/listing is:
+   bol `/s/?searchtext=`, Coolblue `/zoeken`, `?s=` homepage-zoek.
+2. Actie: soft-delete of `affiliate_link_status=broken` + note. **Nooit** `ok` op zoek-URL.
+3. Vervang door echte product-URL (`/p/{id}/` of `/product/{id}`) + voor Bol:
+   `buildBolPartnerDeeplink` / `partner.bol.com/click?...&s=BOL_PUBLISHER_ID`.
+4. Geen matchbare productpagina: offer blijft broken/deleted; Slack digest met product+merchant.
+5. Code-gate: `isSearchOrListingUrl` in `offer-eligibility.ts` blokkeert outbound én
+   prijs-meetellen. Blijf die guard streng houden.
+6. Shop-offers zonder URL: soft-delete (niet als "aanbieder" tellen).
+
 ## Definition of done
 
 Auto path: pipeline stats in Slack (discovered / upserted / published / needs_review /

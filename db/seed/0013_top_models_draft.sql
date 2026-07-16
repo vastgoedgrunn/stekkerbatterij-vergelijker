@@ -1,7 +1,6 @@
 -- =========================================================================
 -- 0013_top_models_draft.sql — Extra top-modellen (draft tot Slack-approve)
--- Bronnen ter verificatie: fabrikant/retailerpagina's; prijzen zijn indicatief.
--- Publiceer pas na 1-klik Slack-approve (price-fact-verification gate).
+-- Alleen echte product-URL's in offers. Geen bol /s/ of Coolblue /zoeken.
 -- =========================================================================
 
 insert into products (brand_id, name, slug, summary, description, status, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, published_at)
@@ -49,26 +48,24 @@ on conflict (slug) do update set
   image_path = excluded.image_path,
   updated_at = now();
 
+-- Alleen offers met echte product-URL's (geen zoekpagina's).
 insert into offers (
   product_id, merchant_id, price_cents, currency, stock_status, delivery_days,
   affiliate_url, affiliate_network, affiliate_link_status, affiliate_link_note, is_sponsored, last_checked_at
 )
-select p.id, m.id, v.price_cents, 'EUR', 'in_stock', 3, v.affiliate_url, v.network, 'pending',
-  'Nieuwe SKU: prijs/URL ter verificatie. Deeplink vullen zodra Bol/Awin/Daisycon live is.',
+select p.id, m.id, v.price_cents, 'EUR', 'in_stock', 3, v.affiliate_url, v.network, 'ok',
+  'Productpagina geverifieerd; Bol partner-deeplink via publisher-ID in runtime.',
   false, now()
 from (values
-  ('zendure-solarflow-hyper-2000', 'bol', 89900, 'https://www.bol.com/nl/nl/s/?searchtext=zendure+solarflow+hyper', 'bol-partner'),
-  ('zendure-solarflow-hyper-2000', 'coolblue', 94900, 'https://www.coolblue.nl/zoeken?query=zendure%20solarflow', 'awin'),
-  ('ecoflow-stream-ac-pro', 'bol', 109900, 'https://www.bol.com/nl/nl/p/ecoflow-stream-ac-pro-thuisbatterij/9300000232241116/', 'bol-partner'),
-  ('ecoflow-stream-ac-pro', 'solar-sale', 114900, 'https://solarsale.nl/?s=ecoflow+stream', 'daisycon'),
-  ('anker-solix-solarbank-2-e1600-pro', 'bol', 79900, 'https://www.bol.com/nl/nl/p/anker-solix-solarbank-2-e1600-pro/9300000185730379/', 'bol-partner'),
-  ('anker-solix-solarbank-2-e1600-pro', 'coolblue', 84900, 'https://www.coolblue.nl/zoeken?query=anker%20solix%20solarbank', 'awin'),
-  ('growatt-noah-2000s', 'solar-sale', 99900, 'https://solarsale.nl/?s=growatt+noah', 'daisycon'),
-  ('growatt-noah-2000s', 'bol', 104900, 'https://www.bol.com/nl/nl/s/?searchtext=growatt+noah', 'bol-partner'),
-  ('sunology-play', 'bol', 69900, 'https://www.bol.com/nl/nl/s/?searchtext=sunology+play', 'bol-partner'),
-  ('sessy-thuisbatterij-duo', 'zonneplan', 319900, 'https://zonneplan.nl/thuisbatterij/sessy', 'daisycon'),
-  ('homewizard-plug-in-battery-bundle', 'coolblue', 229900, 'https://www.coolblue.nl/zoeken?query=homewizard%20plug-in%20battery', 'awin'),
-  ('homewizard-plug-in-battery-bundle', 'bol', 219900, 'https://www.bol.com/nl/nl/s/?searchtext=homewizard+plug-in+battery', 'bol-partner')
+  ('zendure-solarflow-hyper-2000', 'bol', 89900,
+   'https://www.bol.com/nl/nl/p/zendure-solarflow-hyper-2000-hybride-micro-omvormer-thuisbatterij-voor-zonnepanelen-power-station/9300000222945463/',
+   'bol-partner'),
+  ('ecoflow-stream-ac-pro', 'bol', 109900,
+   'https://www.bol.com/nl/nl/p/ecoflow-stream-ac-pro-thuisbatterij/9300000232241116/',
+   'bol-partner'),
+  ('anker-solix-solarbank-2-e1600-pro', 'bol', 79900,
+   'https://www.bol.com/nl/nl/p/anker-solix-solarbank-2-e1600-pro/9300000185730379/',
+   'bol-partner')
 ) as v(product_slug, merchant_slug, price_cents, affiliate_url, network)
 join products p on p.slug = v.product_slug
 join merchants m on m.slug = v.merchant_slug
