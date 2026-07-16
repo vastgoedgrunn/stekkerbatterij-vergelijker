@@ -69,13 +69,24 @@ export async function listClickSummary(): Promise<ClickSummaryRow[]> {
   return (data ?? []) as ClickSummaryRow[];
 }
 
-export async function listAdminLeads(status?: LeadRow["status"]): Promise<LeadRow[]> {
+export async function listAdminLeads(status?: LeadRow["status"]): Promise<
+  (LeadRow & { product_name?: string | null; product_slug?: string | null })[]
+> {
   const db = getAdminDb();
-  let query = db.from("leads").select("*").order("created_at", { ascending: false });
+  let query = db
+    .from("leads")
+    .select("*, products(name, slug)")
+    .order("created_at", { ascending: false });
   if (status) query = query.eq("status", status);
-  const { data, error } = await query.returns<LeadRow[]>();
+  const { data, error } = await query.returns<
+    (LeadRow & { products: { name: string; slug: string } | null })[]
+  >();
   if (error) throw new Error(error.message);
-  return data ?? [];
+  return (data ?? []).map((row) => ({
+    ...row,
+    product_name: row.products?.name ?? null,
+    product_slug: row.products?.slug ?? null,
+  }));
 }
 
 export async function listEnergyPartners(): Promise<EnergyPartnerRow[]> {

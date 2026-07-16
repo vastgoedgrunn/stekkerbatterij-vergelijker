@@ -119,6 +119,10 @@ Execute in order:
 - Broken/pending/search offers: no "Bekijk beste prijs" (`offer-eligibility.ts`, `/api/go`).
 - Bol feed keys when set; else research + citations.
 - P0 details: `docs/agents/checklists/p0-outbound-scan.md` + `isSearchOrListingUrl` in code.
+- **`product_type = fixed`:** geen affiliate offer verplicht. Wel image + specs. Indicative
+  `indicative_price_min/max_cents` alleen na `price-fact-verification` (Slack 🔒 met bron).
+  Catalog Discovery tagt plug_in vs fixed bij match. P0 zoek-URL scan geldt voor stekker-offers;
+  fixed products skippen offer-verify.
 
 ## Definition of done
 

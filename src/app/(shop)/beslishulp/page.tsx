@@ -5,9 +5,9 @@ import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure"
 import { businessRules } from "@/config/business-rules";
 
 export const metadata: Metadata = {
-  title: "Beslishulp: welke stekkerbatterij past bij jou?",
+  title: "Beslishulp: welke thuisbatterij past bij jou?",
   description:
-    "Beantwoord een paar vragen over je verbruik, zonnepanelen en budget en ontvang een persoonlijk advies voor de beste stekkerbatterij.",
+    "Beantwoord een paar vragen over je verbruik, zonnepanelen en budget. Wij adviseren stekkerbatterij of vaste thuisbatterij met offerte.",
   alternates: { canonical: "/beslishulp" },
 };
 
@@ -23,10 +23,11 @@ export default async function DecisionAidPage() {
             Persoonlijk advies
           </span>
           <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-            Vind jouw ideale stekkerbatterij
+            Vind jouw ideale thuisbatterij
           </h1>
           <p className="text-muted-foreground mx-auto mt-3 max-w-xl text-lg">
-            Beantwoord vijf korte stappen en ontvang een onafhankelijk advies op maat.
+            Beantwoord vijf korte stappen. We adviseren plug-and-play of een vaste batterij met
+            installatie.
           </p>
         </header>
 

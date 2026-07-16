@@ -72,6 +72,9 @@ interface RawProduct {
   warranty_years: number | null;
   expandable: boolean;
   image_path: string | null;
+  product_type: ProductListItem["productType"];
+  indicative_price_min_cents: number | null;
+  indicative_price_max_cents: number | null;
   brands: RawBrand | null;
   offers: RawListOffer[] | null;
 }
@@ -238,10 +241,14 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
   let query = supabase
     .from("products")
     .select(
-      "id, slug, name, summary, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, brands(id, name, slug), offers(id, price_cents, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, merchants(name))",
+      "id, slug, name, summary, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, product_type, indicative_price_min_cents, indicative_price_max_cents, brands(id, name, slug), offers(id, price_cents, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, merchants(name))",
     )
     .eq("status", "published")
     .is("deleted_at", null);
+
+  if (filters.productType) {
+    query = query.eq("product_type", filters.productType);
+  }
 
   if (filters.search) {
     query = query.ilike("name", `%${filters.search}%`);
@@ -298,6 +305,9 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
       warrantyYears: r.warranty_years,
       expandable: r.expandable,
       imagePath: r.image_path,
+      productType: r.product_type ?? "plug_in",
+      indicativePriceMinCents: r.indicative_price_min_cents,
+      indicativePriceMaxCents: r.indicative_price_max_cents,
       lowestPriceCents: lowestPrice(activeOffers(r.offers)),
       offerCount: activeOffers(r.offers).length,
       bestOffer: mapBestListOffer(r.offers),
@@ -326,17 +336,35 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
   return { items, total, page, pageSize };
 }
 
-export async function getProductSlugs(): Promise<string[]> {
+export async function getProductSlugs(productType?: ProductListItem["productType"]): Promise<string[]> {
   if (!isSupabaseConfigured()) return [];
   const supabase = createSupabasePublicClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from("products")
     .select("slug")
     .eq("status", "published")
-    .is("deleted_at", null)
-    .returns<{ slug: string }[]>();
+    .is("deleted_at", null);
+  if (productType) {
+    query = query.eq("product_type", productType);
+  }
+  const { data, error } = await query.returns<{ slug: string }[]>();
   if (error) return [];
   return (data ?? []).map((r) => r.slug);
+}
+
+export async function getProductTypeBySlug(slug: string): Promise<ProductListItem["productType"] | null> {
+  if (!isSupabaseConfigured()) return null;
+  const supabase = createSupabasePublicClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select("product_type")
+    .eq("slug", slug)
+    .eq("status", "published")
+    .is("deleted_at", null)
+    .limit(1)
+    .returns<{ product_type: ProductListItem["productType"] }[]>();
+  if (error) return null;
+  return data?.[0]?.product_type ?? null;
 }
 
 export async function getProductBySlug(slug: string): Promise<ProductDetail | null> {
@@ -346,7 +374,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   const { data, error } = await supabase
     .from("products")
     .select(
-      "id, slug, name, summary, description, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, supplier_id, sellable, brands(id, name, slug), offers(id, merchant_id, price_cents, stock_status, delivery_days, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, last_checked_at, merchants(name, slug, is_self))",
+      "id, slug, name, summary, description, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, product_type, indicative_price_min_cents, indicative_price_max_cents, supplier_id, sellable, brands(id, name, slug), offers(id, merchant_id, price_cents, stock_status, delivery_days, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, last_checked_at, merchants(name, slug, is_self))",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -404,6 +432,9 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
     warrantyYears: product.warranty_years,
     expandable: product.expandable,
     imagePath: product.image_path,
+    productType: product.product_type ?? "plug_in",
+    indicativePriceMinCents: product.indicative_price_min_cents,
+    indicativePriceMaxCents: product.indicative_price_max_cents,
     supplierId: product.supplier_id,
     sellable: product.sellable ?? false,
     lowestPriceCents: offers.length > 0 ? offers[0]!.priceCents : null,

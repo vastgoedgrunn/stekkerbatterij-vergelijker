@@ -5,9 +5,11 @@ import {
   ArrowRight,
   BatteryCharging,
   LineChart,
+  PlugZap,
   Scale,
   ShieldCheck,
   TrendingDown,
+  Wrench,
 } from "lucide-react";
 import { getProducts } from "@/features/products/queries";
 import { getArticles } from "@/features/content/queries";
@@ -56,7 +58,7 @@ const trustItems = [
   {
     icon: TrendingDown,
     title: "Altijd actuele prijzen",
-    text: "Dagelijks bijgewerkte prijzen met volledige prijshistorie en de laagste prijs van 30 dagen.",
+    text: "Dagelijks bijgewerkte prijzen voor stekkerbatterijen, plus eerlijke offertes voor vaste systemen.",
   },
   {
     icon: ShieldCheck,
@@ -75,14 +77,15 @@ const steps = [
     text: "Onze transparante beslishulp rangschikt de beste batterijen voor jou.",
   },
   {
-    title: "Vergelijk en kies",
-    text: "Bekijk specs naast elkaar en ga naar de aanbieder met de beste prijs.",
+    title: "Kies je pad: direct kopen of offerte voor installatie",
+    text: "Stekkerbatterijen koop je online. Vaste systemen regel je via een vrijblijvende offerte.",
   },
 ];
 
 export default async function HomePage() {
-  const [{ items: featured }, articles] = await Promise.all([
-    getProducts({ sort: "rating_desc", pageSize: 8 }),
+  const [{ items: plugInFeatured }, { items: fixedFeatured }, articles] = await Promise.all([
+    getProducts({ productType: "plug_in", sort: "rating_desc", pageSize: 4 }),
+    getProducts({ productType: "fixed", sort: "capacity_desc", pageSize: 4 }),
     getArticles(),
   ]);
 
@@ -99,11 +102,11 @@ export default async function HomePage() {
               Onafhankelijk vergelijkingsplatform
             </span>
             <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-              Vind de <span className="text-primary">beste stekkerbatterij</span> voor jouw huis
+              Welke <span className="text-primary">thuisbatterij</span> past bij jou?
             </h1>
             <p className="text-muted-foreground max-w-xl text-lg text-pretty">
-              Vergelijk plug-and-play thuisbatterijen op prijs, capaciteit, vermogen en garantie.
-              Onafhankelijk, actueel en compleet, zodat jij met vertrouwen kiest.
+              Vergelijk stekkerbatterijen en vaste thuisbatterijen op capaciteit, vermogen en
+              garantie. Direct kopen of een offerte voor installatie: jij kiest het pad dat past.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link href="/beslishulp" className={cn(buttonVariants({ size: "lg" }))}>
@@ -119,10 +122,56 @@ export default async function HomePage() {
           </div>
 
           <div className="min-w-0 lg:pl-4">
-            <HeroMatcher products={featured} />
+            <HeroMatcher products={plugInFeatured} />
           </div>
         </Container>
       </section>
+
+      {/* KEUZEPADEN */}
+      <Section>
+        <Container>
+          <SectionHeading
+            eyebrow="Kies je pad"
+            title="Stekker of vaste installatie?"
+            description="Twee manieren om energie op te slaan. Kies wat bij jouw huis en wensen past."
+          />
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
+            <Link
+              href="/stekkerbatterijen"
+              className="border-border bg-card hover:border-primary/40 group flex flex-col rounded-3xl border p-8 transition-colors"
+            >
+              <span className="bg-primary/10 text-primary flex size-12 items-center justify-center rounded-2xl">
+                <PlugZap className="size-6" />
+              </span>
+              <h2 className="mt-5 text-2xl font-bold tracking-tight">Stekkerbatterijen</h2>
+              <p className="text-muted-foreground mt-2 flex-1 text-sm leading-relaxed">
+                Plug-and-play, zonder installateur. Vergelijk prijzen bij webshops en ga direct door
+                naar de aanbieder.
+              </p>
+              <span className={cn(buttonVariants({ size: "sm" }), "mt-6 w-fit")}>
+                Bekijk stekkerbatterijen <ArrowRight className="size-4" />
+              </span>
+            </Link>
+
+            <Link
+              href="/vaste-thuisbatterijen"
+              className="border-border bg-card hover:border-primary/40 group flex flex-col rounded-3xl border p-8 transition-colors"
+            >
+              <span className="bg-primary/10 text-primary flex size-12 items-center justify-center rounded-2xl">
+                <Wrench className="size-6" />
+              </span>
+              <h2 className="mt-5 text-2xl font-bold tracking-tight">Vaste thuisbatterijen</h2>
+              <p className="text-muted-foreground mt-2 flex-1 text-sm leading-relaxed">
+                Meer capaciteit met professionele installatie. Vergelijk topmodellen en vraag een
+                vrijblijvende offerte aan.
+              </p>
+              <span className={cn(buttonVariants({ size: "sm" }), "mt-6 w-fit")}>
+                Bekijk vaste systemen <ArrowRight className="size-4" />
+              </span>
+            </Link>
+          </div>
+        </Container>
+      </Section>
 
       {/* MERKEN */}
       <div className="marquee-band py-10">
@@ -184,25 +233,53 @@ export default async function HomePage() {
         </Container>
       </Section>
 
-      {/* UITGELICHT */}
-      {featured.length > 0 && (
+      {/* UITGELICHT STEKKER */}
+      {plugInFeatured.length > 0 && (
         <Section tinted>
           <Container>
             <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
               <SectionHeading
                 eyebrow="Best beoordeeld"
                 title="Populaire stekkerbatterijen"
-                description="De hoogst gewaardeerde modellen van dit moment, op basis van echte reviews."
+                description="De hoogst gewaardeerde plug-and-play modellen van dit moment."
               />
               <Link
-                href="/batterijen"
+                href="/stekkerbatterijen"
                 className={cn(buttonVariants({ variant: "outline" }), "shrink-0")}
               >
                 Alles bekijken <ArrowRight className="size-4" />
               </Link>
             </div>
             <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {featured.slice(0, 4).map((product, i) => (
+              {plugInFeatured.map((product, i) => (
+                <Reveal as="li" key={product.id} delay={i * 60}>
+                  <ProductCard product={product} />
+                </Reveal>
+              ))}
+            </ul>
+          </Container>
+        </Section>
+      )}
+
+      {/* UITGELICHT VAST */}
+      {fixedFeatured.length > 0 && (
+        <Section>
+          <Container>
+            <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+              <SectionHeading
+                eyebrow="Grote capaciteit"
+                title="Vaste thuisbatterijen"
+                description="Systemen met installatie. Vergelijk specs en vraag een vrijblijvende offerte aan."
+              />
+              <Link
+                href="/vaste-thuisbatterijen"
+                className={cn(buttonVariants({ variant: "outline" }), "shrink-0")}
+              >
+                Alles bekijken <ArrowRight className="size-4" />
+              </Link>
+            </div>
+            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {fixedFeatured.map((product, i) => (
                 <Reveal as="li" key={product.id} delay={i * 60}>
                   <ProductCard product={product} />
                 </Reveal>

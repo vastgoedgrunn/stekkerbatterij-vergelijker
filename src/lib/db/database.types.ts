@@ -8,6 +8,8 @@ export type Json = string | number | boolean | null | { [key: string]: Json } | 
 
 export type AppRole = "user" | "editor" | "merchant_manager" | "moderator" | "admin";
 export type ProductStatus = "draft" | "published" | "archived";
+/** plug_in = stekkerbatterij (CPS); fixed = vaste thuisbatterij (lead/offerte). */
+export type ProductType = "plug_in" | "fixed";
 export type StockStatus = "in_stock" | "out_of_stock" | "preorder" | "unknown";
 export type ReviewStatus = "pending" | "approved" | "rejected";
 export type ContentStatus = "draft" | "in_review" | "published" | "archived";
@@ -81,6 +83,9 @@ export interface ProductRow extends TimestampFields {
   handling_days: number;
   weight_grams: number | null;
   sellable: boolean;
+  product_type: ProductType;
+  indicative_price_min_cents: number | null;
+  indicative_price_max_cents: number | null;
 }
 
 export interface MerchantRow extends TimestampFields {
@@ -449,6 +454,7 @@ export interface LeadRow extends TimestampFields {
   approved_by: string | null;
   approved_at: string | null;
   sent_at: string | null;
+  product_id: string | null;
 }
 
 export interface EnergyClickRow {

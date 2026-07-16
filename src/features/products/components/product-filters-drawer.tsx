@@ -12,10 +12,12 @@ export function ProductFiltersDrawer({
   brands,
   categories,
   filters,
+  action,
 }: {
   brands: Brand[];
   categories: Category[];
   filters: ProductFilters;
+  action?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [render, setRender] = useState(false);
@@ -99,7 +101,12 @@ export function ProductFiltersDrawer({
       </div>
 
       <aside className="hidden md:sticky md:top-20 md:block md:self-start">
-        <ProductFilterPanel brands={brands} categories={categories} filters={filters} />
+        <ProductFilterPanel
+          brands={brands}
+          categories={categories}
+          filters={filters}
+          action={action}
+        />
       </aside>
 
       {render && typeof document !== "undefined"
@@ -144,7 +151,12 @@ export function ProductFiltersDrawer({
                   </button>
                 </div>
                 <div className="overflow-y-auto p-4">
-                  <ProductFilterPanel brands={brands} categories={categories} filters={filters} />
+                  <ProductFilterPanel
+          brands={brands}
+          categories={categories}
+          filters={filters}
+          action={action}
+        />
                 </div>
               </div>
             </div>,

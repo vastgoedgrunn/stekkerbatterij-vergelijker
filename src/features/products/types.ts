@@ -1,4 +1,6 @@
-import type { StockStatus } from "@/lib/db/database.types";
+import type { ProductType, StockStatus } from "@/lib/db/database.types";
+
+export type { ProductType };
 
 export interface Brand {
   id: string;
@@ -39,6 +41,9 @@ export interface ProductListItem {
   warrantyYears: number | null;
   expandable: boolean;
   imagePath: string | null;
+  productType: ProductType;
+  indicativePriceMinCents: number | null;
+  indicativePriceMaxCents: number | null;
   lowestPriceCents: number | null;
   offerCount: number;
   bestOffer: ProductListBestOffer | null;
@@ -90,6 +95,8 @@ export interface ProductFilters {
   search?: string;
   brandSlug?: string;
   categorySlug?: string;
+  /** Filter op stekker (plug_in) of vaste thuisbatterij (fixed). */
+  productType?: ProductType;
   minCapacity?: number;
   maxCapacity?: number;
   /** Laagste prijs in euro's. */
