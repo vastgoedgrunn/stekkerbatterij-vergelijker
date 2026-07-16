@@ -27,7 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     { url: `${base}/merken`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     {
-      url: `${base}/beste-stekkerbatterij-2026`,
+      url: `${base}/beste-stekkerbatterij`,
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.8,
