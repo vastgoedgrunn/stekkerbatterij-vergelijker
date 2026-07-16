@@ -61,7 +61,7 @@ from (values
   ('zendure-solarflow-hyper-2000', 'coolblue', 94900, 'https://www.coolblue.nl/zoeken?query=zendure%20solarflow', 'awin'),
   ('ecoflow-stream-ac-pro', 'bol', 109900, 'https://www.bol.com/nl/nl/p/ecoflow-stream-ac-pro-thuisbatterij/9300000232241116/', 'bol-partner'),
   ('ecoflow-stream-ac-pro', 'solar-sale', 114900, 'https://solarsale.nl/?s=ecoflow+stream', 'daisycon'),
-  ('anker-solix-solarbank-2-e1600-pro', 'bol', 79900, 'https://www.bol.com/nl/nl/s/?searchtext=anker+solix+solarbank+2+pro', 'bol-partner'),
+  ('anker-solix-solarbank-2-e1600-pro', 'bol', 79900, 'https://www.bol.com/nl/nl/p/anker-solix-solarbank-2-e1600-pro/9300000185730379/', 'bol-partner'),
   ('anker-solix-solarbank-2-e1600-pro', 'coolblue', 84900, 'https://www.coolblue.nl/zoeken?query=anker%20solix%20solarbank', 'awin'),
   ('growatt-noah-2000s', 'solar-sale', 99900, 'https://solarsale.nl/?s=growatt+noah', 'daisycon'),
   ('growatt-noah-2000s', 'bol', 104900, 'https://www.bol.com/nl/nl/s/?searchtext=growatt+noah', 'bol-partner'),
