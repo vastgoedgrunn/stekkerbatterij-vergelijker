@@ -23,6 +23,10 @@ export function isSearchOrListingUrl(url: string): boolean {
     if (u.searchParams.has("searchtext")) return true;
     if (host.endsWith("coolblue.nl") && path.includes("/zoeken")) return true;
     if (u.searchParams.has("query") && path.includes("zoeken")) return true;
+    // WordPress/zoek: ?s=foo op homepage-achtige path
+    if (u.searchParams.has("s") && (path === "" || path === "/")) return true;
+    // Gamma categorie/listing, geen productdetail
+    if (host.endsWith("gamma.nl") && path.includes("/assortiment/")) return true;
     return false;
   } catch {
     return false;
@@ -36,10 +40,12 @@ export function offerOutboundUrl(offer: OfferOutboundFields): string | null {
   return url;
 }
 
-/** Actief in catalogus (prijs mag getoond), niet soft-deleted/broken. */
+/** Actief in catalogus (prijs mag getoond), niet soft-deleted/broken/zoek-URL. */
 export function isActiveOffer(offer: OfferOutboundFields): boolean {
   if (offer.deleted_at) return false;
   if (offer.affiliate_link_status === "broken") return false;
+  const url = offer.affiliate_deeplink ?? offer.affiliate_url;
+  if (url && isSearchOrListingUrl(url)) return false;
   return true;
 }
 
