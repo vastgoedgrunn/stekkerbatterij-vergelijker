@@ -121,7 +121,7 @@ export function CompareView({ products }: { products: ProductDetail[] }) {
   return (
     <div className="space-y-3">
       {mixed && (
-        <p className="text-muted-foreground rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm">
+        <p className="text-muted-foreground border-warning/30 bg-warning/5 rounded-xl border px-4 py-3 text-sm">
           Je vergelijkt alleen producten van hetzelfde type. Gemengde selecties zijn gefilterd naar{" "}
           {primaryType === "fixed" ? "vaste thuisbatterijen" : "stekkerbatterijen"}.
         </p>

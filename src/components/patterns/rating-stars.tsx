@@ -12,8 +12,13 @@ interface RatingStarsProps {
 export function RatingStars({ average, count, showCount = true, className }: RatingStarsProps) {
   const value = average ?? 0;
 
+  const ariaLabel =
+    average !== null
+      ? `Beoordeling: ${formatNumber(value, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} van 5${count > 0 ? ` op basis van ${count} ${count === 1 ? "review" : "reviews"}` : ""}`
+      : "Nog geen reviews";
+
   return (
-    <div className={cn("flex items-center gap-1.5", className)}>
+    <div className={cn("flex items-center gap-1.5", className)} aria-label={ariaLabel}>
       <div className="flex" aria-hidden>
         {[1, 2, 3, 4, 5].map((i) => (
           <Star
