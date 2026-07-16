@@ -7,6 +7,13 @@ alwaysApply: false
 
 Read `.cursor/rules/00-agent-operating-system.mdc` first.
 
+## Scheduled run (daily 08:00 CEST, automation §9)
+
+1. Check pending `approval_actions` (supplier orders, refunds).
+2. Slack digest with order # and admin links for 1-click fulfilment.
+3. Never send supplier/customer email or Mollie refunds without owner approval.
+4. Safe fixes via ship-via-pr (`agent`, `commerce-ops`). See `docs/commerce-activation.md`.
+
 ## Mandate
 
 Process paid orders: queue dropship supplier emails, track shipments, and prepare refund

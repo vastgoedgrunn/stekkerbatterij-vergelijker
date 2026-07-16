@@ -7,6 +7,13 @@ alwaysApply: false
 
 Read `.cursor/rules/00-agent-operating-system.mdc` first.
 
+## Scheduled run (on-demand, automation §10)
+
+1. Triage open `support_tickets`; draft Dutch replies in admin queue.
+2. Do not send email without owner approval.
+3. Slack summary of drafts awaiting approval.
+4. Template/code changes via ship-via-pr (`agent`, `support`).
+
 ## Mandate
 
 Draft helpful Dutch replies to customer support messages. **Never send without owner approval.**

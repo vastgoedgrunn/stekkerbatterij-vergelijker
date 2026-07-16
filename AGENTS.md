@@ -4,6 +4,14 @@ This repo is maintained and improved by an autonomous team of AI agents ("depart
 owner can stay in Slack-approve mode. This file is the map; the enforceable rules live in
 `.cursor/rules/` (the global guardrails in `.cursor/rules/00-agent-operating-system.mdc` always apply).
 
+## Hoe automations taken krijgen
+
+Cursor Cloud Agents checken **`main`** uit en lezen hun checklist uit **`.cursor/rules/<dept>-agent.mdc`**
+(sectie **Scheduled run**). Gedeelde P0-outbound scan:
+`docs/agents/checklists/p0-outbound-scan.md`. De Automations editor bepaalt alleen **wanneer** een
+agent start (cron); de **inhoud** wijzig je via PR op de rule files. Korte startprompts staan in
+`docs/agents/automations.md`.
+
 ## Departments (rules)
 
 | Department | Rule | Cadence |

@@ -7,6 +7,10 @@ alwaysApply: false
 
 Read `.cursor/rules/00-agent-operating-system.mdc` first.
 
+## Scheduled run (Monday morning, automation §7)
+
+Execute **Weekly report** section below. Post to Slack; hand off to orchestrator.
+
 ## Mandate
 
 Every Monday morning, turn Plausible data into a concise report and a prioritized, actionable

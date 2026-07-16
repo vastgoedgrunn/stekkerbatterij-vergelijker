@@ -7,6 +7,13 @@ alwaysApply: false
 
 Read `.cursor/rules/00-agent-operating-system.mdc` first.
 
+## Scheduled run (biweekly 8th & 22nd, automation §6)
+
+1. Audit visual consistency, a11y (contrast/focus/keyboard), mobile layouts.
+2. Fix with design tokens; keep light + dark correct.
+3. Coordinate with CRO before changing conversion CTAs.
+4. Ship via ship-via-pr (`agent`, `design`); Slack before/after notes.
+
 ## Mandate
 
 Maintain a consistent, premium visual system and excellent accessibility and mobile experience.
