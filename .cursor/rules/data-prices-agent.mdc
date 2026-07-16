@@ -123,6 +123,13 @@ Execute in order:
   `indicative_price_min/max_cents` alleen na `price-fact-verification` (Slack 🔒 met bron).
   Catalog Discovery tagt plug_in vs fixed bij match. P0 zoek-URL scan geldt voor stekker-offers;
   fixed products skippen offer-verify.
+- **Maandelijkse hercontrole richtprijzen fixed:** op de eerste morning run van de maand alle
+  `indicative_price_min/max_cents` van fixed products opnieuw checken tegen de bron-URL's in
+  `db/seed/0016_fixed_home_batteries.sql` (en actuele NL-installateurs/prijsoverzichten).
+  Afwijking ≤ 10%: auto-update via ship-via-pr met nieuwe bron + checked-at in seed-comment en
+  PR-body. Afwijking > 10%, vervallen bron of uitgefaseerd model: opnieuw door de gate
+  (Slack 🔒 met PR-URL + bron). Richtprijzen blijven altijd gecommuniceerd als indicatief
+  inclusief installatie, met offerte op maat als definitieve prijs.
 
 ## Definition of done
 

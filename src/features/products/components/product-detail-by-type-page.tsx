@@ -218,14 +218,15 @@ export async function ProductDetailByTypePage({
               <div className="space-y-4">
                 <div className="border-border bg-card rounded-2xl border p-5 shadow-[var(--shadow-sm)]">
                   <p className="text-muted-foreground text-sm">
-                    {indicativeLabel ? "Richtprijs (indicatief, incl. installatie)" : "Prijs"}
+                    {indicativeLabel ? "Richtprijs inclusief installatie" : "Prijs"}
                   </p>
                   <p className="mt-1 text-3xl font-bold tracking-tight">
                     {indicativeLabel ?? "Offerte op maat"}
                   </p>
                   <p className="text-muted-foreground mt-2 text-xs">
-                    Geen webshopprijs: vaste systemen gaan via installateur. Vrijblijvend
-                    oriënteren.
+                    {indicativeLabel
+                      ? "Indicatieve richtprijs inclusief installatie en btw. De definitieve prijs is altijd een offerte op maat van de installateur."
+                      : "Geen webshopprijs: vaste systemen gaan via installateur. Vrijblijvend oriënteren."}
                   </p>
                   <div className="mt-4">
                     <CompareToggle slug={product.slug} name={product.name} />
