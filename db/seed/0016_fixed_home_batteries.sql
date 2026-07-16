@@ -1,6 +1,25 @@
 -- =========================================================================
 -- 0016_fixed_home_batteries.sql — 8 vaste thuisbatterijen (lead/offerte-pad)
--- Geen affiliate offers. Indicative prijzen blijven null tot price-fact gate.
+-- Geen affiliate offers. Indicatieve richtprijzen (incl. installatie, incl.
+-- btw) zijn onderzocht op 2026-07-16 en gaan via de price-fact-verification
+-- gate. Het blijven richtprijzen: de definitieve prijs is een offerte op maat.
+--
+-- Bandbreedtes per model (afgerond op honderden euro's), bron + checked-at:
+--   tesla-powerwall-3                9.500 tot 13.500  solargarant.nl/thuisbatterijen/tesla-powerwall/powerwall-3/prijs/ (2026-07-16)
+--   byd-battery-box-premium-hvs-10-2 7.000 tot  9.000  solargarant.nl/thuisbatterijen/byd/ (2026-07-16), incl. hybride omvormer
+--   huawei-luna2000-10-s0            5.800 tot  8.500  solargarant.nl/thuisbatterijen/huawei/luna-2000-10-kwh/ (2026-07-16)
+--   solaredge-home-battery-10        6.500 tot 10.000  thuisbatterij.nl/merken/solaredge/ (2026-07-16); ondergrens geldt na
+--                                                      btw-teruggave en bij bestaande geschikte SolarEdge omvormer
+--   enphase-iq-battery-5p            5.000 tot  7.500  solargarant.nl/thuisbatterijen/enphase/prijs/ (2026-07-16)
+--   sigenergy-sigenstor-10           7.000 tot 10.000  solargarant.nl/thuisbatterijen/sigenergy/ (2026-07-16), configuratie-afhankelijk
+--   sonnen-eco-8                     9.000 tot 12.500  solargarant.nl/thuisbatterijen/sonnen/ (2026-07-16)
+--   foxess-ecs-10-4                  7.000 tot  9.000  dx-installatietechniek.nl 10,4 kWh pakket (2026-07-16) + typische installatie
+--
+-- KANTTEKENING sonnen-eco-8: de eco 8 is uitgefaseerd en wordt in NL niet meer
+-- los geprijsd. De bandbreedte dekt de actuele 10 kWh opvolgers (sonnenBatterie
+-- Evo 10 kWh 9.000 tot 11.000 en 10 Performance 10 kWh 10.000 tot 12.500).
+-- KANTTEKENING foxess-ecs-10-4: geen NL-bron met all-in prijs gevonden. Band is
+-- afgeleid: hardware-pakket ca. 6.100 incl. btw plus installatie 800 tot 2.000.
 -- =========================================================================
 
 insert into categories (name, slug, description, sort_order) values
@@ -34,7 +53,7 @@ insert into products (
 select
   b.id, v.name, v.slug, v.summary, v.description, 'published',
   v.capacity, v.power, v.cycles, v.warranty, v.expandable, v.image_path,
-  'fixed'::product_type, null, null, now()
+  'fixed'::product_type, v.indicative_min_cents, v.indicative_max_cents, now()
 from (values
   (
     'tesla',
@@ -43,7 +62,8 @@ from (values
     'All-in-one thuisbatterij met geïntegreerde omvormer, populair bij huishoudens met zonnepanelen.',
     'De Tesla Powerwall 3 combineert batterij en hybride omvormer in één compacte unit. Geschikt voor zelfverbruik, backup en dynamische tarieven. Installatie door een gecertificeerde installateur is verplicht.',
     13.5, 11.5, 10000, 10, false,
-    '/images/products/tesla-powerwall-3.jpg'
+    '/images/products/tesla-powerwall-3.jpg',
+    950000::bigint, 1350000::bigint
   ),
   (
     'byd',
@@ -52,7 +72,8 @@ from (values
     'Modulaire hoogspanningsbatterij, veelgebruikt door NL-installateurs.',
     'De BYD Battery-Box Premium HVS is een schaalbaar hoogspanningssysteem. Modules stapelen voor meer capaciteit. Geschikt in combinatie met gangbare hybride omvormers. Wandmontage door installateur.',
     10.2, 9.0, 6000, 10, true,
-    '/images/products/byd-battery-box-premium-hvs-10-2.jpg'
+    '/images/products/byd-battery-box-premium-hvs-10-2.jpg',
+    700000::bigint, 900000::bigint
   ),
   (
     'huawei',
@@ -61,7 +82,8 @@ from (values
     'Modulaire thuisbatterij die vaak samen met Huawei-zonnepanelenomvormers wordt geplaatst.',
     'Huawei LUNA2000 is een LiFePO4-systeem met modules van 5 kWh. De 10 kWh-configuratie (S0) is gangbaar bij Nederlandse woningen. Installatie en inregeling via een gecertificeerde partner.',
     10.0, 5.0, 6000, 10, true,
-    '/images/products/huawei-luna2000-10-s0.jpg'
+    '/images/products/huawei-luna2000-10-s0.jpg',
+    580000::bigint, 850000::bigint
   ),
   (
     'solaredge',
@@ -70,7 +92,8 @@ from (values
     'Thuisbatterij voor SolarEdge-ecosysteem met monitoring in de app.',
     'De SolarEdge Home Battery is ontworpen voor woningen met SolarEdge-omvormers en power optimizers. Capaciteit rond 10 kWh, uitbreidbaar in het ecosysteem. Installatie door SolarEdge-partner.',
     9.7, 5.0, 6000, 10, true,
-    '/images/products/solaredge-home-battery-10.jpg'
+    '/images/products/solaredge-home-battery-10.jpg',
+    650000::bigint, 1000000::bigint
   ),
   (
     'enphase',
@@ -79,7 +102,8 @@ from (values
     'Modulaire AC-gekoppelde batterij, ideaal bij Enphase micro-omvormers.',
     'De Enphase IQ Battery 5P levert circa 5 kWh bruikbare capaciteit per unit en is stapelbaar. AC-gekoppeld, dus ook achteraf te plaatsen bij bestaande PV. Installatie door een Enphase-gecertificeerde installateur.',
     5.0, 3.84, 6000, 15, true,
-    '/images/products/enphase-iq-battery-5p.jpg'
+    '/images/products/enphase-iq-battery-5p.jpg',
+    500000::bigint, 750000::bigint
   ),
   (
     'sigenergy',
@@ -88,7 +112,8 @@ from (values
     'Hybride energiehub met batterij, omvormer en optionele EV-lader.',
     'Sigenergy SigenStor combineert opslag en hybride omvorming in één modulaire hub. Populair bij huishoudens die zonnepanelen, batterij en laden willen bundelen. Professionele installatie vereist.',
     10.0, 12.0, 6000, 10, true,
-    '/images/products/sigenergy-sigenstor-10.jpg'
+    '/images/products/sigenergy-sigenstor-10.jpg',
+    700000::bigint, 1000000::bigint
   ),
   (
     'sonnen',
@@ -97,7 +122,8 @@ from (values
     'Premium thuisbatterij met focus op zelfconsumptie en community-features.',
     'De Sonnen eco 8 is een premium all-in-one systeem gericht op maximale zelfconsumptie. Geschikt voor huishoudens die kwaliteit en software boven de laagste aanschafprijs zetten. Installatie via Sonnen-partner.',
     8.0, 3.3, 10000, 10, true,
-    '/images/products/sonnen-eco-8.jpg'
+    '/images/products/sonnen-eco-8.jpg',
+    900000::bigint, 1250000::bigint
   ),
   (
     'foxess',
@@ -106,9 +132,10 @@ from (values
     'Prijs/kwaliteit middensegment met modulaire capaciteit.',
     'FoxESS ECS is een modulaire thuisbatterij die vaak met FoxESS hybride omvormers wordt gecombineerd. Interessant voor huishoudens die meer capaciteit zoeken zonder premium-prijs. Wandmontage door installateur.',
     10.4, 5.0, 6000, 10, true,
-    '/images/products/foxess-ecs-10-4.jpg'
+    '/images/products/foxess-ecs-10-4.jpg',
+    700000::bigint, 900000::bigint
   )
-) as v(brand_slug, name, slug, summary, description, capacity, power, cycles, warranty, expandable, image_path)
+) as v(brand_slug, name, slug, summary, description, capacity, power, cycles, warranty, expandable, image_path, indicative_min_cents, indicative_max_cents)
 join brands b on b.slug = v.brand_slug
 on conflict (slug) do update set
   name = excluded.name,
@@ -122,6 +149,8 @@ on conflict (slug) do update set
   expandable = excluded.expandable,
   image_path = excluded.image_path,
   product_type = 'fixed',
+  indicative_price_min_cents = excluded.indicative_price_min_cents,
+  indicative_price_max_cents = excluded.indicative_price_max_cents,
   published_at = coalesce(products.published_at, now()),
   updated_at = now();
 
