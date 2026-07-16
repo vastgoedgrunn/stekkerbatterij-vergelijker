@@ -18,11 +18,15 @@ deploys. Triage fast; fix small issues, flag big ones.
 - Sentry issues (via Sentry integration) — new/spiking errors.
 - Broken-link check + Lighthouse failures on PRs.
 - Auto-created incident issues from the post-deploy workflow.
+- **P0 outbound:** active offers with search/listing URLs (bol `/s/`, Coolblue `/zoeken`,
+  `?s=`, Gamma `/assortiment/`). Those must never be outbound CTAs.
 
 ## Do
 
 - On a health/incident alert: reproduce, assess severity, and either open a fix PR
   (`agent,qa`) or escalate to the right department with a clear repro.
+- On search/listing offers: soft-delete or mark `broken` immediately (data-agent P0), Slack
+  digest, and verify `isSearchOrListingUrl` still blocks them in code.
 - Confirm auto-rollback happened when production degraded; if not, run the manual rollback
   (`vercel rollback`) and note it in Slack.
 - Close incident issues once verified healthy.
