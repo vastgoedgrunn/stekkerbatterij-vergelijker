@@ -40,10 +40,10 @@ export function offerOutboundUrl(offer: OfferOutboundFields): string | null {
   return url;
 }
 
-/** Actief in catalogus (prijs mag getoond), niet soft-deleted/broken/zoek-URL. */
+/** Actief in catalogus (prijs mag getoond), alleen na geverifieerde linkcheck. */
 export function isActiveOffer(offer: OfferOutboundFields): boolean {
   if (offer.deleted_at) return false;
-  if (offer.affiliate_link_status === "broken") return false;
+  if (offer.affiliate_link_status !== "ok") return false;
   const url = offer.affiliate_deeplink ?? offer.affiliate_url;
   if (url && isSearchOrListingUrl(url)) return false;
   return true;
