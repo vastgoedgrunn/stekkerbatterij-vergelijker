@@ -88,9 +88,7 @@ export async function CatalogByTypePage({
 
   return (
     <main id="main-content">
-      {isFixed && (
-        <TrackView event={{ name: "fixed_catalog_viewed", props: { path: basePath } }} />
-      )}
+      {isFixed && <TrackView event={{ name: "fixed_catalog_viewed", props: { path: basePath } }} />}
       <div className="border-border/70 from-primary/5 border-b bg-gradient-to-b to-transparent">
         <Container className="py-10 sm:py-14">
           <p className="text-primary text-sm font-semibold tracking-wide uppercase">Catalogus</p>
@@ -107,7 +105,9 @@ export async function CatalogByTypePage({
               href={isFixed ? "/stekkerbatterijen" : "/vaste-thuisbatterijen"}
               className="text-primary text-sm font-semibold hover:underline"
             >
-              {isFixed ? "Liever plug-and-play? Bekijk stekkerbatterijen" : "Meer capaciteit nodig? Bekijk vaste thuisbatterijen"}
+              {isFixed
+                ? "Liever plug-and-play? Bekijk stekkerbatterijen"
+                : "Meer capaciteit nodig? Bekijk vaste thuisbatterijen"}
             </Link>
           </p>
         </Container>
@@ -166,7 +166,10 @@ export async function CatalogByTypePage({
                 <p className="text-muted-foreground mx-auto mt-1 max-w-sm text-sm">
                   Pas je filters aan of bekijk het volledige aanbod.
                 </p>
-                <Link href={basePath} className={cn(buttonVariants({ variant: "outline" }), "mt-5")}>
+                <Link
+                  href={basePath}
+                  className={cn(buttonVariants({ variant: "outline" }), "mt-5")}
+                >
                   Alle resultaten
                 </Link>
               </div>

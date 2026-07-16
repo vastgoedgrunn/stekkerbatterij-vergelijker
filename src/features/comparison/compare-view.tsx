@@ -211,7 +211,9 @@ export function CompareView({ products }: { products: ProductDetail[] }) {
                     ) : bestOffer?.affiliateUrl ? (
                       <>
                         <p className="text-sm font-bold">{formatPrice(bestOffer.priceCents)}</p>
-                        <p className="text-muted-foreground text-xs">bij {bestOffer.merchantName}</p>
+                        <p className="text-muted-foreground text-xs">
+                          bij {bestOffer.merchantName}
+                        </p>
                         <OfferLink
                           offerId={bestOffer.id}
                           productId={p.id}

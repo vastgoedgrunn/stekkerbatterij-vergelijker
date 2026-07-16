@@ -15,12 +15,7 @@ interface Props {
   action?: Route;
 }
 
-export function ProductFilterPanel({
-  brands,
-  categories,
-  filters,
-  action = "/batterijen",
-}: Props) {
+export function ProductFilterPanel({ brands, categories, filters, action = "/batterijen" }: Props) {
   return (
     <form
       method="get"

@@ -153,11 +153,11 @@ export function ProductFiltersDrawer({
                 </div>
                 <div className="overflow-y-auto p-4">
                   <ProductFilterPanel
-          brands={brands}
-          categories={categories}
-          filters={filters}
-          action={action}
-        />
+                    brands={brands}
+                    categories={categories}
+                    filters={filters}
+                    action={action}
+                  />
                 </div>
               </div>
             </div>,

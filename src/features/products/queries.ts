@@ -336,7 +336,9 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
   return { items, total, page, pageSize };
 }
 
-export async function getProductSlugs(productType?: ProductListItem["productType"]): Promise<string[]> {
+export async function getProductSlugs(
+  productType?: ProductListItem["productType"],
+): Promise<string[]> {
   if (!isSupabaseConfigured()) return [];
   const supabase = createSupabasePublicClient();
   let query = supabase
@@ -352,7 +354,9 @@ export async function getProductSlugs(productType?: ProductListItem["productType
   return (data ?? []).map((r) => r.slug);
 }
 
-export async function getProductTypeBySlug(slug: string): Promise<ProductListItem["productType"] | null> {
+export async function getProductTypeBySlug(
+  slug: string,
+): Promise<ProductListItem["productType"] | null> {
   if (!isSupabaseConfigured()) return null;
   const supabase = createSupabasePublicClient();
   const { data, error } = await supabase

@@ -68,9 +68,7 @@ export default async function AdminLeadsPage() {
                     <p className="font-medium">{lead.customer_name ?? lead.customer_email}</p>
                     <p className="text-muted-foreground text-xs">{lead.postal_code}</p>
                   </TableCell>
-                  <TableCell className="text-sm">
-                    {lead.product_name ?? "-"}
-                  </TableCell>
+                  <TableCell className="text-sm">{lead.product_name ?? "-"}</TableCell>
                   <TableCell>{lead.source}</TableCell>
                   <TableCell>
                     <Badge variant={statusVariant[lead.status] ?? "muted"}>{lead.status}</Badge>

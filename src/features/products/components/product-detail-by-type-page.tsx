@@ -224,7 +224,8 @@ export async function ProductDetailByTypePage({
                     {indicativeLabel ?? "Offerte op maat"}
                   </p>
                   <p className="text-muted-foreground mt-2 text-xs">
-                    Geen webshopprijs: vaste systemen gaan via installateur. Vrijblijvend oriënteren.
+                    Geen webshopprijs: vaste systemen gaan via installateur. Vrijblijvend
+                    oriënteren.
                   </p>
                   <div className="mt-4">
                     <CompareToggle slug={product.slug} name={product.name} />
@@ -286,7 +287,10 @@ export async function ProductDetailByTypePage({
                           : "Bekijk beste prijs"}
                       </OfferLink>
                     ) : (
-                      <a href="#aanbieders" className={cn(buttonVariants({ size: "lg" }), "flex-1")}>
+                      <a
+                        href="#aanbieders"
+                        className={cn(buttonVariants({ size: "lg" }), "flex-1")}
+                      >
                         Bekijk aanbieders
                       </a>
                     )}

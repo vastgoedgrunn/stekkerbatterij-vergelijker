@@ -9,10 +9,7 @@ import { OfferLink } from "@/features/offers-pricing/offer-link";
 import { formatNumber, formatPrice } from "@/lib/format";
 import { getPublicImageUrl } from "@/lib/supabase/storage";
 import type { ProductListItem } from "@/features/products/types";
-import {
-  productDetailPath,
-  productTypeBadge,
-} from "@/features/products/product-paths";
+import { productDetailPath, productTypeBadge } from "@/features/products/product-paths";
 
 export function ProductCard({ product }: { product: ProductListItem }) {
   const imageUrl = getPublicImageUrl(product.imagePath);
@@ -21,10 +18,7 @@ export function ProductCard({ product }: { product: ProductListItem }) {
   const href = productDetailPath(product.slug, product.productType);
 
   const pricePerKwh =
-    !isFixed &&
-    product.lowestPriceCents !== null &&
-    product.capacityKwh &&
-    product.capacityKwh > 0
+    !isFixed && product.lowestPriceCents !== null && product.capacityKwh && product.capacityKwh > 0
       ? Math.round(product.lowestPriceCents / product.capacityKwh)
       : null;
 
@@ -78,7 +72,9 @@ export function ProductCard({ product }: { product: ProductListItem }) {
           )}
 
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-            <Badge variant={isFixed ? "muted" : "highlight"}>{productTypeBadge(product.productType)}</Badge>
+            <Badge variant={isFixed ? "muted" : "highlight"}>
+              {productTypeBadge(product.productType)}
+            </Badge>
             {product.expandable && <Badge variant="highlight">Uitbreidbaar</Badge>}
           </div>
         </div>

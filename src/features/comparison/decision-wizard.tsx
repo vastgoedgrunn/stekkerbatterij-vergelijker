@@ -11,7 +11,12 @@ import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
 import { getPublicImageUrl } from "@/lib/supabase/storage";
 import { trackEvent } from "@/lib/observability/analytics";
-import { rankFixedProducts, rankProducts, type RankedProduct, type WizardPreferences } from "./ranking";
+import {
+  rankFixedProducts,
+  rankProducts,
+  type RankedProduct,
+  type WizardPreferences,
+} from "./ranking";
 import { qualifyLeadPath } from "./qualification";
 import { LeadPanel } from "./lead-panel";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
@@ -290,10 +295,7 @@ function RecommendationCard({
   const isFixed = rec.product.productType === "fixed";
 
   return (
-    <Card
-      interactive
-      className={cn(index === 0 && "border-primary/40 ring-primary/15 ring-2")}
-    >
+    <Card interactive className={cn(index === 0 && "border-primary/40 ring-primary/15 ring-2")}>
       <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
         <div className="from-accent/50 to-muted relative size-24 shrink-0 self-center overflow-hidden rounded-2xl bg-gradient-to-br">
           {imageUrl && (
@@ -318,10 +320,7 @@ function RecommendationCard({
           </Link>
           <ul className="mt-2 space-y-1">
             {rec.reasons.map((reason) => (
-              <li
-                key={reason}
-                className="text-muted-foreground flex items-center gap-1.5 text-sm"
-              >
+              <li key={reason} className="text-muted-foreground flex items-center gap-1.5 text-sm">
                 <Check className="text-success size-3.5 shrink-0" /> {reason}
               </li>
             ))}
