@@ -39,6 +39,9 @@ const serverSchema = z.object({
   DAISYCON_VERIFY_FILENAME: z.string().min(1).optional(),
   DAISYCON_VERIFY_FILE_BODY: z.string().min(1).optional(),
 
+  /** Daisycon media-ID (wi-parameter in ds1.nl trackinglinks en feed-URLs). */
+  DAISYCON_MEDIA_ID: z.string().min(1).optional(),
+
   /** e-WNDR thuisbatterij-lead affiliate quote-URL (consumer landing, niet affiliate-worden). */
   EWNDR_LEAD_AFFILIATE_URL: z.string().url().optional(),
 

@@ -56,7 +56,9 @@ insert into merchants (name, slug, is_self, website_url) values
   ('bol', 'bol', false, 'https://bol.com'),
   ('Zonneplan', 'zonneplan', false, 'https://zonneplan.nl'),
   ('Solar Sale', 'solar-sale', false, 'https://solarsale.nl'),
-  ('Gamma', 'gamma', false, 'https://gamma.nl')
+  ('Gamma', 'gamma', false, 'https://gamma.nl'),
+  ('Zendure', 'zendure', false, 'https://zendure.nl'),
+  ('HomeWizard', 'homewizard', false, 'https://www.homewizard.com')
 on conflict (slug) do update set name = excluded.name, website_url = excluded.website_url;
 
 -- Producten (upsert incl. afbeelding)
@@ -240,7 +242,10 @@ from (values
   ('coolblue', 'awin', '{"clickref":"{click_ref}"}'::jsonb),
   ('gamma', 'awin', '{"clickref":"{click_ref}"}'::jsonb),
   ('zonneplan', 'daisycon', '{"subid":"{click_ref}"}'::jsonb),
-  ('solar-sale', 'daisycon', '{"subid":"{click_ref}"}'::jsonb)
+  ('solar-sale', 'daisycon', '{"subid":"{click_ref}"}'::jsonb),
+  -- Daisycon ds1.nl: ws is de Sub ID-parameter; {click_ref} wordt per klik ingevuld.
+  ('zendure', 'daisycon', '{"ws":"{click_ref}"}'::jsonb),
+  ('homewizard', 'daisycon', '{"ws":"{click_ref}"}'::jsonb)
 ) as v(mslug, network, params)
 where merchants.slug = v.mslug;
 
@@ -301,13 +306,20 @@ join products p on p.slug = v.pslug
 join merchants m on m.slug = v.mslug
 where o.product_id = p.id and o.merchant_id = m.id;
 
-insert into partner_programs (slug, name, network, commission_type, commission_rate, cookie_days, signup_url, source_url) values
-  ('zendure-nl', 'Zendure NL Affiliate', 'awin', 'cps', 0.08, 30, 'https://www.zendure.nl/pages/affiliate-program', 'https://www.zendure.nl/pages/affiliate-program'),
-  ('anker-solix-eu', 'Anker SOLIX EU', 'impact', 'cps', 0.08, 30, 'https://www.ankersolix.com/eu/become-an-affiliate', 'https://www.ankersolix.com/eu/become-an-affiliate'),
-  ('bol-partner', 'Bol.com Partner', 'bol-partner', 'cps', 0.025, 7, 'https://affiliate.bol.com/', 'https://affiliate.bol.com/'),
-  ('daisycon-energy', 'Daisycon Energie', 'daisycon', 'cpa', null, 30, 'https://www.daisycon.com/nl/', 'https://affiliate-net.nl/programmas/frankenergie/'),
-  ('e-wndr-leads', 'e-WNDR Thuisbatterij leads', 'e-wndr', 'cpa', null, null, 'https://e-wndr.nl/affiliate-worden/', 'https://e-wndr.nl/affiliate-worden/')
+-- Daisycon: goedgekeurde campagnes hebben een program_id (si). Het link_id (li)
+-- komt per campagne uit het publisher-dashboard (Materiaal, Deeplinks) en wordt
+-- door de eigenaar aangeleverd; tot die tijd blijven Daisycon-deeplinks uit.
+insert into partner_programs (slug, name, network, program_id, commission_type, commission_rate, cookie_days, signup_url, source_url) values
+  ('zendure-nl', 'Zendure NL (Daisycon)', 'daisycon', '20779', 'cps', 0.08, 30, 'https://daisycon.com/nl/campagnes/20779-zendure-nl/', 'https://www.zendure.nl/pages/affiliate-program'),
+  ('homewizard-int', 'HomeWizard INT (Daisycon)', 'daisycon', '18407', 'cps', 0.075, 30, 'https://daisycon.com/nl/campagnes/18407-homewizard-int/', 'https://affiliate-net.nl/programmas/homewizard/'),
+  ('anker-solix-eu', 'Anker SOLIX EU', 'impact', null, 'cps', 0.08, 30, 'https://www.ankersolix.com/eu/become-an-affiliate', 'https://www.ankersolix.com/eu/become-an-affiliate'),
+  ('bol-partner', 'Bol.com Partner', 'bol-partner', null, 'cps', 0.025, 7, 'https://affiliate.bol.com/', 'https://affiliate.bol.com/'),
+  ('daisycon-energy', 'Daisycon Energie', 'daisycon', null, 'cpa', null, 30, 'https://www.daisycon.com/nl/', 'https://affiliate-net.nl/programmas/frankenergie/'),
+  ('e-wndr-leads', 'e-WNDR Thuisbatterij leads', 'e-wndr', null, 'cpa', null, null, 'https://e-wndr.nl/affiliate-worden/', 'https://e-wndr.nl/affiliate-worden/')
 on conflict (slug) do update set
+  name = excluded.name,
+  network = excluded.network,
+  program_id = excluded.program_id,
   commission_rate = excluded.commission_rate,
   signup_url = excluded.signup_url,
   source_url = excluded.source_url,
