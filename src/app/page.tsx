@@ -16,6 +16,7 @@ import { getArticles } from "@/features/content/queries";
 import { getGuideCoverUrl } from "@/features/content/covers";
 import { ProductCard } from "@/components/patterns/product-card";
 import { HeroMatcher } from "@/features/comparison/hero-matcher";
+import { HeroCta } from "@/features/experiments/hero-cta";
 import { Container, Section, SectionHeading } from "@/components/patterns/section";
 import { Reveal } from "@/components/patterns/reveal";
 import { Card, CardContent } from "@/components/ui/card";
@@ -109,9 +110,7 @@ export default async function HomePage() {
               garantie. Direct kopen of een offerte voor installatie: jij kiest het pad dat past.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Link href="/beslishulp" className={cn(buttonVariants({ size: "lg" }))}>
-                Start de beslishulp <ArrowRight className="size-4" />
-              </Link>
+              <HeroCta />
               <Link
                 href="/batterijen"
                 className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
