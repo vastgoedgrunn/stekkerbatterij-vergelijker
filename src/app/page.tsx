@@ -84,7 +84,7 @@ const steps = [
 
 export default async function HomePage() {
   const [{ items: plugInFeatured }, { items: fixedFeatured }, articles] = await Promise.all([
-    getProducts({ productType: "plug_in", sort: "rating_desc", pageSize: 4 }),
+    getProducts({ productType: "plug_in", sort: "value_asc", pageSize: 4 }),
     getProducts({ productType: "fixed", sort: "capacity_desc", pageSize: 4 }),
     getArticles(),
   ]);
@@ -239,9 +239,9 @@ export default async function HomePage() {
           <Container>
             <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
               <SectionHeading
-                eyebrow="Best beoordeeld"
+                eyebrow="Scherpste prijs per kWh"
                 title="Populaire stekkerbatterijen"
-                description="De hoogst gewaardeerde plug-and-play modellen van dit moment."
+                description="De plug-and-play modellen met de laagste prijs per kWh opslag van dit moment."
               />
               <Link
                 href="/stekkerbatterijen"

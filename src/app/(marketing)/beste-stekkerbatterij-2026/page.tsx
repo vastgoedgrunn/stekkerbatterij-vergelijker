@@ -18,7 +18,7 @@ export const revalidate = 3600;
 
 const title = "Beste stekkerbatterij 2026: onze top 10";
 const description =
-  "Onze onafhankelijke ranglijst van de beste plug-and-play stekkerbatterijen van 2026, geordend op gebruikersbeoordeling. Vergelijk capaciteit, vermogen, garantie en prijs.";
+  "Onze onafhankelijke ranglijst van de beste plug-and-play stekkerbatterijen van 2026, geordend op prijs per kWh opslag. Vergelijk capaciteit, vermogen, garantie en prijs.";
 
 export const metadata: Metadata = {
   title,
@@ -66,7 +66,7 @@ function rankingReason(product: ProductListItem): string {
 }
 
 export default async function BestBatteryPage() {
-  const result = await getProducts({ sort: "rating_desc", pageSize: 10 });
+  const result = await getProducts({ sort: "value_asc", pageSize: 10 });
   const products = result.items;
 
   const structuredData = itemListJsonLd(
@@ -89,16 +89,16 @@ export default async function BestBatteryPage() {
             Beste stekkerbatterij van 2026
           </h1>
           <p className="text-muted-foreground mt-3 max-w-2xl text-lg">
-            Een plug-and-play stekkerbatterij kies je niet zomaar. Daarom zetten we de best
-            beoordeelde modellen van 2026 op een rij, zodat je snel ziet welke thuisaccu past bij je
-            wensen op het gebied van capaciteit, vermogen, garantie en prijs.
+            Een plug-and-play stekkerbatterij kies je niet zomaar. Daarom zetten we de modellen met
+            de scherpste prijs per kWh opslag van 2026 op een rij, zodat je snel ziet welke
+            thuisaccu past bij je wensen op het gebied van capaciteit, vermogen, garantie en prijs.
           </p>
           <div className="border-border bg-card text-muted-foreground mt-6 rounded-xl border p-4 text-sm leading-relaxed">
             <p>
               <span className="text-foreground font-semibold">Hoe wij rangschikken:</span> deze
-              volgorde is gebaseerd op de gemiddelde gebruikersbeoordeling en de onderliggende
-              specificaties. We werken onafhankelijk en verzinnen geen prijzen of specificaties.
-              Lees precies{" "}
+              volgorde is gebaseerd op de laagste actuele prijs per kWh opslagcapaciteit en de
+              onderliggende specificaties. We werken onafhankelijk en verzinnen geen prijzen of
+              specificaties. Lees precies{" "}
               <Link
                 href={"/over-ons/hoe-wij-vergelijken" as Route}
                 className="text-primary font-medium underline-offset-4 hover:underline"
