@@ -23,12 +23,12 @@ const description =
 export const metadata: Metadata = {
   title,
   description,
-  alternates: { canonical: "/beste-stekkerbatterij-2026" },
+  alternates: { canonical: "/beste-stekkerbatterij" },
   openGraph: {
     title,
     description,
     type: "website",
-    url: `${siteConfig.url}/beste-stekkerbatterij-2026`,
+    url: `${siteConfig.url}/beste-stekkerbatterij`,
   },
 };
 
