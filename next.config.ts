@@ -45,6 +45,15 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/beste-stekkerbatterij-2026",
+        destination: "/beste-stekkerbatterij",
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     if (!daisyconVerifyFilename) return [];
     return [
