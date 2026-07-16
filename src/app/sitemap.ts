@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
 import { getBrands, getProductSlugs } from "@/features/products/queries";
 import { getArticleSlugs } from "@/features/content/queries";
+import { productDetailPath } from "@/features/products/product-paths";
 
 export const revalidate = 3600;
 
@@ -12,9 +13,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${base}/`, lastModified: now, changeFrequency: "daily", priority: 1 },
     { url: `${base}/batterijen`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
+    {
+      url: `${base}/stekkerbatterijen`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
+      url: `${base}/vaste-thuisbatterijen`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
     { url: `${base}/merken`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     {
       url: `${base}/beste-stekkerbatterij-2026`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${base}/beste-vaste-thuisbatterij`,
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.8,
@@ -51,18 +70,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  const [productSlugs, articleSlugs, brands] = await Promise.all([
-    getProductSlugs(),
+  const [plugInSlugs, fixedSlugs, articleSlugs, brands] = await Promise.all([
+    getProductSlugs("plug_in"),
+    getProductSlugs("fixed"),
     getArticleSlugs(),
     getBrands(),
   ]);
 
-  const productRoutes: MetadataRoute.Sitemap = productSlugs.map((slug) => ({
-    url: `${base}/batterijen/${slug}`,
-    lastModified: now,
-    changeFrequency: "weekly",
-    priority: 0.8,
-  }));
+  const productRoutes: MetadataRoute.Sitemap = [
+    ...plugInSlugs.map((slug) => ({
+      url: `${base}${productDetailPath(slug, "plug_in")}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
+    ...fixedSlugs.map((slug) => ({
+      url: `${base}${productDetailPath(slug, "fixed")}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
+  ];
 
   const brandRoutes: MetadataRoute.Sitemap = brands.map((brand) => ({
     url: `${base}/merken/${brand.slug}`,

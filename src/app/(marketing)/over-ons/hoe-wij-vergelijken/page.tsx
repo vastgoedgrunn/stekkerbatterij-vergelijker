@@ -9,7 +9,7 @@ import { siteConfig } from "@/config/site";
 export const metadata: Metadata = {
   title: "Hoe wij vergelijken",
   description:
-    "Onze transparante methodologie voor het rangschikken van stekkerbatterijen, geen black box.",
+    "Onze transparante methodologie voor stekkerbatterijen en vaste thuisbatterijen, geen black box.",
   alternates: { canonical: "/over-ons/hoe-wij-vergelijken" },
   openGraph: {
     title: "Hoe wij vergelijken",
@@ -23,8 +23,12 @@ const criteria = [
     text: "We vergelijken de batterijcapaciteit met je geschatte jaarverbruik. Te klein levert weinig voordeel; te groot is onnodig duur.",
   },
   {
-    title: "Prijs & budget",
-    text: "Modellen binnen je budget scoren hoger. We tonen altijd de laagste actuele prijs per aanbieder.",
+    title: "Prijs & budget (stekker)",
+    text: "Voor stekkerbatterijen wegen webshopprijzen mee. Modellen binnen je budget scoren hoger. We tonen altijd de laagste actuele prijs per aanbieder.",
+  },
+  {
+    title: "Offerte (vaste systemen)",
+    text: "Vaste thuisbatterijen hebben geen vaste webshopprijs. We rangschikken op capaciteit, vermogen, garantie en reviews; de prijs volgt via een vrijblijvende offerte.",
   },
   {
     title: "Zonnepanelen & vermogen",
@@ -72,12 +76,12 @@ export default function HowWeComparePage() {
           </div>
 
           <Card className="mt-8 p-6">
-            <h2 className="font-semibold">Advertenties & affiliate</h2>
+            <h2 className="font-semibold">Twee verdienmodellen</h2>
             <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-              Gesponsorde aanbiedingen zijn duidelijk gelabeld als &quot;Advertentie&quot;. Als je
-              via onze links koopt, kunnen wij een vergoeding ontvangen, dat verandert niets aan
-              onze ranking. We sturen je altijd naar de aanbieder voor de actuele prijs en
-              voorwaarden.
+              Stekkerbatterijen: als je via onze links bij een webshop koopt, kunnen wij een
+              affiliate-vergoeding ontvangen. Vaste thuisbatterijen: we verdienen via leads of
+              offertes bij installatiepartners. In beide gevallen verandert dat niets aan onze
+              ranking. Gesponsorde aanbiedingen zijn duidelijk gelabeld als &quot;Advertentie&quot;.
             </p>
           </Card>
         </Container>

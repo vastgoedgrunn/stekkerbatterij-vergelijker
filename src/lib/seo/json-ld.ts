@@ -2,6 +2,7 @@ import { siteConfig } from "@/config/site";
 import type { ProductDetail } from "@/features/products/types";
 import type { Faq } from "@/features/content/types";
 import { getPublicImageUrl } from "@/lib/supabase/storage";
+import { productDetailPath } from "@/features/products/product-paths";
 
 type JsonLdObject = Record<string, unknown>;
 
@@ -24,7 +25,7 @@ export function websiteJsonLd(): JsonLdObject {
     inLanguage: siteConfig.language,
     potentialAction: {
       "@type": "SearchAction",
-      target: `${siteConfig.url}/batterijen?q={search_term_string}`,
+      target: `${siteConfig.url}/stekkerbatterijen?q={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   };
@@ -57,27 +58,32 @@ export function itemListJsonLd(items: { name: string; url: string }[]): JsonLdOb
 }
 
 export function productJsonLd(product: ProductDetail): JsonLdObject {
-  const productUrl = `${siteConfig.url}/batterijen/${product.slug}`;
+  const productUrl = `${siteConfig.url}${productDetailPath(product.slug, product.productType)}`;
   const imageUrl = getPublicImageUrl(product.imagePath);
 
-  const offers = product.offers.map((offer) => {
-    const offerLd: JsonLdObject = {
-      "@type": "Offer",
-      price: (offer.priceCents / 100).toFixed(2),
-      priceCurrency: "EUR",
-      availability:
-        offer.stockStatus === "in_stock"
-          ? "https://schema.org/InStock"
-          : offer.stockStatus === "preorder"
-            ? "https://schema.org/PreOrder"
-            : "https://schema.org/OutOfStock",
-      seller: { "@type": "Organization", name: offer.merchantName },
-    };
-    if (offer.affiliateUrl) {
-      offerLd.url = offer.affiliateUrl;
-    }
-    return offerLd;
-  });
+  const pricedOffers = product.offers.filter((offer) => offer.priceCents > 0);
+  const omitOffers = product.productType === "fixed" && pricedOffers.length === 0;
+
+  const offers = omitOffers
+    ? undefined
+    : pricedOffers.map((offer) => {
+        const offerLd: JsonLdObject = {
+          "@type": "Offer",
+          price: (offer.priceCents / 100).toFixed(2),
+          priceCurrency: "EUR",
+          availability:
+            offer.stockStatus === "in_stock"
+              ? "https://schema.org/InStock"
+              : offer.stockStatus === "preorder"
+                ? "https://schema.org/PreOrder"
+                : "https://schema.org/OutOfStock",
+          seller: { "@type": "Organization", name: offer.merchantName },
+        };
+        if (offer.affiliateUrl) {
+          offerLd.url = offer.affiliateUrl;
+        }
+        return offerLd;
+      });
 
   const base: JsonLdObject = {
     "@context": "https://schema.org",
@@ -86,8 +92,11 @@ export function productJsonLd(product: ProductDetail): JsonLdObject {
     brand: { "@type": "Brand", name: product.brand.name },
     description: product.summary ?? product.description ?? undefined,
     url: productUrl,
-    offers,
   };
+
+  if (offers && offers.length > 0) {
+    base.offers = offers;
+  }
 
   if (imageUrl) {
     base.image = imageUrl;

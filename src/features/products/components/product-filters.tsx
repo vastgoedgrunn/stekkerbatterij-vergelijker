@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import Link from "next/link";
 import { SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,13 +11,15 @@ interface Props {
   brands: Brand[];
   categories: Category[];
   filters: ProductFilters;
+  /** Form action path, default /batterijen hub catalog. */
+  action?: Route;
 }
 
-export function ProductFilterPanel({ brands, categories, filters }: Props) {
+export function ProductFilterPanel({ brands, categories, filters, action = "/batterijen" }: Props) {
   return (
     <form
       method="get"
-      action="/batterijen"
+      action={action}
       className="border-border bg-card rounded-2xl border p-5 shadow-[var(--shadow-xs)]"
     >
       <div className="mb-4 flex items-center gap-2">
@@ -120,7 +123,7 @@ export function ProductFilterPanel({ brands, categories, filters }: Props) {
         <div className="flex flex-col gap-2 pt-1">
           <Button type="submit">Filter toepassen</Button>
           <Link
-            href="/batterijen"
+            href={action}
             className="text-muted-foreground hover:text-foreground text-center text-sm"
           >
             Filters wissen

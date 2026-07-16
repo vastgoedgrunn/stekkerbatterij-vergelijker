@@ -8,7 +8,7 @@ export const siteConfig = {
   name: "Stekkerbatterij Vergelijker",
   shortName: "Stekkerbatterij",
   description:
-    "Het onafhankelijke Nederlandse platform om plug-and-play stekkerbatterijen te vergelijken op prijs, capaciteit, vermogen en garantie.",
+    "Het onafhankelijke Nederlandse platform om stekkerbatterijen en vaste thuisbatterijen te vergelijken op capaciteit, vermogen, garantie en prijs of offerte.",
   url: clientEnv.NEXT_PUBLIC_SITE_URL,
   locale: "nl_NL",
   language: "nl",
@@ -19,6 +19,8 @@ export const siteConfig = {
   keywords: [
     "stekkerbatterij",
     "thuisbatterij",
+    "vaste thuisbatterij",
+    "thuisbatterij installatie",
     "plug-and-play batterij",
     "batterij vergelijken",
     "thuisaccu",

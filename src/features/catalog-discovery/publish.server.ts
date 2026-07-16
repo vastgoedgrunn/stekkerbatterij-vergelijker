@@ -91,7 +91,11 @@ export async function publishProductIfReady(
 
   revalidatePath("/");
   revalidatePath("/batterijen");
+  revalidatePath("/stekkerbatterijen");
+  revalidatePath("/vaste-thuisbatterijen");
   revalidatePath(`/batterijen/${product.slug}`);
+  revalidatePath(`/stekkerbatterijen/${product.slug}`);
+  revalidatePath(`/vaste-thuisbatterijen/${product.slug}`);
   revalidatePath("/admin/catalog");
 
   return { published: true, slug: product.slug };

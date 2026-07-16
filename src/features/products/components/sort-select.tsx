@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import type { Route } from "next";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Select } from "@/components/ui/select";
 
 const options: { value: string; label: string }[] = [
@@ -14,6 +15,7 @@ const options: { value: string; label: string }[] = [
 
 export function SortSelect({ current }: { current: string }) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   return (
@@ -25,7 +27,7 @@ export function SortSelect({ current }: { current: string }) {
           const params = new URLSearchParams(searchParams.toString());
           params.set("sorteer", e.target.value);
           params.delete("pagina");
-          router.push(`/batterijen?${params.toString()}`);
+          router.push(`${pathname}?${params.toString()}` as Route);
         }}
         className="w-full sm:w-52"
       >

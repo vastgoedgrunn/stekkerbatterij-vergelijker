@@ -8,6 +8,8 @@ const columns = [
     title: "Vergelijken",
     links: [
       { href: "/batterijen", label: "Alle batterijen" },
+      { href: "/stekkerbatterijen", label: "Stekkerbatterijen" },
+      { href: "/vaste-thuisbatterijen", label: "Vaste thuisbatterijen" },
       { href: "/vergelijken", label: "Vergelijker" },
       { href: "/beslishulp", label: "Beslishulp" },
     ],

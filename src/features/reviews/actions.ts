@@ -80,6 +80,8 @@ export async function submitReview(
   }
 
   revalidatePath(`/batterijen/${parsed.data.productSlug}`);
+  revalidatePath(`/stekkerbatterijen/${parsed.data.productSlug}`);
+  revalidatePath(`/vaste-thuisbatterijen/${parsed.data.productSlug}`);
   return {
     status: "success",
     message: "Bedankt! Je review is ontvangen en wordt beoordeeld.",

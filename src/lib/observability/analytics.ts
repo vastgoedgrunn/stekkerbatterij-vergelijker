@@ -20,8 +20,16 @@ export type AnalyticsEvent =
       };
     }
   | { name: "energy_cta_clicked"; props?: { placement: string; partner?: string } }
-  | { name: "lead_qualified"; props?: { path: string; source?: string } }
-  | { name: "lead_affiliate_clicked"; props?: { partner: string } }
+  | { name: "lead_qualified"; props?: { path: string; source?: string; productSlug?: string } }
+  | {
+      name: "lead_affiliate_clicked";
+      props?: { partner: string; productSlug?: string; source?: string };
+    }
+  | {
+      name: "fixed_product_lead_clicked";
+      props?: { slug: string; partner: string; source?: string };
+    }
+  | { name: "fixed_catalog_viewed"; props?: { path: string } }
   | { name: "product_detail_viewed"; props?: { productId: string; slug: string } }
   | { name: "review_submitted"; props?: { productId: string } }
   | { name: "cart_add"; props?: { productId: string } }

@@ -51,8 +51,12 @@ function slugify(value: string): string {
 function revalidatePublicCatalog(productSlug?: string | null): void {
   revalidatePath("/");
   revalidatePath("/batterijen");
+  revalidatePath("/stekkerbatterijen");
+  revalidatePath("/vaste-thuisbatterijen");
   if (productSlug) {
     revalidatePath(`/batterijen/${productSlug}`);
+    revalidatePath(`/stekkerbatterijen/${productSlug}`);
+    revalidatePath(`/vaste-thuisbatterijen/${productSlug}`);
   }
 }
 

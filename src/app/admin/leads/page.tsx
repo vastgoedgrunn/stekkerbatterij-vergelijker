@@ -44,6 +44,7 @@ export default async function AdminLeadsPage() {
             <TableRow>
               <TableHead>Datum</TableHead>
               <TableHead>Contact</TableHead>
+              <TableHead>Product</TableHead>
               <TableHead>Bron</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Geschatte commissie</TableHead>
@@ -53,7 +54,7 @@ export default async function AdminLeadsPage() {
           <TableBody>
             {leads.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-muted-foreground">
+                <TableCell colSpan={7} className="text-muted-foreground">
                   Nog geen leads.
                 </TableCell>
               </TableRow>
@@ -67,6 +68,7 @@ export default async function AdminLeadsPage() {
                     <p className="font-medium">{lead.customer_name ?? lead.customer_email}</p>
                     <p className="text-muted-foreground text-xs">{lead.postal_code}</p>
                   </TableCell>
+                  <TableCell className="text-sm">{lead.product_name ?? "-"}</TableCell>
                   <TableCell>{lead.source}</TableCell>
                   <TableCell>
                     <Badge variant={statusVariant[lead.status] ?? "muted"}>{lead.status}</Badge>

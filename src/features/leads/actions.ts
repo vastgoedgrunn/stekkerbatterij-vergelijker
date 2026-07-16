@@ -18,6 +18,8 @@ export async function submitLeadAction(formData: FormData): Promise<LeadActionRe
   const postalCode = String(formData.get("postalCode") ?? "").trim() || null;
   const phone = String(formData.get("phone") ?? "").trim() || null;
   const source = String(formData.get("source") ?? "wizard").trim();
+  const productIdRaw = String(formData.get("productId") ?? "").trim();
+  const productId = productIdRaw.length > 0 ? productIdRaw : null;
   const consent = formData.get("consent");
 
   if (!email || !consent) {
@@ -47,6 +49,7 @@ export async function submitLeadAction(formData: FormData): Promise<LeadActionRe
     qualification,
     status: "new",
     estimated_commission_cents: LEAD_COMMISSION_CENTS,
+    product_id: productId,
   } as never);
 
   if (error) {
