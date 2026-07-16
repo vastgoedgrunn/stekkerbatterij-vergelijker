@@ -392,59 +392,10 @@ join merchants m on m.slug = 'stekkerbatterij-shop'
 join offers o on o.product_id = p.id and o.merchant_id = m.id;
 
 -- ---------------------------------------------------------------------------
--- Seed-gebruikers (voor reviews). Deterministische UUID's, idempotent.
+-- Reviews komen uitsluitend van echte, ingelogde gebruikers via het
+-- reviewformulier (moderatie via status 'pending' -> 'approved').
+-- We seeden bewust geen reviews of reviewgebruikers.
 -- ---------------------------------------------------------------------------
-insert into auth.users (
-  instance_id, id, aud, role, email, encrypted_password,
-  email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
-  created_at, updated_at, confirmation_token, email_change,
-  email_change_token_new, recovery_token
-)
-select
-  '00000000-0000-0000-0000-000000000000',
-  ('d0000000-0000-4000-8000-0000000000' || lpad(g::text, 2, '0'))::uuid,
-  'authenticated', 'authenticated',
-  'reviewer' || g || '@stekkerbatterij.test',
-  crypt('seed-password', gen_salt('bf')),
-  now(),
-  '{"provider":"email","providers":["email"]}'::jsonb,
-  jsonb_build_object('name', (array['Thomas B.','Sanne V.','Ruben K.','Eva D.','Mark P.','Lisa H.','Jeroen M.','Nina S.','Bas W.','Femke L.','Daan R.','Iris T.'])[g]),
-  now(), now(), '', '', '', ''
-from generate_series(1, 12) as g
-on conflict (id) do nothing;
-
--- Reviews (goedgekeurd)
-insert into reviews (product_id, user_id, rating, title, body, status, created_at)
-select p.id, u.id, v.rating, v.title, v.body, 'approved', now() - (v.days_ago || ' days')::interval
-from (values
-  ('zendure-solarflow-800', 1, 5, 'Precies wat ik zocht', 'Simpel aangesloten en bespaart direct. De app is duidelijk en de sturing werkt goed samen met mijn panelen.', 40),
-  ('zendure-solarflow-800', 2, 4, 'Prima batterij', 'Doet wat het belooft. Uitbreiden met een extra module ging moeiteloos.', 25),
-  ('zendure-solarflow-800', 3, 5, 'Top koop', 'Compact en stil. Ik haal er meer uit mijn zonnepanelen mee.', 12),
-  ('zendure-solarflow-800', 4, 4, 'Goede sturing', 'De automatische modus regelt alles. Alleen de handleiding kon beter.', 6),
-  ('ecoflow-powerstream-800', 5, 5, 'Slimme micro-omvormer', 'De realtime sturing beperkt teruglevering echt. Blij mee.', 30),
-  ('ecoflow-powerstream-800', 6, 4, 'Werkt goed', 'Setup was even zoeken maar daarna draait het stabiel.', 18),
-  ('ecoflow-powerstream-800', 7, 4, 'Netjes', 'Mooie build-kwaliteit en de app geeft veel inzicht.', 9),
-  ('anker-solix-solarbank-2-e1600', 8, 5, 'Fijne balkonbatterij', 'Ingebouwde omvormer scheelt gedoe. Snel geleverd en direct aan de praat.', 33),
-  ('anker-solix-solarbank-2-e1600', 9, 4, 'Goede prijs-kwaliteit', 'Voor dit geld erg compleet. Uitbreiden is een pluspunt.', 20),
-  ('anker-solix-solarbank-2-e1600', 10, 5, 'Aanrader', 'Werkt perfect met mijn panelen op het balkon.', 8),
-  ('marstek-venus-512', 11, 5, 'Ideaal met dynamisch contract', 'Laadt slim op de goedkoopste uren. Terugverdientijd valt mee.', 28),
-  ('marstek-venus-512', 12, 4, 'Ruime capaciteit', 'Genoeg voor ons huishouden. Wel wat groter dan verwacht.', 14),
-  ('marstek-venus-512', 1, 5, 'Stil en effectief', 'Hoor er niets van en de besparing is duidelijk zichtbaar.', 5),
-  ('growatt-noah-2000', 2, 4, 'Modulair en flexibel', 'Begonnen met één module, later uitgebreid. Fijn systeem.', 22),
-  ('growatt-noah-2000', 3, 4, 'Degelijk', 'Robuust en weerbestendig. Doet gewoon zijn werk.', 11),
-  ('sunology-storey', 4, 4, 'Makkelijk in gebruik', 'Echt plug-and-play. Perfect voor wie het simpel wil.', 19),
-  ('sunology-storey', 5, 3, 'Prima instapper', 'Werkt goed maar mist wat geavanceerde app-opties.', 7),
-  ('sessy-thuisbatterij', 6, 5, 'Nederlands en slim', 'Handelt automatisch op de energiemarkt. Ik hoef nergens naar om te kijken.', 26),
-  ('sessy-thuisbatterij', 7, 5, 'Blij mee', 'Mooie afwerking en de besparing is echt merkbaar.', 15),
-  ('sessy-thuisbatterij', 8, 4, 'Goede service', 'Support denkt mee. Batterij doet wat beloofd wordt.', 4),
-  ('marstek-jupiter-c-1024', 9, 5, 'Veel opslag', 'Genoeg voor ons hoge verbruik met warmtepomp. Top.', 21),
-  ('marstek-jupiter-c-1024', 10, 4, 'Strak design', 'Ziet er premium uit en is verrassend stil.', 9),
-  ('homewizard-plug-in-battery', 11, 4, 'Fijne integratie', 'Werkt naadloos met de HomeWizard-app die ik al gebruikte.', 13),
-  ('homewizard-plug-in-battery', 12, 4, 'Veelbelovend', 'Nog niet lang in huis maar eerste indruk is goed.', 3)
-) as v(pslug, uidx, rating, title, body, days_ago)
-join products p on p.slug = v.pslug
-join auth.users u on u.email = 'reviewer' || v.uidx || '@stekkerbatterij.test'
-on conflict (product_id, user_id) do nothing;
 
 -- FAQ
 insert into faqs (question, answer, sort_order) values
