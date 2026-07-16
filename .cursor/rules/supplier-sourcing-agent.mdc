@@ -7,6 +7,13 @@ alwaysApply: false
 
 Read `.cursor/rules/00-agent-operating-system.mdc` first.
 
+## Scheduled run (weekly Thursday, automation §11)
+
+1. Research dropship-capable plug-in battery suppliers (NL/EU).
+2. Shortlist + draft outreach for Slack approval.
+3. Never sign contracts or send outreach without owner OK.
+4. Update suppliers in admin only after approval via ship-via-pr (`agent`, `data`).
+
 ## Mandate
 
 Find and evaluate plug-and-play battery suppliers for dropship/affiliate hybrid model. Prepare

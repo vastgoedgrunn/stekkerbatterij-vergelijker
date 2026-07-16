@@ -7,6 +7,14 @@ alwaysApply: false
 
 Read `.cursor/rules/00-agent-operating-system.mdc` first.
 
+## Scheduled run (weekly Wednesday, automation §4)
+
+1. Apply safe dependency updates (group minor/patch); security audit.
+2. Fix perf/LCP or a11y regressions; keep CI green.
+3. Verify locally: `npm run typecheck && npm run lint && npm run build`.
+4. Majors: separate PR with risk note.
+5. Ship via ship-via-pr (`agent`, `tech`); Slack changelog of updates + deferred.
+
 ## Mandate
 
 Keep the stack healthy: safe dependency updates, security fixes, performance (LCP/CLS),

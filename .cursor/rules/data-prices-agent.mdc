@@ -7,6 +7,10 @@ alwaysApply: false
 
 Read `.cursor/rules/00-agent-operating-system.mdc` first. This department has the strictest gate.
 
+**Run mode:** your Cursor Automation prompt names one of `morning-catalog`, `morning-followup`,
+or `evening-affiliate`. Execute **only** that section below, then post Slack per
+`docs/agents/slack-ops.md`.
+
 ## Mandate
 
 Run and maintain the **Catalog Discovery Engine**: discover relevant NL plug-and-play
@@ -14,12 +18,17 @@ stekkerbatterijen, fill specs/copy/image/offers, and publish only when the affil
 merchant URL hard-matches the SKU. Keep prices and price history accurate.
 
 Primary KPI support: complete catalog → product views → `offer_clicked` with **correct**
-outbound (never wrong Bol SKU).
+outbound (never wrong Bol SKU or search page).
 
-## Cadence
+## Cadence (automations → run mode)
 
-- **Daily (05:00 UTC / 07:00 CEST):** Catalog Discovery pipeline + completeness + prices.
-- **Daily evening:** Affiliate/outbound health (see automation #12).
+| Automation | Cron (UTC) | Run mode in this file |
+|------------|------------|------------------------|
+| Catalog Discovery daily | `0 5 * * *` | **Morning run** |
+| Data morning follow-up | `0 6 * * *` | **Morning follow-up** |
+| Data evening affiliate | `0 18 * * *` | **Evening run** |
+
+Spec + korte prompts: `docs/agents/automations.md` §1, §1b, §12.
 
 ## Scope (allowed to touch)
 
@@ -30,64 +39,88 @@ outbound (never wrong Bol SKU).
   when data shape or match rules change.
 - Docs: `docs/agents/catalog-gap-matrix.md`, discovery seeds in `discover.ts`.
 
-## Pipeline (do this first every morning)
+---
 
-1. Prefer `runCatalogDiscoveryPipeline` (admin "Run discovery" or code path) over ad-hoc SQL.
-2. High-confidence SKU match (`match_score >= 0.85` + product URL): upsert draft/product +
-   offer, run `verifyOutboundForProduct`, auto-publish only when >=1 offer has
-   `affiliate_link_status = ok`, image present, and price > 0.
-2b. **Product images (optie 3):** bij elke upsert remote merchant/fabrikant-foto downloaden
-   via `resolveAndIngestProductImage` naar Supabase Storage bucket `products`
-   (`catalog/{slug}.ext`). Nooit merk-brede placeholders delen tussen SKUs. Bij mismatch of
-   ontbrekende foto: admin "Vernieuw productfoto's" of `refreshAllProductImages`.
-3. Low confidence / homepage/search URL / title mismatch: leave `needs_review`, open a PR
-   (or point to the existing candidate PR), then Slack 🔒 with PR URL, our title vs merchant
-   title, and EXECUTE steps. Never set `ok` on a mismatched link.
-4. Completeness: every marquee brand ≥ 2 published products with image + usable outbound
+## Morning run (Catalog Discovery, 07:00 CEST)
+
+Execute in order:
+
+1. **P0 zoek-URL scan (eerst, verplicht):** `docs/agents/checklists/p0-outbound-scan.md`.
+   SQL moet 0 rijen geven vóór je verder gaat. Fix met soft-delete of echte `/p/` + Bol deeplink.
+2. **Catalog Discovery:** admin "Run discovery nu" op `/admin/catalog`, of
+   `runCatalogDiscoveryPipeline({ triggerSource: "automation" })`. Extend seeds/Bol wiring via
+   ship-via-pr indien nodig.
+3. **High-confidence publish:** `match_score >= 0.85` + product-URL (geen zoek/listing) → upsert,
+   `verifyOutboundForProduct`, auto-publish alleen bij `affiliate_link_status = ok`, image, prijs > 0.
+4. **Product images:** bij upsert `resolveAndIngestProductImage` → Storage `products/catalog/{slug}`.
+   Nooit merk-placeholders delen tussen SKUs. Ontbrekend: admin "Vernieuw productfoto's" of
+   `refreshAllProductImages`.
+5. **needs_review / broken / title mismatch:** Slack 🔒 met PR-URL, onze titel vs merchant titel,
+   URL, EXECUTE. Nooit `ok` op verkeerde SKU (SolarFlow 800 ≠ AB3000X).
+6. **Completeness:** elke marquee brand ≥ 2 published products met image + usable outbound
    (`src/config/marquee-brands.ts`, `/admin/catalog`).
-5. Prices: auto-update existing offers within ≤10% with source URL + timestamp.
+7. **Prijzen:** auto alleen ≤10% met bron-URL + timestamp.
+8. **Bol keys:** als `BOL_PRODUCT_FEED_URL` / `BOL_PARTNER_API_KEY` ontbreken, vermeld in Slack
+   en gebruik research seeds; vraag owner om keys als feed schaal unblockt.
+9. **Slack digest:** discovered, upserted, published, needs_review, broken, Bol configured ja/nee,
+   **P0 search-URL count (moet 0)**.
+
+---
+
+## Morning follow-up (08:00 CEST)
+
+Execute in order:
+
+1. **P0 zoek-URL scan:** opnieuw `docs/agents/checklists/p0-outbound-scan.md` (0 rijen).
+2. **`/admin/catalog`:** leftover `needs_review` → Slack 🔒; completeness gaps oplossen of escaleren.
+3. **Prijzen:** in-margin only; grote moves → Slack approve (`price-fact-verification`).
+4. **Missing deeplinks:** P0 alert (hybrid affiliate); Bol `partner.bol.com` waar product-URL ok is.
+5. **Ship:** code/seed fixes via ship-via-pr (`agent`, `data`).
+6. **Slack digest:** wat nog `offer_clicked` blokkeert + PR-links.
+
+---
+
+## Evening run (affiliate + offer health, 20:00 CEST)
+
+Affiliate netwerken horen live te zijn: missing/broken deeplinks = P0, niet stil laten.
+
+Execute in order:
+
+1. **P0 zoek-URL scan:** `docs/agents/checklists/p0-outbound-scan.md` (0 rijen). Soft-delete of
+   vervang door echte `/p/` of `/product/` + `buildBolPartnerDeeplink`. Nooit zoek-URL als CTA.
+2. **Outbound verify:** voor actieve offers: `affiliate_deeplink` of `affiliate_url` HTTPS ok?
+   Zet `affiliate_link_status` ok/pending/broken + note + `affiliate_link_checked_at`.
+3. **Shop zonder URL:** soft-delete (niet als merchant tellen).
+4. **Prijs spot-check:** top-clicked producten; auto alleen in-margin met citation.
+5. **Slack digest:** P0 fixes, broken/pending, price autos, 🔒 items.
+6. **Ship:** fixes via ship-via-pr (`agent`, `data`). Nooit deeplinks verzinnen; escaleer bij
+   ontbrekende Bol/Awin/Daisycon IDs.
+
+---
+
+## Pipeline (reference)
+
+1. Prefer `runCatalogDiscoveryPipeline` over ad-hoc SQL.
+2. High-confidence: upsert + verify + publish criteria hierboven.
+3. Low confidence / search URL / mismatch: `needs_review` + 🔒.
+4. Prices: append-only history; never rewrite.
 
 ## The verification gate (mandatory — follow `price-fact-verification`)
 
-- **May auto-update without approval:**
-  - price change on an existing offer within margin (≤ 10%) from a trusted cited source;
-  - **new product/offer publish** only when Catalog Discovery reports high-confidence SKU
-    match **and** outbound verify status `ok` (merchant page title/tokens match our product).
-- **Requires 1-click Slack approval (with source citation):**
-  - price deviations larger than the margin;
-  - low-confidence candidates (`needs_review`);
-  - any new factual claim (saldering, subsidies, regulation, warranty terms);
-  - force-publish without `ok` outbound.
-- **Never** publish a researched price or claim you cannot cite. When unsure, escalate.
-- **Never** mark `affiliate_link_status = ok` if page title/SKU tokens disagree with our
-  product name (SolarFlow 800 ≠ AB3000X lesson).
+- **May auto-update without approval:** price ≤10% on existing offer with citation; new publish
+  only when high-confidence SKU match **and** outbound verify `ok`.
+- **Requires Slack 🔒 + ✅:** price > margin; `needs_review`; new factual claims; force-publish
+  without `ok` outbound.
+- **Never** mark `affiliate_link_status = ok` if page title/SKU tokens disagree.
 
 ## Guardrails
 
-- Every price/claim carries a source URL and a checked-at timestamp.
-- Keep price history append-only; never rewrite historical points.
-- Broken/pending offers must not power "Bekijk beste prijs"
-  (`offer-eligibility.ts` + `/api/go`).
-- Bol feed: use `BOL_PRODUCT_FEED_URL` / `BOL_PARTNER_API_KEY` when set; otherwise research
-  seeds + web research with citations.
-
-## P0: zoek-URL's en affiliate-outbound (NOOIT negeren)
-
-Elke run (ochtend + avond) **moet** dit scannen en meteen fixen:
-
-1. SQL/admin: offers waar `affiliate_url` een zoek/listing is:
-   bol `/s/?searchtext=`, Coolblue `/zoeken`, `?s=` homepage-zoek.
-2. Actie: soft-delete of `affiliate_link_status=broken` + note. **Nooit** `ok` op zoek-URL.
-3. Vervang door echte product-URL (`/p/{id}/` of `/product/{id}`) + voor Bol:
-   `buildBolPartnerDeeplink` / `partner.bol.com/click?...&s=BOL_PUBLISHER_ID`.
-4. Geen matchbare productpagina: offer blijft broken/deleted; Slack digest met product+merchant.
-5. Code-gate: `isSearchOrListingUrl` in `offer-eligibility.ts` blokkeert outbound én
-   prijs-meetellen. Blijf die guard streng houden.
-6. Shop-offers zonder URL: soft-delete (niet als "aanbieder" tellen).
+- Every price/claim: source URL + checked-at timestamp.
+- Broken/pending/search offers: no "Bekijk beste prijs" (`offer-eligibility.ts`, `/api/go`).
+- Bol feed keys when set; else research + citations.
+- P0 details: `docs/agents/checklists/p0-outbound-scan.md` + `isSearchOrListingUrl` in code.
 
 ## Definition of done
 
-Auto path: pipeline stats in Slack (discovered / upserted / published / needs_review /
-broken) + PR only if code/seeds change (`agent`,`data`).
-Gated: Slack 🔒 with PR URL + candidate URL, score, notes, EXECUTE; proceed after ✅
-(automation ships) or admin Approve & publish.
+Auto path: stats in Slack + PR only if code/seeds change (`agent`, `data`).
+Gated: Slack 🔒 with PR URL + EXECUTE; proceed after ✅ or admin Approve & publish.

@@ -24,4 +24,6 @@ Zonder keys: research seeds + agent-research; zelfde SKU-match gate.
 
 ## Automation
 
-Cron UTC `0 5 * * *` · prompt in `docs/agents/automations.md` §1.
+Cron UTC `0 5 * * *` · prompt in `docs/agents/automations.md` §1 · checklist in
+`.cursor/rules/data-prices-agent.mdc` (Morning run). P0 scan:
+`docs/agents/checklists/p0-outbound-scan.md`.

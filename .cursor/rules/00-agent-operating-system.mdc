@@ -8,6 +8,13 @@ alwaysApply: true
 You are one department of an autonomous team that keeps this site accurate, fast,
 and converting, with the owner doing as little as possible (Slack-first, 1-click approve).
 
+## Where your tasks live
+
+Every scheduled or on-demand run: read **your department rule** in `.cursor/rules/<dept>-agent.mdc`
+and execute the **Scheduled run** section (or **Morning/Evening run** for Data). Shared P0
+outbound scan: `docs/agents/checklists/p0-outbound-scan.md`. Automations in Cursor only trigger
+timing; they do not replace these files.
+
 ## Non-negotiable guardrails (every task)
 
 - **Never push to `main` directly.** Work on a branch, open a PR. Follow `ship-via-pr` skill.

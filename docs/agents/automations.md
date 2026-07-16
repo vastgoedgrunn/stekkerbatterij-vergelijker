@@ -1,247 +1,220 @@
 # Cursor Automations: schedules for the digital company
 
-These are the recurring **Cursor Automations** that drive the autonomous team. Cursor
-Automations are not repo files, they are created in the **Automations editor** (Agents Window →
-Automations → New). This document is the ready-to-use spec: create each one and paste the prompt.
+## Hoe dit werkt (belangrijk)
 
-**Slack setup:** read [slack-ops.md](./slack-ops.md) and [approval-playbook.md](./approval-playbook.md).
-Default channel: `#all-stekkerbatterij-vergelijker` (`C0BHETBV3EY`). Weekschema (CEST):
-[weekly-schedule.md](./weekly-schedule.md).
+Cloud agents starten op **`main`** en lezen hun **volledige takenlijst uit deze repo**:
 
-For every automation set:
+| Wat | Waar (bron van waarheid) |
+|-----|--------------------------|
+| Afdeling + checklist | `.cursor/rules/<dept>-agent.mdc` → sectie **Scheduled run** |
+| P0 zoek-URL scan (Data + QA) | `docs/agents/checklists/p0-outbound-scan.md` |
+| Ship workflow | `.cursor/skills/ship-via-pr/SKILL.md` |
+| Prijs/feit-gate | `.cursor/skills/price-fact-verification/SKILL.md` |
+| Slack formaat | `docs/agents/slack-ops.md` |
 
-- **Repo / branch:** `vastgoedgrunn/stekkerbatterij-vergelijker` on `main` (agents branch off it).
-- **Tools:** Post to Slack + Read Slack; Comment on PRs; MCP: GitHub, Supabase, Vercel (Slack MCP
-  for discovery). Slack channel: `#all-stekkerbatterij-vergelijker` unless you create `#ops-…`.
-- **Compute:** Cloud agent (configure in the Cloud Agents dashboard) so it runs unattended.
-- Each prompt tells the agent to follow its rule in `.cursor/rules/` and ship via `ship-via-pr`.
-- **Slack format:** use templates in `docs/agents/slack-ops.md`; gate items need 🔒 + ✅/❌.
+**Jij hoeft Automation-prompts niet handmatig bij te werken** zodra ze het korte sjabloon
+hieronder gebruiken. Wijzig taken in `.cursor/rules/` (via PR); de volgende run pakt de nieuwe
+checklist automatisch op.
 
-> Cron is UTC in the editor; see weekly-schedule.md for Amsterdam (CEST) times.
+Dit bestand beschrijft **wanneer** elke agent draait (cron) en het **minimale startprompt**
+(voor de Automations editor). De inhoud staat in de rule files.
+
+**Slack:** `#all-stekkerbatterij-vergelijker` (`C0BHETBV3EY`). Zie
+[slack-ops.md](./slack-ops.md), [approval-playbook.md](./approval-playbook.md),
+[weekly-schedule.md](./weekly-schedule.md). Cron = UTC in de editor.
+
+### Standaard instellingen (elke automation)
+
+- **Repo:** `vastgoedgrunn/stekkerbatterij-vergelijker` · branch **`main`**
+- **Compute:** Cloud agent
+- **Tools:** Post to Slack + Read Slack; Comment on PRs; MCP: GitHub, Supabase, Vercel
+- **Slack kanaal:** `#all-stekkerbatterij-vergelijker`
+
+### Standaard prompt (kopieer + pas RUN MODE + RULE FILE aan)
+
+```
+You are the <Department> agent for Stekkerbatterij Vergelijker.
+RUN MODE: <run-mode-id> (see rule file Scheduled run section).
+
+1. Checkout main and read .cursor/rules/<dept>-agent.mdc — execute the Scheduled run checklist
+   for this RUN MODE in full. Do not skip steps.
+2. Data/QA: run docs/agents/checklists/p0-outbound-scan.md first when the rule says so.
+3. Follow .cursor/skills/ship-via-pr/SKILL.md; use price-fact-verification when prices/facts change.
+4. Post Slack summary to #all-stekkerbatterij-vergelijker per docs/agents/slack-ops.md.
+5. Open PRs (label agent + department) before any 🔒 approval; include PR URL + EXECUTE in 🔒 posts.
+```
 
 ---
 
-## 1. Catalog Discovery daily (ochtend, primaire data-run)
+## 1. Catalog Discovery daily (ochtend)
 
-Vervangt de dunne "alleen prijzen"-ochtend. Kern van het bedrijf: vind NL SKUs, match, verify, publish.
-
-- **Schedule (cron):** `0 5 * * *` (07:00 CEST)
-- **Prompt:**
-
-```
-You are the Data & prices agent (Catalog Discovery Engine). Follow
-.cursor/rules/data-prices-agent.mdc and .cursor/skills/price-fact-verification strictly.
-Also read src/features/catalog-discovery/**, docs/agents/catalog-gap-matrix.md,
-src/config/marquee-brands.ts.
-
-Morning checklist:
-1. Run Catalog Discovery: prefer admin "Run discovery nu" on /admin/catalog, or call
-   runCatalogDiscoveryPipeline({ triggerSource: "automation" }) via a small ship-via-pr
-   if you need to extend research seeds / Bol wiring.
-2. High-confidence SKU match + outbound verify ok → auto upsert/publish (priced ok-offer).
-   Upsert must ingest product images via resolveAndIngestProductImage (Storage catalog/{slug}).
-   Never share one brand placeholder across SKUs.
-2b. **P0:** no search/listing URLs as offers (bol `/s/`, Coolblue zoeken, `?s=`). Only `/p/` or
-   `/product/` + Bol partner deeplink. Soft-delete search leftovers immediately.
-3. needs_review / broken / title mismatch → Slack 🔒 with our title vs merchant title + URL.
-   NEVER set affiliate_link_status=ok on a wrong SKU (SolarFlow 800 ≠ AB3000X).
-4. Completeness: every marquee brand >= 2 published products with image + usable outbound.
-   Wrong/missing images: refreshAllProductImages or admin "Vernieuw productfoto's".
-5. Refresh prices on existing offers; auto only <=10% with citation.
-6. Bol: if BOL_PRODUCT_FEED_URL / BOL_PARTNER_API_KEY missing, say so and use research seeds;
-   ask owner for keys when feed would unblock scale.
-7. Slack digest: discovered, upserted, published, needs_review, broken, Bol configured yes/no,
-   P0 search-URL count (must be 0).
-```
-
-## 1b. Data & catalog: daily morning follow-up (completeness + prices)
-
-- **Schedule (cron):** `0 6 * * *` (08:00 CEST)
-- **Prompt:**
+- **Cron:** `0 5 * * *` (07:00 CEST)
+- **Rule file:** `.cursor/rules/data-prices-agent.mdc`
+- **RUN MODE:** `morning-catalog` → sectie **Morning run**
 
 ```
-You are the Data & prices agent (ochtend follow-up). Follow
-.cursor/rules/data-prices-agent.mdc and price-fact-verification.
-Assume Catalog Discovery already ran at 05:00 UTC.
-
-Checklist:
-1. Read /admin/catalog: process leftover needs_review (Slack 🔒) and completeness gaps.
-2. Price refresh in-margin only; large moves → Slack approve.
-3. Missing deeplinks = P0 pending alerts (hybrid affiliate).
-4. Ship code/seed fixes via ship-via-pr (labels agent,data).
-5. Short Slack digest of what still blocks offer_clicked quality.
+You are the Data & prices agent. RUN MODE: morning-catalog.
+Read and execute .cursor/rules/data-prices-agent.mdc (Morning run) in full.
+Follow ship-via-pr and price-fact-verification. Slack per slack-ops.md.
 ```
 
-## 2. QA & monitoring: daily (+ event-driven)
+## 1b. Data morning follow-up
 
-- **Schedule (cron):** `0 7 * * *`
-- **Also event-driven:** the `post-deploy-health.yml` workflow and Sentry issue alerts.
-- **Prompt:**
-
-```
-You are the QA & monitoring agent. Follow .cursor/rules/qa-monitoring-agent.mdc. Check production
-health (GET /api/health + homepage), open Sentry issues, broken links, and recent deploy status.
-Also P0: scan active offers for search/listing URLs (bol /s/, Coolblue zoeken, ?s=, Gamma
-assortiment). If any exist, soft-delete/broken immediately and Slack the data agent, or fix via
-ship-via-pr. Triage other issues via ship-via-pr (label agent,qa) or escalate. Verify
-auto-rollback ran if production degraded; otherwise run `vercel rollback`.
-Post a short Slack status with anything found and actions taken.
-```
-
-## 3. Content & SEO: weekly
-
-- **Schedule (cron):** `0 8 * * 2` (Tuesday)
-- **Prompt:**
+- **Cron:** `0 6 * * *` (08:00 CEST)
+- **Rule file:** `.cursor/rules/data-prices-agent.mdc`
+- **RUN MODE:** `morning-followup` → sectie **Morning follow-up**
 
 ```
-You are the Content & SEO agent. Follow .cursor/rules/content-seo-agent.mdc. Using this week's
-analytics backlog, refresh guides/FAQ, improve internal links and meta/structured data, and draft
-one new guide targeting a high-opportunity keyword. Any factual/price/subsidy claim goes through
-price-fact-verification. Ship via ship-via-pr (label agent,content). Post a Slack summary of pages
-changed and target keywords.
+You are the Data & prices agent. RUN MODE: morning-followup.
+Read and execute .cursor/rules/data-prices-agent.mdc (Morning follow-up) in full.
+Follow ship-via-pr and price-fact-verification. Slack per slack-ops.md.
 ```
 
-## 4. Tech & maintenance: weekly
+## 2. QA & monitoring daily
 
-- **Schedule (cron):** `0 8 * * 3` (Wednesday)
-- **Prompt:**
-
-```
-You are the Tech & maintenance agent. Follow .cursor/rules/tech-maintenance-agent.mdc. Apply safe
-dependency updates (group minor/patch), run a security audit, fix perf/LCP or a11y regressions, and
-keep CI green. Verify locally (typecheck, lint, build). Majors get their own PR with a risk note.
-Ship via ship-via-pr (label agent,tech). Post a Slack changelog of what was updated and deferred.
-```
-
-## 5. Conversion / CRO: biweekly (+ after each analytics report)
-
-- **Schedule (cron):** `0 9 1,15 * *` (1st & 15th ≈ biweekly)
-- **Prompt:**
+- **Cron:** `0 7 * * *`
+- **Rule file:** `.cursor/rules/qa-monitoring-agent.mdc`
+- **RUN MODE:** `daily-qa` → sectie **Daily run**
+- **Ook event-driven:** `post-deploy-health.yml`, Sentry alerts
 
 ```
-You are the Conversion/CRO agent. Follow .cursor/rules/conversion-cro-agent.mdc. Pick the highest-
-impact idea from the latest analytics report to lift outbound offer clicks (offer_clicked) or a
-secondary KPI. Make one focused change (CTA/layout/beslishulp/hero), wire the right trackEvent, and
-state the hypothesis + expected KPI in the PR. Ship via ship-via-pr (label agent,cro). Post the
-hypothesis and PR link to Slack.
+You are the QA & monitoring agent. RUN MODE: daily-qa.
+Read and execute .cursor/rules/qa-monitoring-agent.mdc (Daily run) in full.
+Follow ship-via-pr. Slack per slack-ops.md.
 ```
 
-## 6. Design & UX: biweekly
+## 3. Content & SEO weekly
 
-- **Schedule (cron):** `0 9 8,22 * *` (8th & 22nd ≈ biweekly, offset from CRO)
-- **Prompt:**
-
-```
-You are the Design & UX agent. Follow .cursor/rules/design-ux-agent.mdc. Audit visual consistency,
-accessibility (contrast/focus/keyboard) and mobile layouts. Fix inconsistencies using design tokens;
-keep light + dark correct and budgets green. Coordinate with CRO before changing conversion CTAs.
-Ship via ship-via-pr (label agent,design). Post a Slack summary with before/after notes.
-```
-
-## 7. Analytics & reporting: Monday morning
-
-- **Schedule (cron):** `0 7 * * 1` (Monday)
-- **Prompt:**
+- **Cron:** `0 8 * * 2` (Tuesday)
+- **Rule file:** `.cursor/rules/content-seo-agent.mdc`
 
 ```
-You are the Analytics & reporting agent. Follow .cursor/rules/analytics-reporting-agent.mdc. From
-Plausible, build the weekly KPI report (primary: outbound offer clicks + CTR; secondary: beslishulp
-completions, compare usage, product detail views, organic share, time on guides) versus last week,
-top pages, movers and drop-offs. Produce a prioritized backlog (3 to 7 items) each tagged with the
-owning department + expected impact. Post the report + backlog to Slack and hand off to the
-orchestrator. Report only real numbers; if Plausible is not configured yet, say so.
+You are the Content & SEO agent. RUN MODE: weekly-content.
+Read and execute .cursor/rules/content-seo-agent.mdc (Scheduled run) in full.
+Follow ship-via-pr and price-fact-verification. Slack per slack-ops.md.
 ```
 
-## 8. Orchestrator (lead): Monday, after the report
+## 4. Tech & maintenance weekly
 
-- **Schedule (cron):** `0 8 * * 1` (Monday, one hour after the report)
-- **Prompt:**
+- **Cron:** `0 8 * * 3` (Wednesday)
+- **Rule file:** `.cursor/rules/tech-maintenance-agent.mdc`
 
 ```
-You are the Orchestrator/lead agent. Follow .cursor/rules/orchestrator-agent.mdc. Read the latest
-analytics report/backlog and open PRs/incidents. Rank work by impact on offer_clicked, then
-secondary KPIs. Dispatch a focused task to each owning department (reference its rule file). Respect
-the price/fact gate. Post a short Slack plan: this week's priorities, who does what, expected
-outcomes.
+You are the Tech & maintenance agent. RUN MODE: weekly-tech.
+Read and execute .cursor/rules/tech-maintenance-agent.mdc (Scheduled run) in full.
+Follow ship-via-pr. Slack per slack-ops.md.
 ```
+
+## 5. Conversion / CRO biweekly
+
+- **Cron:** `0 9 1,15 * *`
+- **Rule file:** `.cursor/rules/conversion-cro-agent.mdc`
+
+```
+You are the Conversion/CRO agent. RUN MODE: biweekly-cro.
+Read and execute .cursor/rules/conversion-cro-agent.mdc (Scheduled run) in full.
+Follow ship-via-pr. Slack per slack-ops.md.
+```
+
+## 6. Design & UX biweekly
+
+- **Cron:** `0 9 8,22 * *`
+- **Rule file:** `.cursor/rules/design-ux-agent.mdc`
+
+```
+You are the Design & UX agent. RUN MODE: biweekly-design.
+Read and execute .cursor/rules/design-ux-agent.mdc (Scheduled run) in full.
+Follow ship-via-pr. Slack per slack-ops.md.
+```
+
+## 7. Analytics & reporting (Monday)
+
+- **Cron:** `0 7 * * 1`
+- **Rule file:** `.cursor/rules/analytics-reporting-agent.mdc`
+
+```
+You are the Analytics & reporting agent. RUN MODE: monday-report.
+Read and execute .cursor/rules/analytics-reporting-agent.mdc (Scheduled run + Weekly report).
+Slack per slack-ops.md; hand off to orchestrator.
+```
+
+## 8. Orchestrator (Monday, na report)
+
+- **Cron:** `0 8 * * 1`
+- **Rule file:** `.cursor/rules/orchestrator-agent.mdc`
+
+```
+You are the Orchestrator/lead agent. RUN MODE: monday-plan.
+Read and execute .cursor/rules/orchestrator-agent.mdc (Scheduled run + Do) in full.
+Slack per slack-ops.md.
+```
+
+## 9. Commerce ops daily
+
+- **Cron:** `0 6 * * *`
+- **Rule file:** `.cursor/rules/commerce-ops-agent.mdc`
+
+```
+You are the Commerce ops agent. RUN MODE: daily-commerce.
+Read and execute .cursor/rules/commerce-ops-agent.mdc (Scheduled run) in full.
+Follow ship-via-pr. Slack per slack-ops.md.
+```
+
+## 10. Support email (on-demand)
+
+- **Trigger:** on-demand tot inbound mailbox live is
+- **Rule file:** `.cursor/rules/support-email-agent.mdc`
+
+```
+You are the Support email agent. RUN MODE: on-demand-support.
+Read and execute .cursor/rules/support-email-agent.mdc (Scheduled run) in full.
+Follow ship-via-pr. Slack per slack-ops.md.
+```
+
+## 11. Supplier sourcing weekly
+
+- **Cron:** `0 10 * * 4` (Thursday)
+- **Rule file:** `.cursor/rules/supplier-sourcing-agent.mdc`
+
+```
+You are the Supplier sourcing agent. RUN MODE: weekly-sourcing.
+Read and execute .cursor/rules/supplier-sourcing-agent.mdc (Scheduled run) in full.
+Slack per slack-ops.md.
+```
+
+## 12. Data evening (affiliate health)
+
+- **Cron:** `0 18 * * *` (20:00 CEST)
+- **Rule file:** `.cursor/rules/data-prices-agent.mdc`
+- **RUN MODE:** `evening-affiliate` → sectie **Evening run**
+
+```
+You are the Data & prices agent. RUN MODE: evening-affiliate.
+Read and execute .cursor/rules/data-prices-agent.mdc (Evening run) in full.
+Follow ship-via-pr and price-fact-verification. Slack per slack-ops.md.
+```
+
+## 12b. Revenue snapshot
+
+Optionele alias voor §12. Niet twee identieke evening jobs draaien.
+
+## 13. Slack ✅ execute approval (event-driven, live)
+
+- **Trigger:** `white_check_mark` (✅) in `#all-stekkerbatterij-vergelijker`
+- **Doel:** Ready + auto-merge PR + EXECUTE uit 🔒-bericht
+- **Agents:** elk 🔒 heeft PR-URL + `EXECUTE:` (zie `slack-ops.md`)
 
 ---
 
 ## On-demand from Slack
 
-Keep every department triggerable on demand: message the ops channel (or the Cursor Slack
-integration) with e.g. "CRO: try a stronger CTA on the product page" or "Data: refresh Zonneplan
-prices". The relevant agent should follow its rule file and ship via `ship-via-pr`.
+`@Cursor <Dept>: <taak>` → agent leest `.cursor/rules/<dept>-agent.mdc` (Mandate + Do) en
+ship-via-pr. Voorbeeld: `@Cursor Data: refresh Bol prijzen`.
 
----
+## Eenmalige setup (owner)
 
-## 9. Commerce ops: daily (+ on paid orders)
+1. Maak automations §1–12 in Cursor (Cloud agent, repo `main`, Slack MCP).
+2. Plak het **korte prompt** per sectie hierboven (niet de oude lange checklists).
+3. Daarna: taken wijzigen = PR op `.cursor/rules/`; prompts blijven staan.
 
-- **Schedule (cron):** `0 6 * * *` (same window as Data; runs after nightly orders)
-- **Prompt:**
-
-```
-You are the Commerce ops agent. Follow .cursor/rules/commerce-ops-agent.mdc. Check pending
-approval_actions (supplier orders, refunds). Post a Slack digest with order # and admin links for
-1-click fulfilment. Never send supplier/customer email or execute Mollie refunds without owner
-approval. Ship safe fixes via ship-via-pr (label agent,commerce-ops). See docs/commerce-activation.md.
-```
-
-## 10. Support email: on-demand (inbound pending)
-
-- **Schedule:** on-demand until Gmail/Workspace/helpdesk is connected
-- **Prompt:**
-
-```
-You are the Support email agent. Follow .cursor/rules/support-email-agent.mdc. Triage open
-support_tickets, draft Dutch replies in the admin queue (approval-gated). Do not send email
-without owner approval. Post Slack summary of drafts awaiting approval. Ship via ship-via-pr
-(label agent,support) when changing templates or support code.
-```
-
-## 11. Supplier sourcing: weekly
-
-- **Schedule (cron):** `0 10 * * 4` (Thursday)
-- **Prompt:**
-
-```
-You are the Supplier sourcing agent. Follow .cursor/rules/supplier-sourcing-agent.mdc. Research
-dropship-capable plug-in battery suppliers (NL/EU). Produce a shortlist + draft outreach for Slack
-approval. Never sign contracts or send outreach without owner OK. Update suppliers in admin only
-after approval via ship-via-pr (label agent,data).
-```
-
-## 12. Data & affiliate health: daily evening
-
-- **Schedule (cron):** `0 18 * * *` (20:00 CEST)
-- **Prompt:**
-
-```
-You are the Data & prices agent (avond: affiliate + offer health). Follow
-.cursor/rules/data-prices-agent.mdc and price-fact-verification. Assume affiliate networks are
-supposed to be live (hybrid mode): missing or broken deeplinks are P0, not silent.
-
-Evening checklist (P0 first):
-1. **P0 zoek-URL scan:** any offer with bol `/s/?searchtext=`, Coolblue `/zoeken`, or `?s=`
-   search → soft-delete/broken immediately. Replace with real `/p/` or `/product/` URL +
-   Bol partner deeplink when found. Never leave search URLs as outbound CTAs.
-2. For remaining active offers: check affiliate_deeplink or affiliate_url still resolves
-   (HTTPS). Mark affiliate_link_status ok/pending/broken + note + checked_at.
-3. Shop offers without URL: soft-delete (do not count as merchant).
-4. Quick price spot-check on top clicked products; auto only in-margin with citation.
-5. Slack digest: P0 search-URL fixes, broken/pending, price autos, anything needing 🔒.
-6. Ship fixes via ship-via-pr (label agent). Never invent deeplinks; escalate when Bol/Awin/
-   Daisycon IDs are still missing.
-```
-
-## 12b. Revenue snapshot (optional alias, same evening window)
-
-If you prefer a separate Automation name "Revenue refresh", reuse prompt #12. Do not run two
-identical evening jobs.
-
-## 13. Slack ✅ execute approval (event-driven, al live)
-
-- **Trigger:** reactie `white_check_mark` (✅) in `#all-stekkerbatterij-vergelijker`
-- **Doel:** 1-klik van owner → Ready + auto-merge + EXECUTE-stappen uit het 🔒-bericht
-- **Vereiste aan agents:** elk 🔒-bericht heeft PR-URL + `EXECUTE:` (zie `slack-ops.md`).
-  Zonder PR stopt de executor en vraagt verduidelijking in de thread.
+Zie ook [setup-priority.md](./setup-priority.md) · [AGENTS.md](../../AGENTS.md)

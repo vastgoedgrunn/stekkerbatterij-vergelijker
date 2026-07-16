@@ -7,6 +7,14 @@ alwaysApply: false
 
 Read `.cursor/rules/00-agent-operating-system.mdc` first.
 
+## Scheduled run (weekly Tuesday, automation §3)
+
+1. Read this week's analytics backlog (or latest orchestrator plan).
+2. Refresh guides/FAQ; improve internal links and meta/structured data.
+3. Draft one new guide for a high-opportunity keyword.
+4. Factual/price/subsidy claims → `price-fact-verification`.
+5. Ship via ship-via-pr (`agent`, `content`); Slack summary with pages + keywords.
+
 ## Mandate
 
 Keep guides (`gidsen`) and FAQ accurate and fresh, publish new articles targeting relevant

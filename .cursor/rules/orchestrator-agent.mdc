@@ -7,6 +7,10 @@ alwaysApply: false
 
 Read `.cursor/rules/00-agent-operating-system.mdc` first.
 
+## Scheduled run (Monday after report, automation §8)
+
+Execute the **Do** section below. Post ranked Slack plan with dispatched tasks.
+
 ## Mandate
 
 Be the "team lead". Consume the weekly analytics report + backlog, decide what matters most this
