@@ -68,7 +68,7 @@ export function ThemeToggle({ className }: { className?: string }) {
             aria-pressed={active}
             title={opt.label}
             className={cn(
-              "flex size-7 items-center justify-center rounded-full transition-colors",
+              "focus-visible:ring-ring/50 flex size-8 items-center justify-center rounded-full transition-colors outline-none focus-visible:ring-[3px]",
               active
                 ? "bg-background text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground",

@@ -111,13 +111,20 @@ export function DecisionWizard({ products }: { products: ProductListItem[] }) {
     <div className="mx-auto max-w-2xl">
       {!isResult && (
         <div className="mb-6">
-          <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
+          <div
+            role="progressbar"
+            aria-valuemin={1}
+            aria-valuemax={totalSteps}
+            aria-valuenow={step + 1}
+            aria-valuetext={`Stap ${step + 1} van ${totalSteps}`}
+            className="bg-muted h-2 w-full overflow-hidden rounded-full"
+          >
             <div
               className="bg-primary h-full transition-all"
               style={{ width: `${((step + 1) / totalSteps) * 100}%` }}
             />
           </div>
-          <p className="text-muted-foreground mt-2 text-sm">
+          <p className="text-muted-foreground mt-2 text-sm" aria-hidden>
             Stap {step + 1} van {totalSteps}
           </p>
         </div>

@@ -11,9 +11,12 @@ export function FaqAccordion({ faqs }: { faqs: Faq[] }) {
           key={faq.id}
           className="border-border bg-card group rounded-2xl border px-5 transition-colors open:shadow-[var(--shadow-sm)]"
         >
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-semibold [&::-webkit-details-marker]:hidden">
+          <summary className="focus-visible:ring-ring/50 flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl py-4 font-semibold outline-none focus-visible:ring-[3px] [&::-webkit-details-marker]:hidden">
             {faq.question}
-            <span className="bg-muted text-muted-foreground group-open:bg-primary group-open:text-primary-foreground flex size-7 shrink-0 items-center justify-center rounded-full transition-all group-open:rotate-45">
+            <span
+              aria-hidden
+              className="bg-muted text-muted-foreground group-open:bg-primary group-open:text-primary-foreground flex size-8 shrink-0 items-center justify-center rounded-full transition-all group-open:rotate-45"
+            >
               <Plus className="size-4" />
             </span>
           </summary>
