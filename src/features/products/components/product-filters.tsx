@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import Link from "next/link";
 import { SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ interface Props {
   categories: Category[];
   filters: ProductFilters;
   /** Form action path, default /batterijen hub catalog. */
-  action?: string;
+  action?: Route;
 }
 
 export function ProductFilterPanel({

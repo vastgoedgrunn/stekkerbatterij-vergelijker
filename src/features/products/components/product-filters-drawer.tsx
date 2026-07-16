@@ -1,5 +1,6 @@
 "use client";
 
+import type { Route } from "next";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { SlidersHorizontal, X } from "lucide-react";
@@ -17,7 +18,7 @@ export function ProductFiltersDrawer({
   brands: Brand[];
   categories: Category[];
   filters: ProductFilters;
-  action?: string;
+  action?: Route;
 }) {
   const [open, setOpen] = useState(false);
   const [render, setRender] = useState(false);

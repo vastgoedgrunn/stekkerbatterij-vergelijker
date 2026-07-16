@@ -1,5 +1,6 @@
 "use client";
 
+import type { Route } from "next";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Select } from "@/components/ui/select";
 
@@ -26,7 +27,7 @@ export function SortSelect({ current }: { current: string }) {
           const params = new URLSearchParams(searchParams.toString());
           params.set("sorteer", e.target.value);
           params.delete("pagina");
-          router.push(`${pathname}?${params.toString()}`);
+          router.push(`${pathname}?${params.toString()}` as Route);
         }}
         className="w-full sm:w-52"
       >
