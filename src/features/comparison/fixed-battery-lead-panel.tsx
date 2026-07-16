@@ -89,8 +89,8 @@ export function FixedBatteryLeadPanel({
   const priceLabel =
     indicativePriceMinCents != null
       ? indicativePriceMaxCents != null && indicativePriceMaxCents !== indicativePriceMinCents
-        ? `Richtprijs ${formatPrice(indicativePriceMinCents)} tot ${formatPrice(indicativePriceMaxCents)}`
-        : `Richtprijs vanaf ${formatPrice(indicativePriceMinCents)}`
+        ? `Richtprijs ${formatPrice(indicativePriceMinCents)} tot ${formatPrice(indicativePriceMaxCents)} incl. installatie`
+        : `Richtprijs vanaf ${formatPrice(indicativePriceMinCents)} incl. installatie`
       : "Offerte op maat";
 
   return (
@@ -112,6 +112,11 @@ export function FixedBatteryLeadPanel({
                 : "Voor warmtepomp, EV of hoog verbruik is een geïnstalleerde thuisbatterij vaak passender dan plug-and-play."}
             </p>
             <p className="text-foreground mt-2 text-sm font-semibold">{priceLabel}</p>
+            {indicativePriceMinCents != null && (
+              <p className="text-muted-foreground mt-1 text-xs">
+                Indicatief. De definitieve prijs is altijd een offerte op maat.
+              </p>
+            )}
             {qualification && qualification.reasons.length > 0 && (
               <ul className="text-muted-foreground mt-3 space-y-1 text-sm">
                 {qualification.reasons.slice(0, 3).map((reason) => (

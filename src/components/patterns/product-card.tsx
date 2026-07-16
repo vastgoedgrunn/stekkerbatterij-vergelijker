@@ -107,11 +107,16 @@ export function ProductCard({ product }: { product: ProductListItem }) {
             {isFixed ? (
               <div>
                 <span className="text-muted-foreground block text-xs">
-                  {indicativeLabel ? "Richtprijs (indicatief)" : "Installatie via offerte"}
+                  {indicativeLabel ? "Richtprijs incl. installatie" : "Installatie via offerte"}
                 </span>
                 <span className="text-2xl font-bold tracking-tight">
                   {indicativeLabel ?? "Offerte op maat"}
                 </span>
+                {indicativeLabel && (
+                  <span className="text-muted-foreground block text-xs">
+                    Definitieve prijs via offerte op maat
+                  </span>
+                )}
               </div>
             ) : product.lowestPriceCents !== null ? (
               <div className="flex items-end justify-between gap-3">
