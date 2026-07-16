@@ -4,6 +4,8 @@
  *
  * Gedefinieerde events houden analytics consistent en voorkomen typefouten.
  */
+import { getActiveExperimentProps } from "@/lib/experiments/assignment";
+
 export type AnalyticsEvent =
   | { name: "comparison_started"; props?: { count: number } }
   | { name: "comparison_product_added"; props?: { productId: string } }
@@ -34,7 +36,8 @@ export type AnalyticsEvent =
   | { name: "review_submitted"; props?: { productId: string } }
   | { name: "cart_add"; props?: { productId: string } }
   | { name: "checkout_started"; props?: { orderValueCents: number } }
-  | { name: "order_paid"; props?: { orderValueCents: number } };
+  | { name: "order_paid"; props?: { orderValueCents: number } }
+  | { name: "experiment_viewed"; props: { experiment: string; variant: string } };
 
 type PlausibleFn = (
   event: string,
@@ -47,9 +50,17 @@ declare global {
   }
 }
 
+/**
+ * Stuurt een custom event naar Plausible. Aan alle events behalve
+ * `experiment_viewed` worden automatisch de actieve experimentvarianten
+ * toegevoegd als props (`exp_<experimentId>: <variant>`), zodat je in
+ * Plausible conversies per variant kunt vergelijken.
+ */
 export function trackEvent(event: AnalyticsEvent): void {
   if (typeof window === "undefined" || typeof window.plausible !== "function") {
     return;
   }
-  window.plausible(event.name, event.props ? { props: event.props } : undefined);
+  const experimentProps = event.name === "experiment_viewed" ? {} : getActiveExperimentProps();
+  const props = { ...experimentProps, ...event.props };
+  window.plausible(event.name, Object.keys(props).length > 0 ? { props } : undefined);
 }
