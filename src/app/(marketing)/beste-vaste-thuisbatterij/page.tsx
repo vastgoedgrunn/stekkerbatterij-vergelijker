@@ -5,7 +5,7 @@ import { BatteryCharging, ShieldCheck, Zap } from "lucide-react";
 import { getProducts } from "@/features/products/queries";
 import type { ProductListItem } from "@/features/products/types";
 import { productDetailPath } from "@/features/products/product-paths";
-import { RatingStars } from "@/components/patterns/rating-stars";
+import { ProductRatingDisplay } from "@/components/patterns/product-rating-display";
 import { Container, Section, SectionHeading } from "@/components/patterns/section";
 import { Card } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
@@ -59,7 +59,11 @@ function rankingReason(product: ProductListItem): string {
             maximumFractionDigits: 1,
           },
         )} op basis van ${product.rating.count} ${product.rating.count === 1 ? "review" : "reviews"}.`
-      : `Het model scoort goed op specificaties en is bedoeld voor professionele installatie.`;
+      : product.marketScore
+        ? `Externe marktscore: ${formatNumber(product.marketScore.average, {
+            maximumFractionDigits: 1,
+          })} van 5 (${product.marketScore.sourceName}${product.marketScore.scope === "brand" ? ", merkniveau" : ""}).`
+        : `Het model scoort goed op specificaties en is bedoeld voor professionele installatie.`;
 
   const expandableSentence = product.expandable ? " De capaciteit is bovendien uitbreidbaar." : "";
 
@@ -148,9 +152,10 @@ export default async function BestFixedBatteryPage() {
                             </Link>
                           </h2>
                           <div className="mt-2">
-                            <RatingStars
-                              average={product.rating.average}
-                              count={product.rating.count}
+                            <ProductRatingDisplay
+                              rating={product.rating}
+                              marketScore={product.marketScore}
+                              showSource={false}
                             />
                           </div>
 

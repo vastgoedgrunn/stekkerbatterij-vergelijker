@@ -13,6 +13,7 @@ export type ProductType = "plug_in" | "fixed";
 export type StockStatus = "in_stock" | "out_of_stock" | "preorder" | "unknown";
 export type ReviewStatus = "pending" | "approved" | "rejected";
 export type ContentStatus = "draft" | "in_review" | "published" | "archived";
+export type MarketScoreScope = "sku" | "brand";
 
 /** Commerce (fase 2). */
 export type OrderStatus = "pending" | "paid" | "failed" | "cancelled" | "refunded" | "shipped";
@@ -86,6 +87,12 @@ export interface ProductRow extends TimestampFields {
   product_type: ProductType;
   indicative_price_min_cents: number | null;
   indicative_price_max_cents: number | null;
+  market_score_average: number | null;
+  market_score_count: number | null;
+  market_score_source_name: string | null;
+  market_score_source_url: string | null;
+  market_score_scope: MarketScoreScope | null;
+  market_score_checked_at: string | null;
 }
 
 export interface MerchantRow extends TimestampFields {
