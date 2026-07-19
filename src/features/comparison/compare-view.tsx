@@ -149,7 +149,7 @@ export function CompareView({ products }: { products: ProductDetail[] }) {
                 const href = productDetailPath(p.slug, p.productType);
                 return (
                   <th key={p.id} scope="col" className="min-w-48 p-4 align-bottom">
-                    <div className="from-accent/50 to-muted relative mx-auto flex aspect-square max-w-32 items-center justify-center rounded-2xl bg-gradient-to-br">
+                    <div className="relative mx-auto flex aspect-square max-w-32 items-center justify-center overflow-hidden rounded-2xl border border-zinc-100 bg-white">
                       {imageUrl ? (
                         <Image
                           src={imageUrl}
