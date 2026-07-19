@@ -202,6 +202,8 @@ select p.id, m.id, v.price_cents, v.stock, v.delivery, v.sponsored, v.url
 from (values
   -- Geen Bol/Coolblue voor SolarFlow 800 tot SKU geverifieerd is (was AB3000X mismatch).
   ('zendure-solarflow-800','stekkerbatterij-shop', 89900, 'in_stock', 2, false, null),
+  -- Officiele Zendure-shop: SolarFlow 800 + AB2000L (1,92 kWh), bron zendure.nl 2026-07-19.
+  ('zendure-solarflow-800','zendure', 74700, 'in_stock', 3, false, 'https://www.zendure.nl/products/solarflow-800'),
   ('ecoflow-powerstream-800','stekkerbatterij-shop', 99900, 'in_stock', 3, false, null),
   -- Geen Bol PowerStream→STREAM AC Pro mismatch.
   ('ecoflow-powerstream-800','solar-sale', 98900, 'in_stock', 4, false, 'https://solarsale.nl'),
@@ -300,26 +302,42 @@ from (values
    'https://www.coolblue.nl/product/905678',
    null, 'awin', 'cps', 0.025, null,
    'https://www.coolblue.nl',
-   '{"clickref":"{click_ref}"}')
+   '{"clickref":"{click_ref}"}'),
+  ('zendure-solarflow-800','zendure',
+   'https://glp8.net/c/?si=20779&li=1881195&wi=423133&ws=&dl=products%2Fsolarflow-800',
+   'https://www.zendure.nl/products/solarflow-800',
+   'daisycon', 'cps', 0.08, null,
+   'https://www.zendure.nl/pages/affiliate-program',
+   '{"ws":"{click_ref}"}')
 ) as v(pslug, mslug, deeplink, fallback, network, ctype, rate, fixed_cents, source, params)
 join products p on p.slug = v.pslug
 join merchants m on m.slug = v.mslug
 where o.product_id = p.id and o.merchant_id = m.id;
 
--- Daisycon: goedgekeurde campagnes hebben een program_id (si). Het link_id (li)
--- komt per campagne uit het publisher-dashboard (Materiaal, Deeplinks) en wordt
--- door de eigenaar aangeleverd; tot die tijd blijven Daisycon-deeplinks uit.
-insert into partner_programs (slug, name, network, program_id, commission_type, commission_rate, cookie_days, signup_url, source_url) values
-  ('zendure-nl', 'Zendure NL (Daisycon)', 'daisycon', '20779', 'cps', 0.08, 30, 'https://daisycon.com/nl/campagnes/20779-zendure-nl/', 'https://www.zendure.nl/pages/affiliate-program'),
-  ('homewizard-int', 'HomeWizard INT (Daisycon)', 'daisycon', '18407', 'cps', 0.075, 30, 'https://daisycon.com/nl/campagnes/18407-homewizard-int/', 'https://affiliate-net.nl/programmas/homewizard/'),
-  ('anker-solix-eu', 'Anker SOLIX EU', 'impact', null, 'cps', 0.08, 30, 'https://www.ankersolix.com/eu/become-an-affiliate', 'https://www.ankersolix.com/eu/become-an-affiliate'),
-  ('bol-partner', 'Bol.com Partner', 'bol-partner', null, 'cps', 0.025, 7, 'https://affiliate.bol.com/', 'https://affiliate.bol.com/'),
-  ('daisycon-energy', 'Daisycon Energie', 'daisycon', null, 'cpa', null, 30, 'https://www.daisycon.com/nl/', 'https://affiliate-net.nl/programmas/frankenergie/'),
-  ('e-wndr-leads', 'e-WNDR Thuisbatterij leads', 'e-wndr', null, 'cpa', null, null, 'https://e-wndr.nl/affiliate-worden/', 'https://e-wndr.nl/affiliate-worden/')
+-- Zendure Daisycon: outbound geverifieerd (glp8 → zendure.nl/products/solarflow-800), 2026-07-19.
+update offers o set
+  affiliate_link_status = 'ok',
+  affiliate_link_checked_at = now(),
+  affiliate_link_note = 'Daisycon li=1881195 wi=423133; redirect OK naar SolarFlow 800',
+  last_checked_at = now()
+from products p, merchants m
+where o.product_id = p.id and o.merchant_id = m.id
+  and p.slug = 'zendure-solarflow-800' and m.slug = 'zendure';
+
+-- Daisycon: program_id (si) + link_id (li). Zendure li=1881195 (dashboard 2026-07-19).
+-- HomeWizard li ontbreekt nog: geen live HomeWizard-deeplinks tot die binnen is.
+insert into partner_programs (slug, name, network, program_id, link_id, commission_type, commission_rate, cookie_days, signup_url, source_url) values
+  ('zendure-nl', 'Zendure NL (Daisycon)', 'daisycon', '20779', '1881195', 'cps', 0.08, 30, 'https://daisycon.com/nl/campagnes/20779-zendure-nl/', 'https://www.zendure.nl/pages/affiliate-program'),
+  ('homewizard-int', 'HomeWizard INT (Daisycon)', 'daisycon', '18407', null, 'cps', 0.075, 30, 'https://daisycon.com/nl/campagnes/18407-homewizard-int/', 'https://affiliate-net.nl/programmas/homewizard/'),
+  ('anker-solix-eu', 'Anker SOLIX EU', 'impact', null, null, 'cps', 0.08, 30, 'https://www.ankersolix.com/eu/become-an-affiliate', 'https://www.ankersolix.com/eu/become-an-affiliate'),
+  ('bol-partner', 'Bol.com Partner', 'bol-partner', null, null, 'cps', 0.025, 7, 'https://affiliate.bol.com/', 'https://affiliate.bol.com/'),
+  ('daisycon-energy', 'Daisycon Energie', 'daisycon', null, null, 'cpa', null, 30, 'https://www.daisycon.com/nl/', 'https://affiliate-net.nl/programmas/frankenergie/'),
+  ('e-wndr-leads', 'e-WNDR Thuisbatterij leads', 'e-wndr', null, null, 'cpa', null, null, 'https://e-wndr.nl/affiliate-worden/', 'https://e-wndr.nl/affiliate-worden/')
 on conflict (slug) do update set
   name = excluded.name,
   network = excluded.network,
   program_id = excluded.program_id,
+  link_id = coalesce(excluded.link_id, partner_programs.link_id),
   commission_rate = excluded.commission_rate,
   signup_url = excluded.signup_url,
   source_url = excluded.source_url,

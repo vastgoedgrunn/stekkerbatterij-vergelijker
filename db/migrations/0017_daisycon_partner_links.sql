@@ -9,4 +9,4 @@
 alter table partner_programs add column if not exists link_id text;
 
 comment on column partner_programs.link_id is
-  'Daisycon li-parameter (link-ID) voor ds1.nl trackinglinks; per campagne uit het publisher-dashboard.';
+  'Daisycon li-parameter (link-ID) voor glp8.net trackinglinks; per campagne uit het publisher-dashboard.';
