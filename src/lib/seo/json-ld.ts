@@ -7,16 +7,26 @@ import { productDetailPath } from "@/features/products/product-paths";
 type JsonLdObject = Record<string, unknown>;
 
 export function organizationJsonLd(): JsonLdObject {
-  const logoUrl = `${siteConfig.url}/images/brand/logo.png`;
+  // Google wil bij voorkeur een vierkant logo (min. 112×112); logo-mark is 279×279.
+  const markUrl = `${siteConfig.url}${siteConfig.logoMarkPath}`;
+  const fullLogoUrl = `${siteConfig.url}${siteConfig.logoPath}`;
   const org: JsonLdObject = {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": `${siteConfig.url}/#organization`,
     name: siteConfig.name,
+    alternateName: ["Stekkerbatterijvergelijker", siteConfig.shortName],
     url: siteConfig.url,
     description: siteConfig.description,
-    logo: logoUrl,
-    image: logoUrl,
     email: siteConfig.contactEmail,
+    logo: {
+      "@type": "ImageObject",
+      url: markUrl,
+      width: 279,
+      height: 279,
+      contentUrl: markUrl,
+    },
+    image: [markUrl, fullLogoUrl],
   };
   const twitter = siteConfig.twitterHandle as string | undefined;
   if (twitter) {
@@ -29,12 +39,19 @@ export function websiteJsonLd(): JsonLdObject {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": `${siteConfig.url}/#website`,
     name: siteConfig.name,
+    alternateName: siteConfig.shortName,
     url: siteConfig.url,
     inLanguage: siteConfig.language,
+    description: siteConfig.description,
+    publisher: { "@id": `${siteConfig.url}/#organization` },
     potentialAction: {
       "@type": "SearchAction",
-      target: `${siteConfig.url}/stekkerbatterijen?q={search_term_string}`,
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${siteConfig.url}/stekkerbatterijen?q={search_term_string}`,
+      },
       "query-input": "required name=search_term_string",
     },
   };
