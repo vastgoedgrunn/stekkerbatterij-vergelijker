@@ -1,11 +1,13 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { Card, CardContent } from "@/components/ui/card";
+import { ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getRevenueSummary } from "@/features/admin/monetization.queries";
 import { countPendingChangeRequests } from "@/features/admin/queries";
 import { getPlausibleVisitorSummary } from "@/lib/observability/plausible-stats";
+import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { AdminKpiGrid } from "@/features/admin/components/admin-kpi-grid";
 
 export const dynamic = "force-dynamic";
 
@@ -39,12 +41,12 @@ export default async function AdminDashboardPage() {
       hint: visitors.configured ? "Plausible, bots uitgesloten" : "API-key nog niet gezet",
     },
     {
-      label: "Bezoekers 7 dagen",
+      label: "Bezoekers 7d",
       value: visitors.last7Days != null ? String(visitors.last7Days) : "—",
       hint: "Unieke bezoekers",
     },
     {
-      label: "Affiliate-kliks 7d",
+      label: "Kliks 7d",
       value: revenue ? String(revenue.clicksLast7Days) : "—",
       hint: "Via /api/go",
     },
@@ -84,46 +86,42 @@ export default async function AdminDashboardPage() {
   ];
 
   return (
-    <div>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Overzicht van verkeer, affiliate-kliks en openstaande ops.
-          </p>
-        </div>
-        <Link href={"/admin/analytics" as Route} className={cn(buttonVariants({ size: "sm" }))}>
-          Open analytics
-        </Link>
-      </div>
-
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {kpis.map((kpi) => (
-          <Card key={kpi.label}>
-            <CardContent className="p-5">
-              <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                {kpi.label}
-              </p>
-              <p className="mt-2 text-2xl font-bold tracking-tight">{kpi.value}</p>
-              <p className="text-muted-foreground mt-1 text-xs">{kpi.hint}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <h2 className="mt-10 text-lg font-semibold">Snel naar</h2>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        {shortcuts.map((item) => (
+    <div className="space-y-8">
+      <AdminPageHeader
+        title="Dashboard"
+        description="Overzicht van verkeer, affiliate-kliks en openstaande ops."
+        actions={
           <Link
-            key={item.href}
-            href={item.href}
-            className="border-border bg-card hover:border-primary/40 rounded-2xl border p-5 transition-colors"
+            href={"/admin/analytics" as Route}
+            className={cn(buttonVariants({ size: "md" }), "w-full sm:w-auto")}
           >
-            <p className="font-semibold">{item.title}</p>
-            <p className="text-muted-foreground mt-1 text-sm">{item.description}</p>
+            Open analytics
           </Link>
-        ))}
-      </div>
+        }
+      />
+
+      <AdminKpiGrid items={kpis} />
+
+      <section>
+        <h2 className="text-base font-semibold sm:text-lg">Snel naar</h2>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          {shortcuts.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="border-border bg-card hover:border-primary/40 group flex items-start justify-between gap-3 rounded-2xl border p-4 transition-colors sm:p-5"
+            >
+              <div className="min-w-0">
+                <p className="font-semibold">{item.title}</p>
+                <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+              <ArrowRight className="text-muted-foreground group-hover:text-primary mt-0.5 size-4 shrink-0 transition-colors" />
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

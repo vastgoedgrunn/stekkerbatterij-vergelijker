@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Route } from "next";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -9,9 +8,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
 import { getPlausibleDashboard, type PlausiblePeriod } from "@/lib/observability/plausible-stats";
 import { VisitorsChart } from "@/features/admin/components/visitors-chart";
+import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { AdminSegmentedControl } from "@/features/admin/components/admin-segmented-control";
+import { AdminKpiGrid } from "@/features/admin/components/admin-kpi-grid";
+import { AdminTableFrame } from "@/features/admin/components/admin-table-frame";
 
 export const dynamic = "force-dynamic";
 
@@ -45,71 +47,55 @@ export default async function AdminAnalyticsPage({
 
   const cards = data.aggregate
     ? [
-        { label: "Unieke bezoekers", value: String(data.aggregate.visitors) },
+        { label: "Bezoekers", value: String(data.aggregate.visitors) },
         { label: "Pageviews", value: String(data.aggregate.pageviews) },
         { label: "Sessies", value: String(data.aggregate.visits) },
         {
-          label: "Bounce rate",
+          label: "Bounce",
           value:
             data.aggregate.bounceRate != null ? `${Math.round(data.aggregate.bounceRate)}%` : "—",
         },
         {
-          label: "Bezoeksduur",
+          label: "Duur",
           value: formatDuration(data.aggregate.visitDuration),
         },
         {
-          label: "offer_clicked",
+          label: "Offer kliks",
           value: data.offerClicks != null ? String(data.offerClicks) : "—",
         },
       ]
     : [];
 
   return (
-    <div>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Analytics</h1>
-          <p className="text-muted-foreground mt-1 max-w-2xl text-sm">
-            Verkeer via Plausible. Bekende bots zijn uitgesloten. Bronnen en pagina&apos;s laten
-            zien waar echte bezoekers vandaan komen.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {PERIODS.map((p) => {
-            const href = `/admin/analytics?period=${p.value}` as Route;
-            const active = period === p.value;
-            return (
-              <Link
-                key={p.value}
-                href={href}
-                className={cn(
-                  "rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
-                  active
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {p.label}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
+    <div className="space-y-6 sm:space-y-8">
+      <AdminPageHeader
+        title="Analytics"
+        description="Verkeer via Plausible. Bekende bots zijn uitgesloten. Bronnen en pagina's laten zien waar echte bezoekers vandaan komen."
+        actions={
+          <AdminSegmentedControl
+            active={period}
+            items={PERIODS.map((p) => ({
+              value: p.value,
+              label: p.label,
+              href: `/admin/analytics?period=${p.value}` as Route,
+            }))}
+          />
+        }
+      />
 
       {!data.configured || (!data.aggregate && data.error) ? (
-        <Card className="mt-8">
-          <CardContent className="space-y-3 p-6">
+        <Card className="shadow-none">
+          <CardContent className="space-y-3 p-5 sm:p-6">
             <p className="font-semibold">Analytics nog niet gekoppeld</p>
             <p className="text-muted-foreground text-sm leading-relaxed">
               {data.error ??
                 "Zet een Plausible Stats API-key in Vercel als PLAUSIBLE_API_KEY, plus NEXT_PUBLIC_PLAUSIBLE_DOMAIN."}
             </p>
-            <ol className="text-muted-foreground list-decimal space-y-1 pl-5 text-sm">
+            <ol className="text-muted-foreground list-decimal space-y-1.5 pl-5 text-sm leading-relaxed">
               <li>Plausible → account → Settings → API keys → New API Key (Stats API)</li>
               <li>
                 Vercel → Environment Variables →{" "}
-                <code className="text-foreground">PLAUSIBLE_API_KEY</code> (Production, Preview,
-                Development)
+                <code className="text-foreground">PLAUSIBLE_API_KEY</code>
               </li>
               <li>Redeploy, daarna deze pagina vernieuwen</li>
             </ol>
@@ -121,32 +107,21 @@ export default async function AdminAnalyticsPage({
       ) : (
         <>
           {data.error ? (
-            <p className="border-border bg-card text-muted-foreground mt-6 rounded-xl border px-4 py-3 text-sm">
+            <p className="border-border bg-card text-muted-foreground rounded-xl border px-4 py-3 text-sm leading-relaxed">
               Deels geladen. Waarschuwing: {data.error}
             </p>
           ) : null}
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {cards.map((card) => (
-              <Card key={card.label}>
-                <CardContent className="p-5">
-                  <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                    {card.label}
-                  </p>
-                  <p className="mt-2 text-2xl font-bold tracking-tight">{card.value}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <AdminKpiGrid items={cards} className="xl:grid-cols-6" />
 
-          <Card className="mt-8">
-            <CardContent className="p-5">
+          <Card className="shadow-none">
+            <CardContent className="p-4 sm:p-5">
               <p className="mb-4 text-sm font-semibold">Bezoekers per dag</p>
               <VisitorsChart points={data.timeseries} />
             </CardContent>
           </Card>
 
-          <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-2">
             <BreakdownTable title="Top bronnen" rows={data.sources} showPageviews />
             <BreakdownTable title="Top pagina's" rows={data.pages} showPageviews />
             <BreakdownTable title="Devices" rows={data.devices} />
@@ -168,9 +143,30 @@ function BreakdownTable({
   showPageviews?: boolean;
 }) {
   return (
-    <div>
-      <h2 className="text-lg font-semibold">{title}</h2>
-      <div className="border-border mt-3 overflow-hidden rounded-2xl border">
+    <AdminTableFrame title={title}>
+      {/* Mobiel: stacked rows */}
+      <ul className="divide-border divide-y sm:hidden">
+        {rows.length === 0 ? (
+          <li className="text-muted-foreground px-4 py-4 text-sm">Geen data in deze periode.</li>
+        ) : (
+          rows.map((row) => (
+            <li
+              key={`${title}-${row.label}`}
+              className="flex items-start justify-between gap-3 px-4 py-3"
+            >
+              <span className="min-w-0 truncate text-sm font-medium">{row.label}</span>
+              <span className="text-muted-foreground shrink-0 text-right text-sm tabular-nums">
+                {row.visitors}
+                {showPageviews ? (
+                  <span className="block text-xs">pv {row.pageviews ?? "—"}</span>
+                ) : null}
+              </span>
+            </li>
+          ))
+        )}
+      </ul>
+
+      <div className="hidden sm:block">
         <Table>
           <TableHeader>
             <TableRow>
@@ -202,6 +198,6 @@ function BreakdownTable({
           </TableBody>
         </Table>
       </div>
-    </div>
+    </AdminTableFrame>
   );
 }
