@@ -23,10 +23,11 @@ Publish ([`publishProductIfReady`](../src/features/catalog-discovery/publish.ser
 3. Curated fabrikant-URL ([`product-image-sources.ts`](../src/features/catalog-discovery/product-image-sources.ts))
 4. Offer-productpagina → JSON-LD / og:image
 5. Lokale `/images/products/{slug}.*` als die publiek bestaat
-6. Heuristics (grootte, content-type, geen logo/badge-URL)
-7. Vision-gate via Vercel AI Gateway (`openai/gpt-5.4`), subject moet `battery` zijn
+6. Heuristics (grootte, content-type, geen logo/badge/lifestyle-URL)
+7. Vision-gate via Vercel AI Gateway (`openai/gpt-5.4`), subject moet `battery` zijn; reject logo/lifestyle
 8. Optioneel: remove.bg cutout als `REMOVE_BG_API_KEY` gezet is
-9. Ingest naar Supabase Storage `products/catalog/{slug}.*`
+9. **Packshot-canvas** (1200×900): trim → `fit=inside` (geen crop) → centreer op ~82% fill
+10. Ingest naar Supabase Storage `products/catalog/{slug}.jpg`
 
 Admin: **Vernieuw productfoto’s** → `repairProductImages({ force: true })`.
 

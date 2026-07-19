@@ -21,8 +21,8 @@ type ProductImageProps = {
 };
 
 /**
- * Toont alleen een echte foto bij image_status=ok. Anders nette placeholder.
- * onError vangt 404's op oude paden.
+ * Toont alleen een echte foto bij image_status=ok.
+ * object-contain + vaste padding: product blijft volledig in de box (geen crop).
  */
 export function ProductImage({
   name,
@@ -46,7 +46,7 @@ export function ProductImage({
   return (
     <div
       className={cn(
-        "from-accent/50 via-muted to-background relative overflow-hidden bg-gradient-to-br",
+        "relative overflow-hidden bg-[linear-gradient(160deg,#f4f6f5_0%,#eef1ef_55%,#f8f9f8_100%)]",
         className,
       )}
     >
@@ -59,7 +59,7 @@ export function ProductImage({
           height={fill ? undefined : height}
           sizes={sizes}
           priority={priority}
-          className={cn("object-contain p-5", imgClassName)}
+          className={cn("object-contain object-center p-4 sm:p-5", imgClassName)}
           onError={() => setFailed(true)}
         />
       ) : (

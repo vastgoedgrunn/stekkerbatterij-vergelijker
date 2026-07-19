@@ -3,7 +3,6 @@ import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { clientEnv } from "@/lib/env/client";
 import { serverEnv } from "@/lib/env/server";
-import { ingestProductImage } from "./ingest-image.server";
 import { fetchProductPageImageUrl } from "./extract-product-image";
 import {
   probeImageUrl,
@@ -12,6 +11,7 @@ import {
   normalizeCandidateImageUrl,
 } from "./image-heuristics";
 import { classifyProductImage, maybeCutoutBackground, sha256Hex } from "./image-vision.server";
+import { normalizeToPackshotCanvas } from "./packshot-canvas.server";
 import { findBolImageByEan, findDaisyconImageByEan, type FeedImageCandidate } from "./image-feeds.server";
 import {
   CURATED_PRODUCT_IMAGE_SOURCES,
@@ -240,48 +240,38 @@ export async function repairProductImage(productId: string): Promise<ImageOsRepa
     }
 
     const cut = await maybeCutoutBackground(probe.buffer);
-    const hash = sha256Hex(cut.buffer);
+    let packshot;
+    try {
+      packshot = await normalizeToPackshotCanvas(cut.buffer);
+    } catch (err) {
+      failures.push(
+        `${candidate.source}/packshot: ${err instanceof Error ? err.message : "canvas mislukt"}`,
+      );
+      continue;
+    }
+
+    const hash = sha256Hex(packshot.buffer);
     const dup = await hashAlreadyUsed(hash, product.id);
     if (dup.used) {
       failures.push(`${candidate.source}: duplicate hash met ${dup.otherSlug}`);
       continue;
     }
 
-    // Ingest via URL (Storage); cutout-bytes uploaden we apart als cutout toegepast is
-    let storagePath: string | null = null;
-    let sourceUrl = candidate.sourceUrl;
-
-    if (cut.applied) {
-      const ext = cut.contentType === "image/png" ? "png" : "jpg";
-      const path = `catalog/${product.slug}.${ext}`;
-      const upload = await db.storage.from("products").upload(path, cut.buffer, {
-        contentType: cut.contentType,
-        upsert: true,
-        cacheControl: "86400",
-      });
-      if (upload.error) {
-        failures.push(`${candidate.source}/cutout-upload: ${upload.error.message}`);
-        continue;
-      }
-      storagePath = path;
-      sourceUrl = candidate.sourceUrl;
-    } else {
-      const ingested = await ingestProductImage({
-        slug: product.slug,
-        sourceUrl: candidate.sourceUrl,
-      });
-      if (!ingested.ok) {
-        failures.push(`${candidate.source}/ingest: ${ingested.error}`);
-        continue;
-      }
-      storagePath = ingested.storagePath;
-      sourceUrl = ingested.sourceUrl;
+    const storagePath = `catalog/${product.slug}.jpg`;
+    const upload = await db.storage.from("products").upload(storagePath, packshot.buffer, {
+      contentType: packshot.contentType,
+      upsert: true,
+      cacheControl: "86400",
+    });
+    if (upload.error) {
+      failures.push(`${candidate.source}/upload: ${upload.error.message}`);
+      continue;
     }
 
     await persistImageState(product.id, {
       image_path: storagePath,
       image_status: "ok",
-      image_source_url: sourceUrl,
+      image_source_url: candidate.sourceUrl,
       image_reject_reason: null,
       image_content_hash: hash,
     });
@@ -290,7 +280,7 @@ export async function repairProductImage(productId: string): Promise<ImageOsRepa
       slug: product.slug,
       status: "ok",
       imagePath: storagePath,
-      note: `Image OS ok via ${candidate.source}${cut.applied ? " + cutout" : ""}`,
+      note: `Image OS ok via ${candidate.source}${cut.applied ? " + cutout" : ""} + packshot-canvas`,
       ok: true,
     };
   }

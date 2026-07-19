@@ -15,6 +15,9 @@ const REJECT_URL_FRAGMENTS = [
   "sprite",
   "placeholder",
   "open-graph-sessy-logo",
+  "wordmark",
+  "social.png",
+  "og-image",
 ];
 
 const MIN_BYTES = 20 * 1024;

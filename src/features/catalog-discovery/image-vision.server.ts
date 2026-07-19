@@ -47,9 +47,10 @@ export async function classifyProductImage(input: {
               text: [
                 "Je beoordeelt productfoto's voor een Nederlandse stekkerbatterij-/thuisbatterij-vergelijker.",
                 `Product: ${input.productName} (type: ${input.productType}).`,
-                "Accept alleen als de foto duidelijk de batterij/het opslagsysteem toont (packshot of duidelijke productfoto).",
-                "Reject bij: keurmerk/seal, logo-only, zonnepaneel zonder batterij, losse micro-omvormer zonder batterij,",
-                "lifestyle waarbij het product nauwelijks zichtbaar is, of verkeerd apparaat.",
+                "Accept alleen als de foto duidelijk de batterij/het opslagsysteem toont als packshot of duidelijke productfoto.",
+                "Reject bij: keurmerk/seal, logo-only of woordmerk zonder product, zonnepaneel zonder batterij,",
+                "losse micro-omvormer zonder batterij, lifestyle/installatiefoto in garage of tuin,",
+                "of verkeerd apparaat. Card-ready: product moet herkenbaar en dominant in beeld zijn.",
                 "subject=battery als het een batterij/opslagsysteem is (ook all-in-one met geïntegreerde omvormer).",
               ].join(" "),
             },

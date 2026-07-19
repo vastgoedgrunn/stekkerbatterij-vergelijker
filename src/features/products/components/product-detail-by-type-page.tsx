@@ -172,7 +172,7 @@ export async function ProductDetailByTypePage({
               imagePath={product.imagePath}
               imageStatus={product.imageStatus}
               className="absolute inset-0 h-full w-full"
-              imgClassName="drop-shadow-[0_24px_48px_rgba(16,40,32,0.18)]"
+              imgClassName="drop-shadow-[0_12px_28px_rgba(16,40,32,0.12)]"
               sizes="(max-width: 1024px) 100vw, 50vw"
               priority
             />
