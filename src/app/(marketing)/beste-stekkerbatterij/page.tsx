@@ -6,9 +6,11 @@ import { getProducts } from "@/features/products/queries";
 import type { ProductListItem } from "@/features/products/types";
 import { productDetailPath } from "@/features/products/product-paths";
 import { ProductRatingDisplay } from "@/components/patterns/product-rating-display";
+import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { Container, Section, SectionHeading } from "@/components/patterns/section";
 import { Card } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
+import { OfferLink } from "@/features/offers-pricing/offer-link";
 import { JsonLd } from "@/components/seo/json-ld";
 import { itemListJsonLd } from "@/lib/seo/json-ld";
 import { formatNumber, formatPrice } from "@/lib/format";
@@ -152,77 +154,103 @@ export default async function BestBatteryPage() {
             </p>
           ) : (
             <ol className="mt-8 space-y-5">
-              {products.map((product, index) => (
-                <li key={product.id}>
-                  <Card interactive className="group relative overflow-hidden">
-                    <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-start sm:gap-6">
-                      <div className="bg-primary text-primary-foreground flex size-12 shrink-0 items-center justify-center rounded-xl text-xl font-bold">
-                        {index + 1}
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
-                          {product.brand.name}
-                        </p>
-                        <h2 className="group-hover:text-primary mt-0.5 text-xl font-bold tracking-tight transition-colors">
-                          <Link
-                            href={productDetailPath(product.slug, "plug_in") as Route}
-                            className="after:absolute after:inset-0"
-                          >
-                            {product.name}
-                          </Link>
-                        </h2>
-                        <div className="mt-2">
-                          <ProductRatingDisplay
-                            rating={product.rating}
-                            marketScore={product.marketScore}
-                            showSource={false}
-                          />
+              {products.map((product, index) => {
+                const outbound = product.bestOffer?.affiliateUrl ? product.bestOffer : null;
+                return (
+                  <li key={product.id}>
+                    <Card interactive className="group overflow-hidden">
+                      <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-start sm:gap-6">
+                        <div className="bg-primary text-primary-foreground flex size-12 shrink-0 items-center justify-center rounded-xl text-xl font-bold">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+                            {product.brand.name}
+                          </p>
+                          <h2 className="group-hover:text-primary mt-0.5 text-xl font-bold tracking-tight transition-colors">
+                            <Link href={productDetailPath(product.slug, "plug_in") as Route}>
+                              {product.name}
+                            </Link>
+                          </h2>
+                          <div className="mt-2">
+                            <ProductRatingDisplay
+                              rating={product.rating}
+                              marketScore={product.marketScore}
+                              showSource={false}
+                            />
+                          </div>
+
+                          <ul className="mt-3 flex flex-wrap gap-1.5">
+                            {product.capacityKwh !== null && (
+                              <li className="bg-muted text-muted-foreground inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium">
+                                <BatteryCharging className="size-3.5" aria-hidden />
+                                {formatNumber(product.capacityKwh)} kWh
+                              </li>
+                            )}
+                            {product.powerKw !== null && (
+                              <li className="bg-muted text-muted-foreground inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium">
+                                <Zap className="size-3.5" aria-hidden />
+                                {formatNumber(product.powerKw)} kW
+                              </li>
+                            )}
+                            {product.warrantyYears !== null && (
+                              <li className="bg-muted text-muted-foreground inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium">
+                                <ShieldCheck className="size-3.5" aria-hidden />
+                                {product.warrantyYears} jr garantie
+                              </li>
+                            )}
+                          </ul>
+
+                          <p className="text-muted-foreground mt-3 leading-relaxed">
+                            {rankingReason(product, index)}
+                          </p>
                         </div>
 
-                        <ul className="mt-3 flex flex-wrap gap-1.5">
-                          {product.capacityKwh !== null && (
-                            <li className="bg-muted text-muted-foreground inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium">
-                              <BatteryCharging className="size-3.5" aria-hidden />
-                              {formatNumber(product.capacityKwh)} kWh
-                            </li>
+                        <div className="border-border flex w-full shrink-0 flex-col gap-3 border-t pt-4 sm:w-52 sm:border-t-0 sm:border-l sm:pt-0 sm:pl-6">
+                          {product.lowestPriceCents !== null ? (
+                            <>
+                              <span className="text-muted-foreground block text-xs">vanaf</span>
+                              <span className="text-2xl font-bold tracking-tight">
+                                {formatPrice(product.lowestPriceCents)}
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-muted-foreground text-sm">Prijs volgt</span>
                           )}
-                          {product.powerKw !== null && (
-                            <li className="bg-muted text-muted-foreground inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium">
-                              <Zap className="size-3.5" aria-hidden />
-                              {formatNumber(product.powerKw)} kW
-                            </li>
+                          {outbound ? (
+                            <OfferLink
+                              offerId={outbound.id}
+                              productId={product.id}
+                              merchant={outbound.merchantName}
+                              sponsored={outbound.isSponsored}
+                              estimatedCommissionCents={outbound.estimatedCommissionCents}
+                              placement="seo_ranking"
+                              size="sm"
+                              className="w-full"
+                            >
+                              Naar {outbound.merchantName}
+                            </OfferLink>
+                          ) : (
+                            <Link
+                              href={productDetailPath(product.slug, "plug_in") as Route}
+                              className={cn(
+                                buttonVariants({ size: "sm", variant: "outline" }),
+                                "w-full",
+                              )}
+                            >
+                              Bekijk details
+                            </Link>
                           )}
-                          {product.warrantyYears !== null && (
-                            <li className="bg-muted text-muted-foreground inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium">
-                              <ShieldCheck className="size-3.5" aria-hidden />
-                              {product.warrantyYears} jr garantie
-                            </li>
-                          )}
-                        </ul>
-
-                        <p className="text-muted-foreground mt-3 leading-relaxed">
-                          {rankingReason(product, index)}
-                        </p>
+                        </div>
                       </div>
-
-                      <div className="border-border shrink-0 border-t pt-4 sm:border-t-0 sm:border-l sm:pt-0 sm:pl-6">
-                        {product.lowestPriceCents !== null ? (
-                          <>
-                            <span className="text-muted-foreground block text-xs">vanaf</span>
-                            <span className="text-2xl font-bold tracking-tight">
-                              {formatPrice(product.lowestPriceCents)}
-                            </span>
-                          </>
-                        ) : (
-                          <span className="text-muted-foreground text-sm">Prijs volgt</span>
-                        )}
-                      </div>
-                    </div>
-                  </Card>
-                </li>
-              ))}
+                    </Card>
+                  </li>
+                );
+              })}
             </ol>
           )}
+
+          <AffiliateDisclosure className="mt-6" />
 
           <div className="border-border bg-card mt-12 rounded-2xl border p-6 sm:p-8">
             <h2 className="text-2xl font-bold tracking-tight">Zelf de knoop doorhakken?</h2>

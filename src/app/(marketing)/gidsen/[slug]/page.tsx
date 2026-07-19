@@ -5,6 +5,9 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getArticleBySlug, getArticleSlugs } from "@/features/content/queries";
 import { getGuideCoverUrl } from "@/features/content/covers";
 import { GuideCover } from "@/features/content/guide-cover";
+import { getProducts } from "@/features/products/queries";
+import { ProductCard } from "@/components/patterns/product-card";
+import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { Container } from "@/components/patterns/section";
 import { buttonVariants } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -44,10 +47,14 @@ export async function generateMetadata({
 
 export default async function GuideDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const [article, catalog] = await Promise.all([
+    getArticleBySlug(slug),
+    getProducts({ productType: "plug_in", sort: "value_asc", pageSize: 4 }),
+  ]);
   if (!article) notFound();
 
   const cover = getGuideCoverUrl(article);
+  const featured = catalog.items.filter((p) => p.bestOffer?.affiliateUrl).slice(0, 3);
 
   return (
     <main id="main-content">
@@ -107,16 +114,41 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
           )}
         </article>
 
+        {featured.length > 0 && (
+          <section className="mt-14" aria-labelledby="guide-products">
+            <h2 id="guide-products" className="text-2xl font-bold tracking-tight">
+              Scherpste stekkerbatterijen nu
+            </h2>
+            <p className="text-muted-foreground mt-2 text-sm">
+              Direct door naar de aanbieder, of bekijk eerst de specs.
+            </p>
+            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {featured.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+            <AffiliateDisclosure className="mt-4" />
+          </section>
+        )}
+
         <div className="border-border mt-12 flex flex-col items-start gap-4 rounded-2xl border border-dashed p-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-semibold">Klaar om te kiezen?</p>
             <p className="text-muted-foreground text-sm">
-              Gebruik de beslishulp voor een persoonlijk advies.
+              Gebruik de beslishulp, of ga direct naar de catalogus.
             </p>
           </div>
-          <Link href="/beslishulp" className={cn(buttonVariants(), "shrink-0")}>
-            Start de beslishulp <ArrowRight className="size-4" />
-          </Link>
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+            <Link href="/beslishulp" className={cn(buttonVariants(), "shrink-0")}>
+              Start de beslishulp <ArrowRight className="size-4" />
+            </Link>
+            <Link
+              href="/stekkerbatterijen"
+              className={cn(buttonVariants({ variant: "outline" }), "shrink-0")}
+            >
+              Bekijk stekkerbatterijen
+            </Link>
+          </div>
         </div>
       </Container>
     </main>

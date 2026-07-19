@@ -6,7 +6,16 @@ import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/observability/analytics";
 
 export type OfferLinkPlacement =
-  "pdp_hero" | "pdp_table" | "sticky_mobile" | "wizard" | "compare" | "catalog_card";
+  | "pdp_hero"
+  | "pdp_table"
+  | "sticky_mobile"
+  | "wizard"
+  | "compare"
+  | "catalog_card"
+  | "seo_ranking"
+  | "seo_price"
+  | "hero_match"
+  | "guide";
 
 /**
  * Affiliate-/aanbiederlink die de primaire conversie-KPI meet:

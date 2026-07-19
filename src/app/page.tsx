@@ -16,6 +16,7 @@ import { getArticles } from "@/features/content/queries";
 import { getGuideCoverUrl } from "@/features/content/covers";
 import { GuideCover } from "@/features/content/guide-cover";
 import { ProductCard } from "@/components/patterns/product-card";
+import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { HeroMatcher } from "@/features/comparison/hero-matcher";
 import { HeroCta } from "@/features/experiments/hero-cta";
 import { Container, Section, SectionHeading } from "@/components/patterns/section";
@@ -119,9 +120,7 @@ export default async function HomePage() {
               Vergelijk stekkerbatterijen en vaste thuisbatterijen op capaciteit, vermogen en
               garantie. Direct kopen of een offerte voor installatie: jij kiest het pad dat past.
             </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <HeroCta />
-            </div>
+            <HeroCta />
           </div>
 
           <div className="min-w-0 lg:pl-4">
@@ -260,6 +259,7 @@ export default async function HomePage() {
                 </Reveal>
               ))}
             </ul>
+            <AffiliateDisclosure className="mt-6" />
           </Container>
         </Section>
       )}

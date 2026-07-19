@@ -3,8 +3,10 @@ import type { Route } from "next";
 import Link from "next/link";
 import { getProductBySlug } from "@/features/products/queries";
 import { productDetailPath } from "@/features/products/product-paths";
+import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { Container, Section } from "@/components/patterns/section";
 import { buttonVariants } from "@/components/ui/button";
+import { OfferLink } from "@/features/offers-pricing/offer-link";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
@@ -32,7 +34,7 @@ export default async function HomeWizardPrijsPage() {
   if (!product) notFound();
 
   const href = productDetailPath(product.slug, product.productType);
-  const best = product.bestOffer;
+  const best = product.bestOffer?.affiliateUrl ? product.bestOffer : null;
 
   return (
     <main id="main-content">
@@ -59,10 +61,27 @@ export default async function HomeWizardPrijsPage() {
                 ) : null}
               </p>
             )}
-            <Link href={href as Route} className={cn(buttonVariants({ size: "lg" }))}>
+            {best ? (
+              <OfferLink
+                offerId={best.id}
+                productId={product.id}
+                merchant={best.merchantName}
+                sponsored={best.isSponsored}
+                estimatedCommissionCents={best.estimatedCommissionCents}
+                placement="seo_price"
+                size="lg"
+              >
+                Naar {best.merchantName}
+              </OfferLink>
+            ) : null}
+            <Link
+              href={href as Route}
+              className={cn(buttonVariants({ size: "lg", variant: "outline" }))}
+            >
               Bekijk productpagina
             </Link>
           </div>
+          <AffiliateDisclosure className="mt-4" />
         </Container>
       </div>
       <Section>
