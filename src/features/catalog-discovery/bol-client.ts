@@ -181,9 +181,7 @@ async function fetchViaMarketingCatalog(input: {
   query?: string;
   limit: number;
 }): Promise<DiscoveredCandidate[]> {
-  const terms = input.query
-    ? [input.query]
-    : [...DEFAULT_SEARCH_TERMS];
+  const terms = input.query ? [input.query] : [...DEFAULT_SEARCH_TERMS];
 
   const byKey = new Map<string, DiscoveredCandidate>();
   const perTerm = Math.max(8, Math.ceil(input.limit / Math.min(terms.length, 4)));
@@ -203,7 +201,10 @@ async function fetchViaMarketingCatalog(input: {
   return [...byKey.values()].slice(0, input.limit);
 }
 
-async function searchBolProducts(searchTerm: string, pageSize: number): Promise<BolSearchProduct[]> {
+async function searchBolProducts(
+  searchTerm: string,
+  pageSize: number,
+): Promise<BolSearchProduct[]> {
   const params = new URLSearchParams({
     "search-term": searchTerm,
     "country-code": "NL",
