@@ -32,27 +32,25 @@ export const CURATED_PRODUCT_IMAGE_SOURCES: Record<string, string> = {
     "https://www.growatt.com/upload/image/202405/noah-2000.png",
   "growatt-noah-2000s":
     "https://www.growatt.com/upload/image/202405/noah-2000s.png",
-  // Vaste thuisbatterijen (Image OS curated remotes)
+  // Vaste thuisbatterijen (geverifieerde remotes, Image OS 2026-07)
   "tesla-powerwall-3":
-    "https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Powerwall-3-Social.png",
+    "https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Powerwall.png",
   "byd-battery-box-premium-hvs-10-2":
-    "https://www.byd.com/content/dam/byd-site/eu/energy/battery-box/hvs/byd-battery-box-premium-hvs.png",
+    "https://sonnekauf.de/wp-content/uploads/2025/07/copy-33.jpg",
   "huawei-luna2000-10-s0":
-    "https://solar.huawei.com/eu/-/media/Solar/products/luna2000/LUNA2000.png",
+    "https://solar.huawei.com/admin/asset/v1/pro/view/83edde1a92a94a33ab98eb70fe8eb7aa.png",
   "solaredge-home-battery-10":
-    "https://www.solaredge.com/sites/default/files/se-home-battery-low-voltage.png",
+    "https://www.mg-solar-shop.com/media/04/78/fd/1774953819/170df4a6a54247a6b6c4b59cf34c717b.png?ts=1774953819",
   "enphase-iq-battery-5p":
-    "https://enphase.com/sites/default/files/styles/max_650x650/public/2023-05/IQ-Battery-5P.png",
+    "https://cdn.enfsolar.com/Product/logo/storage_system/6675677c2d149.png",
   "sigenergy-sigenstor-10":
-    "https://www.sigenergy.com/upload/image/202403/sigenstor.png",
+    "https://renewe.fi/wp-content/uploads/2025/11/Sigenergy_SigenStor_invertteri-akusto-lataus-ai_energiajarjestelma.webp",
   "sonnen-eco-8":
-    "https://sonnen.de/wp-content/uploads/sonnenbatterie.png",
-  "foxess-ecs-10-4":
-    "https://www.fox-ess.com/wp-content/uploads/2023/ECS.png",
+    "https://cdn.enfsolar.com/Product/logo/storage_system/6450d50fa1757.png",
   "alphaess-smile-t10":
-    "https://www.alphaess.com/upload/image/smile-t10.png",
+    "https://cdn.enfsolar.com/Product/logo/storage_system/620bcb64a6801.png",
   "alphaess-smile-b3":
-    "https://www.alphaess.com/upload/image/smile-b3.png",
+    "https://cdn.enfsolar.com/Product/logo/storage_system/5d3ab2d32f5cd.png",
 };
 
 /** Lokale slug-assets (al in /public) als Storage-fallback niet nodig is. */
@@ -73,4 +71,14 @@ export const LOCAL_PRODUCT_IMAGE_PATHS: Record<string, string> = {
   "sunology-storey": "/images/products/sunology-storey.jpg",
   "zendure-solarflow-800": "/images/products/zendure-solarflow-800.jpg",
   "zendure-solarflow-hyper-2000": "/images/products/zendure-solarflow-hyper-2000.jpg",
+  "tesla-powerwall-3": "/images/products/tesla-powerwall-3.jpg",
+  "byd-battery-box-premium-hvs-10-2": "/images/products/byd-battery-box-premium-hvs-10-2.jpg",
+  "huawei-luna2000-10-s0": "/images/products/huawei-luna2000-10-s0.png",
+  "solaredge-home-battery-10": "/images/products/solaredge-home-battery-10.png",
+  "enphase-iq-battery-5p": "/images/products/enphase-iq-battery-5p.webp",
+  "sigenergy-sigenstor-10": "/images/products/sigenergy-sigenstor-10.webp",
+  "sonnen-eco-8": "/images/products/sonnen-eco-8.png",
+  "foxess-ecs-10-4": "/images/products/foxess-ecs-10-4.jpg",
+  "alphaess-smile-t10": "/images/products/alphaess-smile-t10.png",
+  "alphaess-smile-b3": "/images/products/alphaess-smile-b3.png",
 };
