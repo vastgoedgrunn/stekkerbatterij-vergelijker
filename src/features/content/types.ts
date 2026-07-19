@@ -9,6 +9,7 @@ export interface ArticleListItem {
   slug: string;
   excerpt: string | null;
   publishedAt: string | null;
+  updatedAt?: string | null;
   coverImagePath: string | null;
 }
 

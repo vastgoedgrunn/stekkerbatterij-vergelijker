@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+import { headers } from "next/headers";
 import { siteConfig } from "@/config/site";
 import { clientEnv } from "@/lib/env/client";
 import { getDaisyconMetaVerification } from "@/lib/affiliate/daisycon-verification";
@@ -40,6 +41,11 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
   },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: siteConfig.description,
+  },
   robots: {
     index: true,
     follow: true,
@@ -60,12 +66,14 @@ export const viewport: Viewport = {
  */
 const themeInitScript = `(function(){try{var t=localStorage.getItem("theme");var d=t?t==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.classList.toggle("dark",d);}catch(e){}})();`;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const daisyconVerify = getDaisyconMetaVerification();
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  const isAdmin = pathname.startsWith("/admin");
 
   return (
     <html
@@ -80,9 +88,13 @@ export default function RootLayout({
       </head>
       <body
         className="bg-background text-foreground flex min-h-full flex-col"
-        style={{
-          paddingBottom: "calc(var(--compare-bar-space) + var(--sticky-offer-space))",
-        }}
+        style={
+          isAdmin
+            ? undefined
+            : {
+                paddingBottom: "calc(var(--compare-bar-space) + var(--sticky-offer-space))",
+              }
+        }
       >
         <a
           href="#main-content"
@@ -90,40 +102,45 @@ export default function RootLayout({
         >
           Ga naar inhoud
         </a>
-        <CartProvider>
-          <CompareProvider>
-            <SiteHeader />
-            <div className="flex flex-1 flex-col">{children}</div>
-            <SiteFooter />
-            <CompareBar />
-          </CompareProvider>
-        </CartProvider>
-        {(clientEnv.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_ID || clientEnv.NEXT_PUBLIC_PLAUSIBLE_DOMAIN) && (
-          <>
-            {clientEnv.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_ID ? (
-              <>
-                <Script
-                  async
-                  src={`${clientEnv.NEXT_PUBLIC_PLAUSIBLE_HOST ?? "https://plausible.io"}/js/${clientEnv.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_ID}.js`}
-                />
-                <Script id="plausible-init">
-                  {`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()`}
-                </Script>
-              </>
-            ) : (
-              <>
-                <Script
-                  defer
-                  data-domain={clientEnv.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
-                  src={`${clientEnv.NEXT_PUBLIC_PLAUSIBLE_HOST ?? "https://plausible.io"}/js/script.tagged-events.outbound-links.js`}
-                />
-                <Script id="plausible-init">
-                  {`window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)}`}
-                </Script>
-              </>
-            )}
-          </>
+        {isAdmin ? (
+          <div className="flex flex-1 flex-col">{children}</div>
+        ) : (
+          <CartProvider>
+            <CompareProvider>
+              <SiteHeader />
+              <div className="flex flex-1 flex-col">{children}</div>
+              <SiteFooter />
+              <CompareBar />
+            </CompareProvider>
+          </CartProvider>
         )}
+        {!isAdmin &&
+          (clientEnv.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_ID || clientEnv.NEXT_PUBLIC_PLAUSIBLE_DOMAIN) && (
+            <>
+              {clientEnv.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_ID ? (
+                <>
+                  <Script
+                    async
+                    src={`${clientEnv.NEXT_PUBLIC_PLAUSIBLE_HOST ?? "https://plausible.io"}/js/${clientEnv.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_ID}.js`}
+                  />
+                  <Script id="plausible-init">
+                    {`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()`}
+                  </Script>
+                </>
+              ) : (
+                <>
+                  <Script
+                    defer
+                    data-domain={clientEnv.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+                    src={`${clientEnv.NEXT_PUBLIC_PLAUSIBLE_HOST ?? "https://plausible.io"}/js/script.tagged-events.outbound-links.js`}
+                  />
+                  <Script id="plausible-init">
+                    {`window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)}`}
+                  </Script>
+                </>
+              )}
+            </>
+          )}
       </body>
     </html>
   );

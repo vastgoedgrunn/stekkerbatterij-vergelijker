@@ -61,12 +61,14 @@ export async function productDetailGenerateMetadata(
     (expectedType === "fixed"
       ? `Specificaties en vrijblijvende offerte voor de ${product.name} van ${product.brand.name}.`
       : `Bekijk specificaties, prijzen en reviews van de ${product.name} van ${product.brand.name}.`);
+  const imageUrl = getPublicImageUrl(product.imagePath);
+  const title =
+    expectedType === "fixed"
+      ? `${product.name}: specs en offerte`
+      : `${product.name}: specificaties en prijzen`;
 
   return {
-    title:
-      expectedType === "fixed"
-        ? `${product.name}: specs en offerte`
-        : `${product.name}: specificaties en prijzen`,
+    title,
     description,
     alternates: { canonical: path },
     openGraph: {
@@ -74,6 +76,13 @@ export async function productDetailGenerateMetadata(
       description,
       type: "website",
       url: `${siteConfig.url}${path}`,
+      ...(imageUrl ? { images: [{ url: imageUrl, alt: product.name }] } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.name,
+      description,
+      ...(imageUrl ? { images: [imageUrl] } : {}),
     },
   };
 }

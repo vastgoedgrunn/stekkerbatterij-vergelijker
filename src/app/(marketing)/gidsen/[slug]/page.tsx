@@ -32,15 +32,25 @@ export async function generateMetadata({
   const article = await getArticleBySlug(slug);
   if (!article) return { title: "Gids niet gevonden" };
 
+  const cover = getGuideCoverUrl(article);
+  const description = article.excerpt ?? undefined;
+
   return {
     title: article.title,
-    description: article.excerpt ?? undefined,
+    description,
     alternates: { canonical: `/gidsen/${article.slug}` },
     openGraph: {
       type: "article",
       title: article.title,
-      description: article.excerpt ?? undefined,
+      description,
       url: `${siteConfig.url}/gidsen/${article.slug}`,
+      ...(cover ? { images: [{ url: cover, alt: article.title }] } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description,
+      ...(cover ? { images: [cover] } : {}),
     },
   };
 }
@@ -60,7 +70,14 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
     <main id="main-content">
       <JsonLd
         data={[
-          articleJsonLd(article),
+          articleJsonLd({
+            title: article.title,
+            slug: article.slug,
+            excerpt: article.excerpt,
+            publishedAt: article.publishedAt,
+            updatedAt: article.updatedAt ?? null,
+            imageUrl: cover,
+          }),
           breadcrumbJsonLd([
             { name: "Home", url: "/" },
             { name: "Gidsen", url: "/gidsen" },

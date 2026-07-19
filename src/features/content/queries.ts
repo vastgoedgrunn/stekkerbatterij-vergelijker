@@ -75,7 +75,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
   const supabase = createSupabasePublicClient();
   const { data, error } = await supabase
     .from("content_articles")
-    .select("id, title, slug, excerpt, body, cover_image_path, published_at")
+    .select("id, title, slug, excerpt, body, cover_image_path, published_at, updated_at")
     .eq("slug", slug)
     .eq("status", "published")
     .is("deleted_at", null)
@@ -89,6 +89,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
         body: Json;
         cover_image_path: string | null;
         published_at: string | null;
+        updated_at: string;
       }[]
     >();
 
@@ -107,6 +108,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
     body: parseBody(article.body),
     coverImagePath: article.cover_image_path,
     publishedAt: article.published_at,
+    updatedAt: article.updated_at,
   };
 }
 
