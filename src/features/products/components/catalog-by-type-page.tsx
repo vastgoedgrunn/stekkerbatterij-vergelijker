@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { Route } from "next";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { getBrands, getCategories, getProducts } from "@/features/products/queries";
@@ -8,28 +9,49 @@ import { SortSelect } from "@/features/products/components/sort-select";
 import { ProductCard } from "@/components/patterns/product-card";
 import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { Container } from "@/components/patterns/section";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo/json-ld";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import type { ProductType } from "@/features/products/types";
-import { catalogBasePath } from "@/features/products/product-paths";
+import { catalogBasePath, productDetailPath } from "@/features/products/product-paths";
 import { businessRules } from "@/config/business-rules";
 import { TrackView } from "@/lib/observability/track-view";
+import { siteConfig } from "@/config/site";
 
 export function catalogMetadata(productType: ProductType): Metadata {
   const base = catalogBasePath(productType);
   if (productType === "fixed") {
+    const title = "Vaste thuisbatterijen vergelijken: specs en offerte";
+    const description =
+      "Vergelijk vaste thuisbatterijen op capaciteit, vermogen en garantie. Vraag vrijblijvend een offerte aan via onze installatiepartner.";
     return {
-      title: "Vaste thuisbatterijen vergelijken",
-      description:
-        "Vergelijk vaste thuisbatterijen op capaciteit, vermogen en garantie. Vraag vrijblijvend een offerte aan via onze installatiepartner.",
+      title,
+      description,
       alternates: { canonical: base },
+      openGraph: {
+        title,
+        description,
+        url: `${siteConfig.url}${base}`,
+        type: "website",
+        siteName: siteConfig.name,
+      },
     };
   }
+  const title = "Stekkerbatterij vergelijken: prijs, capaciteit en garantie";
+  const description =
+    "Vergelijk stekkerbatterijen op prijs, capaciteit, vermogen en garantie. Onafhankelijk overzicht met actuele aanbieders. Filter op merk of kWh.";
   return {
-    title: "Alle stekkerbatterijen vergelijken",
-    description:
-      "Vergelijk alle plug-and-play stekkerbatterijen op prijs, capaciteit, vermogen en garantie. Onafhankelijk en actueel.",
+    title,
+    description,
     alternates: { canonical: base },
+    openGraph: {
+      title,
+      description,
+      url: `${siteConfig.url}${base}`,
+      type: "website",
+      siteName: siteConfig.name,
+    },
   };
 }
 
@@ -91,28 +113,73 @@ export async function CatalogByTypePage({
     filters.expandableOnly && { key: "uitbreidbaar", label: "Uitbreidbaar" },
   ].filter(Boolean) as { key: string; label: string }[];
 
+  const listForSchema = items.slice(0, 24).map((product) => ({
+    name: product.name,
+    url: productDetailPath(product.slug, product.productType),
+  }));
+
   return (
     <main id="main-content">
       {isFixed && <TrackView event={{ name: "fixed_catalog_viewed", props: { path: basePath } }} />}
+      <JsonLd
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", url: "/" },
+            {
+              name: isFixed ? "Vaste thuisbatterijen" : "Stekkerbatterijen",
+              url: basePath,
+            },
+          ]),
+          ...(listForSchema.length > 0 ? [itemListJsonLd(listForSchema)] : []),
+        ]}
+      />
       <div className="border-border/70 from-primary/5 border-b bg-gradient-to-b to-transparent">
         <Container className="py-10 sm:py-14">
           <p className="text-primary text-sm font-semibold tracking-wide uppercase">Catalogus</p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-            {isFixed ? "Vaste thuisbatterijen" : "Stekkerbatterijen"}
+            {isFixed ? "Vaste thuisbatterijen vergelijken" : "Stekkerbatterij vergelijken"}
           </h1>
           <p className="text-muted-foreground mt-2 max-w-2xl text-lg">
             {isFixed
               ? "Vergelijk geïnstalleerde systemen op specs en vraag vrijblijvend een offerte aan. Geen misleidende webshopprijzen."
-              : "Onafhankelijk vergelijken op prijs, capaciteit, vermogen en garantie, met externe marktscores en prijzen inclusief controledatum."}
+              : "Onafhankelijk stekkerbatterijen vergelijken op prijs, capaciteit, vermogen en garantie, met externe marktscores en prijzen inclusief controledatum."}
           </p>
-          <p className="mt-4">
+          <p className="text-muted-foreground mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+            {!isFixed ? (
+              <>
+                <Link
+                  href={"/beste-stekkerbatterij" as Route}
+                  className="text-primary font-semibold hover:underline"
+                >
+                  Beste stekkerbatterij
+                </Link>
+                <Link
+                  href={"/gidsen/stekkerbatterij-koopgids" as Route}
+                  className="text-primary font-semibold hover:underline"
+                >
+                  Koopgids
+                </Link>
+                <Link
+                  href={"/merken" as Route}
+                  className="text-primary font-semibold hover:underline"
+                >
+                  Merken
+                </Link>
+                <Link
+                  href={"/beslishulp" as Route}
+                  className="text-primary font-semibold hover:underline"
+                >
+                  Beslishulp
+                </Link>
+              </>
+            ) : null}
             <Link
               href={isFixed ? "/stekkerbatterijen" : "/vaste-thuisbatterijen"}
-              className="text-primary text-sm font-semibold hover:underline"
+              className="text-primary font-semibold hover:underline"
             >
               {isFixed
                 ? "Liever plug-and-play? Bekijk stekkerbatterijen"
-                : "Meer capaciteit nodig? Bekijk vaste thuisbatterijen"}
+                : "Meer capaciteit? Bekijk vaste thuisbatterijen"}
             </Link>
           </p>
         </Container>

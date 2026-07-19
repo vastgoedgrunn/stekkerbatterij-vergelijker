@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { getBrands, getProducts } from "@/features/products/queries";
+import { productDetailPath } from "@/features/products/product-paths";
 import { ProductCard } from "@/components/patterns/product-card";
 import { Container } from "@/components/patterns/section";
 import { buttonVariants } from "@/components/ui/button";
@@ -33,8 +34,21 @@ export async function generateMetadata({
   const brand = await getBrandBySlug(slug);
   if (!brand) return { title: "Merk niet gevonden" };
 
-  const title = `${brand.name} stekkerbatterijen vergelijken`;
-  const description = `Vergelijk alle ${brand.name} plug-and-play stekkerbatterijen op capaciteit, vermogen, garantie en prijs. Vind onafhankelijk het beste ${brand.name}-model voor jouw situatie.`;
+  const { items } = await getProducts({ brandSlug: slug, pageSize: 48 });
+  const hasPlugIn = items.some((p) => p.productType === "plug_in");
+  const hasFixed = items.some((p) => p.productType === "fixed");
+
+  const title =
+    hasPlugIn && !hasFixed
+      ? `${brand.name} stekkerbatterijen vergelijken`
+      : hasFixed && !hasPlugIn
+        ? `${brand.name} thuisbatterijen vergelijken`
+        : `${brand.name} batterijen vergelijken`;
+
+  const description =
+    hasPlugIn && !hasFixed
+      ? `Vergelijk ${brand.name} stekkerbatterijen op capaciteit, vermogen, garantie en prijs. Onafhankelijk overzicht van modellen en aanbieders.`
+      : `Vergelijk ${brand.name} thuisbatterijen op capaciteit, vermogen en garantie. Onafhankelijk overzicht van modellen.`;
 
   return {
     title,
@@ -59,6 +73,14 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ sl
   if (!brand || result.items.length === 0) notFound();
 
   const products = result.items;
+  const hasPlugIn = products.some((p) => p.productType === "plug_in");
+  const hasFixed = products.some((p) => p.productType === "fixed");
+  const heading =
+    hasPlugIn && !hasFixed
+      ? `${brand.name} stekkerbatterijen`
+      : hasFixed && !hasPlugIn
+        ? `${brand.name} thuisbatterijen`
+        : `${brand.name} batterijen`;
 
   const structuredData: Record<string, unknown>[] = [
     breadcrumbJsonLd([
@@ -69,7 +91,7 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ sl
     itemListJsonLd(
       products.map((product) => ({
         name: product.name,
-        url: `/batterijen/${product.slug}`,
+        url: productDetailPath(product.slug, product.productType),
       })),
     ),
   ];
@@ -99,19 +121,33 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ sl
 
         <header className="max-w-3xl">
           <p className="text-primary text-sm font-semibold tracking-wide uppercase">Merk</p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-            {brand.name} stekkerbatterijen
-          </h1>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">{heading}</h1>
           <div className="text-muted-foreground mt-4 space-y-3 leading-relaxed">
             <p>
-              Op deze pagina vind je alle plug-and-play stekkerbatterijen van {brand.name} die wij
-              vergelijken. Zo zie je in één oogopslag welke modellen dit merk voert en hoe ze zich
-              tot elkaar verhouden.
+              Op deze pagina zie je de {brand.name}-modellen die wij vergelijken. Zo beoordeel je in
+              één oogopslag capaciteit, vermogen en garantie, en ga je door naar de productpagina
+              voor aanbieders.
             </p>
             <p>
-              Vergelijk de {brand.name}-batterijen onderling op capaciteit (kWh), vermogen (kW),
-              garantie en de actuele laagste prijs. Klik op een model voor de volledige
-              specificaties en het complete prijsoverzicht van alle aanbieders.
+              Twijfel je tussen merken? Bekijk ook onze{" "}
+              <Link
+                href="/beste-stekkerbatterij"
+                className="text-primary font-medium hover:underline"
+              >
+                beste stekkerbatterijen
+              </Link>
+              , de{" "}
+              <Link
+                href="/gidsen/stekkerbatterij-koopgids"
+                className="text-primary font-medium hover:underline"
+              >
+                koopgids
+              </Link>{" "}
+              of het volledige overzicht op{" "}
+              <Link href="/stekkerbatterijen" className="text-primary font-medium hover:underline">
+                stekkerbatterijen vergelijken
+              </Link>
+              .
             </p>
           </div>
         </header>
@@ -131,18 +167,18 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ sl
             Twijfel je nog over het juiste model?
           </h2>
           <p className="text-muted-foreground mt-2 max-w-2xl">
-            Onze beslishulp helpt je in een paar stappen aan een passende stekkerbatterij. Of bekijk
-            direct het volledige aanbod van alle merken naast elkaar.
+            Onze beslishulp helpt je in een paar stappen. Of bekijk het volledige aanbod van alle
+            merken naast elkaar.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <Link href={"/beslishulp" as Route} className={cn(buttonVariants({ size: "lg" }))}>
               Start de beslishulp
             </Link>
             <Link
-              href={"/batterijen" as Route}
+              href={"/stekkerbatterijen" as Route}
               className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
             >
-              Bekijk alle batterijen
+              Vergelijk stekkerbatterijen
             </Link>
           </div>
         </section>

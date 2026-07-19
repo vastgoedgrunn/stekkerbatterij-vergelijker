@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Route } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getArticleBySlug, getArticleSlugs } from "@/features/content/queries";
 import { getGuideCoverUrl } from "@/features/content/covers";
 import { GuideCover } from "@/features/content/guide-cover";
+import { getRelatedGuides } from "@/features/content/related-guides";
 import { getProducts } from "@/features/products/queries";
 import { ProductCard } from "@/components/patterns/product-card";
 import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
@@ -65,6 +66,7 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
 
   const cover = getGuideCoverUrl(article);
   const featured = catalog.items.filter((p) => p.bestOffer?.affiliateUrl).slice(0, 3);
+  const relatedGuides = getRelatedGuides(article.slug);
 
   return (
     <main id="main-content">
@@ -147,6 +149,40 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
             <AffiliateDisclosure className="mt-4" />
           </section>
         )}
+
+        <section className="mt-14" aria-labelledby="related-guides">
+          <h2 id="related-guides" className="text-2xl font-bold tracking-tight">
+            Gerelateerde gidsen
+          </h2>
+          <ul className="mt-4 space-y-2">
+            {relatedGuides.map((guide) => (
+              <li key={guide.slug}>
+                <Link
+                  href={`/gidsen/${guide.slug}` as Route}
+                  className="text-primary inline-flex items-center gap-1 font-semibold hover:underline"
+                >
+                  {guide.title} <ArrowRight className="size-4" />
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link
+                href={"/beste-stekkerbatterij" as Route}
+                className="text-primary inline-flex items-center gap-1 font-semibold hover:underline"
+              >
+                Beste stekkerbatterij 2026 <ArrowRight className="size-4" />
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={"/stekkerbatterijen" as Route}
+                className="text-primary inline-flex items-center gap-1 font-semibold hover:underline"
+              >
+                Stekkerbatterijen vergelijken <ArrowRight className="size-4" />
+              </Link>
+            </li>
+          </ul>
+        </section>
 
         <div className="border-border mt-12 flex flex-col items-start gap-4 rounded-2xl border border-dashed p-6 sm:flex-row sm:items-center sm:justify-between">
           <div>

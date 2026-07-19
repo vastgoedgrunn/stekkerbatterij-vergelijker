@@ -3,12 +3,23 @@ import { getProducts } from "@/features/products/queries";
 import { DecisionWizard } from "@/features/comparison/decision-wizard";
 import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { businessRules } from "@/config/business-rules";
+import { siteConfig } from "@/config/site";
+
+const title = "Beslishulp: welke stekkerbatterij past bij jou?";
+const description =
+  "Beantwoord een paar vragen over verbruik, zonnepanelen en budget. Wij adviseren stekkerbatterij of vaste thuisbatterij met offerte.";
 
 export const metadata: Metadata = {
-  title: "Beslishulp: welke thuisbatterij past bij jou?",
-  description:
-    "Beantwoord een paar vragen over je verbruik, zonnepanelen en budget. Wij adviseren stekkerbatterij of vaste thuisbatterij met offerte.",
+  title,
+  description,
   alternates: { canonical: "/beslishulp" },
+  openGraph: {
+    title,
+    description,
+    url: `${siteConfig.url}/beslishulp`,
+    type: "website",
+    siteName: siteConfig.name,
+  },
 };
 
 export default async function DecisionAidPage() {
@@ -23,11 +34,11 @@ export default async function DecisionAidPage() {
             Persoonlijk advies
           </span>
           <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-            Vind jouw ideale thuisbatterij
+            Vind jouw ideale stekkerbatterij
           </h1>
           <p className="text-muted-foreground mx-auto mt-3 max-w-xl text-lg">
-            Beantwoord vijf korte stappen. We adviseren plug-and-play of een vaste batterij met
-            installatie.
+            Beantwoord vijf korte stappen. We adviseren een stekkerbatterij of een vaste
+            thuisbatterij met installatie.
           </p>
         </header>
 
