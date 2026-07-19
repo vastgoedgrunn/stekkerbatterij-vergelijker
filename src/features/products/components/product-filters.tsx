@@ -35,7 +35,12 @@ export function ProductFilterPanel({ brands, categories, filters, action = "/bat
 
         <div className="space-y-2">
           <Label htmlFor="merk">Merk</Label>
-          <Select id="merk" name="merk" defaultValue={filters.brandSlug ?? ""}>
+          <Select
+            id="merk"
+            name="merk"
+            defaultValue={filters.brandSlug ?? ""}
+            onChange={(e) => e.currentTarget.form?.requestSubmit()}
+          >
             <option value="">Alle merken</option>
             {brands.map((b) => (
               <option key={b.id} value={b.slug}>
@@ -47,7 +52,12 @@ export function ProductFilterPanel({ brands, categories, filters, action = "/bat
 
         <div className="space-y-2">
           <Label htmlFor="categorie">Categorie</Label>
-          <Select id="categorie" name="categorie" defaultValue={filters.categorySlug ?? ""}>
+          <Select
+            id="categorie"
+            name="categorie"
+            defaultValue={filters.categorySlug ?? ""}
+            onChange={(e) => e.currentTarget.form?.requestSubmit()}
+          >
             <option value="">Alle categorieën</option>
             {categories.map((c) => (
               <option key={c.id} value={c.slug}>

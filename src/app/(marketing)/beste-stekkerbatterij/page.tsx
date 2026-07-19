@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BatteryCharging, ShieldCheck, Zap } from "lucide-react";
 import { getProducts } from "@/features/products/queries";
 import type { ProductListItem } from "@/features/products/types";
+import { productDetailPath } from "@/features/products/product-paths";
 import { ProductRatingDisplay } from "@/components/patterns/product-rating-display";
 import { Container, Section, SectionHeading } from "@/components/patterns/section";
 import { Card } from "@/components/ui/card";
@@ -32,11 +33,36 @@ export const metadata: Metadata = {
   },
 };
 
-/** Bouwt een feitelijke, generieke reden op basis van échte productdata (geen verzonnen claims). */
-function rankingReason(product: ProductListItem): string {
+/** Korte redactie-oordelen voor topmodellen (geen verzonnen specs of prijzen). */
+const EDITORIAL: Record<string, string> = {
+  "zendure-solarflow-800":
+    "Sterke allrounder als je eerst wilt starten zonder installateur. Scherpe prijs per kWh en uitbreidbaar, ideaal als je later capaciteit wilt bijplaatsen. Let op: 0,8 kW vermogen is genoeg voor huishoudelijke basis, niet voor grote pieken.",
+  "marstek-venus-512":
+    "Veel capaciteit voor de prijs per kWh, dus interessant bij hoger verbruik. De externe merkscore is duidelijk lager dan bij topmerken: weeg capaciteit af tegen merkreputatie en service. Alleen kiezen als je die trade-off bewust accepteert.",
+  "homewizard-plug-in-battery":
+    "Logische keuze als je al in het HomeWizard-ecosysteem zit. Compact en app-gedreven, met gemiddelde merkscore. Minder sterk als je puur op laagste prijs per kWh of maximale garantie let.",
+  "zendure-solarflow-hyper-2000":
+    "Meer vermogen dan de SolarFlow 800 bij vergelijkbare capaciteit. Geschikt als je zonne-overschot sneller wilt wegschrijven. Productscore is stevig; check wel of de Hyper-setup bij jouw omvormer past.",
+  "growatt-noah-2000":
+    "Solide middenmoot op prijs per kWh, met fatsoenlijke productscore. Past bij wie Growatt-panelen of -omvormers heeft. Geen uitblinker op één metric, wel een evenwichtige optie.",
+  "ecoflow-powerstream-800":
+    "Bekend merk met sterke productscore. Goed als merkvertrouwen zwaarder weegt dan absolute laagste €/kWh. Vermogen blijft 0,8 kW, dus geen high-power setup.",
+  "anker-solix-solarbank-2-e1600-pro":
+    "Compacte Pro-variant met goede productscore. Interessant voor balkon of kleinere installaties. Capaciteit is beperkter: eerder een startpunt dan een huishouden-dekkende oplossing.",
+  "anker-solix-solarbank-2-e1600":
+    "Instapmodel binnen Anker SOLIX. Handig als je het merk wilt, maar op €/kWh vaak duurder dan grotere concurrenten. Kijk eerst of de Pro of een groter model beter past.",
+  "ecoflow-stream-ac-pro":
+    "Nieuwere EcoFlow-lijn met solide productscore. Sterk als je EcoFlow-ecosysteem prefereert. Vergelijk altijd de actuele €/kWh met Zendure en Growatt voordat je beslist.",
+};
+
+function rankingReason(product: ProductListItem, index: number): string {
+  const editorial = EDITORIAL[product.slug];
+  if (editorial && index < 5) return editorial;
+  if (editorial) return editorial;
+
   const facts: string[] = [];
   if (product.capacityKwh !== null) {
-    facts.push(`${formatNumber(product.capacityKwh)} kWh aan capaciteit`);
+    facts.push(`${formatNumber(product.capacityKwh)} kWh capaciteit`);
   }
   if (product.powerKw !== null) {
     facts.push(`${formatNumber(product.powerKw)} kW vermogen`);
@@ -45,38 +71,37 @@ function rankingReason(product: ProductListItem): string {
     facts.push(`${product.warrantyYears} jaar garantie`);
   }
 
-  const specSentence =
+  const base =
     facts.length > 0
-      ? `De ${product.name} combineert ${facts.join(", ")}.`
-      : `De ${product.name} van ${product.brand.name} valt op in ons overzicht.`;
+      ? `${product.name}: ${facts.join(", ")}.`
+      : `${product.name} van ${product.brand.name}.`;
 
-  const ratingSentence =
-    product.rating.average !== null && product.rating.count > 0
-      ? `Gebruikers waarderen dit model met een gemiddelde van ${formatNumber(
-          product.rating.average,
-          {
-            maximumFractionDigits: 1,
-          },
-        )} op basis van ${product.rating.count} ${product.rating.count === 1 ? "review" : "reviews"}.`
-      : product.marketScore
-        ? `Externe marktscore: ${formatNumber(product.marketScore.average, {
-            maximumFractionDigits: 1,
-          })} van 5 (${product.marketScore.sourceName}${product.marketScore.scope === "brand" ? ", merkniveau" : ""}).`
-        : `Het model scoort goed op de combinatie van specificaties en prijs.`;
+  const score =
+    product.marketScore != null
+      ? ` Externe score ${formatNumber(product.marketScore.average, {
+          maximumFractionDigits: 1,
+        })}/5 via ${product.marketScore.sourceName}${
+          product.marketScore.scope === "brand" ? " (merk)" : ""
+        }.`
+      : "";
 
-  const expandableSentence = product.expandable ? " De capaciteit is bovendien uitbreidbaar." : "";
-
-  return `${specSentence} ${ratingSentence}${expandableSentence}`;
+  const expandable = product.expandable ? " Uitbreidbaar." : "";
+  return `${base}${score}${expandable}`;
 }
 
 export default async function BestBatteryPage() {
-  const result = await getProducts({ sort: "value_asc", pageSize: 10 });
-  const products = result.items;
+  const result = await getProducts({
+    productType: "plug_in",
+    sort: "value_asc",
+    pageSize: 10,
+  });
+  // Alleen producten met live prijs in de top 10; vaste systemen zijn al uitgefilterd.
+  const products = result.items.filter((p) => p.lowestPriceCents !== null).slice(0, 10);
 
   const structuredData = itemListJsonLd(
     products.map((product) => ({
       name: product.name,
-      url: `/batterijen/${product.slug}`,
+      url: productDetailPath(product.slug, "plug_in"),
     })),
   );
 
@@ -93,16 +118,14 @@ export default async function BestBatteryPage() {
             Beste stekkerbatterij van 2026
           </h1>
           <p className="text-muted-foreground mt-3 max-w-2xl text-lg">
-            Een plug-and-play stekkerbatterij kies je niet zomaar. Daarom zetten we de modellen met
-            de scherpste prijs per kWh opslag van 2026 op een rij, zodat je snel ziet welke
-            thuisaccu past bij je wensen op het gebied van capaciteit, vermogen, garantie en prijs.
+            Alleen plug-and-play stekkerbatterijen, geordend op de scherpste prijs per kWh opslag.
+            Zo zie je snel welke thuisaccu past bij capaciteit, vermogen, garantie en budget.
           </p>
           <div className="border-border bg-card text-muted-foreground mt-6 rounded-xl border p-4 text-sm leading-relaxed">
             <p>
-              <span className="text-foreground font-semibold">Hoe wij rangschikken:</span> deze
-              volgorde is gebaseerd op de laagste actuele prijs per kWh opslagcapaciteit en de
-              onderliggende specificaties. We werken onafhankelijk en verzinnen geen prijzen of
-              specificaties. Lees precies{" "}
+              <span className="text-foreground font-semibold">Hoe wij rangschikken:</span> laagste
+              actuele prijs per kWh opslagcapaciteit onder gepubliceerde stekkerbatterijen met live
+              aanbieder. Vaste thuisbatterijen horen hier niet thuis. Lees{" "}
               <Link
                 href={"/over-ons/hoe-wij-vergelijken" as Route}
                 className="text-primary font-medium underline-offset-4 hover:underline"
@@ -119,13 +142,13 @@ export default async function BestBatteryPage() {
         <Section className="py-10 sm:py-14">
           <SectionHeading
             eyebrow="Top 10"
-            title="Onze best beoordeelde stekkerbatterijen"
-            description="Elk model linkt door naar de volledige specificaties en het actuele prijsoverzicht van alle aanbieders."
+            title="Scherpste prijs per kWh"
+            description="Elk model linkt door naar specificaties en het actuele prijsoverzicht."
           />
 
           {products.length === 0 ? (
             <p className="text-muted-foreground mt-8">
-              Er zijn nog geen batterijen beschikbaar om te rangschikken.
+              Er zijn nog geen stekkerbatterijen met live prijs om te rangschikken.
             </p>
           ) : (
             <ol className="mt-8 space-y-5">
@@ -142,7 +165,7 @@ export default async function BestBatteryPage() {
                         </p>
                         <h2 className="group-hover:text-primary mt-0.5 text-xl font-bold tracking-tight transition-colors">
                           <Link
-                            href={`/batterijen/${product.slug}` as Route}
+                            href={productDetailPath(product.slug, "plug_in") as Route}
                             className="after:absolute after:inset-0"
                           >
                             {product.name}
@@ -178,7 +201,7 @@ export default async function BestBatteryPage() {
                         </ul>
 
                         <p className="text-muted-foreground mt-3 leading-relaxed">
-                          {rankingReason(product)}
+                          {rankingReason(product, index)}
                         </p>
                       </div>
 
@@ -212,10 +235,10 @@ export default async function BestBatteryPage() {
                 Start de beslishulp
               </Link>
               <Link
-                href={"/batterijen" as Route}
+                href={"/stekkerbatterijen" as Route}
                 className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
               >
-                Bekijk alle batterijen
+                Bekijk stekkerbatterijen
               </Link>
             </div>
           </div>

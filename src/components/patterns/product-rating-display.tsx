@@ -14,6 +14,8 @@ interface ProductRatingDisplayProps {
   className?: string;
   /** Toon bronlabel bij externe score. */
   showSource?: boolean;
+  /** Compacte weergave op kaarten (minder jargon). */
+  compact?: boolean;
 }
 
 /**
@@ -26,6 +28,7 @@ export function ProductRatingDisplay({
   showCount = true,
   className,
   showSource = true,
+  compact = false,
 }: ProductRatingDisplayProps) {
   const hasSiteReviews = rating.average !== null && rating.count > 0;
   const hasMarket =
@@ -47,16 +50,25 @@ export function ProductRatingDisplay({
   }
 
   if (hasMarket && marketScore) {
-    const scopeHint = marketScore.scope === "brand" ? "merkscore" : "productscore";
+    const scopeHint = marketScore.scope === "brand" ? "merk" : null;
+    const label = compact
+      ? null
+      : scopeHint
+        ? `${marketScore.sourceName} (${scopeHint})`
+        : marketScore.sourceName;
+
     return (
       <div className={cn("flex flex-col gap-0.5", className)}>
         <RatingBlock
           average={marketScore.average}
           count={marketScore.count}
-          label={`Marktscore (${scopeHint})`}
+          label={label}
           showCount={showCount}
+          suffix={
+            compact ? `· ${marketScore.sourceName}${scopeHint ? ` (${scopeHint})` : ""}` : undefined
+          }
         />
-        {showSource && (
+        {showSource && !compact && (
           <a
             href={marketScore.sourceUrl}
             target="_blank"
@@ -71,16 +83,8 @@ export function ProductRatingDisplay({
     );
   }
 
-  return (
-    <div className={cn("flex items-center gap-1.5", className)} aria-label="Nog geen reviews">
-      <div className="flex" aria-hidden>
-        {[1, 2, 3, 4, 5].map((i) => (
-          <Star key={i} className="text-muted-foreground/40 size-4" />
-        ))}
-      </div>
-      {showCount && <span className="text-muted-foreground text-sm">Nog geen reviews</span>}
-    </div>
-  );
+  // Geen lege sterrenrij: dat suggereert ontbrekende site-reviews terwijl marktscore elders leeft.
+  return null;
 }
 
 function RatingBlock({
@@ -89,41 +93,42 @@ function RatingBlock({
   label,
   showCount,
   className,
+  suffix,
 }: {
   average: number;
   count: number;
   label: string | null;
   showCount: boolean;
   className?: string;
+  suffix?: string;
 }) {
-  const ariaLabel = label
-    ? `${label}: ${formatNumber(average, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} van 5 op basis van ${count} reviews (externe bron)`
-    : `Beoordeling: ${formatNumber(average, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} van 5 op basis van ${count} ${count === 1 ? "review" : "reviews"}`;
-
+  const rounded = Math.round(average * 2) / 2;
   return (
-    <div className={cn("flex flex-col gap-0.5", className)}>
-      {label && <span className="text-muted-foreground text-xs font-medium">{label}</span>}
-      <div className="flex items-center gap-1.5" aria-label={ariaLabel}>
-        <div className="flex" aria-hidden>
-          {[1, 2, 3, 4, 5].map((i) => (
-            <Star
-              key={i}
-              className={cn(
-                "size-4",
-                i <= Math.round(average) ? "fill-warning text-warning" : "text-muted-foreground/40",
-              )}
-            />
-          ))}
-        </div>
-        {showCount && (
-          <span className="text-muted-foreground text-sm">
-            <span className="text-foreground font-medium">
-              {formatNumber(average, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
-            </span>{" "}
-            ({count})
-          </span>
-        )}
+    <div className={cn("flex flex-wrap items-center gap-1.5", className)}>
+      <div className="flex" aria-hidden>
+        {[1, 2, 3, 4, 5].map((i) => (
+          <Star
+            key={i}
+            className={cn(
+              "size-4",
+              i <= Math.floor(rounded)
+                ? "fill-warning text-warning"
+                : i - 0.5 === rounded
+                  ? "fill-warning/50 text-warning"
+                  : "text-muted-foreground/40",
+            )}
+          />
+        ))}
       </div>
+      <span className="text-sm font-semibold tabular-nums">
+        {formatNumber(average, { maximumFractionDigits: 1 })}
+      </span>
+      {showCount && (
+        <span className="text-muted-foreground text-sm">
+          ({formatNumber(count)}){suffix ? ` ${suffix}` : ""}
+        </span>
+      )}
+      {label && <span className="text-muted-foreground text-xs">{label}</span>}
     </div>
   );
 }

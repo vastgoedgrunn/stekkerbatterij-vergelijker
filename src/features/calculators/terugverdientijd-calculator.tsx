@@ -1,8 +1,11 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
+import type { Route } from "next";
 import { Info } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { buttonVariants } from "@/components/ui/button";
 import { formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import {
@@ -123,9 +126,36 @@ function toInput(state: State): PaybackInput {
   };
 }
 
+const SKU_PRESETS: {
+  label: string;
+  href: Route;
+  capacityKwh: number;
+  priceEuro: number;
+}[] = [
+  {
+    label: "Zendure SolarFlow 800",
+    href: "/stekkerbatterijen/zendure-solarflow-800" as Route,
+    capacityKwh: 1.92,
+    priceEuro: 747,
+  },
+  {
+    label: "HomeWizard Plug-In",
+    href: "/stekkerbatterijen/homewizard-plug-in-battery" as Route,
+    capacityKwh: 2.7,
+    priceEuro: 1249,
+  },
+  {
+    label: "Marstek Venus 5.12",
+    href: "/stekkerbatterijen/marstek-venus-512" as Route,
+    capacityKwh: 5.12,
+    priceEuro: 1999,
+  },
+];
+
 /** Interactieve terugverdientijd- & besparingscalculator (indicatief). */
 export function TerugverdientijdCalculator({ className }: { className?: string }) {
   const [state, setState] = React.useState<State>(INITIAL);
+  const [activePreset, setActivePreset] = React.useState<string | null>(null);
 
   const result = React.useMemo(
     () => computePayback(toInput(state), DEFAULT_HORIZON_JAREN),
@@ -133,7 +163,17 @@ export function TerugverdientijdCalculator({ className }: { className?: string }
   );
 
   function update(id: keyof State, value: number) {
+    setActivePreset(null);
     setState((prev) => ({ ...prev, [id]: Number.isFinite(value) ? value : 0 }));
+  }
+
+  function applyPreset(preset: (typeof SKU_PRESETS)[number]) {
+    setActivePreset(preset.label);
+    setState((prev) => ({
+      ...prev,
+      batterijcapaciteitKwh: preset.capacityKwh,
+      aanschafprijsEuro: preset.priceEuro,
+    }));
   }
 
   const resultCards: { label: string; value: string; accent?: boolean }[] = [
@@ -152,6 +192,8 @@ export function TerugverdientijdCalculator({ className }: { className?: string }
     },
   ];
 
+  const activeHref = SKU_PRESETS.find((p) => p.label === activePreset)?.href;
+
   return (
     <div className={cn("grid gap-6 lg:grid-cols-5", className)}>
       <Card className="lg:col-span-3">
@@ -159,6 +201,24 @@ export function TerugverdientijdCalculator({ className }: { className?: string }
           <CardTitle>Vul je situatie in</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
+          <div>
+            <p className="mb-2 text-sm font-medium">Snel invullen met een model</p>
+            <div className="flex flex-wrap gap-2">
+              {SKU_PRESETS.map((preset) => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  onClick={() => applyPreset(preset)}
+                  className={cn(
+                    "border-border hover:border-primary/40 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                    activePreset === preset.label && "border-primary bg-primary/5 text-primary",
+                  )}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </div>
           {FIELDS.map((field) => {
             const value = state[field.id];
             const rangeId = `range-${field.id}`;
@@ -225,13 +285,20 @@ export function TerugverdientijdCalculator({ className }: { className?: string }
           ))}
         </div>
 
+        {activeHref && result.paybackYears != null && (
+          <Link href={activeHref} className={cn(buttonVariants({ size: "lg" }), "w-full")}>
+            Met dit model ≈ {formatNumber(result.paybackYears, { maximumFractionDigits: 1 })} jaar ·
+            Bekijk prijs
+          </Link>
+        )}
+
         <p className="text-muted-foreground flex items-start gap-2 text-xs leading-relaxed">
           <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
           <span>
             Deze uitkomsten zijn <strong>indicatief</strong> en sterk afhankelijk van je eigen
             situatie en energieprijzen. Het zijn schattingen op basis van de ingevulde aannames,
             geen garantie. Werkelijke besparing verschilt per huishouden, contract en
-            verbruikspatroon.
+            verbruikspatroon. Preset-prijzen zijn momentopnames; check altijd de productpagina.
           </span>
         </p>
       </div>

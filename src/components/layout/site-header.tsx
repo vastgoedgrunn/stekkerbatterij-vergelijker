@@ -1,9 +1,7 @@
 import Link from "next/link";
-import { User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/brand/logo";
 import { buttonVariants } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { NavLink } from "@/components/layout/nav-link";
 
@@ -31,14 +29,6 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          <ThemeToggle />
-          <Link
-            href="/account"
-            className="text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:ring-ring/50 flex size-10 items-center justify-center rounded-lg transition-colors outline-none focus-visible:ring-[3px]"
-            aria-label="Mijn account"
-          >
-            <User className="size-5" />
-          </Link>
           <Link href="/beslishulp" className={cn(buttonVariants({ size: "sm" }))}>
             Beslishulp
           </Link>

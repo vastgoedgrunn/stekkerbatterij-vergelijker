@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import type { ProductType } from "@/features/products/types";
 import { catalogBasePath } from "@/features/products/product-paths";
+import { businessRules } from "@/config/business-rules";
 import { TrackView } from "@/lib/observability/track-view";
 
 export function catalogMetadata(productType: ProductType): Metadata {
@@ -42,12 +43,18 @@ export async function CatalogByTypePage({
   const params = await searchParams;
   const filters = { ...parseProductFilters(params), productType };
   const basePath = catalogBasePath(productType);
+  const isFixed = productType === "fixed";
 
-  const [{ items, total, page, pageSize }, brands, categories] = await Promise.all([
+  const [{ items, total, page, pageSize }, brands, allCategories] = await Promise.all([
     getProducts(filters),
     getBrands(),
     getCategories(),
   ]);
+
+  // Categorieën die tot het andere producttype horen, niet tonen in deze catalogus.
+  const categories = allCategories.filter((c) =>
+    isFixed ? c.slug !== "balkonbatterijen" : c.slug !== "vaste-thuisbatterijen",
+  );
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
@@ -84,8 +91,6 @@ export async function CatalogByTypePage({
     filters.expandableOnly && { key: "uitbreidbaar", label: "Uitbreidbaar" },
   ].filter(Boolean) as { key: string; label: string }[];
 
-  const isFixed = productType === "fixed";
-
   return (
     <main id="main-content">
       {isFixed && <TrackView event={{ name: "fixed_catalog_viewed", props: { path: basePath } }} />}
@@ -98,7 +103,7 @@ export async function CatalogByTypePage({
           <p className="text-muted-foreground mt-2 max-w-2xl text-lg">
             {isFixed
               ? "Vergelijk geïnstalleerde systemen op specs en vraag vrijblijvend een offerte aan. Geen misleidende webshopprijzen."
-              : "Onafhankelijk vergelijken op prijs, capaciteit, vermogen en garantie, met echte reviews en actuele prijzen."}
+              : "Onafhankelijk vergelijken op prijs, capaciteit, vermogen en garantie, met externe marktscores en prijzen inclusief controledatum."}
           </p>
           <p className="mt-4">
             <Link
@@ -128,7 +133,14 @@ export async function CatalogByTypePage({
                 <span className="text-foreground font-semibold">{total}</span>{" "}
                 {total === 1 ? "resultaat" : "resultaten"}
               </p>
-              <SortSelect current={filters.sort ?? "relevance"} />
+              <SortSelect
+                current={
+                  filters.sort ??
+                  (isFixed
+                    ? businessRules.catalog.defaultFixedSort
+                    : businessRules.catalog.defaultPlugInSort)
+                }
+              />
             </div>
 
             {activeChips.length > 0 && (

@@ -117,6 +117,20 @@ export function FixedBatteryLeadPanel({
                 Indicatief. De definitieve prijs is altijd een offerte op maat.
               </p>
             )}
+            <ul className="text-muted-foreground mt-3 space-y-1.5 text-sm">
+              <li className="flex items-start gap-2">
+                <Battery className="text-primary mt-0.5 size-3.5 shrink-0" />
+                Omvormer en meterkast worden meegenomen in de offerte
+              </li>
+              <li className="flex items-start gap-2">
+                <Battery className="text-primary mt-0.5 size-3.5 shrink-0" />
+                Richtprijs inclusief btw en standaard installatie
+              </li>
+              <li className="flex items-start gap-2">
+                <Battery className="text-primary mt-0.5 size-3.5 shrink-0" />
+                Planning en wachttijd verschillen per regio
+              </li>
+            </ul>
             {qualification && qualification.reasons.length > 0 && (
               <ul className="text-muted-foreground mt-3 space-y-1 text-sm">
                 {qualification.reasons.slice(0, 3).map((reason) => (

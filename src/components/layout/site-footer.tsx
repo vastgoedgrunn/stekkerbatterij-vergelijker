@@ -41,7 +41,7 @@ const columns = [
 
 const trust = [
   { icon: Scale, label: "100% onafhankelijk" },
-  { icon: TrendingDown, label: "Dagelijks actuele prijzen" },
+  { icon: TrendingDown, label: "Prijzen met controledatum" },
   { icon: ShieldCheck, label: "Transparant over aanbieders" },
 ];
 
