@@ -76,3 +76,28 @@ Slack ops + 1-click approvals: `docs/agents/slack-ops.md`, `docs/agents/approval
 ```bash
 vercel rollback            # roll back production to the previous deployment
 ```
+
+## Cursor Cloud specific instructions
+
+Single Next.js 16 app (App Router), npm, Node 22 (see `.nvmrc`). The startup update script runs
+`npm ci`. Standard commands live in `package.json` scripts.
+
+- **Run (dev):** `npm run dev` serves on `http://localhost:3000`. The app boots with **no env
+  config**: every integration (Supabase, Mollie, Sendcloud, Resend, Plausible, Sentry, Daisycon,
+  Bol) is optional and degrades gracefully (`isSupabaseConfigured()` + `.optional()` Zod schemas
+  in `src/lib/env/{client,server}.ts`).
+- **Gotcha, do NOT copy `.env.example` to `.env.local` verbatim.** Its values are empty strings
+  (`""`), which the Zod env schemas reject (empty string fails `.url()` / `.min(1)`); only an
+  *unset* var counts as "not configured". Either leave `.env.local` absent, or fill vars with
+  real values. Copying the template with blanks makes `npm run dev` and `npm run build` throw
+  "Ongeldige omgevingsvariabelen".
+- **Lint/typecheck/format:** `npm run check` (runs `typecheck` + `lint` + `format:check`). This
+  is the CI gate. There is no unit-test suite (`package.json` has no `test` script).
+- **Build:** `npm run build`. Without real secrets it needs `SKIP_ENV_VALIDATION=true` (this is
+  what CI sets), otherwise the empty/missing `NEXT_PUBLIC_*` values fail validation during page
+  data collection.
+- **DB-backed pages need seeded data.** Catalog (`/batterijen`), comparison (`/vergelijken`) and
+  the decision wizard (`/beslishulp`) render empty-state messages until a Supabase project is
+  provisioned and `db/migrations/*` + `db/seed/*` are applied (there is no npm migration runner;
+  apply via the Supabase MCP/CLI or `psql "$DATABASE_URL"`). DB-free features such as the payback
+  calculator (`/tools/terugverdientijd`) and static/content pages work out of the box.
