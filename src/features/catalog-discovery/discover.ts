@@ -4,8 +4,8 @@ import { fetchBolCatalogCandidates, getBolClientStatus } from "./bol-client";
 import type { DiscoveredCandidate } from "./types";
 
 /**
- * Curated NL research seeds: echte productpagina's / fabrikant-URL's als
- * discovery-start tot Bol-feed live is. Agent mag deze lijst uitbreiden via PR.
+ * Curated NL research seeds: echte productpagina's / fabrikant-URL's naast
+ * live Bol Marketing Catalog hits. Agent mag deze lijst uitbreiden via PR.
  * imageUrl: lokale slug-asset of remote die upsert naar Storage ingest.
  */
 const RESEARCH_SEEDS: DiscoveredCandidate[] = [
@@ -162,13 +162,13 @@ export type DiscoverResult = {
 };
 
 /**
- * Verzamel discovery-hits: Bol feed (indien geconfigureerd) + research seeds
+ * Verzamel discovery-hits: Bol Catalog API (indien geconfigureerd) + research seeds
  * gefilterd op marquee-merken.
  */
 export async function discoverCatalogCandidates(): Promise<DiscoverResult> {
   const bolStatus = getBolClientStatus();
+  // Geen single query: bol-client gebruikt DEFAULT_SEARCH_TERMS voor betere dekking.
   const bolHits = await fetchBolCatalogCandidates({
-    query: "stekkerbatterij plug-in thuisbatterij",
     limit: 50,
   });
 

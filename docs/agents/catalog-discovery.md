@@ -6,7 +6,7 @@ met geverifieerde outbound-links.
 ## Code
 
 - Pipeline: `src/features/catalog-discovery/run-pipeline.server.ts`
-- Bol stub/feed: `src/features/catalog-discovery/bol-client.ts`
+- Bol Marketing Catalog API: `src/features/catalog-discovery/bol-client.ts`
 - Image ingest: `ingest-image.server.ts` + `refresh-product-images.server.ts`
   (download merchant/fabrikant-foto → Supabase Storage `products` / `catalog/{slug}.ext`)
 - Admin: `/admin/catalog` (Run discovery, Vernieuw productfoto's, review-queue)
@@ -16,9 +16,11 @@ met geverifieerde outbound-links.
 
 | Variabele | Rol |
 |-----------|-----|
-| `BOL_PRODUCT_FEED_URL` | Productfeed JSON/CSV (primair) |
-| `BOL_PARTNER_API_KEY` | Optionele Bearer voor feed/API |
-| `BOL_PUBLISHER_ID` | Bouwt `partner.bol.com` deeplinks |
+| `BOL_CLIENT_ID` | Marketing Catalog OAuth client ID (primair) |
+| `BOL_CLIENT_SECRET` | Marketing Catalog OAuth client secret |
+| `BOL_PUBLISHER_ID` | Site-ID; bouwt `partner.bol.com` deeplinks (`s=…`) |
+| `BOL_PRODUCT_FEED_URL` | Optionele productfeed JSON/CSV (fallback) |
+| `BOL_PARTNER_API_KEY` | Optionele legacy Bearer voor feed |
 
 Zonder keys: research seeds + agent-research; zelfde SKU-match gate.
 

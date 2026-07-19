@@ -9,7 +9,7 @@ aan (Slack of admin). Wij vullen ze in via admin/seed en testen elke outbound li
 |---|-----------|---------------------|-------------|----------------------------|
 | 1 | **Zendure NL** | ~8% CPS, 30d cookie | [zendure.nl/pages/affiliate-program](https://www.zendure.nl/pages/affiliate-program) | Awin/Impact publisher-ID, deeplink-sjabloon per product |
 | 2 | **Anker SOLIX EU** | ~8% CPS, 30d cookie | [ankersolix.com/eu/become-an-affiliate](https://www.ankersolix.com/eu/become-an-affiliate) | Publisher-ID, product-deeplinks |
-| 3 | **Bol.com Partner** | 2,5 tot 7% per categorie | [affiliate.bol.com](https://affiliate.bol.com/) | Site-ID (`s=…` in deeplink), Bol API-key (optioneel) |
+| 3 | **Bol.com Partner** | 2,5 tot 7% per categorie | [affiliate.bol.com](https://affiliate.bol.com/) | Site-ID (`s=…` in deeplink), Marketing Catalog client ID + secret |
 | 4 | **Daisycon** | Frank €30 tot €60, Vattenfall €4 tot €96 CPA | [daisycon.com/nl](https://www.daisycon.com/nl/) | Publisher-ID, campaign-IDs per energiepartner |
 | 5 | **e-WNDR** (leads) | ~€100 CPA per thuisbatterij-lead | [e-wndr.nl/affiliate-worden](https://e-wndr.nl/affiliate-worden/) | Affiliate-link voor lead-formulier |
 
@@ -31,9 +31,13 @@ aan (Slack of admin). Wij vullen ze in via admin/seed en testen elke outbound li
 ### Bol.com Partner
 
 1. Account op [affiliate.bol.com](https://affiliate.bol.com/), site moet live zijn.
-2. Genereer deeplink per product via partner-tools.
-3. Vervang `PUBLISHER_ID` in seed/admin door jouw `s=…` waarde.
-4. *(Optioneel)* Bol Product API voor automatische prijs-sync.
+2. Noteer **Site-ID** (website code) voor deeplinks: `s=…` in `partner.bol.com/click`.
+3. Maak **Marketing Catalog API** credentials (client ID + secret) aan in het partner-dashboard.
+4. Zet in Vercel (Production + Preview + Development, geen newlines):
+   - `BOL_PUBLISHER_ID` = Site-ID
+   - `BOL_CLIENT_ID` + `BOL_CLIENT_SECRET` = Catalog OAuth
+5. Catalog Discovery zoekt live via `/marketing/catalog/v1/products/search` en bouwt
+   partner-deeplinks met `buildBolPartnerDeeplink`.
 
 ### Daisycon (Zendure NL + HomeWizard INT, goedgekeurd)
 
