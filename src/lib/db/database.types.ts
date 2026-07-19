@@ -413,6 +413,8 @@ export interface PartnerProgramRow extends TimestampFields {
   name: string;
   network: string;
   program_id: string | null;
+  /** Daisycon li-parameter; verplicht voor live glp8.net-deeplinks. */
+  link_id: string | null;
   commission_type: CommissionType;
   commission_rate: number | null;
   commission_cents_min: number | null;
