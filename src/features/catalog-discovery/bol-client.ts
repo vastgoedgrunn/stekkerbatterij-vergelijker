@@ -1,6 +1,16 @@
 import "server-only";
 import { serverEnv } from "@/lib/env/server";
+import {
+  buildBolPartnerDeeplink as buildBolPartnerDeeplinkWithId,
+  ensureBolPartnerDeeplink as ensureBolPartnerDeeplinkWithId,
+} from "@/lib/affiliate/bol";
 import type { DiscoveredCandidate } from "./types";
+
+export {
+  isBolProductUrl,
+  isBolPartnerClickUrl,
+  ensureBolPartnerDeeplink,
+} from "@/lib/affiliate/bol";
 
 export type BolClientStatus = {
   configured: boolean;
@@ -14,8 +24,7 @@ export function getBolClientStatus(): BolClientStatus {
     return {
       configured: true,
       mode: "live",
-      detail:
-        "BOL_PRODUCT_FEED_URL gezet; feed-fetch actief wanneer runDiscoveryBol aangeroepen wordt.",
+      detail: "BOL_PRODUCT_FEED_URL gezet; feed-fetch actief in catalog discovery.",
     };
   }
   if (serverEnv.BOL_PARTNER_API_KEY) {
@@ -177,8 +186,10 @@ function guessBrandSlug(title: string): string | null {
 
 /** Bouw Bol partner deeplink wanneer publisher-ID bekend is. */
 export function buildBolPartnerDeeplink(productUrl: string): string | null {
-  const publisher = serverEnv.BOL_PUBLISHER_ID;
-  if (!publisher || !productUrl.startsWith("https://")) return null;
-  const encoded = encodeURIComponent(productUrl);
-  return `https://partner.bol.com/click/click?p=2&t=url&s=${publisher}&url=${encoded}`;
+  return buildBolPartnerDeeplinkWithId(productUrl, serverEnv.BOL_PUBLISHER_ID);
+}
+
+/** Wrap of normaliseer site-ID op een bol-bestemming (env publisher-ID). */
+export function ensureBolOutboundDestination(destination: string): string {
+  return ensureBolPartnerDeeplinkWithId(destination, serverEnv.BOL_PUBLISHER_ID);
 }

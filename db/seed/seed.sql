@@ -213,7 +213,7 @@ from (values
   -- Geen Bol E1600→E1600 Pro mismatch.
   ('marstek-venus-512','stekkerbatterij-shop', 189900, 'in_stock', 5, false, null),
   ('marstek-venus-512','zonneplan', 199900, 'in_stock', 5, true, 'https://zonneplan.nl'),
-  ('marstek-venus-512','bol', 121000, 'in_stock', 5, false, 'https://www.bol.com/nl/nl/p/duravolt-plug-in-thuisbatterij-5-12kw/9300000185746060/'),
+  ('marstek-venus-512','bol', 121000, 'in_stock', 5, false, 'https://www.bol.com/nl/nl/p/marstek-venus-e-3-0-5-12kwh-plug-play-thuisbatterij-via-230v-stopcontact/9300000240523865/'),
   ('growatt-noah-2000','stekkerbatterij-shop', 99900, 'in_stock', 3, false, null),
   ('growatt-noah-2000','solar-sale', 96900, 'in_stock', 4, false, 'https://solarsale.nl'),
   ('sunology-storey','stekkerbatterij-shop', 99900, 'out_of_stock', null, false, null),
@@ -274,10 +274,10 @@ from (values
    'https://solarsale.nl',
    '{"subid":"{click_ref}"}'),
   ('marstek-venus-512','bol',
-   'https://partner.bol.com/click/click?p=2&t=url&s=1532194&url=https%3A%2F%2Fwww.bol.com%2Fnl%2Fnl%2Fp%2Fduravolt-plug-in-thuisbatterij-5-12kw%2F9300000185746060%2F',
-   'https://www.bol.com/nl/nl/p/duravolt-plug-in-thuisbatterij-5-12kw/9300000185746060/',
+   'https://partner.bol.com/click/click?p=2&t=url&s=1532194&url=https%3A%2F%2Fwww.bol.com%2Fnl%2Fnl%2Fp%2Fmarstek-venus-e-3-0-5-12kwh-plug-play-thuisbatterij-via-230v-stopcontact%2F9300000240523865%2F',
+   'https://www.bol.com/nl/nl/p/marstek-venus-e-3-0-5-12kwh-plug-play-thuisbatterij-via-230v-stopcontact/9300000240523865/',
    'bol-partner', 'cps', 0.025, null,
-   'https://www.bol.com/nl/nl/p/duravolt-plug-in-thuisbatterij-5-12kw/9300000185746060/',
+   'https://www.bol.com/nl/nl/p/marstek-venus-e-3-0-5-12kwh-plug-play-thuisbatterij-via-230v-stopcontact/9300000240523865/',
    '{"subid":"{click_ref}"}'),
   ('marstek-venus-512','zonneplan',
    'https://zonneplan.nl/thuisbatterij/marstek-venus',
@@ -322,7 +322,7 @@ insert into partner_programs (slug, name, network, program_id, link_id, commissi
   ('zendure-nl', 'Zendure NL (Daisycon)', 'daisycon', '20779', '1881195', 'cps', 0.08, 30, 'https://daisycon.com/nl/campagnes/20779-zendure-nl/', 'https://www.zendure.nl/pages/affiliate-program'),
   ('homewizard-int', 'HomeWizard INT (Daisycon)', 'daisycon', '18407', null, 'cps', 0.075, 30, 'https://daisycon.com/nl/campagnes/18407-homewizard-int/', 'https://affiliate-net.nl/programmas/homewizard/'),
   ('anker-solix-eu', 'Anker SOLIX EU', 'impact', null, null, 'cps', 0.08, 30, 'https://www.ankersolix.com/eu/become-an-affiliate', 'https://www.ankersolix.com/eu/become-an-affiliate'),
-  ('bol-partner', 'Bol.com Partner', 'bol-partner', null, null, 'cps', 0.025, 7, 'https://affiliate.bol.com/', 'https://affiliate.bol.com/'),
+  ('bol-partner', 'bol Partner', 'bol-partner', null, null, 'cps', 0.025, 7, 'https://affiliate.bol.com/', 'https://affiliate.bol.com/'),
   ('daisycon-energy', 'Daisycon Energie', 'daisycon', null, null, 'cpa', null, 30, 'https://www.daisycon.com/nl/', 'https://affiliate-net.nl/programmas/frankenergie/'),
   ('e-wndr-leads', 'e-WNDR Thuisbatterij leads', 'e-wndr', null, null, 'cpa', null, null, 'https://e-wndr.nl/affiliate-worden/', 'https://e-wndr.nl/affiliate-worden/')
 on conflict (slug) do update set
