@@ -103,7 +103,7 @@ export function HeroMatcher({ products }: { products: ProductListItem[] }) {
             href={productDetailPath(top.product.slug, top.product.productType)}
             className="group mt-2 flex items-center gap-4"
           >
-            <div className="bg-muted relative size-16 shrink-0 overflow-hidden rounded-xl">
+            <div className="relative size-16 shrink-0 overflow-hidden rounded-xl border border-zinc-100 bg-white">
               {imageUrl && (
                 <Image
                   src={imageUrl}

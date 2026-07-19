@@ -1,8 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BatteryCharging, Clock, ShieldCheck, Zap } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ProductImage } from "@/components/patterns/product-image";
 import { ProductRatingDisplay } from "@/components/patterns/product-rating-display";
 import { CompareToggle } from "@/features/comparison/compare-toggle";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
@@ -56,28 +56,20 @@ export function ProductCard({ product }: { product: ProductListItem }) {
         href={href}
         className="focus-visible:ring-ring flex flex-1 flex-col rounded-[inherit] focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
       >
-        <div className="from-accent/60 via-muted to-background relative aspect-[4/3] overflow-hidden bg-gradient-to-br">
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={product.name}
-              fill
-              sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-contain p-6 transition-transform duration-300 group-hover:scale-[1.02]"
-            />
-          ) : (
-            <span className="flex h-full w-full items-center justify-center">
-              <BatteryCharging className="text-primary/25 size-20" aria-hidden />
-            </span>
-          )}
-
-          <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+        <ProductImage
+          src={imageUrl}
+          alt={product.name}
+          aspect="card"
+          sizes="(max-width: 768px) 100vw, 33vw"
+          imageClassName="transition-transform duration-300 group-hover:scale-[1.02]"
+        >
+          <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
             <Badge variant={isFixed ? "muted" : "highlight"}>
               {productTypeBadge(product.productType)}
             </Badge>
             {product.expandable && <Badge variant="highlight">Uitbreidbaar</Badge>}
           </div>
-        </div>
+        </ProductImage>
 
         <div className="flex flex-1 flex-col gap-3 p-5">
           <div>

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { BatteryCharging, ChevronRight, ShieldCheck, Truck, Zap } from "lucide-react";
+import { ProductImage } from "@/components/patterns/product-image";
 import { getProductBySlug, getProductSlugs } from "@/features/products/queries";
 import { getFaqs } from "@/features/content/queries";
 import { getApprovedReviews } from "@/features/reviews/queries";
@@ -167,30 +167,21 @@ export async function ProductDetailByTypePage({
         </nav>
 
         <div className="grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
-          <div className="from-accent/50 via-muted border-border relative flex aspect-square items-center justify-center overflow-hidden rounded-3xl border bg-gradient-to-br to-transparent">
-            <div
-              aria-hidden
-              className="ambient-glow pointer-events-none absolute inset-0 opacity-60"
-            />
-            {imageUrl ? (
-              <Image
-                src={imageUrl}
-                alt={product.name}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="relative object-contain p-8 drop-shadow-[0_24px_48px_rgba(16,40,32,0.18)]"
-              />
-            ) : (
-              <BatteryCharging className="text-primary/25 relative size-24" aria-hidden />
-            )}
-            <div className="absolute top-4 left-4 flex flex-col gap-1.5">
+          <ProductImage
+            src={imageUrl}
+            alt={product.name}
+            aspect="square"
+            priority
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            imageClassName="p-8 sm:p-10"
+          >
+            <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5">
               <Badge variant={isFixed ? "muted" : "highlight"}>
                 {productTypeBadge(product.productType)}
               </Badge>
               {product.expandable && <Badge variant="highlight">Uitbreidbaar</Badge>}
             </div>
-          </div>
+          </ProductImage>
 
           <div className="flex flex-col gap-5">
             <div>

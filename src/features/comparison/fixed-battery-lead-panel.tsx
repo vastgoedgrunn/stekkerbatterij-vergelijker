@@ -1,7 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { ArrowRight, Battery, Home, Mail } from "lucide-react";
+import {
+  ArrowRight,
+  Battery,
+  CalendarCheck,
+  CheckCircle2,
+  ClipboardList,
+  Home,
+  Mail,
+  Phone,
+  Wrench,
+} from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,6 +21,14 @@ import { trackEvent } from "@/lib/observability/analytics";
 import { submitLeadAction } from "@/features/leads/actions";
 import { formatPrice } from "@/lib/format";
 import type { QualificationResult } from "./qualification";
+
+const NEXT_STEPS = [
+  { icon: Phone, title: "Adviesgesprek", detail: "Kort gesprek over verbruik en woning" },
+  { icon: ClipboardList, title: "Persoonlijk aanbod", detail: "Offerte op maat, vrijblijvend" },
+  { icon: CalendarCheck, title: "Jouw akkoord", detail: "Pas tekenen als het klopt" },
+  { icon: Wrench, title: "Installatie plannen", detail: "Datum afstemmen met monteur" },
+  { icon: CheckCircle2, title: "Klaar voor gebruik", detail: "In bedrijf en toegelicht" },
+] as const;
 
 export interface FixedBatteryLeadPanelProps {
   source?: string;
@@ -187,6 +205,30 @@ export function FixedBatteryLeadPanel({
         <p className="text-muted-foreground text-center text-xs">
           Vrijblijvend · Geen verplichting · Partner-installateur
         </p>
+
+        {!compact && (
+          <div className="border-border bg-muted/40 rounded-xl border px-4 py-4">
+            <p className="text-sm font-semibold">Wat gebeurt er hierna?</p>
+            <ol className="mt-3 grid gap-3 sm:grid-cols-5">
+              {NEXT_STEPS.map((step, index) => (
+                <li key={step.title} className="flex gap-2 sm:flex-col sm:gap-1.5">
+                  <span className="bg-background text-primary border-border flex size-8 shrink-0 items-center justify-center rounded-lg border">
+                    <step.icon className="size-4" aria-hidden />
+                  </span>
+                  <span>
+                    <span className="text-muted-foreground block text-[10px] font-semibold tracking-wide uppercase">
+                      Stap {index + 1}
+                    </span>
+                    <span className="block text-xs font-semibold">{step.title}</span>
+                    <span className="text-muted-foreground block text-xs leading-snug">
+                      {step.detail}
+                    </span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
 
         {submitted ? (
           <p className="text-success bg-success/10 rounded-xl px-4 py-3 text-sm">

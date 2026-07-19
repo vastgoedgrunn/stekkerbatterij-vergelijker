@@ -304,7 +304,7 @@ function RecommendationCard({
   return (
     <Card interactive className={cn(index === 0 && "border-primary/40 ring-primary/15 ring-2")}>
       <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
-        <div className="from-accent/50 to-muted relative size-24 shrink-0 self-center overflow-hidden rounded-2xl bg-gradient-to-br">
+        <div className="relative size-24 shrink-0 self-center overflow-hidden rounded-2xl border border-zinc-100 bg-white">
           {imageUrl && (
             <Image
               src={imageUrl}

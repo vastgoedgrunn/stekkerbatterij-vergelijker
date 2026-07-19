@@ -42,7 +42,7 @@ export function CartView() {
                 key={item.offerId}
                 className="border-border bg-card flex gap-4 rounded-2xl border p-4"
               >
-                <div className="bg-muted relative size-20 shrink-0 overflow-hidden rounded-xl">
+                <div className="relative size-20 shrink-0 overflow-hidden rounded-xl border border-zinc-100 bg-white">
                   {imageUrl && (
                     <Image
                       src={imageUrl}
