@@ -24,8 +24,7 @@ export function getBolClientStatus(): BolClientStatus {
     return {
       configured: true,
       mode: "live",
-      detail:
-        "BOL_PRODUCT_FEED_URL gezet; feed-fetch actief in catalog discovery.",
+      detail: "BOL_PRODUCT_FEED_URL gezet; feed-fetch actief in catalog discovery.",
     };
   }
   if (serverEnv.BOL_PARTNER_API_KEY) {
