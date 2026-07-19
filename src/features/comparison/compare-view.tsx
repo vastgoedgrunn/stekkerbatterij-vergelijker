@@ -1,12 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
-import { BatteryCharging, Check, Minus, Trophy } from "lucide-react";
+import { Check, Minus, Trophy } from "lucide-react";
 import { RatingStars } from "@/components/patterns/rating-stars";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
+import { ProductImage } from "@/features/products/product-image";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatNumber, formatPrice } from "@/lib/format";
-import { getPublicImageUrl } from "@/lib/supabase/storage";
 import { productDetailPath } from "@/features/products/product-paths";
 import type { ProductDetail } from "@/features/products/types";
 
@@ -137,23 +136,16 @@ export function CompareView({ products }: { products: ProductDetail[] }) {
                 <span className="sr-only">Kenmerk</span>
               </th>
               {comparable.map((p) => {
-                const imageUrl = getPublicImageUrl(p.imagePath);
                 const href = productDetailPath(p.slug, p.productType);
                 return (
                   <th key={p.id} scope="col" className="min-w-48 p-4 align-bottom">
-                    <div className="from-accent/50 to-muted relative mx-auto flex aspect-square max-w-32 items-center justify-center rounded-2xl bg-gradient-to-br">
-                      {imageUrl ? (
-                        <Image
-                          src={imageUrl}
-                          alt={p.name}
-                          fill
-                          sizes="128px"
-                          className="object-contain p-2"
-                        />
-                      ) : (
-                        <BatteryCharging className="text-primary/25 size-10" aria-hidden />
-                      )}
-                    </div>
+                    <ProductImage
+                      name={p.name}
+                      imagePath={p.imagePath}
+                      imageStatus={p.imageStatus}
+                      className="mx-auto aspect-square max-w-32 rounded-2xl"
+                      sizes="128px"
+                    />
                     <p className="text-muted-foreground mt-3 text-xs font-semibold tracking-wide uppercase">
                       {p.brand.name}
                     </p>

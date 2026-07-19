@@ -1,6 +1,6 @@
-import type { ProductType, StockStatus } from "@/lib/db/database.types";
+import type { ProductImageStatus, ProductType, StockStatus } from "@/lib/db/database.types";
 
-export type { ProductType };
+export type { ProductType, ProductImageStatus };
 
 export interface Brand {
   id: string;
@@ -41,6 +41,7 @@ export interface ProductListItem {
   warrantyYears: number | null;
   expandable: boolean;
   imagePath: string | null;
+  imageStatus: ProductImageStatus;
   productType: ProductType;
   indicativePriceMinCents: number | null;
   indicativePriceMaxCents: number | null;

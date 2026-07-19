@@ -104,6 +104,8 @@ export async function upsertProductFromCandidate(
         capacity_kwh: candidate.capacityKwh ?? null,
         power_kw: candidate.powerKw ?? null,
         image_path: imagePath,
+        image_status: "pending",
+        image_checked_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       } as never)
       .eq("id", productId);
@@ -121,6 +123,7 @@ export async function upsertProductFromCandidate(
         power_kw: candidate.powerKw ?? null,
         expandable: true,
         image_path: imagePath,
+        image_status: "pending",
       } as never)
       .select("id, slug")
       .single<{ id: string; slug: string }>();

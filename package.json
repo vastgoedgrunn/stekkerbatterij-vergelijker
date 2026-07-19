@@ -21,6 +21,7 @@
     "@mollie/api-client": "^4.6.0",
     "@supabase/ssr": "^0.12.2",
     "@supabase/supabase-js": "^2.109.0",
+    "ai": "^6.0.230",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.24.0",

@@ -45,6 +45,7 @@ type BrandProductRow = {
   id: string;
   slug: string;
   image_path: string | null;
+  image_status: "ok" | "pending" | "rejected" | "broken" | null;
   brand: { name: string; slug: string } | null;
 };
 
@@ -57,7 +58,7 @@ export async function getCatalogCompletenessReport(): Promise<CatalogCompletenes
 
   const { data: products, error: productsError } = await supabase
     .from("products")
-    .select("id, slug, image_path, brand:brands(name, slug)")
+    .select("id, slug, image_path, image_status, brand:brands(name, slug)")
     .eq("status", "published")
     .is("deleted_at", null);
 
@@ -118,8 +119,8 @@ export async function getCatalogCompletenessReport(): Promise<CatalogCompletenes
     const issues: string[] = [];
 
     for (const product of brandProducts) {
-      if (product.image_path) withImage += 1;
-      else issues.push(`${product.slug}: geen image_path`);
+      if (product.image_status === "ok" && product.image_path) withImage += 1;
+      else issues.push(`${product.slug}: image_status=${product.image_status ?? "pending"}`);
 
       const productOffers = offersByProduct.get(product.id) ?? [];
       if (productOffers.length === 0) {

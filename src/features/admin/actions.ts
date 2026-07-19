@@ -355,7 +355,7 @@ export async function refreshProductImagesAction(): Promise<void> {
     await assertCatalogAccess();
     const { refreshAllProductImages } =
       await import("@/features/catalog-discovery/refresh-product-images.server");
-    await refreshAllProductImages({ preferLocalAssets: true });
+    await refreshAllProductImages({ preferLocalAssets: false });
     revalidatePath("/admin/catalog");
     revalidatePath("/admin/products");
     revalidatePublicCatalog();

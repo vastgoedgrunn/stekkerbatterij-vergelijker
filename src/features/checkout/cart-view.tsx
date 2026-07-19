@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { useCart } from "./cart-store";
 import { Container } from "@/components/patterns/section";
 import { buttonVariants } from "@/components/ui/button";
+import { ProductImage } from "@/features/products/product-image";
 import { formatPrice } from "@/lib/format";
-import { getPublicImageUrl } from "@/lib/supabase/storage";
 import { cn } from "@/lib/utils";
 
 export function CartView() {
@@ -36,23 +35,18 @@ export function CartView() {
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_20rem]">
         <ul className="space-y-4">
           {items.map((item) => {
-            const imageUrl = getPublicImageUrl(item.imagePath);
             return (
               <li
                 key={item.offerId}
                 className="border-border bg-card flex gap-4 rounded-2xl border p-4"
               >
-                <div className="bg-muted relative size-20 shrink-0 overflow-hidden rounded-xl">
-                  {imageUrl && (
-                    <Image
-                      src={imageUrl}
-                      alt={item.name}
-                      fill
-                      sizes="80px"
-                      className="object-contain p-2"
-                    />
-                  )}
-                </div>
+                <ProductImage
+                  name={item.name}
+                  imagePath={item.imagePath}
+                  imageStatus={null}
+                  className="size-20 shrink-0 rounded-xl"
+                  sizes="80px"
+                />
                 <div className="flex min-w-0 flex-1 flex-col gap-2">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">

@@ -59,7 +59,8 @@ export function itemListJsonLd(items: { name: string; url: string }[]): JsonLdOb
 
 export function productJsonLd(product: ProductDetail): JsonLdObject {
   const productUrl = `${siteConfig.url}${productDetailPath(product.slug, product.productType)}`;
-  const imageUrl = getPublicImageUrl(product.imagePath);
+  const imageUrl =
+    product.imageStatus === "ok" ? getPublicImageUrl(product.imagePath) : null;
 
   const pricedOffers = product.offers.filter((offer) => offer.priceCents > 0);
   const omitOffers = product.productType === "fixed" && pricedOffers.length === 0;

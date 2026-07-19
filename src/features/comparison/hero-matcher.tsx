@@ -1,12 +1,11 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
-import { getPublicImageUrl } from "@/lib/supabase/storage";
+import { ProductImage } from "@/features/products/product-image";
 import { rankProducts, type WizardPreferences } from "./ranking";
 import { qualifyLeadPath } from "./qualification";
 import { productDetailPath } from "@/features/products/product-paths";
@@ -45,7 +44,6 @@ export function HeroMatcher({ products }: { products: ProductListItem[] }) {
   );
   const qualification = React.useMemo(() => qualifyLeadPath(prefs), [prefs]);
   const preferFixed = qualification.path === "fixed_battery";
-  const imageUrl = top ? getPublicImageUrl(top.product.imagePath) : null;
 
   return (
     <div className="border-border/70 bg-card/70 rounded-3xl border p-5 shadow-[var(--shadow-lg)] backdrop-blur-sm sm:p-6">
@@ -103,17 +101,13 @@ export function HeroMatcher({ products }: { products: ProductListItem[] }) {
             href={productDetailPath(top.product.slug, top.product.productType)}
             className="group mt-2 flex items-center gap-4"
           >
-            <div className="bg-muted relative size-16 shrink-0 overflow-hidden rounded-xl">
-              {imageUrl && (
-                <Image
-                  src={imageUrl}
-                  alt={top.product.name}
-                  fill
-                  sizes="64px"
-                  className="object-contain p-1.5"
-                />
-              )}
-            </div>
+            <ProductImage
+              name={top.product.name}
+              imagePath={top.product.imagePath}
+              imageStatus={top.product.imageStatus}
+              className="size-16 shrink-0 rounded-xl"
+              sizes="64px"
+            />
             <div className="min-w-0 flex-1">
               <p className="text-muted-foreground text-xs">{top.product.brand.name}</p>
               <p className="group-hover:text-primary truncate font-semibold">{top.product.name}</p>
