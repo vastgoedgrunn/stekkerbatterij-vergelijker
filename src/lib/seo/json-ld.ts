@@ -7,13 +7,22 @@ import { productDetailPath } from "@/features/products/product-paths";
 type JsonLdObject = Record<string, unknown>;
 
 export function organizationJsonLd(): JsonLdObject {
-  return {
+  const logoUrl = `${siteConfig.url}/images/brand/logo.png`;
+  const org: JsonLdObject = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: siteConfig.name,
     url: siteConfig.url,
     description: siteConfig.description,
+    logo: logoUrl,
+    image: logoUrl,
+    email: siteConfig.contactEmail,
   };
+  const twitter = siteConfig.twitterHandle as string | undefined;
+  if (twitter) {
+    org.sameAs = [`https://twitter.com/${twitter.replace(/^@/, "")}`];
+  }
+  return org;
 }
 
 export function websiteJsonLd(): JsonLdObject {
@@ -132,14 +141,30 @@ export function articleJsonLd(article: {
   slug: string;
   excerpt: string | null;
   publishedAt: string | null;
+  updatedAt?: string | null;
+  imageUrl?: string | null;
 }): JsonLdObject {
-  return {
+  const articleUrl = `${siteConfig.url}/gidsen/${article.slug}`;
+  const ld: JsonLdObject = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: article.title,
     description: article.excerpt ?? undefined,
     datePublished: article.publishedAt ?? undefined,
-    url: `${siteConfig.url}/gidsen/${article.slug}`,
-    publisher: { "@type": "Organization", name: siteConfig.name },
+    dateModified: article.updatedAt ?? article.publishedAt ?? undefined,
+    url: articleUrl,
+    mainEntityOfPage: articleUrl,
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteConfig.url}/images/brand/logo.png`,
+      },
+    },
   };
+  if (article.imageUrl) {
+    ld.image = [article.imageUrl];
+  }
+  return ld;
 }

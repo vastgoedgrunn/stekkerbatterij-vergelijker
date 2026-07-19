@@ -34,6 +34,8 @@ const serverSchema = z.object({
 
   // Observability
   SENTRY_AUTH_TOKEN: z.string().min(1).optional(),
+  /** Plausible Stats API key (Business). Admin analytics; ontbreekt = empty state. */
+  PLAUSIBLE_API_KEY: z.string().min(1).optional(),
 
   /** Daisycon bestandsverificatie: body + bestandsnaam (rewrite in next.config). */
   DAISYCON_VERIFY_FILENAME: z.string().min(1).optional(),

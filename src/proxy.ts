@@ -12,6 +12,8 @@ import { getSupabaseAnonKey, getSupabaseUrl, isSupabaseConfigured } from "@/lib/
  */
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
+  // Pathname voor root layout: admin zonder marketing header/footer.
+  response.headers.set("x-pathname", request.nextUrl.pathname);
 
   if (isSupabaseConfigured()) {
     const supabase = createServerClient(getSupabaseUrl(), getSupabaseAnonKey(), {
