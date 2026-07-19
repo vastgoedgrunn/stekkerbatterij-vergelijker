@@ -18,8 +18,9 @@ export function organizationJsonLd(): JsonLdObject {
     image: logoUrl,
     email: siteConfig.contactEmail,
   };
-  if (siteConfig.twitterHandle) {
-    org.sameAs = [`https://twitter.com/${siteConfig.twitterHandle.replace(/^@/, "")}`];
+  const twitter = siteConfig.twitterHandle as string | undefined;
+  if (twitter) {
+    org.sameAs = [`https://twitter.com/${twitter.replace(/^@/, "")}`];
   }
   return org;
 }
