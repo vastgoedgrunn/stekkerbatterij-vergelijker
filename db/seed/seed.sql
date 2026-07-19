@@ -222,8 +222,8 @@ from (values
   ('sessy-thuisbatterij','zonneplan', 164900, 'in_stock', 7, true, 'https://zonneplan.nl'),
   ('marstek-jupiter-c-1024','stekkerbatterij-shop', 289900, 'in_stock', 7, false, null),
   ('marstek-jupiter-c-1024','solar-sale', 299900, 'in_stock', 10, false, 'https://solarsale.nl'),
-  ('homewizard-plug-in-battery','stekkerbatterij-shop', 119900, 'preorder', 14, false, null),
-  ('homewizard-plug-in-battery','coolblue', 124900, 'preorder', 14, true, 'https://coolblue.nl')
+  ('homewizard-plug-in-battery','stekkerbatterij-shop', 119900, 'preorder', 14, false, null)
+  -- HomeWizard × Coolblue bewust weggelaten: seed-placeholder 905678 was Apple Watch.
 ) as v(pslug, mslug, price_cents, stock, delivery, sponsored, url)
 join products p on p.slug = v.pslug
 join merchants m on m.slug = v.mslug
