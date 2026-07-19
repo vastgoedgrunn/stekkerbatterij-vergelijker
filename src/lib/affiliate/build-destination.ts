@@ -1,4 +1,5 @@
 import type { Json } from "@/lib/db/database.types";
+import { isBolPartnerClickUrl } from "@/lib/affiliate/bol";
 
 const DEFAULT_UTM: Record<string, string> = {
   utm_source: "stekkerbatterijvergelijker",
@@ -52,6 +53,10 @@ export function buildAffiliateDestination(
     throw new Error(
       `Affiliate-bestemming moet https gebruiken (kreeg ${url.protocol || "geen protocol"}).`,
     );
+  }
+  // bol partner-click: query-string met rust laten (s + url zijn commissie-kritisch).
+  if (isBolPartnerClickUrl(substituted)) {
+    return url.toString();
   }
   applyParams(url, params, clickRef);
   return url.toString();

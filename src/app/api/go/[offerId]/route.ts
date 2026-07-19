@@ -6,6 +6,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { serverEnv } from "@/lib/env/server";
 import { logger } from "@/lib/observability/logger";
 import { buildAffiliateDestination } from "@/lib/affiliate/build-destination";
+import { ensureBolPartnerDeeplink } from "@/lib/affiliate/bol";
 import { isEligibleOutboundOffer } from "@/features/offers-pricing/offer-eligibility";
 import type { Json } from "@/lib/db/database.types";
 
@@ -89,10 +90,13 @@ export async function GET(
     return NextResponse.redirect(fallback, 302);
   }
 
+  // Bol product-URL's zonder partner-deeplink: wrap met site-ID (BOL_PUBLISHER_ID).
+  const bolReady = ensureBolPartnerDeeplink(rawDestination, serverEnv.BOL_PUBLISHER_ID);
+
   const clickRef = crypto.randomUUID();
   let destination: string;
   try {
-    destination = buildAffiliateDestination(rawDestination, offer.affiliate_params, clickRef);
+    destination = buildAffiliateDestination(bolReady, offer.affiliate_params, clickRef);
   } catch {
     return NextResponse.redirect(fallback, 302);
   }
