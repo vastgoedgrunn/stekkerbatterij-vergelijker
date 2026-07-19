@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BookOpen } from "lucide-react";
 import { getArticles } from "@/features/content/queries";
 import { getGuideCoverUrl } from "@/features/content/covers";
+import { GuideCover } from "@/features/content/guide-cover";
 import { Container } from "@/components/patterns/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -48,24 +48,13 @@ export default async function GuidesPage() {
                   interactive
                   className="from-primary/5 grid gap-6 overflow-hidden bg-gradient-to-br to-transparent p-6 sm:p-8 md:grid-cols-2 md:items-center"
                 >
-                  <div className="from-primary/20 to-primary/5 relative aspect-[16/10] overflow-hidden rounded-2xl bg-gradient-to-br">
-                    {(() => {
-                      const cover = getGuideCoverUrl(featured);
-                      return cover ? (
-                        <Image
-                          src={cover}
-                          alt=""
-                          fill
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                        />
-                      ) : (
-                        <span className="flex h-full items-center justify-center">
-                          <BookOpen className="text-primary/50 size-16" />
-                        </span>
-                      );
-                    })()}
-                  </div>
+                  <GuideCover
+                    src={getGuideCoverUrl(featured)}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="from-primary/20 to-primary/5 aspect-[16/10] rounded-2xl bg-gradient-to-br"
+                    imageClassName="transition-transform duration-500 group-hover:scale-[1.03]"
+                    fallbackIconClassName="text-primary/50 [&_svg]:size-16"
+                  />
                   <div>
                     <Badge variant="highlight" className="mb-3">
                       Uitgelicht
@@ -93,21 +82,12 @@ export default async function GuidesPage() {
                   return (
                     <li key={article.id}>
                       <Card interactive className="group h-full overflow-hidden">
-                        <div className="bg-muted relative aspect-[16/10] overflow-hidden">
-                          {cover ? (
-                            <Image
-                              src={cover}
-                              alt=""
-                              fill
-                              sizes="(max-width: 640px) 100vw, 33vw"
-                              className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                            />
-                          ) : (
-                            <span className="text-primary/25 flex h-full items-center justify-center">
-                              <BookOpen className="size-12" aria-hidden />
-                            </span>
-                          )}
-                        </div>
+                        <GuideCover
+                          src={cover}
+                          sizes="(max-width: 640px) 100vw, 33vw"
+                          className="aspect-[16/10]"
+                          imageClassName="transition-transform duration-300 group-hover:scale-[1.02]"
+                        />
                         <CardContent className="flex flex-col gap-3 p-6">
                           <Badge variant="muted" className="w-fit">
                             <BookOpen className="size-3" /> Gids
