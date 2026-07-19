@@ -143,10 +143,6 @@ export function AdminNav({ pendingChanges = 0 }: { pendingChanges?: number }) {
   const pageTitle = useMemo(() => currentLabel(pathname), [pathname]);
 
   useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
