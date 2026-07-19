@@ -20,6 +20,11 @@ export const businessRules = {
   pricing: {
     /** Omnibus: laagste prijs over dit aantal dagen tonen. */
     lowestPriceWindowDays: 30,
+    /**
+     * Offers ouder dan dit (dagen sinds last_checked_at) tellen niet mee als
+     * "beste prijs" zolang er een verse offer bestaat. Alleen-stale blijft zichtbaar.
+     */
+    offerFreshnessDays: 7,
   },
 
   reviews: {
@@ -32,6 +37,12 @@ export const businessRules = {
   catalog: {
     defaultPageSize: 24,
     maxPageSize: 96,
+    /** Default sort voor stekkerbatterijen (plug_in). */
+    defaultPlugInSort: "value_asc" as const,
+    /** Default sort voor vaste systemen. */
+    defaultFixedSort: "capacity_desc" as const,
+    /** Featured vaste systemen: verberg merkscores onder deze drempel. */
+    minFeaturedMarketScore: 3,
   },
 } as const;
 

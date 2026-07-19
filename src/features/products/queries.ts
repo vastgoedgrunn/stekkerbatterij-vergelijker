@@ -8,6 +8,7 @@ import {
   isEligibleOutboundOffer,
   offerOutboundUrl,
 } from "@/features/offers-pricing/offer-eligibility";
+import { isOfferFresh } from "@/features/offers-pricing/offer-freshness";
 import type {
   Brand,
   Category,
@@ -40,6 +41,7 @@ interface RawListOffer {
   commission_rate: number | null;
   commission_cents_fixed: number | null;
   is_sponsored: boolean;
+  last_checked_at: string | null;
   merchants: { name: string } | null;
 }
 
@@ -115,11 +117,17 @@ function lowestPrice(offers: { price_cents: number }[] | null): number | null {
   );
 }
 
-function mapBestListOffer(offers: RawListOffer[] | null): ProductListBestOffer | null {
+function pickBestOutboundOffer<T extends RawListOffer | RawOffer>(offers: T[] | null): T | null {
   const usable = outboundOffers(offers);
   if (usable.length === 0) return null;
-  const sorted = [...usable].sort((a, b) => a.price_cents - b.price_cents);
-  const best = sorted[0]!;
+  const fresh = usable.filter((o) => isOfferFresh(o.last_checked_at));
+  const pool = fresh.length > 0 ? fresh : usable;
+  return [...pool].sort((a, b) => a.price_cents - b.price_cents)[0] ?? null;
+}
+
+function mapBestListOffer(offers: RawListOffer[] | null): ProductListBestOffer | null {
+  const best = pickBestOutboundOffer(offers);
+  if (!best) return null;
   return {
     id: best.id,
     merchantName: best.merchants?.name ?? "Onbekend",
@@ -197,6 +205,19 @@ function pricePerKwh(item: ProductListItem): number {
   return item.lowestPriceCents / item.capacityKwh;
 }
 
+/** Prijzen eerst; producten zonder live prijs altijd onderaan. */
+function withPricedFirst(
+  items: ProductListItem[],
+  compare: (a: ProductListItem, b: ProductListItem) => number,
+): ProductListItem[] {
+  return [...items].sort((a, b) => {
+    const aPriced = a.lowestPriceCents !== null ? 0 : 1;
+    const bPriced = b.lowestPriceCents !== null ? 0 : 1;
+    if (aPriced !== bPriced) return aPriced - bPriced;
+    return compare(a, b);
+  });
+}
+
 function sortItems(items: ProductListItem[], sort: ProductSort): ProductListItem[] {
   const byPrice = (a: ProductListItem, b: ProductListItem) =>
     (a.lowestPriceCents ?? Number.MAX_SAFE_INTEGER) -
@@ -204,17 +225,22 @@ function sortItems(items: ProductListItem[], sort: ProductSort): ProductListItem
 
   switch (sort) {
     case "price_asc":
-      return [...items].sort(byPrice);
+      return withPricedFirst(items, byPrice);
     case "price_desc":
-      return [...items].sort((a, b) => byPrice(b, a));
+      return withPricedFirst(items, (a, b) => byPrice(b, a));
     case "value_asc":
-      return [...items].sort((a, b) => pricePerKwh(a) - pricePerKwh(b));
+      return withPricedFirst(items, (a, b) => pricePerKwh(a) - pricePerKwh(b));
     case "capacity_desc":
-      return [...items].sort((a, b) => (b.capacityKwh ?? 0) - (a.capacityKwh ?? 0));
+      return withPricedFirst(items, (a, b) => (b.capacityKwh ?? 0) - (a.capacityKwh ?? 0));
     case "rating_desc":
-      return [...items].sort((a, b) => displaySortScore(b) - displaySortScore(a));
+      return withPricedFirst(items, (a, b) => displaySortScore(b) - displaySortScore(a));
+    case "relevance":
     default:
-      return items;
+      // Meer aanbieders en scherpere €/kWh eerst; zonder prijs onderaan.
+      return withPricedFirst(items, (a, b) => {
+        if (b.offerCount !== a.offerCount) return b.offerCount - a.offerCount;
+        return pricePerKwh(a) - pricePerKwh(b);
+      });
   }
 }
 
@@ -281,7 +307,7 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
   let query = supabase
     .from("products")
     .select(
-      "id, slug, name, summary, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, product_type, indicative_price_min_cents, indicative_price_max_cents, market_score_average, market_score_count, market_score_source_name, market_score_source_url, market_score_scope, market_score_checked_at, brands(id, name, slug), offers(id, price_cents, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, merchants(name))",
+      "id, slug, name, summary, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, product_type, indicative_price_min_cents, indicative_price_max_cents, market_score_average, market_score_count, market_score_source_name, market_score_source_url, market_score_scope, market_score_checked_at, brands(id, name, slug), offers(id, price_cents, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, last_checked_at, merchants(name))",
     )
     .eq("status", "published")
     .is("deleted_at", null);
@@ -369,7 +395,15 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
     return true;
   });
 
-  const sorted = sortItems(priceFiltered, filters.sort ?? "relevance");
+  const resolvedSort: ProductSort =
+    filters.sort ??
+    (filters.productType === "fixed"
+      ? businessRules.catalog.defaultFixedSort
+      : filters.productType === "plug_in"
+        ? businessRules.catalog.defaultPlugInSort
+        : "relevance");
+
+  const sorted = sortItems(priceFiltered, resolvedSort);
   const total = sorted.length;
   const start = (page - 1) * pageSize;
   const items = sorted.slice(start, start + pageSize);
@@ -462,7 +496,10 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
     }))
     .sort((a, b) => a.priceCents - b.priceCents);
 
-  const bestOutbound = offers.find((o) => o.affiliateUrl);
+  const bestRaw = pickBestOutboundOffer(product.offers);
+  const bestOutbound = bestRaw
+    ? (offers.find((o) => o.id === bestRaw.id) ?? offers.find((o) => o.affiliateUrl))
+    : offers.find((o) => o.affiliateUrl);
 
   return {
     id: product.id,

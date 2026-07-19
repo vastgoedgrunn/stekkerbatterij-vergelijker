@@ -341,10 +341,7 @@ function RecommendationCard({
             <p className="text-muted-foreground text-sm font-medium">Prijs via offerte</p>
           )}
           <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-            <Link href={href} className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
-              Bekijk details
-            </Link>
-            {!isFixed && rec.product.bestOffer?.affiliateUrl && (
+            {!isFixed && rec.product.bestOffer?.affiliateUrl ? (
               <OfferLink
                 offerId={rec.product.bestOffer.id}
                 productId={rec.product.id}
@@ -355,7 +352,19 @@ function RecommendationCard({
                 size="sm"
               >
                 Naar {rec.product.bestOffer.merchantName}
+                {rec.product.lowestPriceCents != null
+                  ? ` · ${formatPrice(rec.product.lowestPriceCents)}`
+                  : ""}
               </OfferLink>
+            ) : null}
+            {isFixed ? (
+              <Link href={href} className={cn(buttonVariants({ size: "sm" }))}>
+                Offerte aanvragen
+              </Link>
+            ) : (
+              <Link href={href} className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
+                Bekijk details
+              </Link>
             )}
           </div>
         </div>

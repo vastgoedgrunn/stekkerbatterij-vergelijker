@@ -1,12 +1,27 @@
 import { RatingStars } from "@/components/patterns/rating-stars";
 import { formatDate } from "@/lib/format";
+import type { MarketScore } from "@/features/products/types";
 import type { Review } from "./types";
 
-export function ReviewList({ reviews }: { reviews: Review[] }) {
+export function ReviewList({
+  reviews,
+  marketScore,
+}: {
+  reviews: Review[];
+  marketScore?: MarketScore | null;
+}) {
   if (reviews.length === 0) {
+    if (marketScore) {
+      return (
+        <p className="text-muted-foreground text-sm">
+          Er staan nog geen eigen reviews op deze pagina. Boven zie je wel de externe score van{" "}
+          {marketScore.sourceName}.
+        </p>
+      );
+    }
     return (
       <p className="text-muted-foreground text-sm">
-        Er zijn nog geen reviews voor dit product. Wees de eerste die er een schrijft.
+        Er zijn nog geen reviews voor dit product. Deel je ervaring als je wilt.
       </p>
     );
   }

@@ -93,6 +93,7 @@ export function ProductCard({ product }: { product: ProductListItem }) {
             rating={product.rating}
             marketScore={product.marketScore}
             showSource={false}
+            compact
           />
 
           <ul className="flex flex-wrap gap-1.5">
@@ -154,7 +155,11 @@ export function ProductCard({ product }: { product: ProductListItem }) {
             )}
 
             <span className="border-primary/30 text-primary group-hover:bg-primary group-hover:text-primary-foreground flex w-full items-center justify-center gap-1.5 rounded-md border px-4 py-2 text-sm font-semibold transition-colors">
-              {isFixed ? "Offerte aanvragen" : "Bekijk details"}
+              {isFixed
+                ? "Offerte aanvragen"
+                : outboundOffer
+                  ? `Details · vanaf ${formatPrice(outboundOffer.priceCents)}`
+                  : "Bekijk details"}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
             </span>
           </div>
@@ -171,10 +176,10 @@ export function ProductCard({ product }: { product: ProductListItem }) {
             estimatedCommissionCents={outboundOffer.estimatedCommissionCents}
             placement="catalog_card"
             size="sm"
-            variant="outline"
             className="w-full"
           >
             Naar {outboundOffer.merchantName}
+            {outboundOffer.priceCents != null ? ` · ${formatPrice(outboundOffer.priceCents)}` : ""}
           </OfferLink>
         </div>
       )}

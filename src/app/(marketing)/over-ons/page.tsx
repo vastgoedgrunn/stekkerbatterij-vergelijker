@@ -20,7 +20,7 @@ const principles = [
   {
     icon: Scale,
     title: "Onafhankelijk",
-    text: "Onze rangschikking is gebaseerd op objectieve criteria zoals prijs, capaciteit, garantie en echte reviews, niet op wie het meest betaalt.",
+    text: "Onze rangschikking is gebaseerd op objectieve criteria zoals prijs, capaciteit, garantie en externe marktscores, niet op wie het meest betaalt.",
   },
   {
     icon: Eye,
@@ -30,7 +30,7 @@ const principles = [
   {
     icon: ShieldCheck,
     title: "Betrouwbaar",
-    text: "We tonen actuele prijzen met bronvermelding en de laagste prijs van de afgelopen 30 dagen, conform de regels.",
+    text: "Elke prijs toont wanneer we die gecontroleerd hebben. We tonen ook de laagste prijs van de afgelopen 30 dagen, conform de regels.",
   },
 ];
 
@@ -58,7 +58,7 @@ export default function AboutPage() {
           </div>
           <dl className="border-border/70 mt-10 flex flex-wrap gap-x-12 gap-y-6 border-t pt-8">
             <Stat value="100%" label="Onafhankelijk" />
-            <Stat value="Dagelijks" label="Prijzen bijgewerkt" />
+            <Stat value="Met datum" label="Prijscontroles zichtbaar" />
             <Stat value="30 dagen" label="Prijshistorie & Omnibus" />
           </dl>
         </Container>

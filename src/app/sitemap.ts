@@ -46,6 +46,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    {
+      url: `${base}/homewizard-plug-in-battery-prijs`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${base}/stekkerbatterij-dynamisch-contract`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${base}/beste-stekkerbatterij-appartement`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
     { url: `${base}/energie`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/over-ons`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     {

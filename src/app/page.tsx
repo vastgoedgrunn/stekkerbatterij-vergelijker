@@ -25,6 +25,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/json-ld";
 import { siteConfig } from "@/config/site";
+import { businessRules } from "@/config/business-rules";
 import { cn } from "@/lib/utils";
 
 export const revalidate = 3600;
@@ -54,17 +55,17 @@ const trustItems = [
   {
     icon: Scale,
     title: "100% onafhankelijk",
-    text: "We rangschikken objectief op prijs, capaciteit, garantie en reviews, niet op wie het meest betaalt.",
+    text: "We rangschikken objectief op prijs, capaciteit, garantie en scores, niet op wie het meest betaalt.",
   },
   {
     icon: TrendingDown,
-    title: "Altijd actuele prijzen",
-    text: "Dagelijks bijgewerkte prijzen voor stekkerbatterijen, plus eerlijke offertes voor vaste systemen.",
+    title: "Prijzen met controledatum",
+    text: "Elke prijs toont wanneer we die gecontroleerd hebben. Verse checks gaan voor oudere deals.",
   },
   {
     icon: ShieldCheck,
-    title: "Transparant & compleet",
-    text: "Alle specs, meerdere aanbieders per model en eerlijke uitleg over sponsoring.",
+    title: "Transparant over aanbieders",
+    text: "Je ziet bij welk merk of webshop de laagste prijs staat, plus duidelijke uitleg over affiliate-links.",
   },
 ];
 
@@ -84,11 +85,19 @@ const steps = [
 ];
 
 export default async function HomePage() {
-  const [{ items: plugInFeatured }, { items: fixedFeatured }, articles] = await Promise.all([
-    getProducts({ productType: "plug_in", sort: "value_asc", pageSize: 4 }),
-    getProducts({ productType: "fixed", sort: "capacity_desc", pageSize: 4 }),
+  const [{ items: plugInAll }, { items: fixedCandidates }, articles] = await Promise.all([
+    getProducts({ productType: "plug_in", sort: "value_asc", pageSize: 24 }),
+    getProducts({ productType: "fixed", sort: "capacity_desc", pageSize: 12 }),
     getArticles(),
   ]);
+
+  const plugInFeatured = plugInAll.filter((p) => p.lowestPriceCents !== null).slice(0, 4);
+  const fixedFeatured = fixedCandidates
+    .filter(
+      (p) =>
+        !p.marketScore || p.marketScore.average >= businessRules.catalog.minFeaturedMarketScore,
+    )
+    .slice(0, 4);
 
   return (
     <main id="main-content">
@@ -111,17 +120,11 @@ export default async function HomePage() {
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <HeroCta />
-              <Link
-                href="/batterijen"
-                className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
-              >
-                Bekijk alle batterijen
-              </Link>
             </div>
           </div>
 
           <div className="min-w-0 lg:pl-4">
-            <HeroMatcher products={plugInFeatured} />
+            <HeroMatcher products={plugInAll} />
           </div>
         </Container>
       </section>

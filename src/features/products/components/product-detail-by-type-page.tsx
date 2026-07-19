@@ -11,6 +11,7 @@ import { OfferTable } from "@/features/offers-pricing/offer-table";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
 import { PdpStickyOfferAnchor } from "@/features/offers-pricing/pdp-sticky-offer-anchor";
 import { PriceCheckedLabel } from "@/features/offers-pricing/price-checked-label";
+import { isOfferFresh } from "@/features/offers-pricing/offer-freshness";
 import { DropshipPriceHint } from "@/features/offers-pricing/dropship-price-hint";
 import { TrackView } from "@/lib/observability/track-view";
 import { PriceHistoryChart } from "@/features/offers-pricing/price-history-chart";
@@ -93,9 +94,11 @@ export async function ProductDetailByTypePage({
   const basePath = catalogBasePath(product.productType);
   const detailPath = productDetailPath(product.slug, product.productType);
 
-  const bestOffer = [...product.offers]
-    .filter((o) => o.affiliateUrl)
-    .sort((a, b) => a.priceCents - b.priceCents)[0];
+  const outboundOffers = product.offers.filter((o) => o.affiliateUrl);
+  const freshOutbound = outboundOffers.filter((o) => isOfferFresh(o.lastCheckedAt));
+  const bestOffer = [...(freshOutbound.length > 0 ? freshOutbound : outboundOffers)].sort(
+    (a, b) => a.priceCents - b.priceCents,
+  )[0];
 
   const quickSpecs = [
     product.capacityKwh !== null && {
@@ -287,9 +290,7 @@ export async function ProductDetailByTypePage({
                         size="lg"
                         className="flex-1"
                       >
-                        {bestOffer.isSponsored
-                          ? "Bekijk aanbod (advertentie)"
-                          : "Bekijk beste prijs"}
+                        {`Naar ${bestOffer.merchantName} · ${formatPrice(bestOffer.priceCents)}`}
                       </OfferLink>
                     ) : (
                       <a
@@ -305,6 +306,14 @@ export async function ProductDetailByTypePage({
                     <Badge variant="muted" className="mt-3">
                       Advertentie
                     </Badge>
+                  )}
+                  {product.offerCount > 1 && (
+                    <a
+                      href="#aanbieders"
+                      className="text-primary mt-3 block text-center text-sm font-medium underline-offset-4 hover:underline"
+                    >
+                      Vergelijk {product.offerCount} aanbieders
+                    </a>
                   )}
                   <p className="text-muted-foreground mt-3 text-center text-xs">
                     Prijs incl. btw · controleer de actuele prijs bij de aanbieder
@@ -370,14 +379,41 @@ export async function ProductDetailByTypePage({
 
             <section aria-labelledby="reviews">
               <h2 id="reviews" className="mb-5 text-2xl font-bold tracking-tight">
-                Reviews
+                Reviews &amp; scores
               </h2>
               <div className="grid gap-8 lg:grid-cols-[1fr_22rem]">
-                <ReviewList reviews={reviews} />
-                <div>
-                  <h3 className="mb-3 text-lg font-semibold">Schrijf een review</h3>
-                  <ReviewForm productId={product.id} productSlug={product.slug} />
+                <div className="space-y-4">
+                  {product.marketScore &&
+                    !(product.rating.average !== null && product.rating.count > 0) && (
+                      <div className="border-border bg-card rounded-2xl border p-5">
+                        <p className="text-sm font-semibold">Externe marktscore</p>
+                        <div className="mt-2">
+                          <ProductRatingDisplay
+                            rating={product.rating}
+                            marketScore={product.marketScore}
+                            showSource
+                          />
+                        </div>
+                        <p className="text-muted-foreground mt-3 text-xs leading-relaxed">
+                          Dit is geen review op onze site, maar een citeerbare score van{" "}
+                          {product.marketScore.sourceName}
+                          {product.marketScore.scope === "brand"
+                            ? " op merkniveau"
+                            : " voor dit product"}
+                          .
+                        </p>
+                      </div>
+                    )}
+                  <ReviewList reviews={reviews} marketScore={product.marketScore} />
                 </div>
+                <details className="border-border bg-card rounded-2xl border p-5">
+                  <summary className="cursor-pointer text-lg font-semibold">
+                    Schrijf een review
+                  </summary>
+                  <div className="mt-4">
+                    <ReviewForm productId={product.id} productSlug={product.slug} />
+                  </div>
+                </details>
               </div>
             </section>
           </div>

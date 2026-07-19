@@ -5,12 +5,12 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Select } from "@/components/ui/select";
 
 const options: { value: string; label: string }[] = [
-  { value: "relevance", label: "Relevantie" },
+  { value: "value_asc", label: "Prijs per kWh (laag → hoog)" },
   { value: "price_asc", label: "Prijs (laag → hoog)" },
   { value: "price_desc", label: "Prijs (hoog → laag)" },
-  { value: "value_asc", label: "Prijs per kWh (laag → hoog)" },
   { value: "capacity_desc", label: "Capaciteit (hoog → laag)" },
   { value: "rating_desc", label: "Best beoordeeld" },
+  { value: "relevance", label: "Meeste aanbieders" },
 ];
 
 export function SortSelect({ current }: { current: string }) {
