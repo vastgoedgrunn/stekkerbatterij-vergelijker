@@ -72,6 +72,7 @@ interface RawProduct {
   warranty_years: number | null;
   expandable: boolean;
   image_path: string | null;
+  image_status: ProductListItem["imageStatus"] | null;
   product_type: ProductListItem["productType"];
   indicative_price_min_cents: number | null;
   indicative_price_max_cents: number | null;
@@ -241,7 +242,7 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
   let query = supabase
     .from("products")
     .select(
-      "id, slug, name, summary, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, product_type, indicative_price_min_cents, indicative_price_max_cents, brands(id, name, slug), offers(id, price_cents, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, merchants(name))",
+      "id, slug, name, summary, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, image_status, product_type, indicative_price_min_cents, indicative_price_max_cents, brands(id, name, slug), offers(id, price_cents, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, merchants(name))",
     )
     .eq("status", "published")
     .is("deleted_at", null);
@@ -305,6 +306,7 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
       warrantyYears: r.warranty_years,
       expandable: r.expandable,
       imagePath: r.image_path,
+      imageStatus: r.image_status ?? "pending",
       productType: r.product_type ?? "plug_in",
       indicativePriceMinCents: r.indicative_price_min_cents,
       indicativePriceMaxCents: r.indicative_price_max_cents,
@@ -378,7 +380,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   const { data, error } = await supabase
     .from("products")
     .select(
-      "id, slug, name, summary, description, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, product_type, indicative_price_min_cents, indicative_price_max_cents, supplier_id, sellable, brands(id, name, slug), offers(id, merchant_id, price_cents, stock_status, delivery_days, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, last_checked_at, merchants(name, slug, is_self))",
+      "id, slug, name, summary, description, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, image_status, product_type, indicative_price_min_cents, indicative_price_max_cents, supplier_id, sellable, brands(id, name, slug), offers(id, merchant_id, price_cents, stock_status, delivery_days, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, last_checked_at, merchants(name, slug, is_self))",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -436,6 +438,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
     warrantyYears: product.warranty_years,
     expandable: product.expandable,
     imagePath: product.image_path,
+    imageStatus: product.image_status ?? "pending",
     productType: product.product_type ?? "plug_in",
     indicativePriceMinCents: product.indicative_price_min_cents,
     indicativePriceMaxCents: product.indicative_price_max_cents,

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BatteryCharging, Clock, ShieldCheck, Zap } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -6,13 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { RatingStars } from "@/components/patterns/rating-stars";
 import { CompareToggle } from "@/features/comparison/compare-toggle";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
+import { ProductImage } from "@/features/products/product-image";
 import { formatNumber, formatPrice } from "@/lib/format";
-import { getPublicImageUrl } from "@/lib/supabase/storage";
 import type { ProductListItem } from "@/features/products/types";
 import { productDetailPath, productTypeBadge } from "@/features/products/product-paths";
 
 export function ProductCard({ product }: { product: ProductListItem }) {
-  const imageUrl = getPublicImageUrl(product.imagePath);
   const isFixed = product.productType === "fixed";
   const outboundOffer = !isFixed && product.bestOffer?.id ? product.bestOffer : null;
   const href = productDetailPath(product.slug, product.productType);
@@ -56,22 +54,17 @@ export function ProductCard({ product }: { product: ProductListItem }) {
         href={href}
         className="focus-visible:ring-ring flex flex-1 flex-col rounded-[inherit] focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
       >
-        <div className="from-accent/60 via-muted to-background relative aspect-[4/3] overflow-hidden bg-gradient-to-br">
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={product.name}
-              fill
-              sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-contain p-6 transition-transform duration-300 group-hover:scale-[1.02]"
-            />
-          ) : (
-            <span className="flex h-full w-full items-center justify-center">
-              <BatteryCharging className="text-primary/25 size-20" aria-hidden />
-            </span>
-          )}
+        <div className="relative aspect-[4/3] overflow-hidden">
+          <ProductImage
+            name={product.name}
+            imagePath={product.imagePath}
+            imageStatus={product.imageStatus}
+            className="absolute inset-0 h-full w-full"
+            imgClassName="transition-transform duration-300 group-hover:scale-[1.02]"
+            sizes="(max-width: 768px) 100vw, 33vw"
+          />
 
-          <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+          <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
             <Badge variant={isFixed ? "muted" : "highlight"}>
               {productTypeBadge(product.productType)}
             </Badge>

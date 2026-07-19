@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { BatteryCharging, ChevronRight, ShieldCheck, Truck, Zap } from "lucide-react";
 import { getProductBySlug, getProductSlugs } from "@/features/products/queries";
@@ -24,9 +23,9 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { CompareToggle } from "@/features/comparison/compare-toggle";
 import { FixedBatteryLeadPanel } from "@/features/comparison/fixed-battery-lead-panel";
+import { ProductImage } from "@/features/products/product-image";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbJsonLd, faqJsonLd, productJsonLd } from "@/lib/seo/json-ld";
-import { getPublicImageUrl } from "@/lib/supabase/storage";
 import { formatNumber, formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
@@ -88,7 +87,6 @@ export async function ProductDetailByTypePage({
   if (!product || product.productType !== expectedType) notFound();
 
   const [reviews, faqs] = await Promise.all([getApprovedReviews(product.id), getFaqs()]);
-  const imageUrl = getPublicImageUrl(product.imagePath);
   const isFixed = product.productType === "fixed";
   const basePath = catalogBasePath(product.productType);
   const detailPath = productDetailPath(product.slug, product.productType);
@@ -164,24 +162,21 @@ export async function ProductDetailByTypePage({
         </nav>
 
         <div className="grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
-          <div className="from-accent/50 via-muted border-border relative flex aspect-square items-center justify-center overflow-hidden rounded-3xl border bg-gradient-to-br to-transparent">
+          <div className="border-border relative aspect-square overflow-hidden rounded-3xl border">
             <div
               aria-hidden
-              className="ambient-glow pointer-events-none absolute inset-0 opacity-60"
+              className="ambient-glow pointer-events-none absolute inset-0 z-10 opacity-60"
             />
-            {imageUrl ? (
-              <Image
-                src={imageUrl}
-                alt={product.name}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="relative object-contain p-8 drop-shadow-[0_24px_48px_rgba(16,40,32,0.18)]"
-              />
-            ) : (
-              <BatteryCharging className="text-primary/25 relative size-24" aria-hidden />
-            )}
-            <div className="absolute top-4 left-4 flex flex-col gap-1.5">
+            <ProductImage
+              name={product.name}
+              imagePath={product.imagePath}
+              imageStatus={product.imageStatus}
+              className="absolute inset-0 h-full w-full"
+              imgClassName="drop-shadow-[0_12px_28px_rgba(16,40,32,0.12)]"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority
+            />
+            <div className="absolute top-4 left-4 z-20 flex flex-col gap-1.5">
               <Badge variant={isFixed ? "muted" : "highlight"}>
                 {productTypeBadge(product.productType)}
               </Badge>

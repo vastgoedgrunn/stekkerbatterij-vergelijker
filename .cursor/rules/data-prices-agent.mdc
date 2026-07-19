@@ -52,18 +52,20 @@ Execute in order:
    ship-via-pr indien nodig.
 3. **High-confidence publish:** `match_score >= 0.85` + product-URL (geen zoek/listing) → upsert,
    `verifyOutboundForProduct`, auto-publish alleen bij `affiliate_link_status = ok`, image, prijs > 0.
-4. **Product images:** bij upsert `resolveAndIngestProductImage` → Storage `products/catalog/{slug}`.
-   Nooit merk-placeholders delen tussen SKUs. Ontbrekend: admin "Vernieuw productfoto's" of
-   `refreshAllProductImages`.
+4. **Product images (Image OS):** run `repairProductImages()` / admin "Vernieuw productfoto's"
+   (force pipeline: Daisycon/Bol EAN → curated → page → heuristics → vision → Storage).
+   Publiceren en UI vereisen `image_status = ok`. Nooit merk-placeholders delen tussen SKUs
+   (content-hash guard). Ontbrekend na alle bronnen: digest `pending`/`broken`, geen owner
+   foto-hunt. Alleen 🔒 als product published moet blijven en 0 kandidaten bestaan.
 5. **needs_review / broken / title mismatch:** Slack 🔒 met PR-URL, onze titel vs merchant titel,
    URL, EXECUTE. Nooit `ok` op verkeerde SKU (SolarFlow 800 ≠ AB3000X).
-6. **Completeness:** elke marquee brand ≥ 2 published products met image + usable outbound
+6. **Completeness:** elke marquee brand ≥ 2 published products met `image_status=ok` + usable outbound
    (`src/config/marquee-brands.ts`, `/admin/catalog`).
 7. **Prijzen:** auto alleen ≤10% met bron-URL + timestamp.
 8. **Bol keys:** als `BOL_PRODUCT_FEED_URL` / `BOL_PARTNER_API_KEY` ontbreken, vermeld in Slack
    en gebruik research seeds; vraag owner om keys als feed schaal unblockt.
 9. **Slack digest:** discovered, upserted, published, needs_review, broken, Bol configured ja/nee,
-   **P0 search-URL count (moet 0)**.
+   **P0 search-URL count (moet 0)**, Image OS repaired/pending/broken counts.
 
 ---
 

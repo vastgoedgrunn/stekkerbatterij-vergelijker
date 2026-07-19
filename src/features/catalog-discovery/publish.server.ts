@@ -27,7 +27,7 @@ export async function publishProductIfReady(
 
   const { data: product, error } = await db
     .from("products")
-    .select("id, slug, name, image_path, status")
+    .select("id, slug, name, image_path, image_status, status, product_type")
     .eq("id", productId)
     .is("deleted_at", null)
     .maybeSingle<{
@@ -35,15 +35,17 @@ export async function publishProductIfReady(
       slug: string;
       name: string;
       image_path: string | null;
+      image_status: string | null;
       status: string;
+      product_type: string | null;
     }>();
 
   if (error || !product) {
     return { published: false, reason: "Product niet gevonden" };
   }
 
-  if (!product.image_path) {
-    return { published: false, reason: "Geen image_path" };
+  if (!product.image_path || product.image_status !== "ok") {
+    return { published: false, reason: "Geen goedgekeurde productfoto (image_status ≠ ok)" };
   }
 
   const { data: offers } = await db
@@ -68,7 +70,11 @@ export async function publishProductIfReady(
       Boolean(o.affiliate_deeplink ?? o.affiliate_url),
   );
 
-  if (!force && okOffers.length === 0) {
+  // Vaste batterijen mogen zonder affiliate-offer live (indicative/compare),
+  // zolang Image OS image_status=ok is. Stekkerbatterijen blijven offer-gated.
+  const fixedWithoutOfferOk = product.product_type === "fixed" && okOffers.length === 0;
+
+  if (!force && okOffers.length === 0 && !fixedWithoutOfferOk) {
     return {
       published: false,
       reason: "Geen geverifieerde ok-offer met prijs (SKU-match gate)",

@@ -49,6 +49,9 @@ const serverSchema = z.object({
   BOL_PARTNER_API_KEY: z.string().min(1).optional(),
   BOL_PRODUCT_FEED_URL: z.string().url().optional(),
   BOL_PUBLISHER_ID: z.string().min(1).optional(),
+
+  /** Optionele remove.bg key voor Image OS auto-cutout. */
+  REMOVE_BG_API_KEY: z.string().min(1).optional(),
 });
 
 const skipValidation = process.env.SKIP_ENV_VALIDATION === "true";

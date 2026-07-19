@@ -10,6 +10,8 @@ export type AppRole = "user" | "editor" | "merchant_manager" | "moderator" | "ad
 export type ProductStatus = "draft" | "published" | "archived";
 /** plug_in = stekkerbatterij (CPS); fixed = vaste thuisbatterij (lead/offerte). */
 export type ProductType = "plug_in" | "fixed";
+
+export type ProductImageStatus = "ok" | "pending" | "rejected" | "broken";
 export type StockStatus = "in_stock" | "out_of_stock" | "preorder" | "unknown";
 export type ReviewStatus = "pending" | "approved" | "rejected";
 export type ContentStatus = "draft" | "in_review" | "published" | "archived";
@@ -75,6 +77,11 @@ export interface ProductRow extends TimestampFields {
   warranty_years: number | null;
   expandable: boolean;
   image_path: string | null;
+  image_status: ProductImageStatus;
+  image_source_url: string | null;
+  image_checked_at: string | null;
+  image_reject_reason: string | null;
+  image_content_hash: string | null;
   published_at: string | null;
   sku: string | null;
   ean: string | null;

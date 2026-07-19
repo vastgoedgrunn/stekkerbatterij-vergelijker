@@ -136,6 +136,9 @@ export async function runCatalogDiscoveryPipeline(input?: {
         } as never)
         .eq("id", candidateId);
 
+      const { repairProductImage } = await import("./image-os.server");
+      await repairProductImage(upserted.productId);
+
       const published = await publishProductIfReady(upserted.productId);
       if (published.published) {
         stats.published += 1;
