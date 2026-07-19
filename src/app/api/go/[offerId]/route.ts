@@ -18,6 +18,7 @@ interface OfferDestination {
   affiliate_url: string | null;
   affiliate_deeplink: string | null;
   affiliate_link_status: "ok" | "pending" | "broken" | null;
+  stock_status: "in_stock" | "out_of_stock" | "preorder" | "unknown" | null;
   deleted_at: string | null;
   affiliate_params: Json | null;
   products: { slug: string; status: string } | null;
@@ -52,7 +53,7 @@ export async function GET(
   const { data, error } = await supabase
     .from("offers")
     .select(
-      "id, product_id, merchant_id, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, affiliate_params, products(slug, status), merchants(website_url)",
+      "id, product_id, merchant_id, affiliate_url, affiliate_deeplink, affiliate_link_status, stock_status, deleted_at, affiliate_params, products(slug, status), merchants(website_url)",
     )
     .eq("id", offerId)
     .is("deleted_at", null)

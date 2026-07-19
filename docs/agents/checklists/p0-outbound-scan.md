@@ -33,6 +33,7 @@ where o.deleted_at is null
     or coalesce(o.affiliate_deeplink, o.affiliate_url) ~* 'searchtext='
     or coalesce(o.affiliate_deeplink, o.affiliate_url) ~* 'coolblue\\.nl/zoeken'
     or coalesce(o.affiliate_deeplink, o.affiliate_url) ~* '[?&]s='
+      and coalesce(o.affiliate_deeplink, o.affiliate_url) !~* 'partner\\.bol\\.com'
     or coalesce(o.affiliate_deeplink, o.affiliate_url) ~* 'gamma\\.nl/assortiment'
     or coalesce(o.affiliate_deeplink, o.affiliate_url) is null
     or coalesce(o.affiliate_deeplink, o.affiliate_url) !~* '^https://'
