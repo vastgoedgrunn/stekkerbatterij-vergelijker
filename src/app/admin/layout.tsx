@@ -18,10 +18,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="bg-muted/20 flex min-h-screen">
+    <div className="bg-muted/30 flex min-h-dvh flex-col lg:flex-row">
       <AdminNav pendingChanges={pendingChanges} />
-      <div className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-        <main id="main-content" className="mx-auto w-full max-w-6xl">
+      <div className="min-w-0 flex-1">
+        <main
+          id="main-content"
+          className="mx-auto w-full max-w-6xl px-4 py-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:px-6 sm:py-7 lg:px-8 lg:py-8"
+        >
           {children}
         </main>
       </div>

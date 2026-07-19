@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Route } from "next";
 import { listClickSummary, listRecentOfferClicks } from "@/features/admin/monetization.queries";
 import {
@@ -10,8 +9,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { classifyUserAgent } from "@/lib/observability/user-agent-hint";
+import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { AdminSegmentedControl } from "@/features/admin/components/admin-segmented-control";
+import { AdminTableFrame } from "@/features/admin/components/admin-table-frame";
 
 export const dynamic = "force-dynamic";
 
@@ -57,6 +58,7 @@ export default async function AdminClicksPage({
   }
 
   const filtered = since ? recent.filter((click) => new Date(click.created_at) >= since) : recent;
+  const shown = filtered.slice(0, 80);
 
   const ranges: { value: Range; label: string }[] = [
     { value: "7d", label: "7 dagen" },
@@ -65,117 +67,159 @@ export default async function AdminClicksPage({
   ];
 
   return (
-    <div>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Affiliate-kliks</h1>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Server-side outbound kliks via /api/go, met referrer en UA-hint (bot vs browser).
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {ranges.map((r) => {
-            const active = range === r.value;
-            return (
-              <Link
-                key={r.value}
-                href={`/admin/clicks?range=${r.value}` as Route}
-                className={cn(
-                  "rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
-                  active
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {r.label}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
+    <div className="space-y-8">
+      <AdminPageHeader
+        title="Affiliate-kliks"
+        description="Server-side outbound kliks via /api/go, met referrer en UA-hint (bot vs browser)."
+        actions={
+          <AdminSegmentedControl
+            active={range}
+            items={ranges.map((r) => ({
+              value: r.value,
+              label: r.label,
+              href: `/admin/clicks?range=${r.value}` as Route,
+            }))}
+          />
+        }
+      />
 
-      <h2 className="mt-10 text-lg font-semibold">Per offer</h2>
-      <div className="border-border mt-4 overflow-hidden rounded-2xl border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Product</TableHead>
-              <TableHead>Aanbieder</TableHead>
-              <TableHead>Kliks</TableHead>
-              <TableHead>Laatste klik</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {summary.length === 0 ? (
+      <AdminTableFrame title="Per offer">
+        <ul className="divide-border divide-y sm:hidden">
+          {summary.length === 0 ? (
+            <li className="text-muted-foreground px-4 py-4 text-sm">
+              Nog geen kliks geregistreerd.
+            </li>
+          ) : (
+            summary.map((row) => (
+              <li key={row.offer_id} className="flex items-start justify-between gap-3 px-4 py-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">{row.product_name}</p>
+                  <p className="text-muted-foreground truncate text-xs">{row.merchant_name}</p>
+                </div>
+                <div className="shrink-0 text-right">
+                  <Badge variant="default">{row.click_count}</Badge>
+                  <p className="text-muted-foreground mt-1 text-[11px]">
+                    {row.last_click_at
+                      ? new Date(row.last_click_at).toLocaleDateString("nl-NL")
+                      : "-"}
+                  </p>
+                </div>
+              </li>
+            ))
+          )}
+        </ul>
+        <div className="hidden sm:block">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={4} className="text-muted-foreground">
-                  Nog geen kliks geregistreerd.
-                </TableCell>
+                <TableHead>Product</TableHead>
+                <TableHead>Aanbieder</TableHead>
+                <TableHead>Kliks</TableHead>
+                <TableHead>Laatste klik</TableHead>
               </TableRow>
-            ) : (
-              summary.map((row) => (
-                <TableRow key={row.offer_id}>
-                  <TableCell>{row.product_name}</TableCell>
-                  <TableCell>{row.merchant_name}</TableCell>
-                  <TableCell>
-                    <Badge variant="default">{row.click_count}</Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground text-sm">
-                    {row.last_click_at ? new Date(row.last_click_at).toLocaleString("nl-NL") : "-"}
+            </TableHeader>
+            <TableBody>
+              {summary.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-muted-foreground">
+                    Nog geen kliks geregistreerd.
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
-
-      <h2 className="mt-10 text-lg font-semibold">Recente kliks ({filtered.length})</h2>
-      <div className="border-border mt-4 overflow-hidden rounded-2xl border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Tijd</TableHead>
-              <TableHead>Product</TableHead>
-              <TableHead>Aanbieder</TableHead>
-              <TableHead>Referrer</TableHead>
-              <TableHead>UA</TableHead>
-              <TableHead>Click ref</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filtered.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="text-muted-foreground">
-                  Geen kliks in deze periode.
-                </TableCell>
-              </TableRow>
-            ) : (
-              filtered.slice(0, 80).map((click) => {
-                const ua = classifyUserAgent(click.user_agent);
-                return (
-                  <TableRow key={click.id}>
-                    <TableCell className="text-muted-foreground text-sm whitespace-nowrap">
-                      {new Date(click.created_at).toLocaleString("nl-NL")}
-                    </TableCell>
-                    <TableCell>{click.products?.name ?? "-"}</TableCell>
-                    <TableCell>{click.merchants?.name ?? "-"}</TableCell>
-                    <TableCell className="max-w-[160px] truncate text-sm">
-                      {shortReferrer(click.referrer)}
-                    </TableCell>
+              ) : (
+                summary.map((row) => (
+                  <TableRow key={row.offer_id}>
+                    <TableCell>{row.product_name}</TableCell>
+                    <TableCell>{row.merchant_name}</TableCell>
                     <TableCell>
-                      <Badge variant={ua.likelyBot ? "warning" : "secondary"}>{ua.label}</Badge>
+                      <Badge variant="default">{row.click_count}</Badge>
                     </TableCell>
-                    <TableCell className="font-mono text-xs">
-                      {click.click_ref?.slice(0, 8) ?? "-"}
+                    <TableCell className="text-muted-foreground text-sm">
+                      {row.last_click_at
+                        ? new Date(row.last_click_at).toLocaleString("nl-NL")
+                        : "-"}
                     </TableCell>
                   </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
-      </div>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </AdminTableFrame>
+
+      <AdminTableFrame title={`Recente kliks (${filtered.length})`}>
+        <ul className="divide-border divide-y sm:hidden">
+          {shown.length === 0 ? (
+            <li className="text-muted-foreground px-4 py-4 text-sm">Geen kliks in deze periode.</li>
+          ) : (
+            shown.map((click) => {
+              const ua = classifyUserAgent(click.user_agent);
+              return (
+                <li key={click.id} className="space-y-2 px-4 py-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium">{click.products?.name ?? "-"}</p>
+                      <p className="text-muted-foreground truncate text-xs">
+                        {click.merchants?.name ?? "-"}
+                      </p>
+                    </div>
+                    <Badge variant={ua.likelyBot ? "warning" : "secondary"}>{ua.label}</Badge>
+                  </div>
+                  <div className="text-muted-foreground flex flex-wrap gap-x-3 gap-y-1 text-[11px]">
+                    <span>{new Date(click.created_at).toLocaleString("nl-NL")}</span>
+                    <span className="truncate">{shortReferrer(click.referrer)}</span>
+                    <span className="font-mono">{click.click_ref?.slice(0, 8) ?? "-"}</span>
+                  </div>
+                </li>
+              );
+            })
+          )}
+        </ul>
+        <div className="hidden sm:block">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Tijd</TableHead>
+                <TableHead>Product</TableHead>
+                <TableHead>Aanbieder</TableHead>
+                <TableHead>Referrer</TableHead>
+                <TableHead>UA</TableHead>
+                <TableHead>Click ref</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {shown.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-muted-foreground">
+                    Geen kliks in deze periode.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                shown.map((click) => {
+                  const ua = classifyUserAgent(click.user_agent);
+                  return (
+                    <TableRow key={click.id}>
+                      <TableCell className="text-muted-foreground text-sm whitespace-nowrap">
+                        {new Date(click.created_at).toLocaleString("nl-NL")}
+                      </TableCell>
+                      <TableCell>{click.products?.name ?? "-"}</TableCell>
+                      <TableCell>{click.merchants?.name ?? "-"}</TableCell>
+                      <TableCell className="max-w-[160px] truncate text-sm">
+                        {shortReferrer(click.referrer)}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={ua.likelyBot ? "warning" : "secondary"}>{ua.label}</Badge>
+                      </TableCell>
+                      <TableCell className="font-mono text-xs">
+                        {click.click_ref?.slice(0, 8) ?? "-"}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </AdminTableFrame>
     </div>
   );
 }
