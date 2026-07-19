@@ -14,6 +14,7 @@ import {
 import { getProducts } from "@/features/products/queries";
 import { getArticles } from "@/features/content/queries";
 import { getGuideCoverUrl } from "@/features/content/covers";
+import { GuideCover } from "@/features/content/guide-cover";
 import { ProductCard } from "@/components/patterns/product-card";
 import { HeroMatcher } from "@/features/comparison/hero-matcher";
 import { HeroCta } from "@/features/experiments/hero-cta";
@@ -356,21 +357,12 @@ export default async function HomePage() {
                 return (
                   <Reveal as="li" key={article.id} delay={i * 60}>
                     <Card interactive className="group h-full overflow-hidden">
-                      <div className="bg-muted relative aspect-[16/10] overflow-hidden">
-                        {cover ? (
-                          <Image
-                            src={cover}
-                            alt=""
-                            fill
-                            sizes="(max-width: 768px) 100vw, 33vw"
-                            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                          />
-                        ) : (
-                          <span className="text-primary/25 flex h-full items-center justify-center">
-                            <LineChart className="size-12" aria-hidden />
-                          </span>
-                        )}
-                      </div>
+                      <GuideCover
+                        src={cover}
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="aspect-[16/10]"
+                        imageClassName="transition-transform duration-300 group-hover:scale-[1.02]"
+                      />
                       <CardContent className="flex flex-col gap-3 p-6">
                         <Badge variant="muted" className="w-fit">
                           <LineChart className="size-3" /> Gids

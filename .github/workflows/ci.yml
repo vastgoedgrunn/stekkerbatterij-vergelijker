@@ -39,6 +39,9 @@ jobs:
       - name: Format check
         run: npm run format:check
 
+      - name: Guide covers
+        run: npm run check:guide-covers
+
       - name: Build
         run: npm run build
 

@@ -33,6 +33,8 @@ time-on-guides grow.
 - Improve headings, add internal links to relevant products/guides, keep NL tone.
 - Ensure each page has title, description, canonical, and correct JSON-LD.
 - Propose new guide topics from the analytics backlog (search + engagement gaps).
+- **Elke nieuwe gids** krijgt `public/images/guides/<slug>.png` (1536×1024, zelfde eco-tech
+  stijl als bestaande covers). CI faalt zonder cover (`npm run check:guide-covers`).
 
 ## Guardrails
 
