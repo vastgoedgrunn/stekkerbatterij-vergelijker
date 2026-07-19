@@ -34,10 +34,17 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: {
-    absolute: `${siteConfig.name}: onafhankelijk vergelijken`,
+    absolute: siteConfig.titleDefault,
   },
   description: siteConfig.description,
   alternates: { canonical: "/" },
+  openGraph: {
+    title: siteConfig.titleDefault,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    type: "website",
+    siteName: siteConfig.name,
+  },
 };
 
 /** Witte merklogo's (transparante PNG). Bestandsnaam = slug; later 1-op-1 vervangbaar. */
