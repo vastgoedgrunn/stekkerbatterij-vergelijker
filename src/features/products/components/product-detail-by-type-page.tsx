@@ -16,7 +16,7 @@ import { TrackView } from "@/lib/observability/track-view";
 import { PriceHistoryChart } from "@/features/offers-pricing/price-history-chart";
 import { ReviewList } from "@/features/reviews/review-list";
 import { ReviewForm } from "@/features/reviews/review-form";
-import { RatingStars } from "@/components/patterns/rating-stars";
+import { ProductRatingDisplay } from "@/components/patterns/product-rating-display";
 import { FaqAccordion } from "@/components/patterns/faq-accordion";
 import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { Container } from "@/components/patterns/section";
@@ -196,7 +196,11 @@ export async function ProductDetailByTypePage({
               </p>
               <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">{product.name}</h1>
               <div className="mt-3">
-                <RatingStars average={product.rating.average} count={product.rating.count} />
+                <ProductRatingDisplay
+                  rating={product.rating}
+                  marketScore={product.marketScore}
+                  showSource
+                />
               </div>
             </div>
 

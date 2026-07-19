@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BatteryCharging, Check, Minus, Trophy } from "lucide-react";
-import { RatingStars } from "@/components/patterns/rating-stars";
+import { ProductRatingDisplay } from "@/components/patterns/product-rating-display";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -65,10 +65,18 @@ const baseRows: Row[] = [
     label: "Beoordeling",
     render: (p) => (
       <div className="flex justify-center">
-        <RatingStars average={p.rating.average} count={p.rating.count} showCount={false} />
+        <ProductRatingDisplay
+          rating={p.rating}
+          marketScore={p.marketScore}
+          showCount={false}
+          showSource={false}
+        />
       </div>
     ),
-    value: (p) => p.rating.average,
+    value: (p) =>
+      p.rating.average !== null && p.rating.count > 0
+        ? p.rating.average
+        : (p.marketScore?.average ?? null),
     highlight: "max",
   },
 ];

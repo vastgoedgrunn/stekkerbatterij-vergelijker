@@ -11,6 +11,7 @@ import {
 import type {
   Brand,
   Category,
+  MarketScore,
   ProductDetail,
   ProductFilters,
   ProductListBestOffer,
@@ -75,6 +76,12 @@ interface RawProduct {
   product_type: ProductListItem["productType"];
   indicative_price_min_cents: number | null;
   indicative_price_max_cents: number | null;
+  market_score_average: number | null;
+  market_score_count: number | null;
+  market_score_source_name: string | null;
+  market_score_source_url: string | null;
+  market_score_scope: "sku" | "brand" | null;
+  market_score_checked_at: string | null;
   brands: RawBrand | null;
   offers: RawListOffer[] | null;
 }
@@ -150,6 +157,39 @@ async function fetchRatings(productIds: string[]): Promise<Map<string, ProductRa
   return map;
 }
 
+function mapMarketScore(row: {
+  market_score_average: number | null;
+  market_score_count: number | null;
+  market_score_source_name: string | null;
+  market_score_source_url: string | null;
+  market_score_scope: "sku" | "brand" | null;
+  market_score_checked_at: string | null;
+}): MarketScore | null {
+  if (
+    row.market_score_average == null ||
+    row.market_score_count == null ||
+    row.market_score_count <= 0 ||
+    !row.market_score_source_name ||
+    !row.market_score_source_url ||
+    !row.market_score_scope
+  ) {
+    return null;
+  }
+  return {
+    average: Number(row.market_score_average),
+    count: row.market_score_count,
+    sourceName: row.market_score_source_name,
+    sourceUrl: row.market_score_source_url,
+    scope: row.market_score_scope,
+    checkedAt: row.market_score_checked_at,
+  };
+}
+
+function displaySortScore(item: ProductListItem): number {
+  if (item.rating.average !== null && item.rating.count > 0) return item.rating.average;
+  return item.marketScore?.average ?? 0;
+}
+
 function pricePerKwh(item: ProductListItem): number {
   if (item.lowestPriceCents === null || !item.capacityKwh || item.capacityKwh <= 0) {
     return Number.MAX_SAFE_INTEGER;
@@ -172,7 +212,7 @@ function sortItems(items: ProductListItem[], sort: ProductSort): ProductListItem
     case "capacity_desc":
       return [...items].sort((a, b) => (b.capacityKwh ?? 0) - (a.capacityKwh ?? 0));
     case "rating_desc":
-      return [...items].sort((a, b) => (b.rating.average ?? 0) - (a.rating.average ?? 0));
+      return [...items].sort((a, b) => displaySortScore(b) - displaySortScore(a));
     default:
       return items;
   }
@@ -241,7 +281,7 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
   let query = supabase
     .from("products")
     .select(
-      "id, slug, name, summary, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, product_type, indicative_price_min_cents, indicative_price_max_cents, brands(id, name, slug), offers(id, price_cents, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, merchants(name))",
+      "id, slug, name, summary, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, product_type, indicative_price_min_cents, indicative_price_max_cents, market_score_average, market_score_count, market_score_source_name, market_score_source_url, market_score_scope, market_score_checked_at, brands(id, name, slug), offers(id, price_cents, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, merchants(name))",
     )
     .eq("status", "published")
     .is("deleted_at", null);
@@ -312,6 +352,7 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
       offerCount: activeOffers(r.offers).length,
       bestOffer: mapBestListOffer(r.offers),
       rating: ratings.get(r.id) ?? { average: null, count: 0 },
+      marketScore: mapMarketScore(r),
     }));
 
   const priceFiltered = mapped.filter((item) => {
@@ -378,7 +419,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   const { data, error } = await supabase
     .from("products")
     .select(
-      "id, slug, name, summary, description, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, product_type, indicative_price_min_cents, indicative_price_max_cents, supplier_id, sellable, brands(id, name, slug), offers(id, merchant_id, price_cents, stock_status, delivery_days, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, last_checked_at, merchants(name, slug, is_self))",
+      "id, slug, name, summary, description, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, product_type, indicative_price_min_cents, indicative_price_max_cents, market_score_average, market_score_count, market_score_source_name, market_score_source_url, market_score_scope, market_score_checked_at, supplier_id, sellable, brands(id, name, slug), offers(id, merchant_id, price_cents, stock_status, delivery_days, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, last_checked_at, merchants(name, slug, is_self))",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -454,6 +495,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
         }
       : null,
     rating: ratings.get(product.id) ?? { average: null, count: 0 },
+    marketScore: mapMarketScore(product),
     categories,
     specs,
     offers,

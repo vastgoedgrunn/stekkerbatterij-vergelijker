@@ -20,6 +20,17 @@ export interface ProductRating {
   count: number;
 }
 
+export type MarketScoreScope = "sku" | "brand";
+
+export interface MarketScore {
+  average: number;
+  count: number;
+  sourceName: string;
+  sourceUrl: string;
+  scope: MarketScoreScope;
+  checkedAt: string | null;
+}
+
 export interface ProductListBestOffer {
   id: string;
   merchantName: string;
@@ -48,6 +59,7 @@ export interface ProductListItem {
   offerCount: number;
   bestOffer: ProductListBestOffer | null;
   rating: ProductRating;
+  marketScore: MarketScore | null;
 }
 
 export interface ProductSpec {

@@ -64,10 +64,20 @@ export function rankProducts(
       reasons.push("Uitbreidbaar voor de toekomst");
     }
 
-    // Reviews
-    if (product.rating.average !== null) {
-      score += product.rating.average * 3;
-      if (product.rating.average >= 4) reasons.push("Goed beoordeeld door gebruikers");
+    // Reviews / externe marktscore
+    const scoreAverage =
+      product.rating.average !== null && product.rating.count > 0
+        ? product.rating.average
+        : product.marketScore?.average;
+    if (scoreAverage != null) {
+      score += scoreAverage * 3;
+      if (scoreAverage >= 4) {
+        reasons.push(
+          product.rating.count > 0
+            ? "Goed beoordeeld door gebruikers"
+            : "Sterke externe marktscore",
+        );
+      }
     }
 
     return { product, score: Math.round(score), reasons };
@@ -129,10 +139,20 @@ export function rankFixedProducts(
       if (product.warrantyYears >= 10) reasons.push("Lange garantie");
     }
 
-    // Reviews
-    if (product.rating.average !== null) {
-      score += product.rating.average * 3;
-      if (product.rating.average >= 4) reasons.push("Goed beoordeeld door gebruikers");
+    // Reviews / externe marktscore
+    const scoreAverage =
+      product.rating.average !== null && product.rating.count > 0
+        ? product.rating.average
+        : product.marketScore?.average;
+    if (scoreAverage != null) {
+      score += scoreAverage * 3;
+      if (scoreAverage >= 4) {
+        reasons.push(
+          product.rating.count > 0
+            ? "Goed beoordeeld door gebruikers"
+            : "Sterke externe marktscore",
+        );
+      }
     }
 
     // Uitbreidbaarheid (optioneel bonus, geen harde eis)

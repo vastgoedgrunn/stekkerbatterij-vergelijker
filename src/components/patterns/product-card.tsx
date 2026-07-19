@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight, BatteryCharging, Clock, ShieldCheck, Zap } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { RatingStars } from "@/components/patterns/rating-stars";
+import { ProductRatingDisplay } from "@/components/patterns/product-rating-display";
 import { CompareToggle } from "@/features/comparison/compare-toggle";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
 import { formatNumber, formatPrice } from "@/lib/format";
@@ -89,7 +89,11 @@ export function ProductCard({ product }: { product: ProductListItem }) {
             </h3>
           </div>
 
-          <RatingStars average={product.rating.average} count={product.rating.count} />
+          <ProductRatingDisplay
+            rating={product.rating}
+            marketScore={product.marketScore}
+            showSource={false}
+          />
 
           <ul className="flex flex-wrap gap-1.5">
             {specs.map((spec) => (
