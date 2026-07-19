@@ -159,7 +159,7 @@ export function ProductCard({ product }: { product: ProductListItem }) {
       </Link>
 
       {outboundOffer && (
-        <div className="relative z-10 px-5 pb-5">
+        <div className="relative z-10 space-y-2 px-5 pb-5">
           <OfferLink
             offerId={outboundOffer.id}
             productId={product.id}
@@ -173,6 +173,9 @@ export function ProductCard({ product }: { product: ProductListItem }) {
             Naar {outboundOffer.merchantName}
             {outboundOffer.priceCents != null ? ` · ${formatPrice(outboundOffer.priceCents)}` : ""}
           </OfferLink>
+          {outboundOffer.isSponsored ? (
+            <p className="text-muted-foreground text-center text-[11px]">Advertentie</p>
+          ) : null}
         </div>
       )}
     </Card>

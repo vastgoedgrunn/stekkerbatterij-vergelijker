@@ -3,12 +3,13 @@ import type { Route } from "next";
 import Link from "next/link";
 import { getProductBySlug } from "@/features/products/queries";
 import { productDetailPath } from "@/features/products/product-paths";
+import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { Container, Section } from "@/components/patterns/section";
 import { buttonVariants } from "@/components/ui/button";
+import { OfferLink } from "@/features/offers-pricing/offer-link";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
-import { notFound } from "next/navigation";
 
 export const revalidate = 3600;
 
@@ -29,10 +30,10 @@ export const metadata: Metadata = {
 
 export default async function HomeWizardPrijsPage() {
   const product = await getProductBySlug("homewizard-plug-in-battery");
-  if (!product) notFound();
-
-  const href = productDetailPath(product.slug, product.productType);
-  const best = product.bestOffer;
+  const href = product
+    ? productDetailPath(product.slug, product.productType)
+    : ("/stekkerbatterijen" as Route);
+  const best = product?.bestOffer?.affiliateUrl ? product.bestOffer : null;
 
   return (
     <main id="main-content">
@@ -49,7 +50,7 @@ export default async function HomeWizardPrijsPage() {
             gecontroleerde prijs en de link naar de aanbieder.
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-            {product.lowestPriceCents != null && (
+            {product?.lowestPriceCents != null ? (
               <p className="text-2xl font-bold tracking-tight">
                 vanaf {formatPrice(product.lowestPriceCents)}
                 {best ? (
@@ -58,18 +59,36 @@ export default async function HomeWizardPrijsPage() {
                   </span>
                 ) : null}
               </p>
-            )}
-            <Link href={href as Route} className={cn(buttonVariants({ size: "lg" }))}>
-              Bekijk productpagina
+            ) : null}
+            {product && best ? (
+              <OfferLink
+                offerId={best.id}
+                productId={product.id}
+                merchant={best.merchantName}
+                sponsored={best.isSponsored}
+                estimatedCommissionCents={best.estimatedCommissionCents}
+                placement="seo_price"
+                size="lg"
+              >
+                Naar {best.merchantName}
+              </OfferLink>
+            ) : null}
+            <Link
+              href={href as Route}
+              className={cn(buttonVariants({ size: "lg", variant: "outline" }))}
+            >
+              {product ? "Bekijk productpagina" : "Bekijk stekkerbatterijen"}
             </Link>
           </div>
+          <AffiliateDisclosure className="mt-4" />
         </Container>
       </div>
       <Section>
         <Container className="max-w-3xl space-y-4 text-sm leading-relaxed">
           <p>
             De HomeWizard Plug-In Battery is populair in Nederland dankzij de app-integratie. Op
-            onze productpagina zie je capaciteit ({product.capacityKwh ?? "-"} kWh), vermogen,
+            onze productpagina zie je capaciteit
+            {product?.capacityKwh != null ? ` (${product.capacityKwh} kWh)` : ""}, vermogen,
             garantie en de controledatum van de prijs.
           </p>
           <p>

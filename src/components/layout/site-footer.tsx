@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Route } from "next";
 import { ShieldCheck, Scale, TrendingDown } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { Logo } from "@/components/brand/logo";
@@ -15,9 +16,21 @@ const columns = [
     ],
   },
   {
+    title: "Populair",
+    links: [
+      { href: "/beste-stekkerbatterij", label: "Beste stekkerbatterij" },
+      { href: "/beste-vaste-thuisbatterij", label: "Beste vaste thuisbatterij" },
+      { href: "/merken", label: "Merken" },
+      { href: "/homewizard-plug-in-battery-prijs", label: "HomeWizard prijs" },
+      { href: "/energie", label: "Energie vergelijken" },
+    ],
+  },
+  {
     title: "Kennis",
     links: [
       { href: "/gidsen", label: "Koopgidsen" },
+      { href: "/tools/terugverdientijd", label: "Terugverdientijd" },
+      { href: "/over-ons/hoe-wij-vergelijken", label: "Hoe wij vergelijken" },
       { href: "/beslishulp", label: "Beslishulp" },
     ],
   },
@@ -61,7 +74,7 @@ export function SiteFooter() {
         </ul>
       </div>
 
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         <div className="space-y-4 sm:col-span-2 md:col-span-3 lg:col-span-1">
           <Logo />
           <p className="text-muted-foreground max-w-xs text-sm">{siteConfig.description}</p>
@@ -73,7 +86,7 @@ export function SiteFooter() {
               {col.links.map((link) => (
                 <li key={link.href}>
                   <Link
-                    href={link.href}
+                    href={link.href as Route}
                     className="text-muted-foreground hover:text-foreground text-sm transition-colors"
                   >
                     {link.label}
@@ -86,9 +99,18 @@ export function SiteFooter() {
       </div>
 
       <div className="border-border border-t">
-        <p className="text-muted-foreground mx-auto w-full max-w-6xl px-4 py-6 text-xs">
+        <p className="text-muted-foreground mx-auto w-full max-w-6xl px-4 py-6 text-xs leading-relaxed">
           &copy; {new Date().getFullYear()} {siteConfig.name}. Onafhankelijk vergelijkingsplatform.
           Prijzen zijn indicatief en incl. btw; controleer altijd de actuele prijs bij de aanbieder.
+          Sommige links zijn affiliate-links: als je via ons iets koopt, ontvangen wij soms een
+          commissie. Dat beïnvloedt onze ranking niet.{" "}
+          <Link
+            href={"/over-ons/hoe-wij-vergelijken" as Route}
+            className="underline-offset-2 hover:underline"
+          >
+            Meer over hoe wij vergelijken
+          </Link>
+          .
         </p>
       </div>
     </footer>

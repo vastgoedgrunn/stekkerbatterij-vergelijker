@@ -1,68 +1,28 @@
 # Catalogus gap-matrix (live inventaris)
 
-Snapshot van Supabase project `stekkerbatterij-vergelijker` (2026-07-15).
-Doel (plan): **2–4 published plug-and-play SKUs per marquee-merk**, met image, omschrijving, ≥1 offer, affiliate hybrid.
+Snapshot Supabase `stekkerbatterij-vergelijker` (2026-07-19, na CRO blitz).
 
-## Marquee-merken vs counts
+## Outbound-dekking plug-in (published)
 
-| Merk | Published | Draft klaar | Doel min. | Notes |
-|------|-----------|-------------|-----------|-------|
-| Anker SOLIX | 1 | +1 Pro | 2 | Solarbank 2 E1600 OK; deeplinks deels aanwezig |
-| EcoFlow | 1 | +1 STREAM AC Pro | 2 | PowerStream 800 OK |
-| Growatt | 1 | +1 NOAH 2000S | 2 | NOAH 2000 OK |
-| HomeWizard | 1 | +1 Bundle | 2 | Plug-In Battery OK |
-| Marstek | 2 | 0 | 2 | Venus + Jupiter; Jupiter product-URL gefixt/pending |
-| Sessy | 1 | +1 Duo | 2 | Thuisbatterij OK |
-| Sunology | 1 | +1 PLAY | 2 | Storey bol-URL gefixt/pending |
-| Zendure | 1 | +1 Hyper 2000 | 2 | SolarFlow 800 OK |
+| Status | SKUs |
+|--------|------|
+| Live outbound (≥1 ok offer) | Anker Pro, EcoFlow STREAM AC Pro, HomeWizard single, Marstek Venus, Sessy single, Sunology Play/Storey, Zendure 800 |
+| Nieuw in seed `0025_*` | HomeWizard Bundle, Sessy Duo (officiële shop/product-URL) |
+| Nog geen geverifieerde product-URL | Anker E1600 non-Pro, EcoFlow PowerStream 800, Growatt NOAH 2000/2000S, Marstek Jupiter, Zendure Hyper (NL shop: out of stock) |
 
-**Totaal published:** 9 · Na publish van drafts: ≥16 (claim ≥2 per merk).
+## Blokkers (owner)
 
-## Draft SKUs (wacht op Slack 🔒 approve om te publiceren)
+1. **HomeWizard Daisycon `li`**: post `HomeWizard li = <id>` zodat CPS (~7,5%) live kan i.p.v. alleen official shop.
+2. **`EWNDR_LEAD_AFFILIATE_URL`**: echte offerte-URL in Vercel (nu fallback homepage).
+3. **Energy Daisycon**: Frank/Vattenfall placeholders vervangen zodra campaign IDs er zijn.
+4. **Coolblue/Awin + Impact Anker**: publisher IDs + product-URL’s vóór re-activate.
 
-| Slug | Merk |
-|------|------|
-| `zendure-solarflow-hyper-2000` | Zendure |
-| `ecoflow-stream-ac-pro` | EcoFlow |
-| `anker-solix-solarbank-2-e1600-pro` | Anker SOLIX |
-| `growatt-noah-2000s` | Growatt |
-| `sunology-play` | Sunology |
-| `sessy-thuisbatterij-duo` | Sessy |
-| `homewizard-plug-in-battery-bundle` | HomeWizard |
+## Doel
 
-Seed: [`db/seed/0013_top_models_draft.sql`](../../db/seed/0013_top_models_draft.sql).
+2–4 published plug-in SKUs per marquee-merk mét geverifieerde product-URL (geen search/homepage).
 
-Na approve:
+## Bronnen (recente checks)
 
-```sql
-update products
-set status = 'published', published_at = now()
-where status = 'draft'
-  and slug in (
-    'zendure-solarflow-hyper-2000',
-    'ecoflow-stream-ac-pro',
-    'anker-solix-solarbank-2-e1600-pro',
-    'growatt-noah-2000s',
-    'sunology-play',
-    'sessy-thuisbatterij-duo',
-    'homewizard-plug-in-battery-bundle'
-  );
-```
-
-## Offer / affiliate health
-
-- Offers op drafts: `affiliate_link_status = pending` tot Bol/Awin/Daisycon live.
-- Veel bestaande bol-offers hebben al `partner.bol.com` deeplinks (publisher `s=1532194`); netwerk-goedkeuring kan alsnog open staan.
-- Coolblue/Gamma/Zonneplan/Solar Sale: vaak merchant-URL als deeplink (placeholders tot netwerk live).
-- Generieke bol/merchant homepages gemarkeerd pending met notitie.
-- Admin: `/admin/catalog` + productdetail linkstatus.
-
-## Content completeness (bestaande 9)
-
-Alle published producten hebben: image_path, summary, description, capacity/power. Gat is vooral **diepte per merk** + **affiliate-URL kwaliteit**.
-
-## Bronnen (ter verificatie bij publish)
-
-- EcoFlow STREAM / stekkerbatterij markt: https://www.p1meter.nl/intersolar-2026-stekker-thuisbatterij-verslag/
-- Plug-and-play overzicht: https://allesoververduurzamen.nl/beste-thuisbatterij-met-stekker/
-- Prijzen op offers zijn **indicatief** tot merchant-pagina + netwerk-deeplink geverifieerd zijn.
+- HomeWizard shop: https://www.homewizard.com/nl/shop/plug-in-battery/ (2026-07-19)
+- Sessy product: https://www.sessy.nl/product/sessy/ (2026-07-19)
+- Zendure Hyper NL: https://www.zendure.nl/products/solarflow-hyper-2000 (varianten `available: false`, 2026-07-19)

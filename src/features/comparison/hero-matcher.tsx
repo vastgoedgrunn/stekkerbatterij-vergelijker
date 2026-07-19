@@ -10,6 +10,7 @@ import { getPublicImageUrl } from "@/lib/supabase/storage";
 import { rankProducts, type WizardPreferences } from "./ranking";
 import { qualifyLeadPath } from "./qualification";
 import { productDetailPath } from "@/features/products/product-paths";
+import { OfferLink } from "@/features/offers-pricing/offer-link";
 import type { ProductListItem } from "@/features/products/types";
 
 const usageOptions = [
@@ -126,6 +127,23 @@ export function HeroMatcher({ products }: { products: ProductListItem[] }) {
             </div>
             <ArrowRight className="text-primary size-5 transition-transform group-hover:translate-x-0.5" />
           </Link>
+          {top.product.bestOffer?.id && top.product.bestOffer.affiliateUrl ? (
+            <div className="mt-3">
+              <OfferLink
+                offerId={top.product.bestOffer.id}
+                productId={top.product.id}
+                merchant={top.product.bestOffer.merchantName}
+                sponsored={top.product.bestOffer.isSponsored}
+                estimatedCommissionCents={top.product.bestOffer.estimatedCommissionCents}
+                placement="hero_match"
+                size="sm"
+                className="w-full"
+              >
+                Naar {top.product.bestOffer.merchantName}
+                {` · ${formatPrice(top.product.bestOffer.priceCents)}`}
+              </OfferLink>
+            </div>
+          ) : null}
         </div>
       )}
 

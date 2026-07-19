@@ -49,7 +49,9 @@ export function isActiveOffer(offer: OfferOutboundFields): boolean {
   return true;
 }
 
-/** Mag achter "Bekijk beste prijs" /api/go. */
+/** Mag achter "Bekijk beste prijs" /api/go. Alleen status ok (geen pending/broken). */
 export function isEligibleOutboundOffer(offer: OfferOutboundFields): boolean {
-  return isActiveOffer(offer) && offerOutboundUrl(offer) !== null;
+  if (!isActiveOffer(offer)) return false;
+  if (offer.affiliate_link_status !== "ok") return false;
+  return offerOutboundUrl(offer) !== null;
 }

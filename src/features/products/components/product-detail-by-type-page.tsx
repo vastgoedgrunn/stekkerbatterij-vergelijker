@@ -318,13 +318,6 @@ export async function ProductDetailByTypePage({
 
         <div className="mt-16 grid gap-16 lg:grid-cols-[1fr_20rem]">
           <div className="space-y-16">
-            <section aria-labelledby="specificaties">
-              <h2 id="specificaties" className="mb-5 text-2xl font-bold tracking-tight">
-                Specificaties
-              </h2>
-              <SpecList product={product} />
-            </section>
-
             {!isFixed && (
               <section aria-labelledby="aanbieders">
                 <h2 id="aanbieders" className="mb-5 text-2xl font-bold tracking-tight">
@@ -345,6 +338,13 @@ export async function ProductDetailByTypePage({
                 <AffiliateDisclosure className="mt-4" />
               </section>
             )}
+
+            <section aria-labelledby="specificaties">
+              <h2 id="specificaties" className="mb-5 text-2xl font-bold tracking-tight">
+                Specificaties
+              </h2>
+              <SpecList product={product} />
+            </section>
 
             {!isFixed && product.priceHistory.length >= 2 && (
               <section aria-labelledby="prijsontwikkeling">

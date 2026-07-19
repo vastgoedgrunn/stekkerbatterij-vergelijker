@@ -13,17 +13,22 @@ const ctaCopy = {
 } as const satisfies Record<ExperimentVariant<"hero_cta_copy">, string>;
 
 /**
- * Primaire hero-CTA op de homepage, onderdeel van het experiment
- * `hero_cta_copy`. Klein client component zodat de rest van de (statische)
- * pagina een server component blijft; de server rendert de control-copy en
- * alleen de testvariant wisselt na hydration van tekst.
+ * Hero-CTA's: primaire beslishulp (A/B) + secundaire catalogus voor directe shoppers.
  */
 export function HeroCta() {
   const variant = useExperiment("hero_cta_copy");
 
   return (
-    <Link href="/beslishulp" className={cn(buttonVariants({ size: "lg" }))}>
-      {ctaCopy[variant]} <ArrowRight className="size-4" />
-    </Link>
+    <div className="flex flex-col gap-3 sm:flex-row">
+      <Link href="/beslishulp" className={cn(buttonVariants({ size: "lg" }))}>
+        {ctaCopy[variant]} <ArrowRight className="size-4" />
+      </Link>
+      <Link
+        href="/stekkerbatterijen"
+        className={cn(buttonVariants({ size: "lg", variant: "outline" }))}
+      >
+        Bekijk stekkerbatterijen
+      </Link>
+    </div>
   );
 }
