@@ -45,10 +45,7 @@ export function ProductImage({
           fill
           priority={priority}
           sizes={sizes}
-          className={cn(
-            "object-contain p-5 sm:p-6",
-            imageClassName,
-          )}
+          className={cn("object-contain p-5 sm:p-6", imageClassName)}
         />
       ) : (
         <span className="flex h-full w-full items-center justify-center bg-zinc-50">
