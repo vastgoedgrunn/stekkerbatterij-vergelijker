@@ -262,11 +262,7 @@ update offers o set
   commission_source_url = v.source,
   affiliate_params = v.params::jsonb
 from (values
-  ('anker-solix-solarbank-2-e1600','coolblue',
-   'https://www.coolblue.nl/product/904321',
-   null, 'awin', 'cps', 0.08, null,
-   'https://www.ankersolix.com/eu/become-an-affiliate',
-   '{"clickref":"{click_ref}"}'),
+  -- Anker × Coolblue: geen placeholder product-ID (904321 was niet geverifieerd).
   ('anker-solix-solarbank-2-e1600','gamma',
    'https://www.gamma.nl/assortiment/k/anker-solix-solarbank',
    null, 'awin', 'cps', 0.08, null,
@@ -298,11 +294,7 @@ from (values
    null, 'daisycon', 'cpa', null, 15000,
    'https://zonneplan.nl',
    '{"subid":"{click_ref}"}'),
-  ('homewizard-plug-in-battery','coolblue',
-   'https://www.coolblue.nl/product/905678',
-   null, 'awin', 'cps', 0.025, null,
-   'https://www.coolblue.nl',
-   '{"clickref":"{click_ref}"}'),
+  -- HomeWizard × Coolblue: 905678 bleek Apple Watch. Alleen echte product-URL toevoegen.
   ('zendure-solarflow-800','zendure',
    'https://glp8.net/c/?si=20779&li=1881195&wi=423133&ws=&dl=products%2Fsolarflow-800',
    'https://www.zendure.nl/products/solarflow-800',
