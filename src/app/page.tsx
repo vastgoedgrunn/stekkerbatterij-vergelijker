@@ -145,39 +145,73 @@ export default async function HomePage() {
             description="Twee manieren om energie op te slaan. Kies wat bij jouw huis en wensen past."
           />
           <div className="mt-8 grid gap-6 md:grid-cols-2">
-            <Link
-              href="/stekkerbatterijen"
-              className="border-border bg-card hover:border-primary/40 group flex flex-col rounded-3xl border p-8 transition-colors"
-            >
-              <span className="bg-primary/10 text-primary flex size-12 items-center justify-center rounded-2xl">
-                <PlugZap className="size-6" />
-              </span>
-              <h2 className="mt-5 text-2xl font-bold tracking-tight">Stekkerbatterijen</h2>
-              <p className="text-muted-foreground mt-2 flex-1 text-sm leading-relaxed">
-                Plug-and-play, zonder installateur. Vergelijk prijzen bij webshops en ga direct door
-                naar de aanbieder.
-              </p>
-              <span className={cn(buttonVariants({ size: "sm" }), "mt-6 w-fit")}>
-                Bekijk stekkerbatterijen <ArrowRight className="size-4" />
-              </span>
-            </Link>
+            <Reveal>
+              <Link
+                href="/stekkerbatterijen"
+                className="border-border bg-card hover:border-primary/40 group flex h-full flex-col overflow-hidden rounded-3xl border shadow-[var(--shadow-sm)] transition-[border-color,box-shadow] hover:shadow-[var(--shadow-md)]"
+              >
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <Image
+                    src="/images/home/path-stekkerbatterij.png"
+                    alt="Compacte stekkerbatterij aangesloten op een stopcontact in huis"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                  />
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent"
+                  />
+                  <span className="bg-card/95 text-primary absolute bottom-4 left-4 flex size-11 items-center justify-center rounded-2xl shadow-[var(--shadow-sm)] backdrop-blur-sm">
+                    <PlugZap className="size-5" />
+                  </span>
+                </div>
+                <div className="flex flex-1 flex-col p-6 sm:p-8">
+                  <h2 className="text-2xl font-bold tracking-tight">Stekkerbatterijen</h2>
+                  <p className="text-muted-foreground mt-2 flex-1 text-sm leading-relaxed">
+                    Plug-and-play, zonder installateur. Vergelijk prijzen bij webshops en ga direct
+                    door naar de aanbieder.
+                  </p>
+                  <span className={cn(buttonVariants({ size: "sm" }), "mt-6 w-fit")}>
+                    Bekijk stekkerbatterijen <ArrowRight className="size-4" />
+                  </span>
+                </div>
+              </Link>
+            </Reveal>
 
-            <Link
-              href="/vaste-thuisbatterijen"
-              className="border-border bg-card hover:border-primary/40 group flex flex-col rounded-3xl border p-8 transition-colors"
-            >
-              <span className="bg-primary/10 text-primary flex size-12 items-center justify-center rounded-2xl">
-                <Wrench className="size-6" />
-              </span>
-              <h2 className="mt-5 text-2xl font-bold tracking-tight">Vaste thuisbatterijen</h2>
-              <p className="text-muted-foreground mt-2 flex-1 text-sm leading-relaxed">
-                Meer capaciteit met professionele installatie. Vergelijk topmodellen en vraag een
-                vrijblijvende offerte aan.
-              </p>
-              <span className={cn(buttonVariants({ size: "sm" }), "mt-6 w-fit")}>
-                Bekijk vaste systemen <ArrowRight className="size-4" />
-              </span>
-            </Link>
+            <Reveal delay={80}>
+              <Link
+                href="/vaste-thuisbatterijen"
+                className="border-border bg-card hover:border-primary/40 group flex h-full flex-col overflow-hidden rounded-3xl border shadow-[var(--shadow-sm)] transition-[border-color,box-shadow] hover:shadow-[var(--shadow-md)]"
+              >
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <Image
+                    src="/images/home/path-vaste-thuisbatterij.png"
+                    alt="Wandgemonteerde vaste thuisbatterij in een moderne technische ruimte"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                  />
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent"
+                  />
+                  <span className="bg-card/95 text-primary absolute bottom-4 left-4 flex size-11 items-center justify-center rounded-2xl shadow-[var(--shadow-sm)] backdrop-blur-sm">
+                    <Wrench className="size-5" />
+                  </span>
+                </div>
+                <div className="flex flex-1 flex-col p-6 sm:p-8">
+                  <h2 className="text-2xl font-bold tracking-tight">Vaste thuisbatterijen</h2>
+                  <p className="text-muted-foreground mt-2 flex-1 text-sm leading-relaxed">
+                    Meer capaciteit met professionele installatie. Vergelijk topmodellen en vraag
+                    een vrijblijvende offerte aan.
+                  </p>
+                  <span className={cn(buttonVariants({ size: "sm" }), "mt-6 w-fit")}>
+                    Bekijk vaste systemen <ArrowRight className="size-4" />
+                  </span>
+                </div>
+              </Link>
+            </Reveal>
           </div>
         </Container>
       </Section>
