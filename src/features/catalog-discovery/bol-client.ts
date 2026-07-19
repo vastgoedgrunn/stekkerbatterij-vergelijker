@@ -2,14 +2,67 @@ import "server-only";
 import { serverEnv } from "@/lib/env/server";
 import type { DiscoveredCandidate } from "./types";
 
+const BOL_TOKEN_URL = "https://login.bol.com/token?grant_type=client_credentials";
+const BOL_CATALOG_BASE = "https://api.bol.com/marketing/catalog/v1";
+
+/** Standaard zoektermen voor NL stekker-/plug-in batterijen. */
+const DEFAULT_SEARCH_TERMS = [
+  "stekkerbatterij",
+  "plug-in thuisbatterij",
+  "thuisbatterij stekker",
+  "solarbank",
+  "solarflow",
+  "stream ac pro",
+  "marstek venus",
+  "growatt noah",
+  "homewizard plug-in battery",
+] as const;
+
 export type BolClientStatus = {
   configured: boolean;
   mode: "live" | "stub";
   detail: string;
 };
 
-/** Of Bol feed/API keys gezet zijn. */
+type TokenCache = {
+  accessToken: string;
+  expiresAtMs: number;
+};
+
+type BolSearchProduct = {
+  ean?: string;
+  bolProductId?: string | number;
+  title?: string;
+  description?: string;
+  url?: string;
+  offer?: { price?: number; strikethroughPrice?: number; deliveryDescription?: string };
+  image?: { url?: string; width?: number; height?: number; mimeType?: string };
+  rating?: number | null;
+};
+
+type BolTokenResponse = {
+  access_token?: string;
+  expires_in?: number;
+};
+
+let tokenCache: TokenCache | null = null;
+
+function hasMarketingCredentials(): boolean {
+  return Boolean(serverEnv.BOL_CLIENT_ID?.trim() && serverEnv.BOL_CLIENT_SECRET?.trim());
+}
+
+/** Of Bol Marketing Catalog / feed keys gezet zijn. */
 export function getBolClientStatus(): BolClientStatus {
+  if (hasMarketingCredentials()) {
+    const publisher = serverEnv.BOL_PUBLISHER_ID?.trim();
+    return {
+      configured: true,
+      mode: "live",
+      detail: publisher
+        ? `Marketing Catalog API actief (OAuth) + deeplinks met s=${publisher}.`
+        : "Marketing Catalog API actief (OAuth). Zet BOL_PUBLISHER_ID voor partner-deeplinks.",
+    };
+  }
   if (serverEnv.BOL_PRODUCT_FEED_URL) {
     return {
       configured: true,
@@ -22,20 +75,22 @@ export function getBolClientStatus(): BolClientStatus {
     return {
       configured: true,
       mode: "live",
-      detail: "BOL_PARTNER_API_KEY gezet; API-client klaar voor wiring.",
+      detail:
+        "Alleen BOL_PARTNER_API_KEY gezet (legacy). Zet BOL_CLIENT_ID + BOL_CLIENT_SECRET voor Catalog API.",
     };
   }
   return {
     configured: false,
     mode: "stub",
     detail:
-      "Geen Bol keys. Stub retourneert []. Zet BOL_PRODUCT_FEED_URL of BOL_PARTNER_API_KEY in Vercel.",
+      "Geen Bol keys. Stub retourneert []. Zet BOL_CLIENT_ID + BOL_CLIENT_SECRET (Marketing Catalog) in Vercel.",
   };
 }
 
 /**
  * Haal Bol product-hits op voor stekkerbatterij-zoektermen.
- * Zonder keys: lege lijst (research/seed path blijft werken).
+ * Primair: Marketing Catalog API (OAuth client credentials).
+ * Fallback: productfeed JSON/CSV.
  */
 export async function fetchBolCatalogCandidates(input?: {
   query?: string;
@@ -47,9 +102,16 @@ export async function fetchBolCatalogCandidates(input?: {
   }
 
   const limit = input?.limit ?? 40;
-  const query = input?.query ?? "stekkerbatterij thuisbatterij plug-in";
+  const query = input?.query?.trim();
 
-  // Feed-URL path (CSV/JSON productfeed wanneer owner die deelt).
+  if (hasMarketingCredentials()) {
+    try {
+      return await fetchViaMarketingCatalog({ query, limit });
+    } catch {
+      return [];
+    }
+  }
+
   if (serverEnv.BOL_PRODUCT_FEED_URL) {
     try {
       const res = await fetch(serverEnv.BOL_PRODUCT_FEED_URL, {
@@ -70,15 +132,194 @@ export async function fetchBolCatalogCandidates(input?: {
         return normalizeBolJsonFeed(json, limit);
       }
       const text = await res.text();
-      return normalizeBolCsvFeed(text, limit, query);
+      return normalizeBolCsvFeed(text, limit, query ?? "stekkerbatterij thuisbatterij plug-in");
     } catch {
       return [];
     }
   }
 
-  // API key zonder feed-URL: stub tot endpoint bekend is.
-  void query;
   return [];
+}
+
+/** Converteer bol product-ID naar EAN (Catalog API). */
+export async function convertBolProductIdToEan(bolProductId: string): Promise<string | null> {
+  if (!hasMarketingCredentials() || !/^\d+$/.test(bolProductId)) return null;
+  try {
+    const res = await bolCatalogGet(`/products/${bolProductId}/to-ean`);
+    if (!res.ok) return null;
+    const json = (await res.json()) as { ean?: string };
+    return typeof json.ean === "string" && /^\d{13}$/.test(json.ean) ? json.ean : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Best offer prijs in centen (NL), of null. */
+export async function fetchBolBestOfferPriceCents(ean: string): Promise<number | null> {
+  if (!hasMarketingCredentials() || !/^\d{13}$/.test(ean)) return null;
+  try {
+    const res = await bolCatalogGet(
+      `/products/${ean}/offers/best?${new URLSearchParams({ "country-code": "NL" })}`,
+    );
+    if (!res.ok) return null;
+    const json = (await res.json()) as { price?: number };
+    return priceToCents(json.price);
+  } catch {
+    return null;
+  }
+}
+
+/** Bouw Bol partner deeplink wanneer publisher-ID bekend is. */
+export function buildBolPartnerDeeplink(productUrl: string): string | null {
+  const publisher = serverEnv.BOL_PUBLISHER_ID?.trim();
+  if (!publisher || !productUrl.startsWith("https://")) return null;
+  const encoded = encodeURIComponent(productUrl);
+  return `https://partner.bol.com/click/click?p=2&t=url&s=${publisher}&url=${encoded}`;
+}
+
+async function fetchViaMarketingCatalog(input: {
+  query?: string;
+  limit: number;
+}): Promise<DiscoveredCandidate[]> {
+  const terms = input.query
+    ? [input.query]
+    : [...DEFAULT_SEARCH_TERMS];
+
+  const byKey = new Map<string, DiscoveredCandidate>();
+  const perTerm = Math.max(8, Math.ceil(input.limit / Math.min(terms.length, 4)));
+
+  for (const term of terms) {
+    if (byKey.size >= input.limit) break;
+    const products = await searchBolProducts(term, Math.min(50, perTerm));
+    for (const product of products) {
+      const candidate = mapSearchProductToCandidate(product);
+      if (!candidate) continue;
+      const key = candidate.externalId ?? candidate.url;
+      if (!byKey.has(key)) byKey.set(key, candidate);
+      if (byKey.size >= input.limit) break;
+    }
+  }
+
+  return [...byKey.values()].slice(0, input.limit);
+}
+
+async function searchBolProducts(searchTerm: string, pageSize: number): Promise<BolSearchProduct[]> {
+  const params = new URLSearchParams({
+    "search-term": searchTerm,
+    "country-code": "NL",
+    "page-size": String(Math.min(50, Math.max(1, pageSize))),
+    "include-offer": "true",
+    "include-image": "true",
+  });
+  const res = await bolCatalogGet(`/products/search?${params}`);
+  if (!res.ok) {
+    throw new Error(`Bol search HTTP ${res.status}`);
+  }
+  const json = (await res.json()) as { results?: BolSearchProduct[] };
+  return Array.isArray(json.results) ? json.results : [];
+}
+
+async function getBolAccessToken(): Promise<string> {
+  if (tokenCache && Date.now() < tokenCache.expiresAtMs) {
+    return tokenCache.accessToken;
+  }
+
+  const clientId = serverEnv.BOL_CLIENT_ID?.trim();
+  const clientSecret = serverEnv.BOL_CLIENT_SECRET?.trim();
+  if (!clientId || !clientSecret) {
+    throw new Error("Bol Marketing Catalog credentials ontbreken");
+  }
+
+  const basic = Buffer.from(`${clientId}:${clientSecret}`, "utf8").toString("base64");
+  const res = await fetch(BOL_TOKEN_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${basic}`,
+      Accept: "application/json",
+    },
+    body: "",
+    signal: AbortSignal.timeout(15_000),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Bol OAuth HTTP ${res.status}`);
+  }
+
+  const json = (await res.json()) as BolTokenResponse;
+  if (!json.access_token) {
+    throw new Error("Bol OAuth: geen access_token");
+  }
+
+  const expiresInSec = typeof json.expires_in === "number" ? json.expires_in : 600;
+  tokenCache = {
+    accessToken: json.access_token,
+    expiresAtMs: Date.now() + Math.max(30, expiresInSec - 60) * 1000,
+  };
+  return json.access_token;
+}
+
+async function bolCatalogGet(pathWithQuery: string): Promise<Response> {
+  const token = await getBolAccessToken();
+  return fetch(`${BOL_CATALOG_BASE}${pathWithQuery}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Accept-Language": "nl",
+    },
+    signal: AbortSignal.timeout(15_000),
+  });
+}
+
+function mapSearchProductToCandidate(product: BolSearchProduct): DiscoveredCandidate | null {
+  const title = typeof product.title === "string" ? product.title.trim() : "";
+  const url = typeof product.url === "string" ? product.url.trim() : "";
+  if (!title || !url.startsWith("https://")) return null;
+
+  const ean = typeof product.ean === "string" ? product.ean.trim() : "";
+  const bolId =
+    product.bolProductId != null ? String(product.bolProductId).trim() : extractBolIdFromUrl(url);
+  const externalId = ean || bolId || null;
+
+  return {
+    source: "bol",
+    externalId,
+    brandSlug: guessBrandSlug(title),
+    rawTitle: title,
+    rawDescription: stripHtml(product.description),
+    url,
+    imageUrl: typeof product.image?.url === "string" ? product.image.url : null,
+    priceCents: priceToCents(product.offer?.price),
+    currency: "EUR",
+    payload: {
+      ean: ean || null,
+      bolProductId: bolId,
+      deliveryDescription: product.offer?.deliveryDescription ?? null,
+      strikethroughPrice: product.offer?.strikethroughPrice ?? null,
+    },
+  };
+}
+
+function priceToCents(price: number | undefined): number | null {
+  if (typeof price !== "number" || !Number.isFinite(price) || price <= 0) return null;
+  return Math.round(price * 100);
+}
+
+function stripHtml(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const text = value
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/\s+/g, " ")
+    .trim();
+  return text.length > 0 ? text : null;
+}
+
+function extractBolIdFromUrl(url: string): string | null {
+  const match = url.match(/\/p\/[^/]+\/(\d{10,})\/?/i);
+  return match?.[1] ?? null;
 }
 
 function normalizeBolJsonFeed(json: unknown, limit: number): DiscoveredCandidate[] {
@@ -173,12 +414,4 @@ function guessBrandSlug(title: string): string | null {
     if (t.includes(needle)) return slug;
   }
   return null;
-}
-
-/** Bouw Bol partner deeplink wanneer publisher-ID bekend is. */
-export function buildBolPartnerDeeplink(productUrl: string): string | null {
-  const publisher = serverEnv.BOL_PUBLISHER_ID;
-  if (!publisher || !productUrl.startsWith("https://")) return null;
-  const encoded = encodeURIComponent(productUrl);
-  return `https://partner.bol.com/click/click?p=2&t=url&s=${publisher}&url=${encoded}`;
 }
