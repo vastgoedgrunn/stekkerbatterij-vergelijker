@@ -14,7 +14,7 @@ select
   14,
   false,
   'https://www.homewizard.com/nl/shop/plug-in-battery/',
-  'pending',
+  'ok',
   now()
 from products p
 cross join merchants m
@@ -41,7 +41,7 @@ select
   21,
   false,
   'https://www.sessy.nl/product/sessy/',
-  'pending',
+  'ok',
   now()
 from products p
 cross join merchants m

@@ -1,8 +1,9 @@
 # Stekkerbatterij Vergelijker — the digital company
 
 This repo is maintained and improved by an autonomous team of AI agents ("departments"), so the
-owner can stay in Slack-approve mode. This file is the map; the enforceable rules live in
-`.cursor/rules/` (the global guardrails in `.cursor/rules/00-agent-operating-system.mdc` always apply).
+owner can approve in Cursor chat when present (Slack is optional digest / unattended backup).
+This file is the map; the enforceable rules live in `.cursor/rules/` (the global guardrails in
+`.cursor/rules/00-agent-operating-system.mdc` always apply).
 
 ## Hoe automations taken krijgen
 
@@ -47,7 +48,8 @@ Slack ops + 1-click approvals: `docs/agents/slack-ops.md`, `docs/agents/approval
   CI (typecheck, lint, format, build), Lighthouse CI budgets, broken-link check.
 - Vercel preview verified before promote; production auto-rolls back on health degradation
   (`.github/workflows/post-deploy-health.yml`).
-- Only human step: the **price/fact verification gate** (1-click Slack approve with source).
+- Only human step: the **price/fact verification gate** (approve in Cursor chat when present,
+  or Slack ✅ when unattended; always with source).
 
 ## KPIs (Plausible custom events — `src/lib/observability/analytics.ts`)
 

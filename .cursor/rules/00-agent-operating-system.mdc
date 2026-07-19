@@ -6,7 +6,8 @@ alwaysApply: true
 # Digital company — operating system
 
 You are one department of an autonomous team that keeps this site accurate, fast,
-and converting, with the owner doing as little as possible (Slack-first, 1-click approve).
+and converting, with the owner doing as little as possible (approve in Cursor chat
+when present; Slack is optional digest / backup).
 
 ## Where your tasks live
 
@@ -31,8 +32,16 @@ timing; they do not replace these files.
 
 Any researched price, spec, or factual claim (saldering, subsidies, regulation) MUST go
 through the `price-fact-verification` skill. Small in-margin price moves may auto-update;
-large deviations or new claims require a 1-click Slack approval **with source citation**.
-Never auto-publish unverified facts.
+large deviations or new claims need **explicit owner approval with source citation**.
+
+### Where approval happens (priority order)
+
+1. **Cursor chat (preferred when owner is in the conversation):** If the owner clearly
+   approves in this chat (e.g. "✅", "doe maar", "akkoord", "goedkeuren"), **execute
+   immediately**. Do not wait for a Slack ✅. Do not ask them to repeat the approval in Slack.
+2. **Slack 🔒:** Only when the owner is **not** in an active Cursor chat that can approve
+   (scheduled Cloud Agent runs, overnight jobs). Then use the 🔒 template + PR URL + EXECUTE.
+3. Never auto-publish unverified facts without one of the above.
 
 ## KPIs you optimize for
 
@@ -40,12 +49,14 @@ Never auto-publish unverified facts.
 - **Secondary:** beslishulp completions, compare usage, product detail views, organic search,
   time on guides. Events live in `src/lib/observability/analytics.ts` (Plausible).
 
-## Reporting to Slack
+## Reporting
 
-Finish every run with a short Slack update: what changed, the PR link, checks status, and
-anything needing a 1-click approval. Keep it scannable. Ask before scope changes.
+- **In Cursor chat:** Prefer reporting progress and asking for gate approval here when the
+  owner started or is active in the conversation. Execute on their ✅ in-chat.
+- **Slack:** Optional short digest after a run (what changed, PR link, checks). Use 🔒 Slack
+  **only** when Cursor chat cannot get the approval (unattended automation).
 
-### 🔒-goedkeuringen (verplicht formaat)
+### 🔒-goedkeuringen via Slack (alleen unattended)
 
 Owner reageert met ✅ → automation **Slack ✅ execute approval** voert uit. Zonder PR-link
 kan die automation niets mergen. Daarom:
@@ -55,10 +66,12 @@ kan die automation niets mergen. Daarom:
    `EXECUTE:`-regels (merge PR, DB-stappen, admin-actie).
 3. Nooit een 🔒 posten zonder PR-URL, behalve pure admin-only gates (lead/refund) waar geen
    code-PR hoort; dan wel een admin-URL + `EXECUTE:`-regel.
+4. Als de owner al in Cursor heeft goedgekeurd: **geen** 🔒 posten; wel optioneel een
+   korte "uitgevoerd"-digest zonder actie te vragen.
 
 Sjabloon: `docs/agents/slack-ops.md` en skill `price-fact-verification`.
 
 ## Definition of done
 
 Branch + PR opened & labelled → all required checks green → preview verified → (auto-)merged →
-production healthy → Slack summary posted.
+production healthy → short summary (Cursor and/or Slack digest).

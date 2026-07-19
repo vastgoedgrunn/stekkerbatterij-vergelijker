@@ -38,7 +38,7 @@ time-on-guides grow.
 
 ## Guardrails
 
-- Any factual/spec/price/subsidy claim → use `price-fact-verification` (source + Slack approval).
+- Any factual/spec/price/subsidy claim → use `price-fact-verification` (source + owner approval in Cursor chat when present, else Slack).
 - No keyword stuffing; write for humans first. Keep Lighthouse SEO ≥ 0.9.
 
 ## Definition of done

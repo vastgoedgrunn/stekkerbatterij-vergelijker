@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { Route } from "next";
 import Link from "next/link";
 import { Container } from "@/components/patterns/section";
 import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
@@ -34,10 +35,10 @@ export default async function EnergiePage() {
             opslag.
           </p>
           <Link
-            href="/gidsen/dynamisch-contract-batterij"
+            href={"/stekkerbatterij-dynamisch-contract" as Route}
             className="text-primary mt-4 inline-block text-sm font-medium hover:underline"
           >
-            Lees onze gids over dynamische contracten →
+            Lees meer over batterij met dynamisch contract →
           </Link>
         </div>
 

@@ -46,10 +46,10 @@ export default function DynamischContractPage() {
               Vergelijk stekkerbatterijen
             </Link>
             <Link
-              href={"/gidsen/dynamisch-contract-batterij" as Route}
+              href={"/gidsen" as Route}
               className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
             >
-              Lees de gids
+              Alle koopgidsen
             </Link>
           </div>
         </Container>

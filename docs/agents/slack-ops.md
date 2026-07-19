@@ -1,7 +1,8 @@
-# Slack: jouw enige bedieningspaneel
+# Slack: digest en backup-goedkeuring
 
-Agents doen het werk. Jij ziet updates in Slack en keurt alleen goed waar geld, klanten of
-juridische claims spelen. Geen dashboard-hopping.
+Agents doen het werk. Als je in Cursor chat zit, keur je daar goed (✅ / "akkoord"); agents
+voeren dan meteen uit. Slack is voor digests en voor unattended Cloud Agent-runs waar jij
+niet in de chat zit.
 
 ## Kanalen (aanbevolen)
 
@@ -22,14 +23,16 @@ Maak `#ops-stekkerbatterij` aan als je goedkeuringen wilt scheiden van nieuws.
 
 | Jij doet | Agent doet daarna |
 |----------|-------------------|
-| Reageer **✅** op een 🔒-bericht | Automation **Slack ✅ execute approval** start: Ready + auto-merge PR, EXECUTE-stappen, bevestigt in thread |
+| **✅ / akkoord in Cursor chat** (preferred) | Agent voert EXECUTE meteen uit; geen Slack ✅ nodig |
+| Reageer **✅** op een 🔒-bericht in Slack | Automation **Slack ✅ execute approval**: Ready + auto-merge, EXECUTE, bevestigt in thread |
 | Reageer **❌** + korte reden | Sluit af of vraagt om verduidelijking |
 | `@Cursor Data: refresh Bol prijzen` | Data-agent start on-demand run |
 | `@Cursor CRO: sterkere CTA productpagina` | CRO-agent start run |
-| Niets | Agents draaien op schema; alleen gate-items wachten op jou |
+| Niets | Agents draaien op schema; alleen unattended gate-items wachten op jou |
 
-**Verplicht voor agents:** elk 🔒-bericht heeft een **PR-URL** (of admin-URL bij lead/refund)
-plus `EXECUTE:`-regels. Zonder PR kan ✅ niet mergen. Eerst PR openen, dan pas 🔒 posten.
+**Verplicht voor agents bij Slack-gates:** elk 🔒-bericht heeft een **PR-URL** (of admin-URL
+bij lead/refund) plus `EXECUTE:`-regels. Eerst PR openen, dan pas 🔒. Post geen 🔒 als de
+owner al in Cursor heeft goedgekeurd.
 
 ---
 

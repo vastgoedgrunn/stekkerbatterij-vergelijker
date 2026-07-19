@@ -15,14 +15,16 @@ The only way work reaches production. Never push to `main` directly.
 - [ ] 3. Verify locally: npm run typecheck && npm run lint && npm run build
 - [ ] 4. Commit (clear message) and push the branch
 - [ ] 5. Open a PR labelled `agent` + your department label
-- [ ] 6. If price/fact gate applies: post 🔒 Slack WITH this PR URL + EXECUTE steps, then wait
-      for owner ✅ (automation "Slack ✅ execute approval" marks Ready + auto-merge).
-      Do not ask for ✅ before the PR exists.
+- [ ] 6. If price/fact gate applies:
+      - Owner in Cursor chat → ask once with source + EXECUTE; on ✅ execute immediately
+        (no Slack ritual).
+      - Unattended Cloud Agent → post 🔒 Slack WITH this PR URL + EXECUTE; wait for ✅.
+      Do not ask for ✅ before the PR exists. Do not double-ask (Cursor + Slack).
 - [ ] 7. Else (no gate): enable auto-merge when checks can run
 - [ ] 8. Let CI + Lighthouse + broken-link checks run; auto-merge when ALL are green
 - [ ] 9. Check the Vercel preview before it promotes
 - [ ] 10. After merge, confirm production is healthy
-- [ ] 11. Post a short Slack summary (what changed, PR link, checks)
+- [ ] 11. Short summary in Cursor (and optional Slack digest: what changed, PR link, checks)
 ```
 
 ## Commands
@@ -44,4 +46,5 @@ gh pr merge --auto --squash   # native auto-merge; merges only when required che
 - If a change touches prices or factual claims, run `price-fact-verification` first.
 - Required checks that must be green: **CI (typecheck, lint, format, build)**, **Lighthouse CI
   (perf/a11y/SEO budgets)**, **Broken-link check**.
-- Gate Slack posts always use the 🔒 template in `docs/agents/slack-ops.md` (PR URL + EXECUTE).
+- Unattended gate Slack posts always use the 🔒 template in `docs/agents/slack-ops.md`
+  (PR URL + EXECUTE). Cursor-chat approval counts as the human gate when the owner is present.
