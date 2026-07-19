@@ -47,8 +47,7 @@ export function ProductRatingDisplay({
   }
 
   if (hasMarket && marketScore) {
-    const scopeHint =
-      marketScore.scope === "brand" ? "merkscore" : "productscore";
+    const scopeHint = marketScore.scope === "brand" ? "merkscore" : "productscore";
     return (
       <div className={cn("flex flex-col gap-0.5", className)}>
         <RatingBlock
