@@ -33,6 +33,7 @@ interface RawBrand {
 interface RawListOffer {
   id: string;
   price_cents: number;
+  stock_status: ProductOffer["stockStatus"] | null;
   affiliate_url: string | null;
   affiliate_deeplink: string | null;
   affiliate_link_status: "ok" | "pending" | "broken" | null;
@@ -307,7 +308,7 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
   let query = supabase
     .from("products")
     .select(
-      "id, slug, name, summary, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, product_type, indicative_price_min_cents, indicative_price_max_cents, market_score_average, market_score_count, market_score_source_name, market_score_source_url, market_score_scope, market_score_checked_at, brands(id, name, slug), offers(id, price_cents, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, last_checked_at, merchants(name))",
+      "id, slug, name, summary, capacity_kwh, power_kw, cycles, warranty_years, expandable, image_path, product_type, indicative_price_min_cents, indicative_price_max_cents, market_score_average, market_score_count, market_score_source_name, market_score_source_url, market_score_scope, market_score_checked_at, brands(id, name, slug), offers(id, price_cents, stock_status, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, is_sponsored, last_checked_at, merchants(name))",
     )
     .eq("status", "published")
     .is("deleted_at", null);

@@ -9,6 +9,7 @@ export type OfferOutboundFields = {
   affiliate_link_status?: "ok" | "pending" | "broken" | null;
   affiliate_url?: string | null;
   affiliate_deeplink?: string | null;
+  stock_status?: "in_stock" | "out_of_stock" | "preorder" | "unknown" | null;
 };
 
 /** True bij merchant zoek/listing i.p.v. concrete product-URL. */
@@ -49,7 +50,12 @@ export function isActiveOffer(offer: OfferOutboundFields): boolean {
   return true;
 }
 
-/** Mag achter "Bekijk beste prijs" /api/go. */
+/**
+ * Mag achter "Bekijk beste prijs" /api/go.
+ * Alleen status=ok, echte product-URL, en niet expliciet out_of_stock.
+ */
 export function isEligibleOutboundOffer(offer: OfferOutboundFields): boolean {
+  if (offer.affiliate_link_status !== "ok") return false;
+  if (offer.stock_status === "out_of_stock") return false;
   return isActiveOffer(offer) && offerOutboundUrl(offer) !== null;
 }
