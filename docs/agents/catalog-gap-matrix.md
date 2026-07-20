@@ -12,7 +12,7 @@ Snapshot Supabase `stekkerbatterij-vergelijker` (2026-07-19, na CRO blitz).
 
 ## Blokkers (owner)
 
-1. **HomeWizard Daisycon `li`**: post `HomeWizard li = <id>` zodat CPS (~7,5%) live kan i.p.v. alleen official shop.
+1. **HomeWizard Daisycon**: live (`li=1795784`). CPS ~7,5%.
 2. **`EWNDR_LEAD_AFFILIATE_URL`**: echte offerte-URL in Vercel (nu fallback homepage).
 3. **Energy Daisycon**: Frank/Vattenfall placeholders vervangen zodra campaign IDs er zijn.
 4. **Coolblue/Awin + Impact Anker**: publisher IDs + product-URL’s vóór re-activate.

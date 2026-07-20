@@ -35,10 +35,11 @@ aan (Slack of admin). Wij vullen ze in via admin/seed en testen elke outbound li
 3. Vervang `PUBLISHER_ID` in seed/admin door jouw `s=…` waarde.
 4. *(Optioneel)* Bol Product API voor automatische prijs-sync.
 
-### Daisycon (Zendure NL + HomeWizard INT, goedgekeurd)
+### Daisycon (Zendure NL + HomeWizard INT, live)
 
-Publisher-account en beide productcampagnes zijn goedgekeurd (16 juli 2026). Zie
-`docs/affiliate-daisycon.md` voor de linkstructuur, de link-ID stappen en het feedplan.
+Publisher-account en beide productcampagnes zijn goedgekeurd. Zendure én HomeWizard
+hebben een live `li` (zie `docs/affiliate-daisycon.md`). Homepage als bestemmingsURL
+bij het genereren van de deeplink is voldoende; productpaden zetten we in `dl`.
 
 ### Daisycon (energie)
 

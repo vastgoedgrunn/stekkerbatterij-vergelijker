@@ -4,7 +4,9 @@
  *
  *   https://glp8.net/c/?si=<campagne-id>&li=<link-id>&wi=<media-id>&ws=<subid>&dl=<pad>
  *
- * Daisycon genereert tegenwoordig glp8.net-links; ds1.nl redirect nog door.
+ * Daisycon genereert vaak glp8.net; sommige adverteerders (zoals HomeWizard)
+ * gebruiken een eigen partner-domein (partner.homewizard.com). Beide werken
+ * met dezelfde query-parameters. ds1.nl redirect nog door.
  *
  * - `si` is het campagne-ID (bv. 20779 voor Zendure NL, 18407 voor HomeWizard INT).
  * - `li` is het link-ID van de campagne; verplicht, alleen zichtbaar in het
@@ -18,6 +20,8 @@
  */
 
 export const DAISYCON_TRACKING_ORIGIN = "https://glp8.net";
+/** HomeWizard INT (si=18407) gebruikt dit partner-domein i.p.v. glp8.net. */
+export const HOMEWIZARD_DAISYCON_ORIGIN = "https://partner.homewizard.com";
 
 export interface DaisyconDeeplinkInput {
   /** Campagne-ID (si), bv. "20779". */
@@ -30,6 +34,8 @@ export interface DaisyconDeeplinkInput {
   destinationUrl: string;
   /** Sub ID (ws); concrete waarde, of weglaten (runtime via affiliate_params). */
   subId?: string;
+  /** Tracking-origin; default glp8.net. HomeWizard: partner.homewizard.com. */
+  trackingOrigin?: string;
 }
 
 export function buildDaisyconDeeplink(input: DaisyconDeeplinkInput): string {
@@ -44,7 +50,8 @@ export function buildDaisyconDeeplink(input: DaisyconDeeplinkInput): string {
   const pathAfterDomain =
     destination.pathname.replace(/^\//, "") + destination.search + destination.hash;
 
-  const url = new URL(`${DAISYCON_TRACKING_ORIGIN}/c/`);
+  const origin = (input.trackingOrigin ?? DAISYCON_TRACKING_ORIGIN).replace(/\/$/, "");
+  const url = new URL(`${origin}/c/`);
   url.searchParams.set("si", input.campaignId);
   url.searchParams.set("li", input.linkId);
   url.searchParams.set("wi", input.mediaId);

@@ -320,7 +320,7 @@ where o.product_id = p.id and o.merchant_id = m.id
 -- HomeWizard li ontbreekt nog: geen live HomeWizard-deeplinks tot die binnen is.
 insert into partner_programs (slug, name, network, program_id, link_id, commission_type, commission_rate, cookie_days, signup_url, source_url) values
   ('zendure-nl', 'Zendure NL (Daisycon)', 'daisycon', '20779', '1881195', 'cps', 0.08, 30, 'https://daisycon.com/nl/campagnes/20779-zendure-nl/', 'https://www.zendure.nl/pages/affiliate-program'),
-  ('homewizard-int', 'HomeWizard INT (Daisycon)', 'daisycon', '18407', null, 'cps', 0.075, 30, 'https://daisycon.com/nl/campagnes/18407-homewizard-int/', 'https://affiliate-net.nl/programmas/homewizard/'),
+  ('homewizard-int', 'HomeWizard INT (Daisycon)', 'daisycon', '18407', '1795784', 'cps', 0.075, 30, 'https://daisycon.com/nl/campagnes/18407-homewizard-int/', 'https://affiliate-net.nl/programmas/homewizard/'),
   ('anker-solix-eu', 'Anker SOLIX EU', 'impact', null, null, 'cps', 0.08, 30, 'https://www.ankersolix.com/eu/become-an-affiliate', 'https://www.ankersolix.com/eu/become-an-affiliate'),
   ('bol-partner', 'bol Partner', 'bol-partner', null, null, 'cps', 0.025, 7, 'https://affiliate.bol.com/', 'https://affiliate.bol.com/'),
   ('daisycon-energy', 'Daisycon Energie', 'daisycon', null, null, 'cpa', null, 30, 'https://www.daisycon.com/nl/', 'https://affiliate-net.nl/programmas/frankenergie/'),
