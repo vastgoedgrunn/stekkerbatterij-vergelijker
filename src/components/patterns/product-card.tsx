@@ -177,8 +177,7 @@ export function ProductCard({ product }: { product: ProductListItem }) {
             size="sm"
             className="w-full"
           >
-            Naar {outboundOffer.merchantName}
-            {outboundOffer.priceCents != null ? ` · ${formatPrice(outboundOffer.priceCents)}` : ""}
+            Bekijk aanbieding
           </OfferLink>
           {outboundOffer.isSponsored ? (
             <p className="text-muted-foreground text-center text-[11px]">Advertentie</p>

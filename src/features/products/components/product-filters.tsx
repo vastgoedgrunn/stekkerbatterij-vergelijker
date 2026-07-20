@@ -1,3 +1,5 @@
+"use client";
+
 import type { Route } from "next";
 import Link from "next/link";
 import { SlidersHorizontal } from "lucide-react";
@@ -5,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { FilterSearchInput } from "@/features/products/components/filter-search-input";
 import type { Brand, Category, ProductFilters } from "@/features/products/types";
 
 interface Props {
@@ -15,12 +18,23 @@ interface Props {
   action?: Route;
 }
 
+function disableEmptyNumberFields(form: HTMLFormElement) {
+  for (const field of Array.from(form.elements)) {
+    if (!(field instanceof HTMLInputElement)) continue;
+    if (field.type !== "number") continue;
+    if (field.value.trim() === "") field.disabled = true;
+  }
+}
+
 export function ProductFilterPanel({ brands, categories, filters, action = "/batterijen" }: Props) {
   return (
     <form
       method="get"
       action={action}
       className="border-border bg-card rounded-2xl border p-5 shadow-[var(--shadow-xs)]"
+      onSubmit={(event) => {
+        disableEmptyNumberFields(event.currentTarget);
+      }}
     >
       <div className="mb-4 flex items-center gap-2">
         <SlidersHorizontal className="text-primary size-4" />
@@ -30,7 +44,12 @@ export function ProductFilterPanel({ brands, categories, filters, action = "/bat
       <div className="space-y-5">
         <div className="space-y-2">
           <Label htmlFor="q">Zoeken</Label>
-          <Input id="q" name="q" defaultValue={filters.search ?? ""} placeholder="Merk of model" />
+          <FilterSearchInput
+            id="q"
+            name="q"
+            defaultValue={filters.search ?? ""}
+            placeholder="Merk of model"
+          />
         </div>
 
         <div className="space-y-2">

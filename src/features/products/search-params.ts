@@ -10,17 +10,41 @@ const sortValues: [ProductSort, ...ProductSort[]] = [
   "rating_desc",
 ];
 
+const emptyToUndefined = (value: unknown) => {
+  if (typeof value !== "string") return value;
+  const trimmed = value.trim();
+  return trimmed === "" ? undefined : trimmed;
+};
+
+/**
+ * Lege number-inputs komen binnen als "" en `z.coerce.number()` maakt daar 0 van.
+ * Dat zet per ongeluk maxCap/maxPrijs op 0 en levert 0 resultaten.
+ * Ongeldige waarden → undefined (niet de hele filterparse laten falen).
+ */
+function optionalNumber(max: number, opts?: { int?: boolean; min?: number }) {
+  const min = opts?.min ?? 0;
+  return z.preprocess((value) => {
+    if (value === undefined || value === null) return undefined;
+    if (typeof value === "string" && value.trim() === "") return undefined;
+    const raw = typeof value === "number" ? value : Number(value);
+    if (!Number.isFinite(raw)) return undefined;
+    const n = opts?.int ? Math.trunc(raw) : raw;
+    if (n < min || n > max) return undefined;
+    return n;
+  }, z.number().optional());
+}
+
 const schema = z.object({
-  q: z.string().trim().min(1).max(100).optional(),
-  merk: z.string().trim().min(1).optional(),
-  categorie: z.string().trim().min(1).optional(),
-  minCap: z.coerce.number().min(0).max(100).optional(),
-  maxCap: z.coerce.number().min(0).max(100).optional(),
-  minPrijs: z.coerce.number().min(0).max(100000).optional(),
-  maxPrijs: z.coerce.number().min(0).max(100000).optional(),
+  q: z.preprocess(emptyToUndefined, z.string().min(1).max(100).optional()),
+  merk: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
+  categorie: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
+  minCap: optionalNumber(100),
+  maxCap: optionalNumber(100),
+  minPrijs: optionalNumber(100_000),
+  maxPrijs: optionalNumber(100_000),
   uitbreidbaar: z.string().optional(),
   sorteer: z.enum(sortValues).optional(),
-  pagina: z.coerce.number().int().min(1).optional(),
+  pagina: optionalNumber(10_000, { int: true, min: 1 }),
 });
 
 type RawSearchParams = Record<string, string | string[] | undefined>;

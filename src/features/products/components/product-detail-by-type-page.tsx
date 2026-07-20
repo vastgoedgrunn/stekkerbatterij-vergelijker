@@ -294,7 +294,7 @@ export async function ProductDetailByTypePage({
                         size="lg"
                         className="flex-1"
                       >
-                        {`Naar ${bestOffer.merchantName} · ${formatPrice(bestOffer.priceCents)}`}
+                        Bekijk aanbieding
                       </OfferLink>
                     ) : (
                       <a

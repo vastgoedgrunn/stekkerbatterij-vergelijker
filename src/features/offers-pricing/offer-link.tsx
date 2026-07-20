@@ -63,10 +63,10 @@ export function OfferLink({
           },
         })
       }
-      className={cn(buttonVariants({ size, variant }), className)}
+      className={cn(buttonVariants({ size, variant }), "min-w-0 overflow-hidden", className)}
     >
-      {children}
-      <ExternalLink className="size-4" />
+      <span className="min-w-0 truncate">{children}</span>
+      <ExternalLink className="size-4 shrink-0" aria-hidden />
     </a>
   );
 }
