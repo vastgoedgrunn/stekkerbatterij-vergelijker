@@ -1,5 +1,7 @@
 import "server-only";
 import { getAdminDb } from "./db.server";
+import { businessRules } from "@/config/business-rules";
+import { estimateCommissionCents } from "@/lib/affiliate/commission";
 import type { EnergyPartnerRow, LeadRow, OfferClickRow } from "@/lib/db/database.types";
 
 export interface ClickSummaryRow {
@@ -13,7 +15,12 @@ export interface ClickSummaryRow {
 export interface RevenueSummary {
   totalClicks: number;
   clicksLast7Days: number;
+  /** Verwachte commissie 7d: kliks × aangenomen CVR × tarief. */
   estimatedAffiliateCents: number;
+  /** Theoretisch max als elke klik een sale was (alleen ter vergelijking). */
+  theoreticalMaxAffiliateCents: number;
+  /** Aangenomen click-to-sale die in de schatting zit. */
+  assumedClickToSaleRate: number;
   totalLeads: number;
   newLeads: number;
   paidOrders: number;
@@ -127,14 +134,14 @@ export async function getRevenueSummary(): Promise<RevenueSummary> {
   const { count: energyClicks } = energyRes;
   const { data: offers } = offersRes;
 
-  let estimatedAffiliateCents = 0;
+  let theoreticalMaxAffiliateCents = 0;
   if (recentClicks && offers) {
     const offerMap = new Map(
       (
         offers as {
           id: string;
           price_cents: number;
-          commission_type: string | null;
+          commission_type: "cps" | "cpa" | null;
           commission_rate: number | null;
           commission_cents_fixed: number | null;
         }[]
@@ -143,19 +150,28 @@ export async function getRevenueSummary(): Promise<RevenueSummary> {
     for (const click of recentClicks as { offer_id: string }[]) {
       const offer = offerMap.get(click.offer_id);
       if (!offer) continue;
-      if (offer.commission_type === "cpa" && offer.commission_cents_fixed) {
-        estimatedAffiliateCents += offer.commission_cents_fixed;
-      } else if (offer.commission_rate) {
-        estimatedAffiliateCents += Math.round(offer.price_cents * offer.commission_rate);
-      }
+      const perSale = estimateCommissionCents({
+        commissionType: offer.commission_type,
+        commissionRate: offer.commission_rate,
+        commissionCentsFixed: offer.commission_cents_fixed,
+        priceCents: offer.price_cents,
+      });
+      if (perSale != null) theoreticalMaxAffiliateCents += perSale;
     }
   }
+
+  const assumedClickToSaleRate = businessRules.affiliate.assumedClickToSaleRate;
+  const estimatedAffiliateCents = Math.round(
+    theoreticalMaxAffiliateCents * assumedClickToSaleRate,
+  );
 
   const paidOrders = (orders ?? []) as { total_cents: number }[];
   return {
     totalClicks: totalClicks ?? 0,
     clicksLast7Days: recentClicks?.length ?? 0,
     estimatedAffiliateCents,
+    theoreticalMaxAffiliateCents,
+    assumedClickToSaleRate,
     totalLeads: totalLeads ?? 0,
     newLeads: newLeads ?? 0,
     paidOrders: paidOrders.length,

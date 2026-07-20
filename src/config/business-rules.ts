@@ -44,6 +44,16 @@ export const businessRules = {
     /** Featured vaste systemen: verberg merkscores onder deze drempel. */
     minFeaturedMarketScore: 3,
   },
+
+  affiliate: {
+    /**
+     * Aangenomen click-to-sale voor admin-omzetschatting (CPS).
+     * Klik ≠ verkoop: we tellen niet 100% commissie per klik.
+     * 3% is een voorzichtige middenmoot voor NL affiliate op thuisbatterijen;
+     * echte sales komen uit Bol/Daisycon-dashboards.
+     */
+    assumedClickToSaleRate: 0.03,
+  },
 } as const;
 
 export type BusinessRules = typeof businessRules;
