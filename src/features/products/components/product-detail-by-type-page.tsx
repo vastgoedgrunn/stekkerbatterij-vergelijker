@@ -39,6 +39,7 @@ import {
   productTypeBadge,
   productTypeLabel,
 } from "@/features/products/product-paths";
+import { EDITORS_FAVORITE_PLUG_IN_SLUG } from "@/config/editors-picks";
 
 export const revalidate = 3600;
 
@@ -107,6 +108,7 @@ export async function ProductDetailByTypePage({
       : faqsRaw;
   const imageUrl = getPublicImageUrl(product.imagePath);
   const isFixed = product.productType === "fixed";
+  const isEditorsFavorite = product.slug === EDITORS_FAVORITE_PLUG_IN_SLUG;
   const basePath = catalogBasePath(expectedType);
   const detailPath = productDetailPath(product.slug, product.productType);
 
@@ -192,6 +194,7 @@ export async function ProductDetailByTypePage({
             imageClassName="p-8 sm:p-10"
           >
             <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5">
+              {isEditorsFavorite && <Badge variant="highlight">Beste koop</Badge>}
               <Badge variant={isFixed ? "muted" : "highlight"}>
                 {productTypeBadge(product.productType)}
               </Badge>
