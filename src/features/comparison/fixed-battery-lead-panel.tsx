@@ -170,7 +170,7 @@ export function FixedBatteryLeadPanel({
             <div className="border-border rounded-xl border p-4">
               <p className="text-sm font-semibold">Direct offerte via partner</p>
               <p className="text-muted-foreground mt-1 text-xs">
-                Gratis oriëntatiegesprek via onze installatie-partner (affiliate).
+                Gratis oriëntatiegesprek via onze installatiepartner.
               </p>
               <a
                 href={eWndrHref}

@@ -24,6 +24,6 @@ export function productTypeLabel(productType: ProductType): string {
 
 export function productTypeBadge(productType: ProductType): string {
   if (productType === "fixed") return "Installatie vereist";
-  if (productType === "accessory") return "Via bol";
+  if (productType === "accessory") return "Accessoire";
   return "Plug & play";
 }

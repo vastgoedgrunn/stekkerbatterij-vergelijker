@@ -76,12 +76,12 @@ export default function HowWeComparePage() {
           </div>
 
           <Card className="mt-8 p-6">
-            <h2 className="font-semibold">Twee verdienmodellen</h2>
+            <h2 className="font-semibold">Hoe we verdienen</h2>
             <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-              Stekkerbatterijen: als je via onze links bij een webshop koopt, kunnen wij een
-              affiliate-vergoeding ontvangen. Vaste thuisbatterijen: we verdienen via leads of
-              offertes bij installatiepartners. In beide gevallen verandert dat niets aan onze
-              ranking. Gesponsorde aanbiedingen zijn duidelijk gelabeld als &quot;Advertentie&quot;.
+              Bij stekkerbatterijen en accessoires kunnen we een kleine vergoeding ontvangen als je
+              via onze links bestelt. Bij vaste thuisbatterijen werken we met installatiepartners
+              voor offertes. In beide gevallen verandert dat niets aan onze ranking. Gesponsorde
+              aanbiedingen zijn duidelijk gelabeld als &quot;Advertentie&quot;.
             </p>
           </Card>
         </Container>
