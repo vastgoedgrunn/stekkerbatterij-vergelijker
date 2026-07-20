@@ -317,7 +317,23 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
   }
 
   if (filters.search) {
-    query = query.ilike("name", `%${filters.search}%`);
+    const term = filters.search.replace(/[%_,]/g, "").trim();
+    if (term) {
+      const { data: matchingBrands } = await supabase
+        .from("brands")
+        .select("id")
+        .ilike("name", `%${term}%`)
+        .returns<{ id: string }[]>();
+      const brandIds = (matchingBrands ?? []).map((b) => b.id);
+      // PostgREST: quotes rond ilike-waarden met %
+      const nameClause = `name.ilike."%${term}%"`;
+      const summaryClause = `summary.ilike."%${term}%"`;
+      if (brandIds.length > 0) {
+        query = query.or(`${nameClause},${summaryClause},brand_id.in.(${brandIds.join(",")})`);
+      } else {
+        query = query.or(`${nameClause},${summaryClause}`);
+      }
+    }
   }
   if (filters.brandSlug) {
     const { data: brands } = await supabase
