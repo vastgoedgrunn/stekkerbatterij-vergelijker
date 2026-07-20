@@ -16,6 +16,14 @@ export type MarketScoreSeed = {
 
 export const PRODUCT_MARKET_SCORE_SEEDS: MarketScoreSeed[] = [
   {
+    slug: "anker-solix-solarbank-max-ac",
+    average: 4.1,
+    count: 215,
+    sourceName: "Trustpilot",
+    sourceUrl: "https://www.trustpilot.com/review/ankersolix.com",
+    scope: "brand",
+  },
+  {
     slug: "anker-solix-solarbank-2-e1600",
     average: 4.1,
     count: 215,

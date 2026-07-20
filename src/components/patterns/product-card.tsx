@@ -10,11 +10,13 @@ import { formatNumber, formatPrice } from "@/lib/format";
 import { getPublicImageUrl } from "@/lib/supabase/storage";
 import type { ProductListItem } from "@/features/products/types";
 import { productDetailPath, productTypeBadge } from "@/features/products/product-paths";
+import { EDITORS_FAVORITE_PLUG_IN_SLUG } from "@/config/editors-picks";
 
 export function ProductCard({ product }: { product: ProductListItem }) {
   const imageUrl = getPublicImageUrl(product.imagePath);
   const isFixed = product.productType === "fixed";
   const isAccessory = product.productType === "accessory";
+  const isEditorsFavorite = product.slug === EDITORS_FAVORITE_PLUG_IN_SLUG;
   const outboundOffer = !isFixed && product.bestOffer?.id ? product.bestOffer : null;
   const href = productDetailPath(product.slug, product.productType);
 
@@ -71,6 +73,7 @@ export function ProductCard({ product }: { product: ProductListItem }) {
           imageClassName="transition-transform duration-300 group-hover:scale-[1.02]"
         >
           <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
+            {isEditorsFavorite && <Badge variant="highlight">Beste koop</Badge>}
             <Badge variant={isFixed ? "muted" : "highlight"}>
               {productTypeBadge(product.productType)}
             </Badge>
