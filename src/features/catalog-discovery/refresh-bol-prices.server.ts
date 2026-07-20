@@ -1,0 +1,264 @@
+import "server-only";
+import { createSupabaseServiceClient } from "@/lib/supabase/service";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { serverEnv } from "@/lib/env/server";
+import {
+  buildBolPartnerDeeplink,
+  fetchBolProductByBolProductId,
+  getBolClientStatus,
+} from "./bol-client";
+import { extractBolProductId } from "./match-sku";
+
+/** Default auto-update margin (price-fact-verification skill). */
+export const BOL_PRICE_AUTO_MARGIN = 0.1;
+
+export type BolPriceRefreshItem = {
+  offerId: string;
+  productSlug: string;
+  productName: string;
+  url: string;
+  oldPriceCents: number;
+  newPriceCents: number | null;
+  deltaPct: number | null;
+  action: "updated" | "needs_approval" | "out_of_stock" | "unchanged" | "skipped" | "error";
+  note: string;
+};
+
+export type BolPriceRefreshResult = {
+  bolConfigured: boolean;
+  bolDetail: string;
+  checked: number;
+  updated: number;
+  needsApproval: number;
+  outOfStock: number;
+  unchanged: number;
+  errors: number;
+  items: BolPriceRefreshItem[];
+};
+
+function getDb() {
+  if (!isSupabaseConfigured() || !serverEnv.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error("Supabase service role vereist voor Bol prijsrefresh.");
+  }
+  return createSupabaseServiceClient();
+}
+
+function deltaPct(oldCents: number, newCents: number): number {
+  if (oldCents <= 0) return 1;
+  return Math.abs(newCents - oldCents) / oldCents;
+}
+
+/**
+ * Vernieuw prijzen van bestaande Bol-offers via Marketing Catalog API.
+ * ≤10% verschil: auto-update + price_history.
+ * >10%: geen auto-update; note met voorstel voor verification gate.
+ */
+export async function refreshBolOfferPrices(input?: {
+  margin?: number;
+}): Promise<BolPriceRefreshResult> {
+  const bolStatus = getBolClientStatus();
+  const result: BolPriceRefreshResult = {
+    bolConfigured: bolStatus.configured,
+    bolDetail: bolStatus.detail,
+    checked: 0,
+    updated: 0,
+    needsApproval: 0,
+    outOfStock: 0,
+    unchanged: 0,
+    errors: 0,
+    items: [],
+  };
+
+  if (!bolStatus.configured || bolStatus.mode !== "live") {
+    return result;
+  }
+  if (!serverEnv.BOL_CLIENT_ID || !serverEnv.BOL_CLIENT_SECRET) {
+    result.bolDetail = "Marketing Catalog credentials ontbreken; prijsrefresh overgeslagen.";
+    return result;
+  }
+
+  const margin = input?.margin ?? BOL_PRICE_AUTO_MARGIN;
+  const db = getDb();
+
+  const { data: bolMerchant } = await db
+    .from("merchants")
+    .select("id")
+    .eq("slug", "bol")
+    .is("deleted_at", null)
+    .maybeSingle<{ id: string }>();
+
+  if (!bolMerchant) {
+    result.bolDetail = "Merchant 'bol' niet gevonden.";
+    return result;
+  }
+
+  const { data: offers, error } = await db
+    .from("offers")
+    .select(
+      "id, price_cents, affiliate_url, affiliate_deeplink, stock_status, products(id, slug, name)",
+    )
+    .eq("merchant_id", bolMerchant.id)
+    .is("deleted_at", null)
+    .returns<
+      {
+        id: string;
+        price_cents: number;
+        affiliate_url: string | null;
+        affiliate_deeplink: string | null;
+        stock_status: string;
+        products:
+          | { id: string; slug: string; name: string }
+          | { id: string; slug: string; name: string }[]
+          | null;
+      }[]
+    >();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  for (const offer of offers ?? []) {
+    const product = Array.isArray(offer.products) ? offer.products[0] : offer.products;
+    const url = offer.affiliate_url ?? "";
+    const bolId = extractBolProductId(url);
+    const baseItem = {
+      offerId: offer.id,
+      productSlug: product?.slug ?? "onbekend",
+      productName: product?.name ?? "onbekend",
+      url,
+      oldPriceCents: offer.price_cents,
+    };
+
+    if (!bolId) {
+      result.items.push({
+        ...baseItem,
+        newPriceCents: null,
+        deltaPct: null,
+        action: "skipped",
+        note: "Geen Bol product-ID in affiliate_url",
+      });
+      continue;
+    }
+
+    result.checked += 1;
+
+    try {
+      const catalog = await fetchBolProductByBolProductId(bolId);
+      const nowIso = new Date().toISOString();
+      const deeplink =
+        offer.affiliate_deeplink ||
+        (catalog?.url ? buildBolPartnerDeeplink(catalog.url) : buildBolPartnerDeeplink(url));
+
+      if (!catalog || catalog.priceCents == null || catalog.priceCents <= 0) {
+        await db
+          .from("offers")
+          .update({
+            stock_status: "out_of_stock",
+            last_checked_at: nowIso,
+            affiliate_link_note: `Bol Catalog ${nowIso.slice(0, 10)}: geen best offer / geen prijs`,
+            affiliate_deeplink: deeplink,
+            updated_at: nowIso,
+          } as never)
+          .eq("id", offer.id);
+
+        result.outOfStock += 1;
+        result.items.push({
+          ...baseItem,
+          newPriceCents: null,
+          deltaPct: null,
+          action: "out_of_stock",
+          note: "Catalog product zonder best offer",
+        });
+        continue;
+      }
+
+      const newPrice = catalog.priceCents;
+      const pct = deltaPct(offer.price_cents, newPrice);
+
+      if (offer.price_cents === newPrice && offer.stock_status === "in_stock") {
+        await db
+          .from("offers")
+          .update({
+            last_checked_at: nowIso,
+            affiliate_deeplink: deeplink,
+            affiliate_link_note: `Bol Catalog prijs check ${nowIso.slice(0, 10)} (ongewijzigd)`,
+            updated_at: nowIso,
+          } as never)
+          .eq("id", offer.id);
+
+        result.unchanged += 1;
+        result.items.push({
+          ...baseItem,
+          newPriceCents: newPrice,
+          deltaPct: 0,
+          action: "unchanged",
+          note: "Prijs gelijk",
+        });
+        continue;
+      }
+
+      if (pct <= margin || offer.price_cents <= 0) {
+        await db
+          .from("offers")
+          .update({
+            price_cents: newPrice,
+            stock_status: "in_stock",
+            last_checked_at: nowIso,
+            affiliate_url: catalog.url || url,
+            affiliate_deeplink: deeplink,
+            affiliate_link_note: `Bol Catalog prijs ${nowIso.slice(0, 10)} (€${(newPrice / 100).toFixed(2)})`,
+            updated_at: nowIso,
+          } as never)
+          .eq("id", offer.id);
+
+        if (offer.price_cents !== newPrice) {
+          await db.from("price_history").insert({
+            offer_id: offer.id,
+            price_cents: newPrice,
+            recorded_at: nowIso,
+          } as never);
+        }
+
+        result.updated += 1;
+        result.items.push({
+          ...baseItem,
+          newPriceCents: newPrice,
+          deltaPct: pct,
+          action: "updated",
+          note: `Auto-update binnen ${(margin * 100).toFixed(0)}% marge`,
+        });
+        continue;
+      }
+
+      await db
+        .from("offers")
+        .update({
+          last_checked_at: nowIso,
+          affiliate_deeplink: deeplink,
+          affiliate_link_note: `Bol Catalog voorstel ${nowIso.slice(0, 10)}: €${(offer.price_cents / 100).toFixed(2)} → €${(newPrice / 100).toFixed(2)} (+${(pct * 100).toFixed(1)}%, wacht op gate)`,
+          updated_at: nowIso,
+        } as never)
+        .eq("id", offer.id);
+
+      result.needsApproval += 1;
+      result.items.push({
+        ...baseItem,
+        newPriceCents: newPrice,
+        deltaPct: pct,
+        action: "needs_approval",
+        note: `Prijsverschil ${(pct * 100).toFixed(1)}% > marge; bron ${catalog.url}`,
+      });
+    } catch (err) {
+      result.errors += 1;
+      result.items.push({
+        ...baseItem,
+        newPriceCents: null,
+        deltaPct: null,
+        action: "error",
+        note: err instanceof Error ? err.message : "onbekende fout",
+      });
+    }
+  }
+
+  return result;
+}

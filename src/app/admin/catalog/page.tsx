@@ -8,6 +8,7 @@ import {
 import { getBolClientStatus } from "@/features/catalog-discovery/bol-client";
 import {
   approveCatalogCandidateAction,
+  refreshBolPricesAction,
   refreshProductImagesAction,
   rejectCatalogCandidateAction,
   runCatalogDiscoveryAction,
@@ -56,6 +57,11 @@ export default async function AdminCatalogHealthPage() {
             <form action={runCatalogDiscoveryAction}>
               <Button type="submit" size="sm">
                 Run discovery nu
+              </Button>
+            </form>
+            <form action={refreshBolPricesAction}>
+              <Button type="submit" size="sm" variant="outline">
+                Vernieuw Bol-prijzen
               </Button>
             </form>
             <form action={refreshProductImagesAction}>

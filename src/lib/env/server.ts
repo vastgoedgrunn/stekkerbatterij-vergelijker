@@ -47,7 +47,10 @@ const serverSchema = z.object({
   /** e-WNDR thuisbatterij-lead affiliate quote-URL (consumer landing, niet affiliate-worden). */
   EWNDR_LEAD_AFFILIATE_URL: z.string().url().optional(),
 
-  /** Bol Partner / productfeed (Catalog Discovery). Ontbreekt = stub, geen live feed. */
+  /** Bol Marketing Catalog API (OAuth client credentials). Ontbreekt = stub. */
+  BOL_CLIENT_ID: z.string().min(1).optional(),
+  BOL_CLIENT_SECRET: z.string().min(1).optional(),
+  /** Bol Partner / productfeed (legacy fallback). Ontbreekt = stub, geen live feed. */
   BOL_PARTNER_API_KEY: z.string().min(1).optional(),
   BOL_PRODUCT_FEED_URL: z.string().url().optional(),
   BOL_PUBLISHER_ID: z.string().min(1).optional(),

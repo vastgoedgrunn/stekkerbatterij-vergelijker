@@ -162,8 +162,8 @@ export type DiscoverResult = {
 };
 
 /**
- * Verzamel discovery-hits: Bol feed (indien geconfigureerd) + research seeds
- * gefilterd op marquee-merken.
+ * Verzamel discovery-hits: Bol Marketing Catalog (indien geconfigureerd) +
+ * research seeds gefilterd op marquee-merken.
  */
 export async function discoverCatalogCandidates(): Promise<DiscoverResult> {
   const bolStatus = getBolClientStatus();

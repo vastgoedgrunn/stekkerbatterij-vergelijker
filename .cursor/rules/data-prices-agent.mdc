@@ -60,10 +60,11 @@ Execute in order:
 6. **Completeness:** elke marquee brand ≥ 2 published products met image + usable outbound
    (`src/config/marquee-brands.ts`, `/admin/catalog`).
 7. **Prijzen:** auto alleen ≤10% met bron-URL + timestamp.
-8. **Bol keys:** als `BOL_PRODUCT_FEED_URL` / `BOL_PARTNER_API_KEY` ontbreken, vermeld in Slack
-   en gebruik research seeds; vraag owner om keys als feed schaal unblockt.
+8. **Bol keys:** als `BOL_CLIENT_ID` / `BOL_CLIENT_SECRET` ontbreken, vermeld in Slack
+   en gebruik research seeds; vraag owner om Marketing Catalog credentials.
+   Legacy: `BOL_PRODUCT_FEED_URL` blijft fallback.
 9. **Slack digest:** discovered, upserted, published, needs_review, broken, Bol configured ja/nee,
-   **P0 search-URL count (moet 0)**.
+   Bol prijsrefresh (updated / needs_approval), **P0 search-URL count (moet 0)**.
 
 ---
 

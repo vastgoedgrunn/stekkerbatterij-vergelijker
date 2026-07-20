@@ -364,6 +364,21 @@ export async function refreshProductImagesAction(): Promise<void> {
   }
 }
 
+/** Vernieuw Bol-offerprijzen via Marketing Catalog API (≤10% auto). */
+export async function refreshBolPricesAction(): Promise<void> {
+  try {
+    await assertCatalogAccess();
+    const { refreshBolOfferPrices } =
+      await import("@/features/catalog-discovery/refresh-bol-prices.server");
+    await refreshBolOfferPrices();
+    revalidatePath("/admin/catalog");
+    revalidatePath("/admin/products");
+    revalidatePublicCatalog();
+  } catch {
+    // Auth / API errors: stil voor form post.
+  }
+}
+
 /** Owner-approve: upsert + force-publish candidate (bypass ok-offer eis). */
 export async function approveCatalogCandidateAction(formData: FormData): Promise<void> {
   try {
