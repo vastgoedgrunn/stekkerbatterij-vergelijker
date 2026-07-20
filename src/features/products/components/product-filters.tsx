@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { FilterSearchInput } from "@/features/products/components/filter-search-input";
 import type { Brand, Category, ProductFilters } from "@/features/products/types";
 
 interface Props {
@@ -30,7 +31,12 @@ export function ProductFilterPanel({ brands, categories, filters, action = "/bat
       <div className="space-y-5">
         <div className="space-y-2">
           <Label htmlFor="q">Zoeken</Label>
-          <Input id="q" name="q" defaultValue={filters.search ?? ""} placeholder="Merk of model" />
+          <FilterSearchInput
+            id="q"
+            name="q"
+            defaultValue={filters.search ?? ""}
+            placeholder="Merk of model"
+          />
         </div>
 
         <div className="space-y-2">

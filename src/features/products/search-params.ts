@@ -10,10 +10,16 @@ const sortValues: [ProductSort, ...ProductSort[]] = [
   "rating_desc",
 ];
 
+const emptyToUndefined = (value: unknown) => {
+  if (typeof value !== "string") return value;
+  const trimmed = value.trim();
+  return trimmed === "" ? undefined : trimmed;
+};
+
 const schema = z.object({
-  q: z.string().trim().min(1).max(100).optional(),
-  merk: z.string().trim().min(1).optional(),
-  categorie: z.string().trim().min(1).optional(),
+  q: z.preprocess(emptyToUndefined, z.string().min(1).max(100).optional()),
+  merk: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
+  categorie: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
   minCap: z.coerce.number().min(0).max(100).optional(),
   maxCap: z.coerce.number().min(0).max(100).optional(),
   minPrijs: z.coerce.number().min(0).max(100000).optional(),
