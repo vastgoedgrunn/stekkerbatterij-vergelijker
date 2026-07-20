@@ -40,8 +40,8 @@ RUN MODE: <run-mode-id> (see rule file Scheduled run section).
    for this RUN MODE in full. Do not skip steps.
 2. Data/QA: run docs/agents/checklists/p0-outbound-scan.md first when the rule says so.
 3. Follow .cursor/skills/ship-via-pr/SKILL.md; use price-fact-verification when prices/facts change.
-4. Post Slack summary to #all-stekkerbatterij-vergelijker per docs/agents/slack-ops.md.
-5. Open PRs (label agent + department) before any 🔒 approval; include PR URL + EXECUTE in 🔒 posts.
+4. Post Slack digest to #all-stekkerbatterij-vergelijker per docs/agents/slack-ops.md (no ✅ asks).
+5. Never post 🔒 or wait for owner approval. Auto-merge labelled PRs when checks are green.
 ```
 
 ---
@@ -198,11 +198,10 @@ Follow ship-via-pr and price-fact-verification. Slack per slack-ops.md.
 
 Optionele alias voor §12. Niet twee identieke evening jobs draaien.
 
-## 13. Slack ✅ execute approval (event-driven, live)
+## 13. Slack digest only (geen approval-automation meer)
 
-- **Trigger:** `white_check_mark` (✅) in `#all-stekkerbatterij-vergelijker`
-- **Doel:** Ready + auto-merge PR + EXECUTE uit 🔒-bericht
-- **Agents:** elk 🔒 heeft PR-URL + `EXECUTE:` (zie `slack-ops.md`)
+Owner is hands-off. **Geen** ✅-execute automation nodig voor content/data.
+Optioneel mag een oude ✅-automation blijven bestaan; agents posten geen 🔒 meer.
 
 ---
 

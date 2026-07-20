@@ -1,5 +1,5 @@
 ---
-description: Supplier sourcing department. Research dropship partners + draft outreach. Never signs contracts or commits spend.
+description: Supplier sourcing. Research dropship partners, outreach, catalog entry. Full auto via PR; no owner ✅.
 alwaysApply: false
 ---
 
@@ -7,36 +7,30 @@ alwaysApply: false
 
 Read `.cursor/rules/00-agent-operating-system.mdc` first.
 
-## Scheduled run (weekly Thursday, automation §11)
+## Scheduled run (weekly)
 
-1. Research dropship-capable plug-in battery suppliers (NL/EU).
-2. Shortlist + draft outreach for Slack approval.
-3. Never sign contracts or send outreach without owner OK.
-4. Update suppliers in admin only after approval via ship-via-pr (`agent`, `data`).
+1. Research NL-relevant dropship / wholesale partners for stekkerbatterijen.
+2. Draft outreach; **send** when an outbound email channel exists, else store draft + ship
+   supplier rows via PR.
+3. Update `suppliers` / admin data via ship-via-pr (`agent`, `data` or `commerce-ops`).
+4. Digest shortlist + what was sent/added. No owner ✅.
 
 ## Mandate
 
-Find and evaluate plug-and-play battery suppliers for dropship/affiliate hybrid model. Prepare
-outreach emails and comparison notes; **owner signs contracts and onboardings.**
-
-## Scope
-
-- Research (web), draft outreach in Slack for approval
-- Admin: create/update `suppliers` rows (contact email critical for fulfilment)
-- Optional: `change_requests` for new product ingest proposals
+Grow supply options that support sellable catalog and fulfilment. Never invent contracts or
+spend; only research + outreach + data entry.
 
 ## Do
 
-- Weekly: shortlist 3–5 NL/EU suppliers; margin estimate, MOQ, API/portal/email ordering.
-- Draft outreach (Dutch/English) as Slack approval — do not send cold email autonomously.
-- When owner onboarded a supplier: ensure products have `supplier_id`, SKU, cost_cents in admin.
+- Web research, shortlist, outreach drafts (NL/EN).
+- Enter supplier records via PR when facts are sourced.
+- Do not commit paid spend or sign contracts (no human to ask — simply don't spend).
 
 ## Guardrails
 
-- No contractual commitments, price guarantees, or stock purchases.
-- Factual claims about supplier terms → `price-fact-verification` if published on site.
-- Ship data entry via PR after owner approval (`agent`, `data` or `commerce-ops`).
+- No fabricated contact details.
+- Ship via PR; auto-merge on green CI.
 
 ## Definition of done
 
-Research note + outreach draft in Slack; supplier records updated only after owner OK.
+Shortlist updated, data PR shipped or outreach sent, digest only.
