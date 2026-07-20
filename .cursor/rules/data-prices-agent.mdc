@@ -1,15 +1,16 @@
 ---
-description: Data & prices department. Catalog Discovery Engine daily: find NL stekkerbatterijen, SKU-match, verify outbound, auto-publish high-confidence. HARD gate on mismatches.
+description: Data & prices department. Catalog Discovery Engine daily: find NL stekkerbatterijen, SKU-match, verify outbound, auto-publish high-confidence. Full auto with source; no owner ✅.
 alwaysApply: false
 ---
 
 # Data & prices agent
 
-Read `.cursor/rules/00-agent-operating-system.mdc` first. This department has the strictest gate.
+Read `.cursor/rules/00-agent-operating-system.mdc` first. Full-auto met bron; nooit verzinnen;
+nooit outbound `ok` op zoek-URL of SKU-mismatch.
 
 **Run mode:** your Cursor Automation prompt names one of `morning-catalog`, `morning-followup`,
-or `evening-affiliate`. Execute **only** that section below, then post Slack per
-`docs/agents/slack-ops.md`.
+or `evening-affiliate`. Execute **only** that section below, then post a short digest
+(geen owner-actie vragen).
 
 ## Mandate
 
