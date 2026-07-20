@@ -74,8 +74,7 @@ export function getBolClientStatus(): BolClientStatus {
   return {
     configured: false,
     mode: "stub",
-    detail:
-      "Geen Bol keys. Stub retourneert []. Zet BOL_CLIENT_ID + BOL_CLIENT_SECRET in Vercel.",
+    detail: "Geen Bol keys. Stub retourneert []. Zet BOL_CLIENT_ID + BOL_CLIENT_SECRET in Vercel.",
   };
 }
 
@@ -210,8 +209,7 @@ type RawProduct = RawSearchHit & {
 
 function normalizeProduct(raw: RawProduct): BolCatalogProduct | null {
   const ean = typeof raw.ean === "string" ? raw.ean.trim() : "";
-  const bolProductId =
-    typeof raw.bolProductId === "string" ? raw.bolProductId.trim() : "";
+  const bolProductId = typeof raw.bolProductId === "string" ? raw.bolProductId.trim() : "";
   const url = typeof raw.url === "string" ? raw.url.trim() : "";
   const title = typeof raw.title === "string" ? raw.title.trim() : "";
   if (!ean || !bolProductId || !url.startsWith("https://") || !title) return null;
@@ -228,9 +226,7 @@ function normalizeProduct(raw: RawProduct): BolCatalogProduct | null {
     description,
     priceCents: eurosToCents(raw.offer?.price),
     deliveryDescription:
-      typeof raw.offer?.deliveryDescription === "string"
-        ? raw.offer.deliveryDescription
-        : null,
+      typeof raw.offer?.deliveryDescription === "string" ? raw.offer.deliveryDescription : null,
     gpcChunk,
   };
 }
@@ -264,9 +260,7 @@ export async function searchBolCatalogProducts(input: {
 }
 
 /** Product + best offer op EAN. */
-export async function fetchBolProductByEan(
-  ean: string,
-): Promise<BolCatalogProduct | null> {
+export async function fetchBolProductByEan(ean: string): Promise<BolCatalogProduct | null> {
   if (!hasMarketingCatalogCredentials()) return null;
   const clean = ean.trim();
   if (!/^\d{8,14}$/.test(clean)) return null;
@@ -282,9 +276,7 @@ export async function fetchBolProductByEan(
 }
 
 /** Bol product-ID (URL-pad) → EAN. */
-export async function convertBolProductIdToEan(
-  bolProductId: string,
-): Promise<string | null> {
+export async function convertBolProductIdToEan(bolProductId: string): Promise<string | null> {
   if (!hasMarketingCatalogCredentials()) return null;
   const id = bolProductId.trim();
   if (!/^\d{10,}$/.test(id)) return null;
@@ -323,9 +315,7 @@ async function mapWithConcurrency<T, R>(
     }
   }
 
-  const workers = Array.from({ length: Math.min(concurrency, items.length) }, () =>
-    worker(),
-  );
+  const workers = Array.from({ length: Math.min(concurrency, items.length) }, () => worker());
   await Promise.all(workers);
   return results;
 }
@@ -421,10 +411,7 @@ async function fetchViaMarketingCatalog(
   return out;
 }
 
-async function fetchViaProductFeed(
-  query: string,
-  limit: number,
-): Promise<DiscoveredCandidate[]> {
+async function fetchViaProductFeed(query: string, limit: number): Promise<DiscoveredCandidate[]> {
   try {
     const res = await fetch(serverEnv.BOL_PRODUCT_FEED_URL!, {
       headers: {

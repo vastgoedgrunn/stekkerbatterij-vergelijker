@@ -173,9 +173,7 @@ export async function runCatalogDiscoveryPipeline(input?: {
       );
     }
   } catch (error) {
-    stats.errors.push(
-      `Bol prijsrefresh: ${error instanceof Error ? error.message : "onbekend"}`,
-    );
+    stats.errors.push(`Bol prijsrefresh: ${error instanceof Error ? error.message : "onbekend"}`);
   }
 
   await db
