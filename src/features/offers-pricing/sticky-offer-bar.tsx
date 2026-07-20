@@ -81,7 +81,7 @@ export function StickyOfferBar({
           size="sm"
           className="shrink-0"
         >
-          Bekijk bij {bestOffer.merchantName} · {formatPrice(bestOffer.priceCents)}
+          Bekijk aanbieding
         </OfferLink>
       </div>
     </div>
