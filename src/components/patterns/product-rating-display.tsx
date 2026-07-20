@@ -1,8 +1,8 @@
 "use client";
 
-import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatNumber } from "@/lib/format";
+import { StarRatingRow } from "@/components/patterns/star-rating-row";
 import type { MarketScore, ProductRating } from "@/features/products/types";
 
 interface ProductRatingDisplayProps {
@@ -102,24 +102,9 @@ function RatingBlock({
   className?: string;
   suffix?: string;
 }) {
-  const rounded = Math.round(average * 2) / 2;
   return (
     <div className={cn("flex flex-wrap items-center gap-1.5", className)}>
-      <div className="flex" aria-hidden>
-        {[1, 2, 3, 4, 5].map((i) => (
-          <Star
-            key={i}
-            className={cn(
-              "size-4",
-              i <= Math.floor(rounded)
-                ? "fill-warning text-warning"
-                : i - 0.5 === rounded
-                  ? "fill-warning/50 text-warning"
-                  : "text-muted-foreground/40",
-            )}
-          />
-        ))}
-      </div>
+      <StarRatingRow average={average} />
       <span className="text-sm font-semibold tabular-nums">
         {formatNumber(average, { maximumFractionDigits: 1 })}
       </span>

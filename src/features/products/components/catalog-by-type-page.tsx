@@ -47,7 +47,7 @@ export async function CatalogByTypePage({
 
   const [{ items, total, page, pageSize }, brands, allCategories] = await Promise.all([
     getProducts(filters),
-    getBrands(),
+    getBrands({ productType }),
     getCategories(),
   ]);
 

@@ -1,9 +1,8 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BatteryCharging } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
 import { getPublicImageUrl } from "@/lib/supabase/storage";
@@ -12,6 +11,7 @@ import { qualifyLeadPath } from "./qualification";
 import { productDetailPath } from "@/features/products/product-paths";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
 import type { ProductListItem } from "@/features/products/types";
+import Image from "next/image";
 
 const usageOptions = [
   { label: "Laag", value: 1800 },
@@ -105,7 +105,7 @@ export function HeroMatcher({ products }: { products: ProductListItem[] }) {
             className="group mt-2 flex items-center gap-4"
           >
             <div className="relative size-16 shrink-0 overflow-hidden rounded-xl border border-zinc-100 bg-white">
-              {imageUrl && (
+              {imageUrl ? (
                 <Image
                   src={imageUrl}
                   alt={top.product.name}
@@ -113,16 +113,22 @@ export function HeroMatcher({ products }: { products: ProductListItem[] }) {
                   sizes="64px"
                   className="object-contain p-1.5"
                 />
+              ) : (
+                <span className="flex h-full w-full items-center justify-center bg-zinc-50">
+                  <BatteryCharging className="text-primary/25 size-8" aria-hidden />
+                </span>
               )}
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-muted-foreground text-xs">{top.product.brand.name}</p>
               <p className="group-hover:text-primary truncate font-semibold">{top.product.name}</p>
-              {top.product.lowestPriceCents !== null && (
+              {top.product.lowestPriceCents !== null ? (
                 <p className="text-sm">
                   <span className="text-muted-foreground">vanaf </span>
                   <span className="font-bold">{formatPrice(top.product.lowestPriceCents)}</span>
                 </p>
+              ) : (
+                <p className="text-muted-foreground text-sm">Prijs volgt</p>
               )}
             </div>
             <ArrowRight className="text-primary size-5 transition-transform group-hover:translate-x-0.5" />

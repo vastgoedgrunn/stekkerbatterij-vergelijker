@@ -2,7 +2,10 @@ import "server-only";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { serverEnv } from "@/lib/env/server";
+import { LOCAL_PRODUCT_IMAGE_PATHS } from "@/features/products/product-image-fallbacks";
 import { ingestProductImage, resolveAndIngestProductImage } from "./ingest-image.server";
+
+export { LOCAL_PRODUCT_IMAGE_PATHS } from "@/features/products/product-image-fallbacks";
 
 /**
  * Gecureerde bronfoto's (fabrikant/merchant) voor cleanup wanneer offers
@@ -33,39 +36,6 @@ export const CURATED_PRODUCT_IMAGE_SOURCES: Record<string, string> = {
     "https://zendure.com/cdn/shop/files/solarflow-800-with-ac-cable.png?v=1740455072",
   "zendure-solarflow-hyper-2000":
     "https://zendure.com/cdn/shop/files/ZDHYP2000-1AB2000X-png.png?v=1743509454",
-};
-
-/** Lokale slug-assets (al in /public) als Storage-fallback niet nodig is. */
-export const LOCAL_PRODUCT_IMAGE_PATHS: Record<string, string> = {
-  "anker-solix-solarbank-2-e1600": "/images/products/anker-solix-solarbank-2-e1600.jpg",
-  "anker-solix-solarbank-2-e1600-pro": "/images/products/anker-solix-solarbank-2-e1600-pro.jpg",
-  "ecoflow-powerstream-800": "/images/products/ecoflow-powerstream-800.jpg",
-  "ecoflow-stream-ac-pro": "/images/products/ecoflow-stream-ac-pro.jpg",
-  "growatt-noah-2000": "/images/products/growatt-noah-2000.jpg",
-  "growatt-noah-2000s": "/images/products/growatt-noah-2000s.jpg",
-  "homewizard-plug-in-battery": "/images/products/homewizard-plug-in-battery.jpg",
-  "homewizard-plug-in-battery-bundle": "/images/products/homewizard-plug-in-battery-bundle.jpg",
-  "marstek-jupiter-c-1024": "/images/products/marstek-jupiter-c-1024.jpg",
-  "marstek-venus-512": "/images/products/marstek-venus-512.jpg",
-  "sessy-thuisbatterij": "/images/products/sessy-thuisbatterij.jpg",
-  "sessy-thuisbatterij-duo": "/images/products/sessy-thuisbatterij-duo.jpg",
-  "sunology-play": "/images/products/sunology-play.jpg",
-  "sunology-storey": "/images/products/sunology-storey.jpg",
-  "zendure-solarflow-800": "/images/products/zendure-solarflow-800.jpg",
-  "zendure-solarflow-hyper-2000": "/images/products/zendure-solarflow-hyper-2000.jpg",
-  // Shop-accessoires: lokale fallback tot Catalog-foto in Storage staat
-  "homewizard-p1-meter": "/images/shop/homewizard-p1-meter.jpg",
-  "homewizard-p1-voeding": "/images/shop/homewizard-p1-voeding.jpg",
-  "homewizard-energy-display": "/images/shop/homewizard-energy-display.jpg",
-  "p1-kabel-3m": "/images/shop/p1-kabel-3m.jpg",
-  "p1-kabel-5m": "/images/shop/p1-kabel-5m.jpg",
-  "p1-kabel-10m": "/images/shop/p1-kabel-10m.jpg",
-  "homewizard-actieve-p1-splitter": "/images/shop/homewizard-actieve-p1-splitter.jpg",
-  "homewizard-energy-socket": "/images/shop/homewizard-energy-socket.jpg",
-  "zendure-ab3000x": "/images/shop/zendure-ab3000x.jpg",
-  "anker-solix-bp2700": "/images/shop/anker-solix-bp2700.jpg",
-  "anker-solix-bp3800": "/images/shop/anker-solix-bp3800.jpg",
-  "anker-solix-power-dock": "/images/shop/anker-solix-power-dock.jpg",
 };
 
 export type ImageRefreshRow = {

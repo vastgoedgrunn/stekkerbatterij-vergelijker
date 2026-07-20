@@ -238,7 +238,7 @@ export default async function BestBatteryPage() {
                                 "w-full",
                               )}
                             >
-                              Bekijk details
+                              Bekijk product
                             </Link>
                           )}
                         </div>

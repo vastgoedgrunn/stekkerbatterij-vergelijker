@@ -165,8 +165,8 @@ export function FixedBatteryLeadPanel({
           </div>
         </div>
 
-        <div className={cn("grid gap-4", eWndrEnabled ? "sm:grid-cols-2" : "")}>
-          {eWndrEnabled && (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {eWndrEnabled ? (
             <div className="border-border rounded-xl border p-4">
               <p className="text-sm font-semibold">Direct offerte via partner</p>
               <p className="text-muted-foreground mt-1 text-xs">
@@ -196,6 +196,13 @@ export function FixedBatteryLeadPanel({
               >
                 Offerte aanvragen <ArrowRight className="size-4" />
               </a>
+            </div>
+          ) : (
+            <div className="border-border bg-muted/30 rounded-xl border p-4">
+              <p className="text-sm font-semibold">Direct offerte via partner</p>
+              <p className="text-muted-foreground mt-1 text-xs">
+                Partnerlink volgt. Je kunt hieronder alvast een vrijblijvend advies aanvragen.
+              </p>
             </div>
           )}
 
@@ -294,9 +301,17 @@ export function FixedBatteryLeadPanel({
 export function LeadPanel({
   qualification,
   source = "wizard",
+  eWndrEnabled = false,
 }: {
   qualification: QualificationResult;
   source?: string;
+  eWndrEnabled?: boolean;
 }) {
-  return <FixedBatteryLeadPanel qualification={qualification} source={source} />;
+  return (
+    <FixedBatteryLeadPanel
+      qualification={qualification}
+      source={source}
+      eWndrEnabled={eWndrEnabled}
+    />
+  );
 }
