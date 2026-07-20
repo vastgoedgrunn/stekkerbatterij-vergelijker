@@ -113,13 +113,13 @@ export function FixedBatteryLeadPanel({
 
   return (
     <Card className={cn("border-primary/30 ring-primary/10 ring-2", compact && "ring-1")}>
-      <CardContent className={cn("space-y-5", compact ? "p-5" : "p-6")}>
+      <CardContent className={cn("space-y-5", compact ? "p-4 sm:p-5" : "p-4 sm:p-6")}>
         <div className="flex items-start gap-3">
           <div className="bg-primary/10 text-primary flex size-11 shrink-0 items-center justify-center rounded-xl">
             <Home className="size-5" />
           </div>
-          <div>
-            <h3 className="text-lg font-bold">
+          <div className="min-w-0 flex-1">
+            <h3 className="text-base leading-snug font-bold sm:text-lg">
               {productName
                 ? `Offerte voor ${productName}`
                 : "Vaste thuisbatterij past beter bij jou"}
@@ -131,30 +131,30 @@ export function FixedBatteryLeadPanel({
             </p>
             <p className="text-foreground mt-2 text-sm font-semibold">{priceLabel}</p>
             {indicativePriceMinCents != null && (
-              <p className="text-muted-foreground mt-1 text-xs">
+              <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
                 Indicatief. De definitieve prijs is altijd een offerte op maat.
               </p>
             )}
             <ul className="text-muted-foreground mt-3 space-y-1.5 text-sm">
               <li className="flex items-start gap-2">
                 <Battery className="text-primary mt-0.5 size-3.5 shrink-0" />
-                Omvormer en meterkast worden meegenomen in de offerte
+                <span className="min-w-0">Omvormer en meterkast worden meegenomen in de offerte</span>
               </li>
               <li className="flex items-start gap-2">
                 <Battery className="text-primary mt-0.5 size-3.5 shrink-0" />
-                Richtprijs inclusief btw en standaard installatie
+                <span className="min-w-0">Richtprijs inclusief btw en standaard installatie</span>
               </li>
               <li className="flex items-start gap-2">
                 <Battery className="text-primary mt-0.5 size-3.5 shrink-0" />
-                Planning en wachttijd verschillen per regio
+                <span className="min-w-0">Planning en wachttijd verschillen per regio</span>
               </li>
             </ul>
             {qualification && qualification.reasons.length > 0 && (
               <ul className="text-muted-foreground mt-3 space-y-1 text-sm">
                 {qualification.reasons.slice(0, 3).map((reason) => (
-                  <li key={reason} className="flex items-center gap-2">
-                    <Battery className="text-primary size-3.5 shrink-0" />
-                    {reason}
+                  <li key={reason} className="flex items-start gap-2">
+                    <Battery className="text-primary mt-0.5 size-3.5 shrink-0" />
+                    <span className="min-w-0">{reason}</span>
                   </li>
                 ))}
               </ul>
@@ -162,10 +162,10 @@ export function FixedBatteryLeadPanel({
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="border-border rounded-xl border p-4">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+          <div className="border-border flex flex-col rounded-xl border p-4">
             <p className="text-sm font-semibold">Direct offerte via partner</p>
-            <p className="text-muted-foreground mt-1 text-xs">
+            <p className="text-muted-foreground mt-1 flex-1 text-xs leading-relaxed">
               Gratis oriëntatiegesprek via onze installatie-partner (affiliate).
             </p>
             <a
@@ -196,7 +196,7 @@ export function FixedBatteryLeadPanel({
 
           <div className="border-border rounded-xl border p-4">
             <p className="text-sm font-semibold">Persoonlijk advies van ons</p>
-            <p className="text-muted-foreground mt-1 text-xs">
+            <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
               Laat je gegevens achter, wij bellen of mailen je binnen 2 werkdagen.
             </p>
           </div>
@@ -207,25 +207,38 @@ export function FixedBatteryLeadPanel({
         </p>
 
         {!compact && (
-          <div className="border-border bg-muted/40 rounded-xl border px-4 py-4">
+          <div className="border-border bg-muted/40 overflow-hidden rounded-xl border px-4 py-4 sm:px-5">
             <p className="text-sm font-semibold">Wat gebeurt er hierna?</p>
-            <ol className="mt-3 grid gap-3 sm:grid-cols-5">
-              {NEXT_STEPS.map((step, index) => (
-                <li key={step.title} className="flex gap-2 sm:flex-col sm:gap-1.5">
-                  <span className="bg-background text-primary border-border flex size-8 shrink-0 items-center justify-center rounded-lg border">
-                    <step.icon className="size-4" aria-hidden />
-                  </span>
-                  <span>
-                    <span className="text-muted-foreground block text-[10px] font-semibold tracking-wide uppercase">
-                      Stap {index + 1}
-                    </span>
-                    <span className="block text-xs font-semibold">{step.title}</span>
-                    <span className="text-muted-foreground block text-xs leading-snug">
-                      {step.detail}
-                    </span>
-                  </span>
-                </li>
-              ))}
+            <ol className="mt-4 space-y-0">
+              {NEXT_STEPS.map((step, index) => {
+                const isLast = index === NEXT_STEPS.length - 1;
+                return (
+                  <li key={step.title} className="relative flex gap-3 sm:gap-4">
+                    <div className="flex w-9 shrink-0 flex-col items-center">
+                      <span className="bg-background text-primary border-border relative z-10 flex size-9 items-center justify-center rounded-xl border shadow-[var(--shadow-sm)]">
+                        <step.icon className="size-4" aria-hidden />
+                      </span>
+                      {!isLast && (
+                        <span
+                          aria-hidden
+                          className="bg-border mt-1 w-px flex-1 min-h-4"
+                        />
+                      )}
+                    </div>
+                    <div className={cn("min-w-0 flex-1", isLast ? "pb-0" : "pb-4")}>
+                      <span className="text-muted-foreground block text-[10px] font-semibold tracking-wide uppercase">
+                        Stap {index + 1}
+                      </span>
+                      <span className="mt-0.5 block text-sm leading-snug font-semibold">
+                        {step.title}
+                      </span>
+                      <span className="text-muted-foreground mt-0.5 block text-sm leading-relaxed">
+                        {step.detail}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
             </ol>
           </div>
         )}
@@ -266,15 +279,15 @@ export function FixedBatteryLeadPanel({
                 <Input id={`lead-phone-${source}`} name="phone" type="tel" autoComplete="tel" />
               </div>
             </div>
-            <label className="text-muted-foreground flex items-start gap-2 text-xs">
-              <input type="checkbox" name="consent" required className="mt-0.5" />
-              <span>
+            <label className="text-muted-foreground flex items-start gap-2 text-xs leading-relaxed">
+              <input type="checkbox" name="consent" required className="mt-0.5 size-4 shrink-0" />
+              <span className="min-w-0">
                 Ik ga akkoord met het verwerken van mijn gegevens voor een vrijblijvend advies. Zie
                 ons privacybeleid.
               </span>
             </label>
             {error && <p className="text-destructive text-sm">{error}</p>}
-            <Button type="submit" disabled={pending}>
+            <Button type="submit" disabled={pending} className="w-full sm:w-auto">
               <Mail className="size-4" />
               {pending ? "Versturen…" : "Gratis advies aanvragen"}
             </Button>
