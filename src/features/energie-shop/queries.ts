@@ -4,7 +4,7 @@ import { isEligibleOutboundOffer } from "@/features/offers-pricing/offer-eligibi
 import { SHOP_ITEMS } from "./catalog";
 
 /** Lokale shopfoto's tot Catalog-sync `products.image_path` vult. */
-const SHOP_IMAGE_FALLBACKS: Record<string, string> = {
+export const SHOP_IMAGE_FALLBACKS: Record<string, string> = {
   "homewizard-p1-meter": "/images/shop/homewizard-p1-meter.jpg",
   "homewizard-p1-voeding": "/images/shop/homewizard-p1-voeding.jpg",
   "homewizard-energy-display": "/images/shop/homewizard-energy-display.jpg",

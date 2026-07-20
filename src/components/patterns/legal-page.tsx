@@ -135,26 +135,16 @@ export function CompanyDetails() {
     { label: "Btw-nummer", value: legalConfig.vatNumber },
     { label: "E-mail", value: legalConfig.contact.email },
     { label: "Telefoon", value: legalConfig.contact.phone },
-  ];
+  ].filter((row) => !isLegalPlaceholder(row.value));
 
   return (
     <dl className="border-border bg-muted/40 divide-border grid gap-0 divide-y rounded-2xl border">
-      {rows.map((row) => {
-        const placeholder = isLegalPlaceholder(row.value);
-        return (
-          <div key={row.label} className="grid gap-1 p-4 sm:grid-cols-[10rem_1fr] sm:gap-4">
-            <dt className="text-foreground text-sm font-semibold">{row.label}</dt>
-            <dd
-              className={cn(
-                "text-sm",
-                placeholder ? "text-warning font-medium" : "text-muted-foreground",
-              )}
-            >
-              {placeholder ? "Nog invullen door eigenaar" : row.value}
-            </dd>
-          </div>
-        );
-      })}
+      {rows.map((row) => (
+        <div key={row.label} className="grid gap-1 p-4 sm:grid-cols-[10rem_1fr] sm:gap-4">
+          <dt className="text-foreground text-sm font-semibold">{row.label}</dt>
+          <dd className="text-muted-foreground text-sm">{row.value}</dd>
+        </div>
+      ))}
     </dl>
   );
 }

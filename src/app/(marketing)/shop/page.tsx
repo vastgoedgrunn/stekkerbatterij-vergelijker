@@ -6,12 +6,8 @@ import { Container } from "@/components/patterns/section";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
-import { SHOP_BUNDLES, SHOP_ITEMS, SHOP_SECTIONS } from "@/features/energie-shop/catalog";
 import { getShopOffersBySlug } from "@/features/energie-shop/queries";
-import { ShopSectionNav } from "@/features/energie-shop/shop-section-nav";
-import { ShopProductCard } from "@/features/energie-shop/shop-product-card";
-import { ShopBundleCard } from "@/features/energie-shop/shop-bundle-card";
-import { ShopExpandFilter } from "@/features/energie-shop/shop-expand-filter";
+import { ShopCatalog } from "@/features/energie-shop/shop-catalog";
 
 export const metadata: Metadata = {
   title: "Slimme Energie Shop",
@@ -62,7 +58,7 @@ export default async function SlimmeEnergieShopPage() {
           </ul>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a
-              href="#section-meten"
+              href="#shop-catalog"
               className={cn(buttonVariants({ size: "lg" }), "justify-center")}
             >
               Bekijk producten
@@ -78,69 +74,8 @@ export default async function SlimmeEnergieShopPage() {
         </Container>
       </div>
 
-      <Container className="py-8 sm:py-10">
-        <ShopSectionNav />
-
-        <div className="mt-8 space-y-14 sm:mt-10 sm:space-y-16">
-          {SHOP_SECTIONS.filter((s) => s.id !== "pakketten" && s.id !== "uitbreiden").map(
-            (section) => {
-              const items = SHOP_ITEMS.filter((item) => item.section === section.id);
-              return (
-                <section key={section.id} id={`section-${section.id}`} className="scroll-mt-32">
-                  <header className="mb-5 max-w-2xl">
-                    <h2 className="text-2xl font-bold tracking-tight">{section.title}</h2>
-                    <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed sm:text-base">
-                      {section.subtitle}
-                    </p>
-                  </header>
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {items.map((item) => (
-                      <ShopProductCard
-                        key={item.slug}
-                        item={item}
-                        offer={offersMap.get(item.slug)}
-                      />
-                    ))}
-                  </div>
-                </section>
-              );
-            },
-          )}
-
-          <section id="section-uitbreiden" className="scroll-mt-32">
-            <header className="mb-5 max-w-2xl">
-              <h2 className="text-2xl font-bold tracking-tight">Batterij uitbreiden</h2>
-              <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed sm:text-base">
-                Extra modules en accessoires die bij jouw merk passen. Filter op merk zodat je
-                precies de juiste uitbreiding bestelt.
-              </p>
-            </header>
-            <ShopExpandFilter
-              items={SHOP_ITEMS.filter((item) => item.section === "uitbreiden")}
-              offers={offersRecord}
-            />
-          </section>
-
-          <section id="section-pakketten" className="scroll-mt-32">
-            <header className="mb-5 max-w-2xl">
-              <h2 className="text-2xl font-bold tracking-tight">Slimme pakketten</h2>
-              <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed sm:text-base">
-                Kant-en-klare sets voor meten, sturen of uitbreiden. Bestel elk onderdeel met één
-                klik.
-              </p>
-            </header>
-            <div className="grid gap-4 lg:grid-cols-2">
-              {SHOP_BUNDLES.map((bundle) => (
-                <ShopBundleCard
-                  key={bundle.slug}
-                  bundle={bundle}
-                  items={SHOP_ITEMS}
-                  offers={offersRecord}
-                />
-              ))}
-            </div>
-          </section>
-        </div>
+      <Container id="shop-catalog" className="scroll-mt-20 py-8 sm:py-10">
+        <ShopCatalog offers={offersRecord} />
 
         <div className="border-border/70 from-primary/5 mt-14 rounded-3xl border bg-gradient-to-br to-transparent p-6 sm:p-8">
           <h2 className="text-xl font-bold tracking-tight sm:text-2xl">
