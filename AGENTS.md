@@ -1,9 +1,9 @@
 # Stekkerbatterij Vergelijker — the digital company
 
-This repo is maintained and improved by an autonomous team of AI agents ("departments"), so the
-owner can approve in Cursor chat when present (Slack is optional digest / unattended backup).
-This file is the map; the enforceable rules live in `.cursor/rules/` (the global guardrails in
-`.cursor/rules/00-agent-operating-system.mdc` always apply).
+This repo is maintained by autonomous AI agents. The owner stays **fully hands-off**:
+agents verify, fix, ship via PR + auto-merge, and never ask for ✅ in Slack or Cursor.
+This file is the map; enforceable rules live in `.cursor/rules/` (especially
+`.cursor/rules/00-agent-operating-system.mdc`).
 
 ## Hoe automations taken krijgen
 
@@ -19,7 +19,7 @@ agent start (cron); de **inhoud** wijzig je via PR op de rule files. Korte start
 |---|---|---|
 | Content & SEO | `.cursor/rules/content-seo-agent.mdc` | weekly + on-demand |
 | Conversion / CRO | `.cursor/rules/conversion-cro-agent.mdc` | biweekly + after report |
-| Data & prices (verification gate) | `.cursor/rules/data-prices-agent.mdc` | daily |
+| Data & prices (full auto) | `.cursor/rules/data-prices-agent.mdc` | daily |
 | Tech & maintenance | `.cursor/rules/tech-maintenance-agent.mdc` | weekly + on alerts |
 | Design & UX | `.cursor/rules/design-ux-agent.mdc` | biweekly + on-demand |
 | QA & monitoring | `.cursor/rules/qa-monitoring-agent.mdc` | daily + event-driven |
@@ -36,20 +36,19 @@ verboden in UI-copy, metadata, content, koppen, alt-teksten, Slack-berichten en 
 herschrijf met natuurlijk Nederlands (komma, punt, of woorden als "tot"). Zie de altijd geldende
 rule `.cursor/rules/copy-style-no-dashes.mdc`.
 
-Reusable skills: `.cursor/skills/ship-via-pr` (how work ships) and
-`.cursor/skills/price-fact-verification` (the human carve-out gate).
-Automation schedules to create in Cursor: `docs/agents/automations.md`.
-Slack ops + 1-click approvals: `docs/agents/slack-ops.md`, `docs/agents/approval-playbook.md`.
+Reusable skills: `.cursor/skills/ship-via-pr` and
+`.cursor/skills/price-fact-verification` (source-backed auto; never ask owner).
+Automation schedules: `docs/agents/automations.md`.
+Slack digests only: `docs/agents/slack-ops.md`.
 
 ## Full-auto guardrails
 
 - All work via **branch + PR**, labelled `agent`. No direct pushes to `main`.
-- Auto-merge (`.github/workflows/auto-merge.yml`) enables **only** when ALL required checks pass:
-  CI (typecheck, lint, format, build), Lighthouse CI budgets, broken-link check.
-- Vercel preview verified before promote; production auto-rolls back on health degradation
-  (`.github/workflows/post-deploy-health.yml`).
-- Only human step: the **price/fact verification gate** (approve in Cursor chat when present,
-  or Slack ✅ when unattended; always with source).
+- Auto-merge only when ALL required checks pass: CI, Lighthouse, broken-link.
+- Vercel preview verified; production auto-rolls back on health degradation.
+- Prices/facts with source: auto-publish. Without source: skip. Never invent.
+- Never mark outbound `ok` on search-URLs or SKU mismatches.
+- **Never ask the owner for ✅** in Cursor or Slack.
 
 ## KPIs (Plausible custom events — `src/lib/observability/analytics.ts`)
 

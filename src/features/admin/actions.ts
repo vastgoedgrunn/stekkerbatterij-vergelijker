@@ -420,7 +420,6 @@ export async function refreshBolPricesAction(): Promise<void> {
     redirectCatalogNotice("bol-prices", {
       checked: result.checked,
       updated: result.updated,
-      approval: result.needsApproval,
       stock: result.outOfStock,
     });
   } catch (error) {

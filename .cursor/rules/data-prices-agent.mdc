@@ -1,15 +1,16 @@
 ---
-description: Data & prices department. Catalog Discovery Engine daily: find NL stekkerbatterijen, SKU-match, verify outbound, auto-publish high-confidence. HARD gate on mismatches.
+description: Data & prices department. Catalog Discovery Engine daily: find NL stekkerbatterijen, SKU-match, verify outbound, auto-publish high-confidence. Full auto with source; no owner ✅.
 alwaysApply: false
 ---
 
 # Data & prices agent
 
-Read `.cursor/rules/00-agent-operating-system.mdc` first. This department has the strictest gate.
+Read `.cursor/rules/00-agent-operating-system.mdc` first. Full-auto met bron; nooit verzinnen;
+nooit outbound `ok` op zoek-URL of SKU-mismatch.
 
 **Run mode:** your Cursor Automation prompt names one of `morning-catalog`, `morning-followup`,
-or `evening-affiliate`. Execute **only** that section below, then post Slack per
-`docs/agents/slack-ops.md`.
+or `evening-affiliate`. Execute **only** that section below, then post a short digest
+(geen owner-actie vragen).
 
 ## Mandate
 
@@ -55,16 +56,15 @@ Execute in order:
 4. **Product images:** bij upsert `resolveAndIngestProductImage` → Storage `products/catalog/{slug}`.
    Nooit merk-placeholders delen tussen SKUs. Ontbrekend: admin "Vernieuw productfoto's" of
    `refreshAllProductImages`.
-5. **needs_review / broken / title mismatch:** Slack 🔒 met PR-URL, onze titel vs merchant titel,
-   URL, EXECUTE. Nooit `ok` op verkeerde SKU (SolarFlow 800 ≠ AB3000X).
+5. **needs_review / broken / title mismatch:** zelf fixen (juiste product-URL). Digest only.
+   Geen 🔒. Nooit `ok` op verkeerde SKU (SolarFlow 800 ≠ AB3000X).
 6. **Completeness:** elke marquee brand ≥ 2 published products met image + usable outbound
    (`src/config/marquee-brands.ts`, `/admin/catalog`).
-7. **Prijzen:** auto alleen ≤10% met bron-URL + timestamp.
-8. **Bol keys:** als `BOL_CLIENT_ID` / `BOL_CLIENT_SECRET` ontbreken, vermeld in Slack
-   en gebruik research seeds; vraag owner om Marketing Catalog credentials.
-   Legacy: `BOL_PRODUCT_FEED_URL` blijft fallback.
-9. **Slack digest:** discovered, upserted, published, needs_review, broken, Bol configured ja/nee,
-   Bol prijsrefresh (updated / needs_approval), **P0 search-URL count (moet 0)**.
+7. **Prijzen:** altijd auto-update bij merchant/API-bron + timestamp (geen %-marge-gate).
+8. **Bol keys:** als `BOL_CLIENT_ID` / `BOL_CLIENT_SECRET` ontbreken, vermeld in digest
+   en gebruik research seeds. Legacy: `BOL_PRODUCT_FEED_URL` blijft fallback.
+9. **Digest:** discovered, upserted, published, needs_review, broken, Bol configured ja/nee,
+   Bol prijsrefresh (updated), **P0 search-URL count (moet 0)**. Geen owner-actie vragen.
 
 ---
 
@@ -73,11 +73,11 @@ Execute in order:
 Execute in order:
 
 1. **P0 zoek-URL scan:** opnieuw `docs/agents/checklists/p0-outbound-scan.md` (0 rijen).
-2. **`/admin/catalog`:** leftover `needs_review` → Slack 🔒; completeness gaps oplossen of escaleren.
-3. **Prijzen:** in-margin only; grote moves → Slack approve (`price-fact-verification`).
+2. **`/admin/catalog`:** leftover `needs_review` zelf oplossen; completeness gaps fixen.
+3. **Prijzen:** auto alle merchant/API-bronnen (`price-fact-verification` full-auto).
 4. **Missing deeplinks:** P0 alert (hybrid affiliate); Bol `partner.bol.com` waar product-URL ok is.
-5. **Ship:** code/seed fixes via ship-via-pr (`agent`, `data`).
-6. **Slack digest:** wat nog `offer_clicked` blokkeert + PR-links.
+5. **Ship:** code/seed fixes via ship-via-pr (`agent`, `data`), auto-merge.
+6. **Digest:** wat nog `offer_clicked` blokkeert + PR-links (geen ✅ vragen).
 
 ---
 
@@ -92,10 +92,10 @@ Execute in order:
 2. **Outbound verify:** voor actieve offers: `affiliate_deeplink` of `affiliate_url` HTTPS ok?
    Zet `affiliate_link_status` ok/pending/broken + note + `affiliate_link_checked_at`.
 3. **Shop zonder URL:** soft-delete (niet als merchant tellen).
-4. **Prijs spot-check:** top-clicked producten; auto alleen in-margin met citation.
-5. **Slack digest:** P0 fixes, broken/pending, price autos, 🔒 items.
-6. **Ship:** fixes via ship-via-pr (`agent`, `data`). Nooit deeplinks verzinnen; escaleer bij
-   ontbrekende Bol/Awin/Daisycon IDs.
+4. **Prijs spot-check:** top-clicked producten; auto-update met citation (geen marge-gate).
+5. **Digest:** P0 fixes, broken/pending, price autos (geen 🔒).
+6. **Ship:** fixes via ship-via-pr (`agent`, `data`). Nooit deeplinks verzinnen; noteer
+   ontbrekende Bol/Awin/Daisycon IDs in digest.
 
 ---
 
@@ -103,36 +103,34 @@ Execute in order:
 
 1. Prefer `runCatalogDiscoveryPipeline` over ad-hoc SQL.
 2. High-confidence: upsert + verify + publish criteria hierboven.
-3. Low confidence / search URL / mismatch: `needs_review` + 🔒.
+3. Low confidence / search URL / mismatch: `needs_review`; agent blijft zelf fixen. Geen 🔒.
 4. Prices: append-only history; never rewrite.
 
-## The verification gate (mandatory — follow `price-fact-verification`)
+## Verification (full auto — follow `price-fact-verification`)
 
-- **May auto-update without approval:** price ≤10% on existing offer with citation; new publish
-  only when high-confidence SKU match **and** outbound verify `ok`.
-- **Requires Slack 🔒 + ✅:** price > margin; `needs_review`; new factual claims; force-publish
-  without `ok` outbound.
-- **Never** mark `affiliate_link_status = ok` if page title/SKU tokens disagree.
+- **Auto:** elke prijs met merchant/API-bron; high-confidence publish met outbound `ok`.
+- **Queue only:** low match / search-URL / mismatch → `needs_review`, agent fixt zelf.
+- **Nooit** mark `affiliate_link_status = ok` if page title/SKU tokens disagree.
+- **Geen** Slack/Cursor ✅ voor routine prijs- of cataloguswerk.
 
 ## Guardrails
 
 - Every price/claim: source URL + checked-at timestamp.
 - Broken/pending/search offers: no "Bekijk beste prijs" (`offer-eligibility.ts`, `/api/go`).
-- Bol feed keys when set; else research + citations.
+- Bol Catalog credentials when set; else research + citations.
 - P0 details: `docs/agents/checklists/p0-outbound-scan.md` + `isSearchOrListingUrl` in code.
 - **`product_type = fixed`:** geen affiliate offer verplicht. Wel image + specs. Indicative
-  `indicative_price_min/max_cents` alleen na `price-fact-verification` (Slack 🔒 met bron).
+  `indicative_price_min/max_cents` auto bij bron-URL (`price-fact-verification`).
   Catalog Discovery tagt plug_in vs fixed bij match. P0 zoek-URL scan geldt voor stekker-offers;
   fixed products skippen offer-verify.
 - **Maandelijkse hercontrole richtprijzen fixed:** op de eerste morning run van de maand alle
   `indicative_price_min/max_cents` van fixed products opnieuw checken tegen de bron-URL's in
   `db/seed/0016_fixed_home_batteries.sql` (en actuele NL-installateurs/prijsoverzichten).
-  Afwijking ≤ 10%: auto-update via ship-via-pr met nieuwe bron + checked-at in seed-comment en
-  PR-body. Afwijking > 10%, vervallen bron of uitgefaseerd model: opnieuw door de gate
-  (Slack 🔒 met PR-URL + bron). Richtprijzen blijven altijd gecommuniceerd als indicatief
-  inclusief installatie, met offerte op maat als definitieve prijs.
+  Elke afwijking met bron: auto-update via ship-via-pr (bron + checked-at in seed-comment en
+  PR-body). Zonder bron: niet updaten, note in digest. Richtprijzen blijven altijd
+  gecommuniceerd als indicatief inclusief installatie, met offerte op maat als definitieve prijs.
 
 ## Definition of done
 
-Auto path: stats in Slack + PR only if code/seeds change (`agent`, `data`).
-Gated: Slack 🔒 with PR URL + EXECUTE; proceed after ✅ or admin Approve & publish.
+Stats in digest + PR wanneer code/seeds wijzigen (`agent`, `data`). Auto-merge bij groene CI.
+Geen owner ✅.

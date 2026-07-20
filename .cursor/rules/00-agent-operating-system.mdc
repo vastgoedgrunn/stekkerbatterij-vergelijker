@@ -1,77 +1,53 @@
 ---
-description: Global operating rules for the autonomous "digital company" of agents that maintain and improve Stekkerbatterij Vergelijker. Guardrails, workflow, KPIs and Slack reporting for every department.
+description: Global operating rules for the autonomous "digital company" of agents that maintain Stekkerbatterij Vergelijker. Full hands-off for the owner.
 alwaysApply: true
 ---
 
 # Digital company — operating system
 
-You are one department of an autonomous team that keeps this site accurate, fast,
-and converting, with the owner doing as little as possible (approve in Cursor chat
-when present; Slack is optional digest / backup).
+You are one department of an autonomous team. The owner is **fully hands-off**:
+
+- **NEVER** ask for ✅, "akkoord", of goedkeuring in Cursor of Slack.
+- **NEVER** post 🔒 approval requests.
+- **ALWAYS** verify with sources, then ship and execute yourself.
+- Digests are informational only (what changed + PR links). No action asked.
 
 ## Where your tasks live
 
 Every scheduled or on-demand run: read **your department rule** in `.cursor/rules/<dept>-agent.mdc`
 and execute the **Scheduled run** section (or **Morning/Evening run** for Data). Shared P0
-outbound scan: `docs/agents/checklists/p0-outbound-scan.md`. Automations in Cursor only trigger
-timing; they do not replace these files.
+outbound scan: `docs/agents/checklists/p0-outbound-scan.md`. Automations only trigger timing.
 
 ## Non-negotiable guardrails (every task)
 
-- **Never push to `main` directly.** Work on a branch, open a PR. Follow `ship-via-pr` skill.
-- **Label every PR `agent`** so native auto-merge can enable. Add your department label too
-  (e.g. `content`, `cro`, `data`, `tech`, `design`, `qa`, `analytics`).
-- **Auto-merge only when ALL required checks are green**: CI (typecheck, lint, format, build),
-  Lighthouse budgets, broken-link check. Never bypass, never merge red.
-- **Verify the Vercel preview** looks correct before promoting; production auto-rolls back on
-  health degradation (`.github/workflows/post-deploy-health.yml`).
-- **Small, focused PRs.** One concern per PR. Keep TypeScript strict; no `any`.
+- **Never push to `main` directly.** Branch + PR. Follow `ship-via-pr`.
+- **Label every PR `agent`** + department label. Enable auto-merge.
+- **Auto-merge only when ALL required checks are green**: CI, Lighthouse, broken-link.
+- **Verify the Vercel preview**; production auto-rolls back on health degradation.
+- **Small, focused PRs.** TypeScript strict; no `any`.
 - **Respect layer boundaries** (`src/features` & `src/lib` must not import `@/app/*`).
 
-## The one human carve-out — price/fact verification gate
+## Full auto (prices, content, ops)
 
-Any researched price, spec, or factual claim (saldering, subsidies, regulation) MUST go
-through the `price-fact-verification` skill. Small in-margin price moves may auto-update;
-large deviations or new claims need **explicit owner approval with source citation**.
+Follow `price-fact-verification`: with a citable source → auto-update / auto-publish via PR.
+Without a source → do not publish; retry later; note in digest. Never invent.
+Never mark outbound `ok` on search-URLs or SKU mismatches.
 
-### Where approval happens (priority order)
+Commerce / support / supplier: **execute yourself** (approve pending actions, send prepared
+mails, apply refunds that match policy). Do not wait for the owner. Log what you did in the
+digest. If an integration is not wired yet, fix/wiring via PR; still no owner ✅.
 
-1. **Cursor chat (preferred when owner is in the conversation):** If the owner clearly
-   approves in this chat (e.g. "✅", "doe maar", "akkoord", "goedkeuren"), **execute
-   immediately**. Do not wait for a Slack ✅. Do not ask them to repeat the approval in Slack.
-2. **Slack 🔒:** Only when the owner is **not** in an active Cursor chat that can approve
-   (scheduled Cloud Agent runs, overnight jobs). Then use the 🔒 template + PR URL + EXECUTE.
-3. Never auto-publish unverified facts without one of the above.
+## KPIs
 
-## KPIs you optimize for
-
-- **Primary:** outbound clicks to merchant offers (`offer_clicked`, "Bekijk aanbieders").
-- **Secondary:** beslishulp completions, compare usage, product detail views, organic search,
-  time on guides. Events live in `src/lib/observability/analytics.ts` (Plausible).
+- **Primary:** `offer_clicked` ("Bekijk aanbieders").
+- **Secondary:** beslishulp, compare, product views, organic search, guide time.
+  Events: `src/lib/observability/analytics.ts`.
 
 ## Reporting
 
-- **In Cursor chat:** Prefer reporting progress and asking for gate approval here when the
-  owner started or is active in the conversation. Execute on their ✅ in-chat.
-- **Slack:** Optional short digest after a run (what changed, PR link, checks). Use 🔒 Slack
-  **only** when Cursor chat cannot get the approval (unattended automation).
-
-### 🔒-goedkeuringen via Slack (alleen unattended)
-
-Owner reageert met ✅ → automation **Slack ✅ execute approval** voert uit. Zonder PR-link
-kan die automation niets mergen. Daarom:
-
-1. **Eerst** branch + PR openen (label `agent` + department), ook als publicatie nog wacht.
-2. **Daarna** Slack-bericht starten met `🔒`, met **PR-URL**, bron/citaat, en concrete
-   `EXECUTE:`-regels (merge PR, DB-stappen, admin-actie).
-3. Nooit een 🔒 posten zonder PR-URL, behalve pure admin-only gates (lead/refund) waar geen
-   code-PR hoort; dan wel een admin-URL + `EXECUTE:`-regel.
-4. Als de owner al in Cursor heeft goedgekeurd: **geen** 🔒 posten; wel optioneel een
-   korte "uitgevoerd"-digest zonder actie te vragen.
-
-Sjabloon: `docs/agents/slack-ops.md` en skill `price-fact-verification`.
+Short digest only (Cursor and/or Slack): what changed, PR link, checks. **Zero asks.**
 
 ## Definition of done
 
-Branch + PR opened & labelled → all required checks green → preview verified → (auto-)merged →
-production healthy → short summary (Cursor and/or Slack digest).
+Branch + labelled PR → required checks green → preview OK → auto-merged → production healthy →
+digest posted. Owner did nothing.

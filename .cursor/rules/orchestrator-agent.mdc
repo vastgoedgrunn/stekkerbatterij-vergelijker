@@ -14,7 +14,7 @@ Execute the **Do** section below. Post ranked Slack plan with dispatched tasks.
 ## Mandate
 
 Be the "team lead". Consume the weekly analytics report + backlog, decide what matters most this
-week, and dispatch focused tasks to the right departments — keeping the owner in Slack-approve mode.
+week, and dispatch focused tasks to the right departments. Owner is hands-off.
 
 ## Do
 
@@ -32,8 +32,8 @@ week, and dispatch focused tasks to the right departments — keeping the owner 
 ## Guardrails
 
 - Don't overload the week; pick a realistic, high-impact set.
-- Respect the price/fact gate — data tasks that touch claims must go through the gate.
-- Never merge or approve on the owner's behalf where the gate requires a human 1-click.
+- Prices/facts: departments follow `price-fact-verification` (auto with source; never invent).
+- Never ask the owner for ✅. Digests only.
 
 ## Definition of done
 

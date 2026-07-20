@@ -9,8 +9,8 @@ import {
 } from "./bol-client";
 import { extractBolProductId } from "./match-sku";
 
-/** Default auto-update margin (price-fact-verification skill). */
-export const BOL_PRICE_AUTO_MARGIN = 0.1;
+/** Full-auto: elke Catalog-prijs wordt toegepast (owner policy 2026-07). */
+export const BOL_PRICE_AUTO_MARGIN = 1;
 
 export type BolPriceRefreshItem = {
   offerId: string;
@@ -20,7 +20,7 @@ export type BolPriceRefreshItem = {
   oldPriceCents: number;
   newPriceCents: number | null;
   deltaPct: number | null;
-  action: "updated" | "needs_approval" | "out_of_stock" | "unchanged" | "skipped" | "error";
+  action: "updated" | "out_of_stock" | "unchanged" | "skipped" | "error";
   note: string;
 };
 
@@ -29,7 +29,6 @@ export type BolPriceRefreshResult = {
   bolDetail: string;
   checked: number;
   updated: number;
-  needsApproval: number;
   outOfStock: number;
   unchanged: number;
   errors: number;
@@ -50,10 +49,10 @@ function deltaPct(oldCents: number, newCents: number): number {
 
 /**
  * Vernieuw prijzen van bestaande Bol-offers via Marketing Catalog API.
- * ≤10% verschil: auto-update + price_history.
- * >10%: geen auto-update; note met voorstel voor verification gate.
+ * Full auto: elke geldige Catalog-prijs wordt toegepast + price_history.
  */
-export async function refreshBolOfferPrices(input?: {
+export async function refreshBolOfferPrices(_input?: {
+  /** @deprecated Genegeerd; alle Catalog-prijzen gaan auto door. */
   margin?: number;
 }): Promise<BolPriceRefreshResult> {
   const bolStatus = getBolClientStatus();
@@ -62,7 +61,6 @@ export async function refreshBolOfferPrices(input?: {
     bolDetail: bolStatus.detail,
     checked: 0,
     updated: 0,
-    needsApproval: 0,
     outOfStock: 0,
     unchanged: 0,
     errors: 0,
@@ -77,7 +75,7 @@ export async function refreshBolOfferPrices(input?: {
     return result;
   }
 
-  const margin = input?.margin ?? BOL_PRICE_AUTO_MARGIN;
+  void _input;
   const db = getDb();
 
   const { data: bolMerchant } = await db
@@ -197,56 +195,34 @@ export async function refreshBolOfferPrices(input?: {
         continue;
       }
 
-      if (pct <= margin || offer.price_cents <= 0) {
-        await db
-          .from("offers")
-          .update({
-            price_cents: newPrice,
-            stock_status: "in_stock",
-            last_checked_at: nowIso,
-            affiliate_url: catalog.url || url,
-            affiliate_deeplink: deeplink,
-            affiliate_link_note: `Bol Catalog prijs ${nowIso.slice(0, 10)} (€${(newPrice / 100).toFixed(2)})`,
-            updated_at: nowIso,
-          } as never)
-          .eq("id", offer.id);
-
-        if (offer.price_cents !== newPrice) {
-          await db.from("price_history").insert({
-            offer_id: offer.id,
-            price_cents: newPrice,
-            recorded_at: nowIso,
-          } as never);
-        }
-
-        result.updated += 1;
-        result.items.push({
-          ...baseItem,
-          newPriceCents: newPrice,
-          deltaPct: pct,
-          action: "updated",
-          note: `Auto-update binnen ${(margin * 100).toFixed(0)}% marge`,
-        });
-        continue;
-      }
-
       await db
         .from("offers")
         .update({
+          price_cents: newPrice,
+          stock_status: "in_stock",
           last_checked_at: nowIso,
+          affiliate_url: catalog.url || url,
           affiliate_deeplink: deeplink,
-          affiliate_link_note: `Bol Catalog voorstel ${nowIso.slice(0, 10)}: €${(offer.price_cents / 100).toFixed(2)} → €${(newPrice / 100).toFixed(2)} (+${(pct * 100).toFixed(1)}%, wacht op gate)`,
+          affiliate_link_note: `Bol Catalog prijs ${nowIso.slice(0, 10)} (€${(newPrice / 100).toFixed(2)})`,
           updated_at: nowIso,
         } as never)
         .eq("id", offer.id);
 
-      result.needsApproval += 1;
+      if (offer.price_cents !== newPrice) {
+        await db.from("price_history").insert({
+          offer_id: offer.id,
+          price_cents: newPrice,
+          recorded_at: nowIso,
+        } as never);
+      }
+
+      result.updated += 1;
       result.items.push({
         ...baseItem,
         newPriceCents: newPrice,
         deltaPct: pct,
-        action: "needs_approval",
-        note: `Prijsverschil ${(pct * 100).toFixed(1)}% > marge; bron ${catalog.url}`,
+        action: "updated",
+        note: "Auto-update vanuit Bol Catalog",
       });
     } catch (err) {
       result.errors += 1;
