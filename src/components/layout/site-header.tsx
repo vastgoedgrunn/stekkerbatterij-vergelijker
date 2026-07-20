@@ -9,9 +9,9 @@ import { NavLink } from "@/components/layout/nav-link";
 const navItems: { href: Route; label: string }[] = [
   { href: "/stekkerbatterijen", label: "Stekkerbatterijen" },
   { href: "/vaste-thuisbatterijen", label: "Vaste batterijen" },
+  { href: "/shop" as Route, label: "Shop" },
   { href: "/vergelijken", label: "Vergelijken" },
   { href: "/beslishulp", label: "Beslishulp" },
-  { href: "/beste-stekkerbatterij", label: "Top 10" },
 ];
 
 export function SiteHeader() {

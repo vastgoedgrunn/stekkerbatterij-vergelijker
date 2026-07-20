@@ -9,7 +9,7 @@ export type Json = string | number | boolean | null | { [key: string]: Json } | 
 export type AppRole = "user" | "editor" | "merchant_manager" | "moderator" | "admin";
 export type ProductStatus = "draft" | "published" | "archived";
 /** plug_in = stekkerbatterij (CPS); fixed = vaste thuisbatterij (lead/offerte). */
-export type ProductType = "plug_in" | "fixed";
+export type ProductType = "plug_in" | "fixed" | "accessory";
 export type StockStatus = "in_stock" | "out_of_stock" | "preorder" | "unknown";
 export type ReviewStatus = "pending" | "approved" | "rejected";
 export type ContentStatus = "draft" | "in_review" | "published" | "archived";

@@ -20,6 +20,7 @@ const columns = [
     links: [
       { href: "/beste-stekkerbatterij", label: "Beste stekkerbatterij" },
       { href: "/beste-vaste-thuisbatterij", label: "Beste vaste thuisbatterij" },
+      { href: "/shop", label: "Slimme Energie Shop" },
       { href: "/merken", label: "Merken" },
       { href: "/homewizard-plug-in-battery-prijs", label: "HomeWizard prijs" },
       { href: "/energie", label: "Energie vergelijken" },
