@@ -161,9 +161,7 @@ export async function getRevenueSummary(): Promise<RevenueSummary> {
   }
 
   const assumedClickToSaleRate = businessRules.affiliate.assumedClickToSaleRate;
-  const estimatedAffiliateCents = Math.round(
-    theoreticalMaxAffiliateCents * assumedClickToSaleRate,
-  );
+  const estimatedAffiliateCents = Math.round(theoreticalMaxAffiliateCents * assumedClickToSaleRate);
 
   const paidOrders = (orders ?? []) as { total_cents: number }[];
   return {

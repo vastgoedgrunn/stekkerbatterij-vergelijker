@@ -56,9 +56,7 @@ export function OfferLink({
       onClick={() => {
         const expectedPerClick =
           estimatedCommissionCents != null
-            ? Math.round(
-                estimatedCommissionCents * businessRules.affiliate.assumedClickToSaleRate,
-              )
+            ? Math.round(estimatedCommissionCents * businessRules.affiliate.assumedClickToSaleRate)
             : null;
         trackEvent({
           name: "offer_clicked",
