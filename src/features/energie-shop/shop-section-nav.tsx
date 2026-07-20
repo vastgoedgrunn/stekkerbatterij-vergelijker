@@ -35,7 +35,7 @@ export function ShopSectionNav() {
       aria-label="Shop categorieën"
       className="border-border/70 bg-background/90 sticky top-16 z-30 -mx-4 border-b px-4 backdrop-blur-xl sm:mx-0 sm:rounded-2xl sm:border sm:px-2"
     >
-      <ul className="flex gap-1 overflow-x-auto py-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <ul className="flex [scrollbar-width:none] gap-1 overflow-x-auto py-2 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {SHOP_SECTIONS.map((section) => (
           <li key={section.id} className="shrink-0">
             <a

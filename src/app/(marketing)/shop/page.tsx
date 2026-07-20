@@ -7,11 +7,7 @@ import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure"
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
-import {
-  SHOP_BUNDLES,
-  SHOP_ITEMS,
-  SHOP_SECTIONS,
-} from "@/features/energie-shop/catalog";
+import { SHOP_BUNDLES, SHOP_ITEMS, SHOP_SECTIONS } from "@/features/energie-shop/catalog";
 import { getShopOffersBySlug } from "@/features/energie-shop/queries";
 import { ShopSectionNav } from "@/features/energie-shop/shop-section-nav";
 import { ShopProductCard } from "@/features/energie-shop/shop-product-card";
@@ -25,8 +21,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/shop" },
   openGraph: {
     title: "Slimme Energie Shop",
-    description:
-      "Meet je energie, stuur slimmer en breid je batterij uit. Affiliate via bol.",
+    description: "Meet je energie, stuur slimmer en breid je batterij uit. Affiliate via bol.",
     url: `${siteConfig.url}/shop`,
   },
 };
@@ -67,7 +62,10 @@ export default async function SlimmeEnergieShopPage() {
             </li>
           </ul>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a href="#section-meten" className={cn(buttonVariants({ size: "lg" }), "justify-center")}>
+            <a
+              href="#section-meten"
+              className={cn(buttonVariants({ size: "lg" }), "justify-center")}
+            >
               Begin met meten
             </a>
             <Link

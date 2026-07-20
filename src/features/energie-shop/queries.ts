@@ -70,11 +70,7 @@ export async function getShopOffersBySlug(): Promise<Map<string, ShopOfferRow>> 
     const eligible = (product.offers ?? []).filter((offer) => {
       if (offer.deleted_at) return false;
       return isEligibleOutboundOffer({
-        affiliate_link_status: offer.affiliate_link_status as
-          | "ok"
-          | "pending"
-          | "broken"
-          | null,
+        affiliate_link_status: offer.affiliate_link_status as "ok" | "pending" | "broken" | null,
         affiliate_url: offer.affiliate_url,
         affiliate_deeplink: offer.affiliate_deeplink,
         deleted_at: offer.deleted_at,

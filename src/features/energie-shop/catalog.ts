@@ -6,13 +6,7 @@
 
 export type ShopSectionId = "meten" | "sturen" | "uitbreiden" | "pakketten";
 
-export type ShopCompatTag =
-  | "meten"
-  | "aansturing"
-  | "homewizard"
-  | "anker"
-  | "zendure"
-  | "marstek";
+export type ShopCompatTag = "meten" | "aansturing" | "homewizard" | "anker" | "zendure" | "marstek";
 
 export interface ShopCatalogItem {
   slug: string;
@@ -229,7 +223,8 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     icon: "battery",
     labels: ["3,84 kWh", "Anker SOLIX"],
     compat: ["anker"],
-    bolUrl: "https://www.bol.com/nl/nl/p/anker-solix-bp3800-extension-battery-3840wh/9300000171717051/",
+    bolUrl:
+      "https://www.bol.com/nl/nl/p/anker-solix-bp3800-extension-battery-3840wh/9300000171717051/",
     priceCents: 149900,
   },
   {
@@ -287,11 +282,7 @@ export const SHOP_BUNDLES: ShopBundle[] = [
     slug: "pakket-volledig-inzicht",
     name: "Volledig Inzicht Pakket",
     summary: "P1 Meter, display en vier Energy Sockets voor maximaal inzicht.",
-    itemSlugs: [
-      "homewizard-p1-meter",
-      "homewizard-energy-display",
-      "homewizard-energy-socket",
-    ],
+    itemSlugs: ["homewizard-p1-meter", "homewizard-energy-display", "homewizard-energy-socket"],
     quantities: { "homewizard-energy-socket": 4 },
   },
   {

@@ -6,10 +6,7 @@ import { productDetailPath } from "@/features/products/product-paths";
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const [plugIn, fixed] = await Promise.all([
-    getProductSlugs("plug_in"),
-    getProductSlugs("fixed"),
-  ]);
+  const [plugIn, fixed] = await Promise.all([getProductSlugs("plug_in"), getProductSlugs("fixed")]);
   return [...plugIn, ...fixed].map((slug) => ({ slug }));
 }
 

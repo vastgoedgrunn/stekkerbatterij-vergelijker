@@ -43,7 +43,7 @@ export function ShopProductCard({
             </li>
           ))}
         </ul>
-        <div className="mt-auto flex flex-col gap-3 border-t border-border/60 pt-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="border-border/60 mt-auto flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             {priceLabel ? (
               <>
