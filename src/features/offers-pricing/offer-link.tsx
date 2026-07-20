@@ -15,7 +15,8 @@ export type OfferLinkPlacement =
   | "seo_ranking"
   | "seo_price"
   | "hero_match"
-  | "guide";
+  | "guide"
+  | "shop";
 
 /**
  * Affiliate-/aanbiederlink die de primaire conversie-KPI meet:

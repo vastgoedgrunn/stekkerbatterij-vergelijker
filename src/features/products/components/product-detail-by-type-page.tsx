@@ -42,14 +42,16 @@ import {
 
 export const revalidate = 3600;
 
-export async function productDetailGenerateStaticParams(productType: ProductType) {
+export async function productDetailGenerateStaticParams(
+  productType: Exclude<ProductType, "accessory">,
+) {
   const slugs = await getProductSlugs(productType);
   return slugs.map((slug) => ({ slug }));
 }
 
 export async function productDetailGenerateMetadata(
   slug: string,
-  expectedType: ProductType,
+  expectedType: Exclude<ProductType, "accessory">,
 ): Promise<Metadata> {
   const product = await getProductBySlug(slug);
   if (!product || product.productType !== expectedType) {
@@ -93,7 +95,7 @@ export async function ProductDetailByTypePage({
   expectedType,
 }: {
   slug: string;
-  expectedType: ProductType;
+  expectedType: Exclude<ProductType, "accessory">;
 }) {
   const product = await getProductBySlug(slug);
   if (!product || product.productType !== expectedType) notFound();
@@ -101,7 +103,7 @@ export async function ProductDetailByTypePage({
   const [reviews, faqs] = await Promise.all([getApprovedReviews(product.id), getFaqs()]);
   const imageUrl = getPublicImageUrl(product.imagePath);
   const isFixed = product.productType === "fixed";
-  const basePath = catalogBasePath(product.productType);
+  const basePath = catalogBasePath(expectedType);
   const detailPath = productDetailPath(product.slug, product.productType);
 
   const outboundOffers = product.offers.filter((o) => o.affiliateUrl);

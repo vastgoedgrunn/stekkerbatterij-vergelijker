@@ -14,11 +14,16 @@ import { productDetailPath, productTypeBadge } from "@/features/products/product
 export function ProductCard({ product }: { product: ProductListItem }) {
   const imageUrl = getPublicImageUrl(product.imagePath);
   const isFixed = product.productType === "fixed";
+  const isAccessory = product.productType === "accessory";
   const outboundOffer = !isFixed && product.bestOffer?.id ? product.bestOffer : null;
   const href = productDetailPath(product.slug, product.productType);
 
   const pricePerKwh =
-    !isFixed && product.lowestPriceCents !== null && product.capacityKwh && product.capacityKwh > 0
+    !isFixed &&
+    !isAccessory &&
+    product.lowestPriceCents !== null &&
+    product.capacityKwh &&
+    product.capacityKwh > 0
       ? Math.round(product.lowestPriceCents / product.capacityKwh)
       : null;
 
@@ -48,9 +53,11 @@ export function ProductCard({ product }: { product: ProductListItem }) {
 
   return (
     <Card interactive className="group relative flex h-full flex-col overflow-hidden">
-      <div className="absolute top-3 right-3 z-20">
-        <CompareToggle slug={product.slug} name={product.name} />
-      </div>
+      {!isAccessory && (
+        <div className="absolute top-3 right-3 z-20">
+          <CompareToggle slug={product.slug} name={product.name} />
+        </div>
+      )}
 
       <Link
         href={href}

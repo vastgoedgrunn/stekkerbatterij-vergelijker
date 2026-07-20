@@ -15,7 +15,7 @@ import { catalogBasePath } from "@/features/products/product-paths";
 import { businessRules } from "@/config/business-rules";
 import { TrackView } from "@/lib/observability/track-view";
 
-export function catalogMetadata(productType: ProductType): Metadata {
+export function catalogMetadata(productType: Exclude<ProductType, "accessory">): Metadata {
   const base = catalogBasePath(productType);
   if (productType === "fixed") {
     return {
@@ -37,7 +37,7 @@ export async function CatalogByTypePage({
   productType,
   searchParams,
 }: {
-  productType: ProductType;
+  productType: Exclude<ProductType, "accessory">;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
