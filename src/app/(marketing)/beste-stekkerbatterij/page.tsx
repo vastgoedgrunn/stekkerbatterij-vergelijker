@@ -5,6 +5,7 @@ import { BatteryCharging, ShieldCheck, Zap } from "lucide-react";
 import { getProducts } from "@/features/products/queries";
 import type { ProductListItem } from "@/features/products/types";
 import { productDetailPath } from "@/features/products/product-paths";
+import { rankBestBuys } from "@/features/comparison/ranking";
 import { ProductRatingDisplay } from "@/components/patterns/product-rating-display";
 import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { Container, Section, SectionHeading } from "@/components/patterns/section";
@@ -16,12 +17,13 @@ import { itemListJsonLd } from "@/lib/seo/json-ld";
 import { formatNumber, formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
+import { businessRules } from "@/config/business-rules";
 
 export const revalidate = 3600;
 
 const title = "Beste stekkerbatterij 2026: onze top 10";
 const description =
-  "Onze onafhankelijke ranglijst van de beste plug-and-play stekkerbatterijen van 2026, geordend op prijs per kWh opslag. Vergelijk capaciteit, vermogen, garantie en prijs.";
+  "Onze onafhankelijke top 10 stekkerbatterijen van 2026 op beste koop: scherpe prijs per kWh, gecorrigeerd voor merkreputatie en reviews.";
 
 export const metadata: Metadata = {
   title,
@@ -95,10 +97,11 @@ export default async function BestBatteryPage() {
   const result = await getProducts({
     productType: "plug_in",
     sort: "value_asc",
-    pageSize: 10,
+    pageSize: businessRules.catalog.maxPageSize,
   });
-  // Alleen producten met live prijs in de top 10; vaste systemen zijn al uitgefilterd.
-  const products = result.items.filter((p) => p.lowestPriceCents !== null).slice(0, 10);
+  // Alleen live prijs; daarna beste-koop (niet kale €/kWh), top 10.
+  const priced = result.items.filter((p) => p.lowestPriceCents !== null);
+  const products = rankBestBuys(priced).slice(0, 10);
 
   const structuredData = itemListJsonLd(
     products.map((product) => ({
@@ -120,14 +123,17 @@ export default async function BestBatteryPage() {
             Beste stekkerbatterij van 2026
           </h1>
           <p className="text-muted-foreground mt-3 max-w-2xl text-lg">
-            Alleen plug-and-play stekkerbatterijen, geordend op de scherpste prijs per kWh opslag.
-            Zo zie je snel welke thuisaccu past bij capaciteit, vermogen, garantie en budget.
+            Alleen plug-and-play stekkerbatterijen, gerangschikt op beste koop: scherpe prijs per
+            kWh, gecorrigeerd voor merkreputatie en reviews. Zo staat niet automatisch de goedkoopste
+            met zwakke score bovenaan.
           </p>
           <div className="border-border bg-card text-muted-foreground mt-6 rounded-xl border p-4 text-sm leading-relaxed">
             <p>
-              <span className="text-foreground font-semibold">Hoe wij rangschikken:</span> laagste
-              actuele prijs per kWh opslagcapaciteit onder gepubliceerde stekkerbatterijen met live
-              aanbieder. Vaste thuisbatterijen horen hier niet thuis. Lees{" "}
+              <span className="text-foreground font-semibold">Hoe wij rangschikken:</span> we delen
+              de actuele prijs per kWh door de relatieve kwaliteitsscore (reviews of externe
+              merkscore). Scores onder 3,5 wegen zwaarder mee, zodat een zwakke reputatie niet
+              automatisch op 1 belandt. Wil je puur op €/kWh filteren, gebruik dan de catalogus.
+              Vaste thuisbatterijen horen hier niet thuis. Lees{" "}
               <Link
                 href={"/over-ons/hoe-wij-vergelijken" as Route}
                 className="text-primary font-medium underline-offset-4 hover:underline"
@@ -144,7 +150,7 @@ export default async function BestBatteryPage() {
         <Section className="py-10 sm:py-14">
           <SectionHeading
             eyebrow="Top 10"
-            title="Scherpste prijs per kWh"
+            title="Beste koop van dit moment"
             description="Elk model linkt door naar specificaties en het actuele prijsoverzicht."
           />
 
