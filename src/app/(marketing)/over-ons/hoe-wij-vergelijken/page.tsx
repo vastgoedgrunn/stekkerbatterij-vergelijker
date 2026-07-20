@@ -19,6 +19,10 @@ export const metadata: Metadata = {
 
 const criteria = [
   {
+    title: "Beste koop (top 10 stekker)",
+    text: "Op de pagina Beste stekkerbatterij rangschikken we op kwaliteit-gecorrigeerde prijs per kWh: scherpe €/kWh gedeeld door de relatieve merk- of reviewscore. Scores onder 3,5 krijgen een extra straf, zodat een zwakke reputatie niet automatisch op 1 staat. In de catalogus kun je nog steeds puur op €/kWh sorteren.",
+  },
+  {
     title: "Capaciteit vs. verbruik",
     text: "We vergelijken de batterijcapaciteit met je geschatte jaarverbruik. Te klein levert weinig voordeel; te groot is onnodig duur.",
   },

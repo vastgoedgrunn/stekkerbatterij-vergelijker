@@ -23,7 +23,61 @@ export interface RankedProduct {
  * Transparante, uitlegbare scoring. Geen black box: elke bijdrage is
  * herleidbaar naar een reden. Versiebaar zodat rankings reproduceerbaar zijn.
  */
-export const RANKING_VERSION = "1.0.0";
+export const RANKING_VERSION = "1.1.0";
+
+/** Externe score of eigen reviews (0 tot 5), anders null. */
+export function productQualityScore(product: ProductListItem): number | null {
+  if (product.rating.average !== null && product.rating.count > 0) {
+    return product.rating.average;
+  }
+  return product.marketScore?.average ?? null;
+}
+
+/** Prijs per kWh opslag in centen; lager is scherper. */
+export function productPricePerKwhCents(product: ProductListItem): number | null {
+  if (product.lowestPriceCents === null || !product.capacityKwh || product.capacityKwh <= 0) {
+    return null;
+  }
+  return product.lowestPriceCents / product.capacityKwh;
+}
+
+/**
+ * Beste-koop-metric (lager = beter): €/kWh gedeeld door relatieve kwaliteit.
+ * Zo wint niet automatisch de goedkoopste met zwakke merkscore.
+ * Scores onder 3,5 krijgen een extra straf van 25%, zodat “beste koop”
+ * dichter bij prijs-kwaliteit ligt dan bij kale dump-prijs.
+ */
+export function bestBuyMetric(product: ProductListItem): number {
+  const pricePerKwh = productPricePerKwhCents(product);
+  if (pricePerKwh === null) return Number.MAX_SAFE_INTEGER;
+
+  const quality = productQualityScore(product);
+  // Ontbrekende score: neutraal 3,5 (niet straffen noch belonen alsof het een topmerk is).
+  const qualityFactor = Math.max(0.35, (quality ?? 3.5) / 5);
+  let metric = pricePerKwh / qualityFactor;
+  if (quality !== null && quality < 3.5) {
+    metric *= 1.25;
+  }
+  return metric;
+}
+
+/** Rangschik plug-in producten op beste koop (kwaliteit-gecorrigeerde €/kWh). */
+export function rankBestBuys(products: ProductListItem[]): ProductListItem[] {
+  return [...products].sort((a, b) => {
+    const aPriced = a.lowestPriceCents !== null ? 0 : 1;
+    const bPriced = b.lowestPriceCents !== null ? 0 : 1;
+    if (aPriced !== bPriced) return aPriced - bPriced;
+    const diff = bestBuyMetric(a) - bestBuyMetric(b);
+    if (diff !== 0) return diff;
+    // Tie-break: hogere kwaliteit, daarna scherpere kale €/kWh.
+    const qDiff = (productQualityScore(b) ?? 0) - (productQualityScore(a) ?? 0);
+    if (qDiff !== 0) return qDiff;
+    return (
+      (productPricePerKwhCents(a) ?? Number.MAX_SAFE_INTEGER) -
+      (productPricePerKwhCents(b) ?? Number.MAX_SAFE_INTEGER)
+    );
+  });
+}
 
 export function rankProducts(
   products: ProductListItem[],
@@ -65,10 +119,7 @@ export function rankProducts(
     }
 
     // Reviews / externe marktscore
-    const scoreAverage =
-      product.rating.average !== null && product.rating.count > 0
-        ? product.rating.average
-        : product.marketScore?.average;
+    const scoreAverage = productQualityScore(product);
     if (scoreAverage != null) {
       score += scoreAverage * 3;
       if (scoreAverage >= 4) {
@@ -140,10 +191,7 @@ export function rankFixedProducts(
     }
 
     // Reviews / externe marktscore
-    const scoreAverage =
-      product.rating.average !== null && product.rating.count > 0
-        ? product.rating.average
-        : product.marketScore?.average;
+    const scoreAverage = productQualityScore(product);
     if (scoreAverage != null) {
       score += scoreAverage * 3;
       if (scoreAverage >= 4) {
