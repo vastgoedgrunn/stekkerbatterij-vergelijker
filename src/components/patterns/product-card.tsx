@@ -158,7 +158,7 @@ export function ProductCard({ product }: { product: ProductListItem }) {
                 ? "Offerte aanvragen"
                 : outboundOffer
                   ? `Details · vanaf ${formatPrice(outboundOffer.priceCents)}`
-                  : "Bekijk details"}
+                  : "Bekijk product"}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
             </span>
           </div>

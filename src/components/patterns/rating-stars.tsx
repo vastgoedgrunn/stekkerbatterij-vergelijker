@@ -1,6 +1,6 @@
-import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatNumber } from "@/lib/format";
+import { StarRatingRow } from "@/components/patterns/star-rating-row";
 
 interface RatingStarsProps {
   average: number | null;
@@ -19,17 +19,11 @@ export function RatingStars({ average, count, showCount = true, className }: Rat
 
   return (
     <div className={cn("flex items-center gap-1.5", className)} aria-label={ariaLabel}>
-      <div className="flex" aria-hidden>
-        {[1, 2, 3, 4, 5].map((i) => (
-          <Star
-            key={i}
-            className={cn(
-              "size-4",
-              i <= Math.round(value) ? "fill-warning text-warning" : "text-muted-foreground/40",
-            )}
-          />
-        ))}
-      </div>
+      {average !== null ? (
+        <StarRatingRow average={value} />
+      ) : (
+        <StarRatingRow average={0} />
+      )}
       {showCount && (
         <span className="text-muted-foreground text-sm">
           {average !== null ? (

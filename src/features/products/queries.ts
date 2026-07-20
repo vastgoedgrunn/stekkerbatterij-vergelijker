@@ -9,6 +9,7 @@ import {
   offerOutboundUrl,
 } from "@/features/offers-pricing/offer-eligibility";
 import { isOfferFresh } from "@/features/offers-pricing/offer-freshness";
+import { resolveProductImagePath } from "./product-image-fallbacks";
 import type {
   Brand,
   Category,
@@ -22,6 +23,7 @@ import type {
   ProductRating,
   ProductSort,
   ProductSpec,
+  ProductType,
 } from "./types";
 
 interface RawBrand {
@@ -244,9 +246,37 @@ function sortItems(items: ProductListItem[], sort: ProductSort): ProductListItem
   }
 }
 
-export async function getBrands(): Promise<Brand[]> {
+export async function getBrands(options?: { productType?: ProductType }): Promise<Brand[]> {
   if (!isSupabaseConfigured()) return [];
   const supabase = createSupabasePublicClient();
+
+  if (options?.productType) {
+    const { data, error } = await supabase
+      .from("products")
+      .select("brands!inner(id, name, slug)")
+      .eq("status", "published")
+      .is("deleted_at", null)
+      .eq("product_type", options.productType)
+      .returns<{ brands: RawBrand }[]>();
+    if (error) {
+      logger.warn("Kon merken niet laden voor producttype", {
+        productType: options.productType,
+        message: error.message,
+      });
+      return [];
+    }
+    const byId = new Map<string, Brand>();
+    for (const row of data ?? []) {
+      if (!row.brands) continue;
+      byId.set(row.brands.id, {
+        id: row.brands.id,
+        name: row.brands.name,
+        slug: row.brands.slug,
+      });
+    }
+    return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name, "nl"));
+  }
+
   const { data, error } = await supabase
     .from("brands")
     .select("id, name, slug")
@@ -386,7 +416,7 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
       cycles: r.cycles,
       warrantyYears: r.warranty_years,
       expandable: r.expandable,
-      imagePath: r.image_path,
+      imagePath: resolveProductImagePath(r.slug, r.image_path),
       productType: r.product_type ?? "plug_in",
       indicativePriceMinCents: r.indicative_price_min_cents,
       indicativePriceMaxCents: r.indicative_price_max_cents,
@@ -532,7 +562,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
     cycles: product.cycles,
     warrantyYears: product.warranty_years,
     expandable: product.expandable,
-    imagePath: product.image_path,
+    imagePath: resolveProductImagePath(product.slug, product.image_path),
     productType: product.product_type ?? "plug_in",
     indicativePriceMinCents: product.indicative_price_min_cents,
     indicativePriceMaxCents: product.indicative_price_max_cents,

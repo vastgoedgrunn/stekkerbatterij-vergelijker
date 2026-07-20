@@ -3,7 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, RefreshCw } from "lucide-react";
+import { ArrowLeft, ArrowRight, BatteryCharging, Check, RefreshCw } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -45,7 +45,13 @@ const budgetOptions = [
 
 type Step = 0 | 1 | 2 | 3 | 4 | 5;
 
-export function DecisionWizard({ products }: { products: ProductListItem[] }) {
+export function DecisionWizard({
+  products,
+  eWndrEnabled = false,
+}: {
+  products: ProductListItem[];
+  eWndrEnabled?: boolean;
+}) {
   const [step, setStep] = React.useState<Step>(0);
   const [prefs, setPrefs] = React.useState<WizardPreferences>({
     yearlyUsageKwh: 2750,
@@ -228,7 +234,11 @@ export function DecisionWizard({ products }: { products: ProductListItem[] }) {
           </div>
 
           {(showLeadPath || showBothPaths) && (
-            <LeadPanel qualification={qualification} source="wizard" />
+            <LeadPanel
+              qualification={qualification}
+              source="wizard"
+              eWndrEnabled={eWndrEnabled}
+            />
           )}
 
           {!showLeadPath && qualification.reasons.length > 0 && (
@@ -305,7 +315,7 @@ function RecommendationCard({
     <Card interactive className={cn(index === 0 && "border-primary/40 ring-primary/15 ring-2")}>
       <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
         <div className="relative size-24 shrink-0 self-center overflow-hidden rounded-2xl border border-zinc-100 bg-white">
-          {imageUrl && (
+          {imageUrl ? (
             <Image
               src={imageUrl}
               alt={rec.product.name}
@@ -313,6 +323,10 @@ function RecommendationCard({
               sizes="96px"
               className="object-contain p-2"
             />
+          ) : (
+            <span className="flex h-full w-full items-center justify-center bg-zinc-50">
+              <BatteryCharging className="text-primary/25 size-10" aria-hidden />
+            </span>
           )}
         </div>
         <div className="flex-1">
@@ -334,8 +348,12 @@ function RecommendationCard({
           </ul>
         </div>
         <div className="flex flex-col items-stretch gap-2 sm:items-end sm:text-right">
-          {showPrice && !isFixed && rec.product.lowestPriceCents !== null && (
-            <p className="text-xl font-bold">{formatPrice(rec.product.lowestPriceCents)}</p>
+          {showPrice && !isFixed && (
+            rec.product.lowestPriceCents !== null ? (
+              <p className="text-xl font-bold">{formatPrice(rec.product.lowestPriceCents)}</p>
+            ) : (
+              <p className="text-muted-foreground text-sm font-medium">Prijs volgt</p>
+            )
           )}
           {isFixed && (
             <p className="text-muted-foreground text-sm font-medium">Prijs via offerte</p>
@@ -362,8 +380,16 @@ function RecommendationCard({
                 Offerte aanvragen
               </Link>
             ) : (
-              <Link href={href} className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
-                Bekijk details
+              <Link
+                href={href}
+                className={cn(
+                  buttonVariants({
+                    size: "sm",
+                    variant: rec.product.bestOffer?.affiliateUrl ? "outline" : "primary",
+                  }),
+                )}
+              >
+                Bekijk product
               </Link>
             )}
           </div>

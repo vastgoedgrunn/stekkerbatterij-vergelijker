@@ -4,6 +4,7 @@ import { getProducts } from "@/features/products/queries";
 import { DecisionWizard } from "@/features/comparison/decision-wizard";
 import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { businessRules } from "@/config/business-rules";
+import { serverEnv } from "@/lib/env/server";
 
 export const metadata: Metadata = {
   title: "Beslishulp: welke thuisbatterij past bij jou?",
@@ -39,7 +40,10 @@ export default async function DecisionAidPage() {
 
         {items.length > 0 ? (
           <>
-            <DecisionWizard products={items} />
+            <DecisionWizard
+              products={items}
+              eWndrEnabled={Boolean(serverEnv.EWNDR_LEAD_AFFILIATE_URL)}
+            />
             <AffiliateDisclosure className="mt-8" />
           </>
         ) : (
