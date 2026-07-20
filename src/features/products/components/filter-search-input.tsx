@@ -26,6 +26,22 @@ export function FilterSearchInput({
     };
   }, []);
 
+  const submitForm = (form: HTMLFormElement | null) => {
+    if (!form) return;
+    // Lege number-velden niet meesturen: voorkomt minCap="" → per ongeluk 0 in de URL.
+    const emptied: HTMLInputElement[] = [];
+    for (const field of Array.from(form.elements)) {
+      if (!(field instanceof HTMLInputElement)) continue;
+      if (field.type !== "number") continue;
+      if (field.value.trim() === "") {
+        field.disabled = true;
+        emptied.push(field);
+      }
+    }
+    form.requestSubmit();
+    for (const field of emptied) field.disabled = false;
+  };
+
   return (
     <Input
       id={id}
@@ -39,14 +55,14 @@ export function FilterSearchInput({
         if (!form) return;
         if (timerRef.current) clearTimeout(timerRef.current);
         timerRef.current = setTimeout(() => {
-          form.requestSubmit();
+          submitForm(form);
         }, 350);
       }}
       onKeyDown={(event) => {
         if (event.key !== "Enter") return;
         event.preventDefault();
         if (timerRef.current) clearTimeout(timerRef.current);
-        event.currentTarget.form?.requestSubmit();
+        submitForm(event.currentTarget.form);
       }}
     />
   );

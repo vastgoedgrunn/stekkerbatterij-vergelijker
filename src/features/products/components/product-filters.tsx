@@ -1,3 +1,5 @@
+"use client";
+
 import type { Route } from "next";
 import Link from "next/link";
 import { SlidersHorizontal } from "lucide-react";
@@ -16,12 +18,23 @@ interface Props {
   action?: Route;
 }
 
+function disableEmptyNumberFields(form: HTMLFormElement) {
+  for (const field of Array.from(form.elements)) {
+    if (!(field instanceof HTMLInputElement)) continue;
+    if (field.type !== "number") continue;
+    if (field.value.trim() === "") field.disabled = true;
+  }
+}
+
 export function ProductFilterPanel({ brands, categories, filters, action = "/batterijen" }: Props) {
   return (
     <form
       method="get"
       action={action}
       className="border-border bg-card rounded-2xl border p-5 shadow-[var(--shadow-xs)]"
+      onSubmit={(event) => {
+        disableEmptyNumberFields(event.currentTarget);
+      }}
     >
       <div className="mb-4 flex items-center gap-2">
         <SlidersHorizontal className="text-primary size-4" />
