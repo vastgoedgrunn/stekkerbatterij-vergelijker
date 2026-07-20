@@ -44,7 +44,7 @@ bij het genereren van de deeplink is voldoende; productpaden zetten we in `dl`.
 ### Daisycon (energie)
 
 1. Publisher-account op [daisycon.com](https://www.daisycon.com/nl/).
-2. **Media verifiëren** (jouw media-ID: `423132`, site moet publiek bereikbaar zijn):
+2. **Media verifiëren** (jouw media-ID: `423133`, site moet publiek bereikbaar zijn):
    - Kies **Verifieer via metatag** (aanbevolen).
    - Kopieer de `content`-waarde uit de metatag → zet in Vercel als
      `NEXT_PUBLIC_DAISYCON_VERIFY_CONTENT` (Production + Preview).
