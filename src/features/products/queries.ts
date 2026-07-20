@@ -390,8 +390,8 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
       productType: r.product_type ?? "plug_in",
       indicativePriceMinCents: r.indicative_price_min_cents,
       indicativePriceMaxCents: r.indicative_price_max_cents,
-      lowestPriceCents: lowestPrice(activeOffers(r.offers)),
-      offerCount: activeOffers(r.offers).length,
+      lowestPriceCents: lowestPrice(outboundOffers(r.offers)),
+      offerCount: outboundOffers(r.offers).length,
       bestOffer: mapBestListOffer(r.offers),
       rating: ratings.get(r.id) ?? { average: null, count: 0 },
       marketScore: mapMarketScore(r),
@@ -501,7 +501,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
       priceCents: o.price_cents,
       stockStatus: o.stock_status,
       deliveryDays: o.delivery_days,
-      affiliateUrl: offerOutboundUrl(o),
+      affiliateUrl: isEligibleOutboundOffer(o) ? offerOutboundUrl(o) : null,
       lastCheckedAt: o.last_checked_at,
       estimatedCommissionCents: estimateCommissionCents({
         commissionType: o.commission_type,
@@ -516,6 +516,9 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   const bestOutbound = bestRaw
     ? (offers.find((o) => o.id === bestRaw.id) ?? offers.find((o) => o.affiliateUrl))
     : offers.find((o) => o.affiliateUrl);
+
+  const outboundOnly = offers.filter((o) => o.affiliateUrl);
+  const priceOffers = outboundOnly.length > 0 ? outboundOnly : offers;
 
   return {
     id: product.id,
@@ -535,8 +538,8 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
     indicativePriceMaxCents: product.indicative_price_max_cents,
     supplierId: product.supplier_id,
     sellable: product.sellable ?? false,
-    lowestPriceCents: offers.length > 0 ? offers[0]!.priceCents : null,
-    offerCount: offers.length,
+    lowestPriceCents: priceOffers.length > 0 ? priceOffers[0]!.priceCents : null,
+    offerCount: outboundOnly.length > 0 ? outboundOnly.length : offers.length,
     bestOffer: bestOutbound
       ? {
           id: bestOutbound.id,

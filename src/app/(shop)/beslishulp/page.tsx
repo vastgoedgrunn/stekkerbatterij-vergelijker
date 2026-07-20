@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getProducts } from "@/features/products/queries";
 import { DecisionWizard } from "@/features/comparison/decision-wizard";
 import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
@@ -12,7 +13,12 @@ export const metadata: Metadata = {
 };
 
 export default async function DecisionAidPage() {
-  const { items } = await getProducts({ pageSize: businessRules.catalog.maxPageSize });
+  const pageSize = businessRules.catalog.maxPageSize;
+  const [plugIn, fixed] = await Promise.all([
+    getProducts({ productType: "plug_in", pageSize }),
+    getProducts({ productType: "fixed", pageSize }),
+  ]);
+  const items = [...plugIn.items, ...fixed.items];
 
   return (
     <main id="main-content" className="relative overflow-hidden">
@@ -38,7 +44,11 @@ export default async function DecisionAidPage() {
           </>
         ) : (
           <p className="text-muted-foreground text-center">
-            Er zijn nog geen producten beschikbaar om een advies op te baseren.
+            De beslishulp is tijdelijk niet beschikbaar. Bekijk ondertussen onze{" "}
+            <Link href="/stekkerbatterijen" className="text-primary font-medium underline">
+              stekkerbatterijen
+            </Link>
+            .
           </p>
         )}
       </div>

@@ -1,6 +1,5 @@
 import { Truck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
@@ -117,9 +116,7 @@ export function OfferTable({
                   }}
                 />
               ) : (
-                <span className={cn(buttonVariants({ size: "sm", variant: "secondary" }))}>
-                  Koop bij ons
-                </span>
+                <span className="text-muted-foreground text-sm font-medium">Link volgt</span>
               )}
             </div>
           </li>

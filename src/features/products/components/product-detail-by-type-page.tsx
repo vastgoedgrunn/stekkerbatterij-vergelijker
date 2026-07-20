@@ -100,7 +100,11 @@ export async function ProductDetailByTypePage({
   const product = await getProductBySlug(slug);
   if (!product || product.productType !== expectedType) notFound();
 
-  const [reviews, faqs] = await Promise.all([getApprovedReviews(product.id), getFaqs()]);
+  const [reviews, faqsRaw] = await Promise.all([getApprovedReviews(product.id), getFaqs()]);
+  const faqs =
+    expectedType === "fixed"
+      ? faqsRaw.filter((f) => !/stekkerbatterij/i.test(f.question))
+      : faqsRaw;
   const imageUrl = getPublicImageUrl(product.imagePath);
   const isFixed = product.productType === "fixed";
   const basePath = catalogBasePath(expectedType);

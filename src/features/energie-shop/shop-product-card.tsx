@@ -6,7 +6,7 @@ import { ProductImage } from "@/components/patterns/product-image";
 import { formatPrice } from "@/lib/format";
 import { getPublicImageUrl } from "@/lib/supabase/storage";
 import type { ShopCatalogItem } from "./catalog";
-import type { ShopOfferRow } from "./queries";
+import { SHOP_IMAGE_FALLBACKS, type ShopOfferRow } from "./queries";
 
 export function ShopProductCard({
   item,
@@ -22,7 +22,7 @@ export function ShopProductCard({
       ? `${quantity}× ${formatPrice(offer.priceCents)}`
       : formatPrice(offer.priceCents)
     : null;
-  const imageUrl = getPublicImageUrl(offer?.imagePath ?? null);
+  const imageUrl = getPublicImageUrl(offer?.imagePath ?? SHOP_IMAGE_FALLBACKS[item.slug] ?? null);
 
   return (
     <article

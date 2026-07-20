@@ -6,11 +6,15 @@ import { GitCompare, X } from "lucide-react";
 import { useCompare } from "./compare-store";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { businessRules } from "@/config/business-rules";
 
 const COMPARE_BAR_SPACE = "calc(5.5rem + env(safe-area-inset-bottom, 0px))";
+const MIN_COMPARE = businessRules.comparison.minItems;
 
 export function CompareBar() {
   const { items, slugs, clear, remove } = useCompare();
+  const canCompare = slugs.length >= MIN_COMPARE;
+  const needMore = Math.max(0, MIN_COMPARE - slugs.length);
 
   React.useEffect(() => {
     if (slugs.length === 0) {
@@ -61,12 +65,24 @@ export function CompareBar() {
           >
             Wissen
           </button>
-          <Link
-            href={{ pathname: "/vergelijken", query: { ids: slugs.join(",") } }}
-            className={cn(buttonVariants({ size: "sm" }), "min-h-11")}
-          >
-            Vergelijk nu
-          </Link>
+          {canCompare ? (
+            <Link
+              href={{ pathname: "/vergelijken", query: { ids: slugs.join(",") } }}
+              className={cn(buttonVariants({ size: "sm" }), "min-h-11")}
+            >
+              Vergelijk nu
+            </Link>
+          ) : (
+            <span
+              className={cn(
+                buttonVariants({ size: "sm", variant: "secondary" }),
+                "min-h-11 cursor-not-allowed opacity-70",
+              )}
+              aria-disabled="true"
+            >
+              Nog {needMore} kiezen
+            </span>
+          )}
         </div>
       </div>
     </div>
