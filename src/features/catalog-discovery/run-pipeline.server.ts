@@ -6,6 +6,7 @@ import { discoverCatalogCandidates } from "./discover";
 import { scoreSkuMatch } from "./match-sku";
 import { persistCandidateRow } from "./persist-candidate";
 import { publishProductIfReady } from "./publish.server";
+import { refreshBolOfferPrices } from "./refresh-bol-prices.server";
 import { upsertProductFromCandidate } from "./upsert-product.server";
 import type { PipelineStats } from "./types";
 
@@ -21,6 +22,12 @@ export type PipelineResult = {
   stats: PipelineStats;
   bolConfigured: boolean;
   bolDetail: string;
+  priceRefresh?: {
+    updated: number;
+    needsApproval: number;
+    outOfStock: number;
+    checked: number;
+  };
 };
 
 /**
@@ -151,11 +158,29 @@ export async function runCatalogDiscoveryPipeline(input?: {
     }
   }
 
+  let priceRefresh: PipelineResult["priceRefresh"];
+  try {
+    const prices = await refreshBolOfferPrices();
+    priceRefresh = {
+      updated: prices.updated,
+      needsApproval: prices.needsApproval,
+      outOfStock: prices.outOfStock,
+      checked: prices.checked,
+    };
+    if (prices.needsApproval > 0) {
+      stats.errors.push(
+        `Bol prijsrefresh: ${prices.needsApproval} offer(s) >10% verschil, wacht op verification gate`,
+      );
+    }
+  } catch (error) {
+    stats.errors.push(`Bol prijsrefresh: ${error instanceof Error ? error.message : "onbekend"}`);
+  }
+
   await db
     .from("catalog_runs")
     .update({
       finished_at: new Date().toISOString(),
-      stats: stats as never,
+      stats: { ...stats, priceRefresh } as never,
       error_message: stats.errors.length > 0 ? stats.errors.slice(0, 5).join(" | ") : null,
     } as never)
     .eq("id", run.id);
@@ -165,5 +190,6 @@ export async function runCatalogDiscoveryPipeline(input?: {
     stats,
     bolConfigured: bolStatus.configured,
     bolDetail: bolStatus.detail,
+    priceRefresh,
   };
 }

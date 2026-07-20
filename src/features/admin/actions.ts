@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import {
   canManageCatalog,
   canManageOrders,
@@ -16,6 +17,33 @@ import type {
   CommissionType,
   ProductStatus,
 } from "@/lib/db/database.types";
+
+function isNextRedirectError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "digest" in error &&
+    typeof (error as { digest?: unknown }).digest === "string" &&
+    String((error as { digest: string }).digest).startsWith("NEXT_REDIRECT")
+  );
+}
+
+function redirectCatalogNotice(notice: string, extra?: Record<string, string | number>): never {
+  const params = new URLSearchParams({ notice });
+  if (extra) {
+    for (const [key, value] of Object.entries(extra)) {
+      params.set(key, String(value));
+    }
+  }
+  redirect(`/admin/catalog?${params.toString()}`);
+}
+
+function redirectCatalogError(message: string): never {
+  const params = new URLSearchParams({
+    error: message.slice(0, 240),
+  });
+  redirect(`/admin/catalog?${params.toString()}`);
+}
 
 async function assertCatalogAccess(): Promise<string> {
   const user = await requireAdminUser();
@@ -339,10 +367,19 @@ export async function runCatalogDiscoveryAction(): Promise<void> {
     await assertCatalogAccess();
     const { runCatalogDiscoveryPipeline } =
       await import("@/features/catalog-discovery/run-pipeline.server");
-    await runCatalogDiscoveryPipeline({ triggerSource: "admin" });
+    const result = await runCatalogDiscoveryPipeline({ triggerSource: "admin" });
     revalidatePath("/admin/catalog");
-  } catch {
-    // Auth failures redirect.
+    redirectCatalogNotice("discovery", {
+      discovered: result.stats.discovered,
+      published: result.stats.published,
+      review: result.stats.needsReview,
+      bol: result.bolConfigured ? "live" : "stub",
+    });
+  } catch (error) {
+    if (isNextRedirectError(error)) throw error;
+    redirectCatalogError(
+      error instanceof Error ? error.message : "Discovery mislukt (onbekende fout).",
+    );
   }
 }
 
@@ -355,12 +392,42 @@ export async function refreshProductImagesAction(): Promise<void> {
     await assertCatalogAccess();
     const { refreshAllProductImages } =
       await import("@/features/catalog-discovery/refresh-product-images.server");
-    await refreshAllProductImages({ preferLocalAssets: true });
+    const result = await refreshAllProductImages({ preferLocalAssets: true });
     revalidatePath("/admin/catalog");
     revalidatePath("/admin/products");
     revalidatePublicCatalog();
-  } catch {
-    // Auth / storage errors: stil voor form post.
+    redirectCatalogNotice("images", {
+      updated: result.updated,
+    });
+  } catch (error) {
+    if (isNextRedirectError(error)) throw error;
+    redirectCatalogError(
+      error instanceof Error ? error.message : "Productfoto's vernieuwen mislukt.",
+    );
+  }
+}
+
+/** Vernieuw Bol-offerprijzen via Marketing Catalog API (≤10% auto). */
+export async function refreshBolPricesAction(): Promise<void> {
+  try {
+    await assertCatalogAccess();
+    const { refreshBolOfferPrices } =
+      await import("@/features/catalog-discovery/refresh-bol-prices.server");
+    const result = await refreshBolOfferPrices();
+    revalidatePath("/admin/catalog");
+    revalidatePath("/admin/products");
+    revalidatePublicCatalog();
+    redirectCatalogNotice("bol-prices", {
+      checked: result.checked,
+      updated: result.updated,
+      approval: result.needsApproval,
+      stock: result.outOfStock,
+    });
+  } catch (error) {
+    if (isNextRedirectError(error)) throw error;
+    redirectCatalogError(
+      error instanceof Error ? error.message : "Bol-prijzen vernieuwen mislukt.",
+    );
   }
 }
 

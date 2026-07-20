@@ -8,16 +8,57 @@ import {
 import { getBolClientStatus } from "@/features/catalog-discovery/bol-client";
 import {
   approveCatalogCandidateAction,
+  refreshBolPricesAction,
   refreshProductImagesAction,
   rejectCatalogCandidateAction,
   runCatalogDiscoveryAction,
 } from "@/features/admin/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CatalogPendingButton } from "./catalog-pending-button";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminCatalogHealthPage() {
+function noticeMessage(
+  notice: string | undefined,
+  params: Record<string, string | undefined>,
+): string | null {
+  if (!notice) return null;
+  if (notice === "discovery") {
+    return `Discovery klaar: ${params.discovered ?? "0"} hits, ${params.published ?? "0"} gepubliceerd, ${params.review ?? "0"} in review (Bol: ${params.bol ?? "?"}).`;
+  }
+  if (notice === "images") {
+    return `Productfoto's vernieuwd: ${params.updated ?? "0"} bijgewerkt.`;
+  }
+  if (notice === "bol-prices") {
+    return `Bol-prijzen: ${params.checked ?? "0"} gecheckt, ${params.updated ?? "0"} auto-update, ${params.approval ?? "0"} wacht op goedkeuring, ${params.stock ?? "0"} zonder voorraad.`;
+  }
+  return "Actie uitgevoerd.";
+}
+
+export default async function AdminCatalogHealthPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const sp = await searchParams;
+  const one = (key: string) => {
+    const v = sp[key];
+    return Array.isArray(v) ? v[0] : v;
+  };
+
+  const flashOk = noticeMessage(one("notice"), {
+    discovered: one("discovered"),
+    published: one("published"),
+    review: one("review"),
+    bol: one("bol"),
+    updated: one("updated"),
+    checked: one("checked"),
+    approval: one("approval"),
+    stock: one("stock"),
+  });
+  const flashError = one("error") ?? null;
+
   let report: Awaited<ReturnType<typeof getCatalogCompletenessReport>> | null = null;
   let loadError: string | null = null;
   let candidates: Awaited<ReturnType<typeof listCatalogCandidates>> = [];
@@ -42,6 +83,20 @@ export default async function AdminCatalogHealthPage() {
         Completeness per marquee-merk, discovery-queue (SKU-match) en affiliate-linkstatus.
       </p>
 
+      {flashOk && (
+        <p className="border-primary/30 bg-primary/5 text-foreground mt-4 rounded-lg border px-3 py-2 text-sm">
+          {flashOk}
+        </p>
+      )}
+      {flashError && (
+        <p
+          className="border-destructive/40 bg-destructive/5 text-destructive mt-4 rounded-lg border px-3 py-2 text-sm"
+          role="alert"
+        >
+          Fout: {flashError}
+        </p>
+      )}
+
       <section className="border-border mt-6 rounded-xl border p-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -51,17 +106,28 @@ export default async function AdminCatalogHealthPage() {
               {" · "}
               {bolStatus.detail}
             </p>
+            {bolStatus.mode === "stub" && (
+              <p className="mt-2 text-xs text-amber-700 dark:text-amber-400">
+                Deze deploy kent de Marketing Catalog-keys nog niet. Na merge van de Bol-PR zie je
+                hier &quot;live&quot;.
+              </p>
+            )}
           </div>
           <div className="flex flex-wrap gap-2">
             <form action={runCatalogDiscoveryAction}>
-              <Button type="submit" size="sm">
+              <CatalogPendingButton size="sm" pendingLabel="Discovery…">
                 Run discovery nu
-              </Button>
+              </CatalogPendingButton>
+            </form>
+            <form action={refreshBolPricesAction}>
+              <CatalogPendingButton size="sm" variant="outline" pendingLabel="Prijzen…">
+                Vernieuw Bol-prijzen
+              </CatalogPendingButton>
             </form>
             <form action={refreshProductImagesAction}>
-              <Button type="submit" size="sm" variant="outline">
+              <CatalogPendingButton size="sm" variant="outline" pendingLabel="Foto's…">
                 Vernieuw productfoto&apos;s
-              </Button>
+              </CatalogPendingButton>
             </form>
           </div>
         </div>
@@ -107,13 +173,13 @@ export default async function AdminCatalogHealthPage() {
                   <form action={approveCatalogCandidateAction}>
                     <input type="hidden" name="candidateId" value={c.id} />
                     <Button type="submit" size="sm">
-                      Approve &amp; publish
+                      Goedkeuren + publiceren
                     </Button>
                   </form>
                   <form action={rejectCatalogCandidateAction}>
                     <input type="hidden" name="candidateId" value={c.id} />
                     <Button type="submit" size="sm" variant="outline">
-                      Reject
+                      Afwijzen
                     </Button>
                   </form>
                 </div>

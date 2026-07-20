@@ -6,19 +6,22 @@ met geverifieerde outbound-links.
 ## Code
 
 - Pipeline: `src/features/catalog-discovery/run-pipeline.server.ts`
-- Bol stub/feed: `src/features/catalog-discovery/bol-client.ts`
+- Bol Marketing Catalog + feed-fallback: `src/features/catalog-discovery/bol-client.ts`
+- Bol prijsrefresh (≤10% auto, groter = gate): `refresh-bol-prices.server.ts`
 - Image ingest: `ingest-image.server.ts` + `refresh-product-images.server.ts`
   (download merchant/fabrikant-foto → Supabase Storage `products` / `catalog/{slug}.ext`)
-- Admin: `/admin/catalog` (Run discovery, Vernieuw productfoto's, review-queue)
+- Admin: `/admin/catalog` (Run discovery, Vernieuw Bol-prijzen, Vernieuw productfoto's, review-queue)
 - Migraties: `0013_catalog_discovery.sql`, `0014_products_storage_bucket.sql`
 
 ## Env (Vercel)
 
 | Variabele | Rol |
 |-----------|-----|
-| `BOL_PRODUCT_FEED_URL` | Productfeed JSON/CSV (primair) |
-| `BOL_PARTNER_API_KEY` | Optionele Bearer voor feed/API |
-| `BOL_PUBLISHER_ID` | Bouwt `partner.bol.com` deeplinks |
+| `BOL_CLIENT_ID` | Marketing Catalog OAuth client ID |
+| `BOL_CLIENT_SECRET` | Marketing Catalog OAuth secret (één regel, geen newlines) |
+| `BOL_PUBLISHER_ID` | Bouwt `partner.bol.com` deeplinks (`s=`) |
+| `BOL_PRODUCT_FEED_URL` | Optionele productfeed JSON/CSV (legacy fallback) |
+| `BOL_PARTNER_API_KEY` | Optionele Bearer voor feed |
 
 Zonder keys: research seeds + agent-research; zelfde SKU-match gate.
 
