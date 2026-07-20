@@ -24,7 +24,6 @@ export type PipelineResult = {
   bolDetail: string;
   priceRefresh?: {
     updated: number;
-    needsApproval: number;
     outOfStock: number;
     checked: number;
   };
@@ -163,15 +162,9 @@ export async function runCatalogDiscoveryPipeline(input?: {
     const prices = await refreshBolOfferPrices();
     priceRefresh = {
       updated: prices.updated,
-      needsApproval: prices.needsApproval,
       outOfStock: prices.outOfStock,
       checked: prices.checked,
     };
-    if (prices.needsApproval > 0) {
-      stats.errors.push(
-        `Bol prijsrefresh: ${prices.needsApproval} offer(s) >10% verschil, wacht op verification gate`,
-      );
-    }
   } catch (error) {
     stats.errors.push(`Bol prijsrefresh: ${error instanceof Error ? error.message : "onbekend"}`);
   }

@@ -6,8 +6,7 @@ alwaysApply: true
 # Digital company — operating system
 
 You are one department of an autonomous team that keeps this site accurate, fast,
-and converting, with the owner doing as little as possible (approve in Cursor chat
-when present; Slack is optional digest / backup).
+and converting. The owner wants **full auto**: no routine ✅ in Slack or Cursor.
 
 ## Where your tasks live
 
@@ -28,20 +27,15 @@ timing; they do not replace these files.
 - **Small, focused PRs.** One concern per PR. Keep TypeScript strict; no `any`.
 - **Respect layer boundaries** (`src/features` & `src/lib` must not import `@/app/*`).
 
-## The one human carve-out — price/fact verification gate
+## Full auto for prices & facts (owner policy)
 
-Any researched price, spec, or factual claim (saldering, subsidies, regulation) MUST go
-through the `price-fact-verification` skill. Small in-margin price moves may auto-update;
-large deviations or new claims need **explicit owner approval with source citation**.
+Follow `price-fact-verification`: with a citable source, **auto-update / auto-publish**.
+Do **not** ask for Cursor ✅ or Slack 🔒 for price moves, catalog offers, or sourced claims.
+Without a source: do not publish; retry later; digest only. Never invent facts.
+Still never mark outbound `ok` on search-URLs or SKU mismatches.
 
-### Where approval happens (priority order)
-
-1. **Cursor chat (preferred when owner is in the conversation):** If the owner clearly
-   approves in this chat (e.g. "✅", "doe maar", "akkoord", "goedkeuren"), **execute
-   immediately**. Do not wait for a Slack ✅. Do not ask them to repeat the approval in Slack.
-2. **Slack 🔒:** Only when the owner is **not** in an active Cursor chat that can approve
-   (scheduled Cloud Agent runs, overnight jobs). Then use the 🔒 template + PR URL + EXECUTE.
-3. Never auto-publish unverified facts without one of the above.
+Money-out actions (refunds, paid supplier spend) stay on the commerce-ops admin path;
+that is separate from content/price automation.
 
 ## KPIs you optimize for
 
@@ -51,27 +45,10 @@ large deviations or new claims need **explicit owner approval with source citati
 
 ## Reporting
 
-- **In Cursor chat:** Prefer reporting progress and asking for gate approval here when the
-  owner started or is active in the conversation. Execute on their ✅ in-chat.
-- **Slack:** Optional short digest after a run (what changed, PR link, checks). Use 🔒 Slack
-  **only** when Cursor chat cannot get the approval (unattended automation).
-
-### 🔒-goedkeuringen via Slack (alleen unattended)
-
-Owner reageert met ✅ → automation **Slack ✅ execute approval** voert uit. Zonder PR-link
-kan die automation niets mergen. Daarom:
-
-1. **Eerst** branch + PR openen (label `agent` + department), ook als publicatie nog wacht.
-2. **Daarna** Slack-bericht starten met `🔒`, met **PR-URL**, bron/citaat, en concrete
-   `EXECUTE:`-regels (merge PR, DB-stappen, admin-actie).
-3. Nooit een 🔒 posten zonder PR-URL, behalve pure admin-only gates (lead/refund) waar geen
-   code-PR hoort; dan wel een admin-URL + `EXECUTE:`-regel.
-4. Als de owner al in Cursor heeft goedgekeurd: **geen** 🔒 posten; wel optioneel een
-   korte "uitgevoerd"-digest zonder actie te vragen.
-
-Sjabloon: `docs/agents/slack-ops.md` en skill `price-fact-verification`.
+- Prefer a short digest (Cursor and/or Slack): what changed, PR link, checks. **No action asked.**
+- Do not post 🔒 approval requests for routine data/content/CRO work.
 
 ## Definition of done
 
 Branch + PR opened & labelled → all required checks green → preview verified → (auto-)merged →
-production healthy → short summary (Cursor and/or Slack digest).
+production healthy → short digest (no owner ✅ required).

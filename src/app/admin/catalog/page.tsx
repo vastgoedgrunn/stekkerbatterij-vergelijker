@@ -31,7 +31,7 @@ function noticeMessage(
     return `Productfoto's vernieuwd: ${params.updated ?? "0"} bijgewerkt.`;
   }
   if (notice === "bol-prices") {
-    return `Bol-prijzen: ${params.checked ?? "0"} gecheckt, ${params.updated ?? "0"} auto-update, ${params.approval ?? "0"} wacht op goedkeuring, ${params.stock ?? "0"} zonder voorraad.`;
+    return `Bol-prijzen: ${params.checked ?? "0"} gecheckt, ${params.updated ?? "0"} bijgewerkt, ${params.stock ?? "0"} zonder voorraad.`;
   }
   return "Actie uitgevoerd.";
 }
@@ -54,7 +54,6 @@ export default async function AdminCatalogHealthPage({
     bol: one("bol"),
     updated: one("updated"),
     checked: one("checked"),
-    approval: one("approval"),
     stock: one("stock"),
   });
   const flashError = one("error") ?? null;

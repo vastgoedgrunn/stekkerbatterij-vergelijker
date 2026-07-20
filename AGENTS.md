@@ -1,7 +1,7 @@
 # Stekkerbatterij Vergelijker — the digital company
 
 This repo is maintained and improved by an autonomous team of AI agents ("departments"), so the
-owner can approve in Cursor chat when present (Slack is optional digest / unattended backup).
+owner stays hands-off. Agents ship via PR + auto-merge; no routine ✅ in Slack or Cursor.
 This file is the map; the enforceable rules live in `.cursor/rules/` (the global guardrails in
 `.cursor/rules/00-agent-operating-system.mdc` always apply).
 
@@ -19,7 +19,7 @@ agent start (cron); de **inhoud** wijzig je via PR op de rule files. Korte start
 |---|---|---|
 | Content & SEO | `.cursor/rules/content-seo-agent.mdc` | weekly + on-demand |
 | Conversion / CRO | `.cursor/rules/conversion-cro-agent.mdc` | biweekly + after report |
-| Data & prices (verification gate) | `.cursor/rules/data-prices-agent.mdc` | daily |
+| Data & prices (full auto) | `.cursor/rules/data-prices-agent.mdc` | daily |
 | Tech & maintenance | `.cursor/rules/tech-maintenance-agent.mdc` | weekly + on alerts |
 | Design & UX | `.cursor/rules/design-ux-agent.mdc` | biweekly + on-demand |
 | QA & monitoring | `.cursor/rules/qa-monitoring-agent.mdc` | daily + event-driven |
@@ -37,9 +37,9 @@ herschrijf met natuurlijk Nederlands (komma, punt, of woorden als "tot"). Zie de
 rule `.cursor/rules/copy-style-no-dashes.mdc`.
 
 Reusable skills: `.cursor/skills/ship-via-pr` (how work ships) and
-`.cursor/skills/price-fact-verification` (the human carve-out gate).
+`.cursor/skills/price-fact-verification` (source-backed auto publish; no owner ✅).
 Automation schedules to create in Cursor: `docs/agents/automations.md`.
-Slack ops + 1-click approvals: `docs/agents/slack-ops.md`, `docs/agents/approval-playbook.md`.
+Slack digests: `docs/agents/slack-ops.md`.
 
 ## Full-auto guardrails
 
@@ -48,8 +48,8 @@ Slack ops + 1-click approvals: `docs/agents/slack-ops.md`, `docs/agents/approval
   CI (typecheck, lint, format, build), Lighthouse CI budgets, broken-link check.
 - Vercel preview verified before promote; production auto-rolls back on health degradation
   (`.github/workflows/post-deploy-health.yml`).
-- Only human step: the **price/fact verification gate** (approve in Cursor chat when present,
-  or Slack ✅ when unattended; always with source).
+- Prices/facts with a citable source: **auto-publish** (no owner ✅). Without a source: skip.
+  Never invent. Never mark outbound `ok` on search-URLs or SKU mismatches.
 
 ## KPIs (Plausible custom events — `src/lib/observability/analytics.ts`)
 
