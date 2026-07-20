@@ -1,7 +1,7 @@
 /**
- * Curated Slimme Energie Shop: alleen geverifieerde Bol-productpagina's.
- * Bron: bol.com product-URL's, gecheckt 2026-07-20.
- * Pakketten = meerdere Bol-items (geen enkele Bol-checkout).
+ * Curated Slimme Energie Shop: welke SKU's we tonen (sectie, copy, labels).
+ * Prijs, voorraad en productfoto komen uit de Bol Marketing Catalog API
+ * via de dagelijkse refresh (offers + products.image_path in de DB).
  */
 
 export type ShopSectionId = "meten" | "sturen" | "uitbreiden" | "pakketten";
@@ -14,17 +14,10 @@ export interface ShopCatalogItem {
   name: string;
   brand: string;
   summary: string;
-  /** Visuele accentkleur voor de icoon-tegel. */
-  accent: "green" | "amber" | "blue" | "slate";
-  icon: "gauge" | "plug" | "split" | "cable" | "socket" | "display" | "battery" | "dock";
   labels: string[];
   compat: ShopCompatTag[];
-  /** Geverifieerde Bol productpagina (niet zoeken/listing). */
+  /** Geverifieerde Bol productpagina; prijs/foto via Marketing Catalog API. */
   bolUrl: string;
-  /** Indicatieve prijs in centen, bron bol.com 2026-07-20 (wordt in DB als offer-prijs gezet). */
-  priceCents: number;
-  /** Lokale productfoto onder public/. */
-  imagePath: string;
 }
 
 export interface ShopBundle {
@@ -74,14 +67,10 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     brand: "HomeWizard",
     summary:
       "Live inzicht in stroom, teruglevering en gas via de P1-poort van je slimme meter. Alleen meten, geen batterij-aansturing.",
-    accent: "green",
-    icon: "gauge",
     labels: ["Alleen meten", "HomeWizard", "Wi-Fi"],
     compat: ["meten", "homewizard"],
     bolUrl:
       "https://www.bol.com/nl/nl/p/wi-fi-energie-monitor-p1-meter-inzicht-in-je-stroomverbruik-via-app/9300000005832994/",
-    priceCents: 3499,
-    imagePath: "/images/shop/homewizard-p1-meter.jpg",
   },
   {
     slug: "homewizard-p1-voeding",
@@ -90,14 +79,10 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     brand: "GO SOLID!",
     summary:
       "Externe voeding voor oudere slimme meters (niet SMR5). Geschikt voor HomeWizard P1 Meter. Geen officieel HomeWizard-merk.",
-    accent: "slate",
-    icon: "plug",
     labels: ["Voor oudere meters", "Geschikt voor HomeWizard"],
     compat: ["meten", "homewizard"],
     bolUrl:
       "https://www.bol.com/nl/nl/p/go-solid-oplader-geschikt-voor-homewizard-wi-fi-p1-meter/9300000197452613/",
-    priceCents: 1995,
-    imagePath: "/images/shop/homewizard-p1-voeding.jpg",
   },
   {
     slug: "homewizard-energy-display",
@@ -106,14 +91,10 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     brand: "HomeWizard",
     summary:
       "Ziet verbruik, teruglevering en kosten in huis. Werkt met minimaal één HomeWizard Energy-product.",
-    accent: "amber",
-    icon: "display",
     labels: ["HomeWizard", "Display"],
     compat: ["meten", "homewizard"],
     bolUrl:
       "https://www.bol.com/nl/nl/p/homewizard-energy-display-brengt-jouw-energieverbruik-in-beeld/9300000162175512/",
-    priceCents: 6926,
-    imagePath: "/images/shop/homewizard-energy-display.jpg",
   },
   {
     slug: "p1-kabel-3m",
@@ -122,14 +103,10 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     brand: "Goobay",
     summary:
       "Universele RJ12-verlengkabel voor P1-apparatuur. Geschikt om je P1 Meter of splitter verder van de meter te plaatsen.",
-    accent: "slate",
-    icon: "cable",
     labels: ["RJ12", "3 m", "Universeel"],
     compat: ["meten", "homewizard"],
     bolUrl:
       "https://www.bol.com/nl/nl/p/goobay-telefoon-verlengkabel-rj12-rj12-zwart-3-meter/9200000019143783/",
-    priceCents: 629,
-    imagePath: "/images/shop/p1-kabel-3m.jpg",
   },
   {
     slug: "p1-kabel-5m",
@@ -137,14 +114,10 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     name: "P1 verlengkabel 5 meter (RJ12)",
     brand: "Goobay",
     summary: "Langere RJ12-verlengkabel voor lastige meterkasten of kelderopstellingen.",
-    accent: "slate",
-    icon: "cable",
     labels: ["RJ12", "5 m", "Universeel"],
     compat: ["meten", "homewizard"],
     bolUrl:
       "https://www.bol.com/nl/nl/p/rj12-rj12-telefoon-verlengkabel-zwart-5-meter/9200000019143663/",
-    priceCents: 710,
-    imagePath: "/images/shop/p1-kabel-5m.jpg",
   },
   {
     slug: "p1-kabel-10m",
@@ -153,14 +126,10 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     brand: "Goobay",
     summary:
       "Extra lange RJ12-kabel wanneer 5 meter niet volstaat. Controleer of het P1-signaal stabiel blijft.",
-    accent: "slate",
-    icon: "cable",
     labels: ["RJ12", "10 m", "Universeel"],
     compat: ["meten", "homewizard"],
     bolUrl:
       "https://www.bol.com/nl/nl/p/rj12-rj12-telefoon-verlengkabel-zwart-10-meter/9200000019144041/",
-    priceCents: 1039,
-    imagePath: "/images/shop/p1-kabel-10m.jpg",
   },
   {
     slug: "homewizard-actieve-p1-splitter",
@@ -169,13 +138,9 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     brand: "HomeWizard",
     summary:
       "Maakt van één P1-poort drie geïsoleerde poorten. Voor P1 Meter naast laadpaal, Toon of warmtepomp.",
-    accent: "blue",
-    icon: "split",
     labels: ["3 poorten", "Actief", "HomeWizard"],
     compat: ["meten", "aansturing", "homewizard"],
     bolUrl: "https://www.bol.com/nl/nl/p/actieve-p1-splitter/9300000082809573/",
-    priceCents: 3700,
-    imagePath: "/images/shop/homewizard-actieve-p1-splitter.jpg",
   },
   {
     slug: "homewizard-energy-socket",
@@ -184,13 +149,9 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     brand: "HomeWizard",
     summary:
       "Meet en schakel apparaten tot 3680 W. Ideaal voor boiler, wasmachine of sluipverbruik bij zonnestroom.",
-    accent: "green",
-    icon: "socket",
     labels: ["Meten + schakelen", "HomeWizard"],
     compat: ["meten", "aansturing", "homewizard"],
     bolUrl: "https://www.bol.com/nl/nl/p/homewizard-wi-fi-energy-socket/9300000123843037/",
-    priceCents: 3650,
-    imagePath: "/images/shop/homewizard-energy-socket.jpg",
   },
   {
     slug: "zendure-ab3000x",
@@ -199,14 +160,10 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     brand: "Zendure",
     summary:
       "2,88 kWh extra opslag. Alleen compatibel met SolarFlow 2400 AC (niet met AB2000/Hyper oudere series).",
-    accent: "amber",
-    icon: "battery",
     labels: ["2,88 kWh", "SolarFlow 2400 AC"],
     compat: ["zendure"],
     bolUrl:
       "https://www.bol.com/nl/nl/p/zendure-solarflow-2400-ac-ab3000x-2880wh-uitbreidingsbatterij/9300000237435925/",
-    priceCents: 74999,
-    imagePath: "/images/shop/zendure-ab3000x.jpg",
   },
   {
     slug: "anker-solix-bp2700",
@@ -215,14 +172,10 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     brand: "Anker SOLIX",
     summary:
       "2,69 kWh uitbreiding. Compatibel met Solarbank 3 E2700 Pro. Niet voor Solarbank 2 (daar is BP1600 nodig).",
-    accent: "blue",
-    icon: "battery",
     labels: ["2,69 kWh", "Solarbank 3"],
     compat: ["anker"],
     bolUrl:
       "https://www.bol.com/nl/nl/p/anker-solix-bp2700-expansion-battery-2688wh-plug-and-play-compatibel-anker-solix-solarbank-3-e2700-pro/9300000233342583/",
-    priceCents: 86600,
-    imagePath: "/images/shop/anker-solix-bp2700.jpg",
   },
   {
     slug: "anker-solix-bp3800",
@@ -231,14 +184,10 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     brand: "Anker SOLIX",
     summary:
       "3,84 kWh uitbreidingsmodule voor ondersteunde Anker SOLIX Solarbank-systemen. Check modelcompatibiliteit op bol.",
-    accent: "blue",
-    icon: "battery",
     labels: ["3,84 kWh", "Anker SOLIX"],
     compat: ["anker"],
     bolUrl:
       "https://www.bol.com/nl/nl/p/anker-solix-bp3800-extension-battery-3840wh/9300000171717051/",
-    priceCents: 149900,
-    imagePath: "/images/shop/anker-solix-bp3800.jpg",
   },
   {
     slug: "anker-solix-power-dock",
@@ -246,14 +195,10 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     name: "Anker SOLIX Power Dock",
     brand: "Anker SOLIX",
     summary: "Accessoire voor slim energiebeheer binnen het Anker SOLIX-ecosysteem.",
-    accent: "slate",
-    icon: "dock",
     labels: ["Anker accessoire"],
     compat: ["anker"],
     bolUrl:
       "https://www.bol.com/nl/nl/p/anker-solix-power-dock-accessoire-slim-energiebeheer-uitbreidbare-functionaliteit-compact-ontwerp/9300000248613510/",
-    priceCents: 38400,
-    imagePath: "/images/shop/anker-solix-power-dock.jpg",
   },
 ];
 

@@ -407,7 +407,7 @@ export async function refreshProductImagesAction(): Promise<void> {
   }
 }
 
-/** Vernieuw Bol-offerprijzen via Marketing Catalog API (≤10% auto). */
+/** Vernieuw Bol-offers via Marketing Catalog API (prijs, voorraad, foto). */
 export async function refreshBolPricesAction(): Promise<void> {
   try {
     await assertCatalogAccess();
@@ -421,6 +421,7 @@ export async function refreshBolPricesAction(): Promise<void> {
       checked: result.checked,
       updated: result.updated,
       stock: result.outOfStock,
+      images: result.imagesSynced,
     });
   } catch (error) {
     if (isNextRedirectError(error)) throw error;

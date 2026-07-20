@@ -6,8 +6,10 @@ import {
   buildBolPartnerDeeplink,
   fetchBolProductByBolProductId,
   getBolClientStatus,
+  type BolCatalogProduct,
 } from "./bol-client";
 import { extractBolProductId } from "./match-sku";
+import { ingestProductImage } from "./ingest-image.server";
 
 /** Full-auto: elke Catalog-prijs wordt toegepast (owner policy 2026-07). */
 export const BOL_PRICE_AUTO_MARGIN = 1;
@@ -22,6 +24,7 @@ export type BolPriceRefreshItem = {
   deltaPct: number | null;
   action: "updated" | "out_of_stock" | "unchanged" | "skipped" | "error";
   note: string;
+  imageSynced?: boolean;
 };
 
 export type BolPriceRefreshResult = {
@@ -32,6 +35,7 @@ export type BolPriceRefreshResult = {
   outOfStock: number;
   unchanged: number;
   errors: number;
+  imagesSynced: number;
   items: BolPriceRefreshItem[];
 };
 
@@ -47,9 +51,46 @@ function deltaPct(oldCents: number, newCents: number): number {
   return Math.abs(newCents - oldCents) / oldCents;
 }
 
+/** Sync productfoto + indicatieve prijs vanuit Catalog (Storage upsert). */
+async function syncProductFromCatalog(input: {
+  db: ReturnType<typeof getDb>;
+  productId: string;
+  productSlug: string;
+  catalog: BolCatalogProduct;
+}): Promise<boolean> {
+  const { db, productId, productSlug, catalog } = input;
+  const nowIso = new Date().toISOString();
+  const productPatch: Record<string, unknown> = { updated_at: nowIso };
+
+  if (catalog.priceCents != null && catalog.priceCents > 0) {
+    productPatch.indicative_price_min_cents = catalog.priceCents;
+  }
+
+  let imageSynced = false;
+  if (catalog.imageUrl) {
+    const ingested = await ingestProductImage({
+      slug: productSlug,
+      sourceUrl: catalog.imageUrl,
+    });
+    if (ingested.ok) {
+      productPatch.image_path = ingested.storagePath;
+      imageSynced = true;
+    }
+  }
+
+  if (Object.keys(productPatch).length > 1) {
+    await db
+      .from("products")
+      .update(productPatch as never)
+      .eq("id", productId);
+  }
+
+  return imageSynced;
+}
+
 /**
- * Vernieuw prijzen van bestaande Bol-offers via Marketing Catalog API.
- * Full auto: elke geldige Catalog-prijs wordt toegepast + price_history.
+ * Vernieuw prijzen, voorraad en foto's van bestaande Bol-offers via Marketing Catalog API.
+ * Full auto: elke geldige Catalog-prijs wordt toegepast + price_history; foto via include-image.
  */
 export async function refreshBolOfferPrices(_input?: {
   /** @deprecated Genegeerd; alle Catalog-prijzen gaan auto door. */
@@ -64,6 +105,7 @@ export async function refreshBolOfferPrices(_input?: {
     outOfStock: 0,
     unchanged: 0,
     errors: 0,
+    imagesSynced: 0,
     items: [],
   };
 
@@ -147,6 +189,17 @@ export async function refreshBolOfferPrices(_input?: {
         offer.affiliate_deeplink ||
         (catalog?.url ? buildBolPartnerDeeplink(catalog.url) : buildBolPartnerDeeplink(url));
 
+      let imageSynced = false;
+      if (catalog && product?.id) {
+        imageSynced = await syncProductFromCatalog({
+          db,
+          productId: product.id,
+          productSlug: product.slug,
+          catalog,
+        });
+        if (imageSynced) result.imagesSynced += 1;
+      }
+
       if (!catalog || catalog.priceCents == null || catalog.priceCents <= 0) {
         await db
           .from("offers")
@@ -166,6 +219,7 @@ export async function refreshBolOfferPrices(_input?: {
           deltaPct: null,
           action: "out_of_stock",
           note: "Catalog product zonder best offer",
+          imageSynced,
         });
         continue;
       }
@@ -190,7 +244,8 @@ export async function refreshBolOfferPrices(_input?: {
           newPriceCents: newPrice,
           deltaPct: 0,
           action: "unchanged",
-          note: "Prijs gelijk",
+          note: imageSynced ? "Prijs gelijk, foto gesynchroniseerd" : "Prijs gelijk",
+          imageSynced,
         });
         continue;
       }
@@ -222,7 +277,10 @@ export async function refreshBolOfferPrices(_input?: {
         newPriceCents: newPrice,
         deltaPct: pct,
         action: "updated",
-        note: "Auto-update vanuit Bol Catalog",
+        note: imageSynced
+          ? "Auto-update prijs + foto vanuit Bol Catalog"
+          : "Auto-update vanuit Bol Catalog",
+        imageSynced,
       });
     } catch (err) {
       result.errors += 1;

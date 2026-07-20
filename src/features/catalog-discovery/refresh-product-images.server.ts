@@ -53,6 +53,19 @@ export const LOCAL_PRODUCT_IMAGE_PATHS: Record<string, string> = {
   "sunology-storey": "/images/products/sunology-storey.jpg",
   "zendure-solarflow-800": "/images/products/zendure-solarflow-800.jpg",
   "zendure-solarflow-hyper-2000": "/images/products/zendure-solarflow-hyper-2000.jpg",
+  // Shop-accessoires: lokale fallback tot Catalog-foto in Storage staat
+  "homewizard-p1-meter": "/images/shop/homewizard-p1-meter.jpg",
+  "homewizard-p1-voeding": "/images/shop/homewizard-p1-voeding.jpg",
+  "homewizard-energy-display": "/images/shop/homewizard-energy-display.jpg",
+  "p1-kabel-3m": "/images/shop/p1-kabel-3m.jpg",
+  "p1-kabel-5m": "/images/shop/p1-kabel-5m.jpg",
+  "p1-kabel-10m": "/images/shop/p1-kabel-10m.jpg",
+  "homewizard-actieve-p1-splitter": "/images/shop/homewizard-actieve-p1-splitter.jpg",
+  "homewizard-energy-socket": "/images/shop/homewizard-energy-socket.jpg",
+  "zendure-ab3000x": "/images/shop/zendure-ab3000x.jpg",
+  "anker-solix-bp2700": "/images/shop/anker-solix-bp2700.jpg",
+  "anker-solix-bp3800": "/images/shop/anker-solix-bp3800.jpg",
+  "anker-solix-power-dock": "/images/shop/anker-solix-power-dock.jpg",
 };
 
 export type ImageRefreshRow = {

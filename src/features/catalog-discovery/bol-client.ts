@@ -46,6 +46,8 @@ export type BolCatalogProduct = {
   priceCents: number | null;
   deliveryDescription: string | null;
   gpcChunk: string | null;
+  /** Hoofdfoto-URL wanneer include-image=true. */
+  imageUrl: string | null;
 };
 
 /** Of Marketing Catalog credentials of een legacy feed gezet zijn. */
@@ -196,7 +198,7 @@ function eurosToCents(price: unknown): number | null {
 
 type RawSearchHit = {
   ean?: string;
-  bolProductId?: string;
+  bolProductId?: string | number;
   url?: string;
   title?: string;
   description?: string;
@@ -205,11 +207,27 @@ type RawSearchHit = {
 
 type RawProduct = RawSearchHit & {
   offer?: { price?: number; deliveryDescription?: string };
+  image?: { url?: string; mimeType?: string; width?: number; height?: number };
 };
+
+function normalizeImageUrl(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const url = raw.trim();
+  if (!url) return null;
+  if (url.startsWith("//")) return `https:${url}`;
+  if (url.startsWith("http://")) return `https://${url.slice("http://".length)}`;
+  if (url.startsWith("https://")) return url;
+  return null;
+}
 
 function normalizeProduct(raw: RawProduct): BolCatalogProduct | null {
   const ean = typeof raw.ean === "string" ? raw.ean.trim() : "";
-  const bolProductId = typeof raw.bolProductId === "string" ? raw.bolProductId.trim() : "";
+  const bolProductId =
+    typeof raw.bolProductId === "string"
+      ? raw.bolProductId.trim()
+      : typeof raw.bolProductId === "number"
+        ? String(raw.bolProductId)
+        : "";
   const url = typeof raw.url === "string" ? raw.url.trim() : "";
   const title = typeof raw.title === "string" ? raw.title.trim() : "";
   if (!ean || !bolProductId || !url.startsWith("https://") || !title) return null;
@@ -228,6 +246,7 @@ function normalizeProduct(raw: RawProduct): BolCatalogProduct | null {
     deliveryDescription:
       typeof raw.offer?.deliveryDescription === "string" ? raw.offer.deliveryDescription : null,
     gpcChunk,
+    imageUrl: normalizeImageUrl(raw.image?.url),
   };
 }
 
@@ -266,7 +285,7 @@ export async function fetchBolProductByEan(ean: string): Promise<BolCatalogProdu
   if (!/^\d{8,14}$/.test(clean)) return null;
 
   const res = await catalogFetch(
-    `/products/${encodeURIComponent(clean)}?country-code=NL&include-offer=true`,
+    `/products/${encodeURIComponent(clean)}?country-code=NL&include-offer=true&include-image=true`,
   );
   if (res.status === 404) return null;
   if (!res.ok) {
@@ -330,7 +349,7 @@ function toCandidate(product: BolCatalogProduct): DiscoveredCandidate {
     capacityKwh: parseCapacityKwhFromTitle(product.title),
     powerKw: null,
     url: product.url,
-    imageUrl: null,
+    imageUrl: product.imageUrl,
     priceCents: product.priceCents,
     payload: {
       ean: product.ean,
