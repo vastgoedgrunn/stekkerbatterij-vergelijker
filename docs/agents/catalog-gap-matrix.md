@@ -1,28 +1,24 @@
 # Catalogus gap-matrix (live inventaris)
 
-Snapshot Supabase `stekkerbatterij-vergelijker` (2026-07-19, na CRO blitz).
+Snapshot + code-status 2026-07-20 (monetization-ready PR).
 
 ## Outbound-dekking plug-in (published)
 
 | Status | SKUs |
 |--------|------|
-| Live outbound (≥1 ok offer) | Anker Pro, EcoFlow STREAM AC Pro, HomeWizard single, Marstek Venus, Sessy single, Sunology Play/Storey, Zendure 800 |
-| Nieuw in seed `0025_*` | HomeWizard Bundle, Sessy Duo (officiële shop/product-URL) |
-| Nog geen geverifieerde product-URL | Anker E1600 non-Pro, EcoFlow PowerStream 800, Growatt NOAH 2000/2000S, Marstek Jupiter, Zendure Hyper (NL shop: out of stock) |
+| Betaald live | Anker Pro (Bol), EcoFlow STREAM (Bol), Marstek Venus (Bol), Zendure 800 (Daisycon), HomeWizard single+bundle (Daisycon) |
+| Direct product-URL (onbetaald) | Sessy single/Duo, Sunology Play/Storey |
+| Pending Awin | EcoFlow merkshop (`pending` tot `AWIN_PUBLISHER_ID`) |
+| Nog geen geverifieerde product-URL | Anker E1600 non-Pro, EcoFlow PowerStream 800, Growatt NOAH, Marstek Jupiter, Zendure Hyper (OOS) |
 
-## Blokkers (owner)
+## Blokkers (wacht op goedkeuring / env)
 
-1. **HomeWizard Daisycon**: live (`li=1795784`). CPS ~7,5%.
-2. **`EWNDR_LEAD_AFFILIATE_URL`**: echte offerte-URL in Vercel (nu fallback homepage).
-3. **Energy Daisycon**: Frank/Vattenfall placeholders vervangen zodra campaign IDs er zijn.
-4. **Coolblue/Awin + Impact Anker**: publisher IDs + product-URL’s vóór re-activate.
+1. **`AWIN_PUBLISHER_ID`**: EcoFlow NL mid `123332` live zetten.
+2. **`EWNDR_LEAD_AFFILIATE_URL`**: echte offerte-URL (CTA verborgen tot gezet).
+3. **Energy Daisycon**: Frank/Vattenfall `program_id` (partners nu `active=false`).
+4. **Coolblue/Gamma product-URL’s**: alleen joinen/reactiveren met echte productdetailpagina’s.
 
 ## Doel
 
-2–4 published plug-in SKUs per marquee-merk mét geverifieerde product-URL (geen search/homepage).
-
-## Bronnen (recente checks)
-
-- HomeWizard shop: https://www.homewizard.com/nl/shop/plug-in-battery/ (2026-07-19)
-- Sessy product: https://www.sessy.nl/product/sessy/ (2026-07-19)
-- Zendure Hyper NL: https://www.zendure.nl/products/solarflow-hyper-2000 (varianten `available: false`, 2026-07-19)
+2–4 published plug-in SKUs per marquee-merk mét geverifieerde product-URL (geen search/homepage)
+én bij voorkeur betaalde deeplink.

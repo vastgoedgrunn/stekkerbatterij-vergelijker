@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { CompareToggle } from "@/features/comparison/compare-toggle";
 import { FixedBatteryLeadPanel } from "@/features/comparison/fixed-battery-lead-panel";
+import { serverEnv } from "@/lib/env/server";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbJsonLd, faqJsonLd, productJsonLd } from "@/lib/seo/json-ld";
 import { getPublicImageUrl } from "@/lib/supabase/storage";
@@ -246,6 +247,7 @@ export async function ProductDetailByTypePage({
                   productName={product.name}
                   indicativePriceMinCents={product.indicativePriceMinCents}
                   indicativePriceMaxCents={product.indicativePriceMaxCents}
+                  eWndrEnabled={Boolean(serverEnv.EWNDR_LEAD_AFFILIATE_URL)}
                 />
               </div>
             ) : (

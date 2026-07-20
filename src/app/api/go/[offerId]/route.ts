@@ -7,6 +7,7 @@ import { serverEnv } from "@/lib/env/server";
 import { logger } from "@/lib/observability/logger";
 import { buildAffiliateDestination } from "@/lib/affiliate/build-destination";
 import { ensureBolPartnerDeeplink } from "@/lib/affiliate/bol";
+import { ECOFLOW_NL_AWIN_ADVERTISER_ID, ensureAwinDeeplink } from "@/lib/affiliate/awin";
 import { isEligibleOutboundOffer } from "@/features/offers-pricing/offer-eligibility";
 import type { Json } from "@/lib/db/database.types";
 
@@ -92,11 +93,17 @@ export async function GET(
 
   // Bol product-URL's zonder partner-deeplink: wrap met site-ID (BOL_PUBLISHER_ID).
   const bolReady = ensureBolPartnerDeeplink(rawDestination, serverEnv.BOL_PUBLISHER_ID);
+  // EcoFlow (en bestaande Awin cread-links): wrap met AWIN_PUBLISHER_ID wanneer gezet.
+  const awinReady = ensureAwinDeeplink(
+    bolReady,
+    serverEnv.AWIN_PUBLISHER_ID,
+    serverEnv.AWIN_ECOFLOW_ADVERTISER_ID ?? ECOFLOW_NL_AWIN_ADVERTISER_ID,
+  );
 
   const clickRef = crypto.randomUUID();
   let destination: string;
   try {
-    destination = buildAffiliateDestination(bolReady, offer.affiliate_params, clickRef);
+    destination = buildAffiliateDestination(awinReady, offer.affiliate_params, clickRef);
   } catch {
     return NextResponse.redirect(fallback, 302);
   }

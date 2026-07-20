@@ -39,6 +39,8 @@ export interface FixedBatteryLeadPanelProps {
   indicativePriceMaxCents?: number | null;
   qualification?: QualificationResult | null;
   compact?: boolean;
+  /** Alleen tonen als EWNDR_LEAD_AFFILIATE_URL in Vercel staat. */
+  eWndrEnabled?: boolean;
 }
 
 export function FixedBatteryLeadPanel({
@@ -50,6 +52,7 @@ export function FixedBatteryLeadPanel({
   indicativePriceMaxCents = null,
   qualification = null,
   compact = false,
+  eWndrEnabled = false,
 }: FixedBatteryLeadPanelProps) {
   const [submitted, setSubmitted] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -162,37 +165,39 @@ export function FixedBatteryLeadPanel({
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="border-border rounded-xl border p-4">
-            <p className="text-sm font-semibold">Direct offerte via partner</p>
-            <p className="text-muted-foreground mt-1 text-xs">
-              Gratis oriëntatiegesprek via onze installatie-partner (affiliate).
-            </p>
-            <a
-              href={eWndrHref}
-              target="_blank"
-              rel="nofollow sponsored noopener"
-              onClick={() => {
-                trackEvent({
-                  name: "lead_affiliate_clicked",
-                  props: {
-                    partner: "e-wndr",
-                    ...(productSlug ? { productSlug } : {}),
-                    source,
-                  },
-                });
-                if (productSlug) {
+        <div className={cn("grid gap-4", eWndrEnabled ? "sm:grid-cols-2" : "")}>
+          {eWndrEnabled && (
+            <div className="border-border rounded-xl border p-4">
+              <p className="text-sm font-semibold">Direct offerte via partner</p>
+              <p className="text-muted-foreground mt-1 text-xs">
+                Gratis oriëntatiegesprek via onze installatie-partner (affiliate).
+              </p>
+              <a
+                href={eWndrHref}
+                target="_blank"
+                rel="nofollow sponsored noopener"
+                onClick={() => {
                   trackEvent({
-                    name: "fixed_product_lead_clicked",
-                    props: { slug: productSlug, partner: "e-wndr", source },
+                    name: "lead_affiliate_clicked",
+                    props: {
+                      partner: "e-wndr",
+                      ...(productSlug ? { productSlug } : {}),
+                      source,
+                    },
                   });
-                }
-              }}
-              className={cn(buttonVariants({ size: "sm" }), "mt-3 w-full")}
-            >
-              Offerte aanvragen <ArrowRight className="size-4" />
-            </a>
-          </div>
+                  if (productSlug) {
+                    trackEvent({
+                      name: "fixed_product_lead_clicked",
+                      props: { slug: productSlug, partner: "e-wndr", source },
+                    });
+                  }
+                }}
+                className={cn(buttonVariants({ size: "sm" }), "mt-3 w-full")}
+              >
+                Offerte aanvragen <ArrowRight className="size-4" />
+              </a>
+            </div>
+          )}
 
           <div className="border-border rounded-xl border p-4">
             <p className="text-sm font-semibold">Persoonlijk advies van ons</p>

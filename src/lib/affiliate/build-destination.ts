@@ -1,5 +1,6 @@
 import type { Json } from "@/lib/db/database.types";
 import { isBolPartnerClickUrl } from "@/lib/affiliate/bol";
+import { isAwinClickUrl } from "@/lib/affiliate/awin";
 
 const DEFAULT_UTM: Record<string, string> = {
   utm_source: "stekkerbatterijvergelijker",
@@ -54,8 +55,13 @@ export function buildAffiliateDestination(
       `Affiliate-bestemming moet https gebruiken (kreeg ${url.protocol || "geen protocol"}).`,
     );
   }
-  // bol partner-click: query-string met rust laten (s + url zijn commissie-kritisch).
+  // Bol partner-click: query-string met rust laten (s + url zijn commissie-kritisch).
   if (isBolPartnerClickUrl(substituted)) {
+    return url.toString();
+  }
+  // Awin cread: alleen clickref zetten, awinmid/awinaffid/ued niet aanpassen.
+  if (isAwinClickUrl(substituted)) {
+    url.searchParams.set("clickref", clickRef);
     return url.toString();
   }
   applyParams(url, params, clickRef);
