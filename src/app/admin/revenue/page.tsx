@@ -1,4 +1,4 @@
-import { formatPrice } from "@/lib/format";
+import { formatNumber, formatPrice } from "@/lib/format";
 import { getRevenueSummary } from "@/features/admin/monetization.queries";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
 import { AdminKpiGrid } from "@/features/admin/components/admin-kpi-grid";
@@ -13,14 +13,23 @@ export default async function AdminRevenuePage() {
     summary = null;
   }
 
+  const cvrPct = summary
+    ? formatNumber(summary.assumedClickToSaleRate * 100, { maximumFractionDigits: 0 })
+    : null;
+
   const cards = summary
     ? [
         { label: "Kliks totaal", value: String(summary.totalClicks) },
         { label: "Kliks 7d", value: String(summary.clicksLast7Days) },
         {
-          label: "Affiliate 7d",
+          label: "Affiliate 7d (verwacht)",
           value: formatPrice(summary.estimatedAffiliateCents),
-          hint: "Geschat, niet netwerk-bevestigd",
+          hint: `Kliks × ${cvrPct}% koop × commissie. Geen netwerk-bevestiging.`,
+        },
+        {
+          label: "Affiliate 7d (max bij 100% koop)",
+          value: formatPrice(summary.theoreticalMaxAffiliateCents),
+          hint: "Alleen ter vergelijking: elke klik als sale (onrealistisch).",
         },
         { label: "Energie-kliks", value: String(summary.energyClicks) },
         {
@@ -37,7 +46,7 @@ export default async function AdminRevenuePage() {
     <div className="space-y-8">
       <AdminPageHeader
         title="Omzet & revenue"
-        description="Geschatte affiliate-commissie op basis van geverifieerde tarieven, zonder netwerk-bevestiging."
+        description="Affiliate-omzet is een schatting: niet elke klik is een verkoop. Echte sales staan in Bol/Daisycon."
       />
 
       {!summary ? (

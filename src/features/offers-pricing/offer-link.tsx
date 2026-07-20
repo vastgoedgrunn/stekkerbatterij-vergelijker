@@ -4,6 +4,7 @@ import { ExternalLink } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/observability/analytics";
+import { businessRules } from "@/config/business-rules";
 
 export type OfferLinkPlacement =
   | "pdp_hero"
@@ -39,6 +40,7 @@ export function OfferLink({
   productId: string;
   merchant: string;
   sponsored: boolean;
+  /** Commissieschatting per verkoop; voor analytics schalen we naar verwachte klik-waarde. */
   estimatedCommissionCents?: number | null;
   placement?: OfferLinkPlacement;
   size?: "sm" | "lg";
@@ -51,7 +53,11 @@ export function OfferLink({
       href={`/api/go/${offerId}`}
       target="_blank"
       rel={sponsored ? "sponsored nofollow noopener" : "nofollow noopener"}
-      onClick={() =>
+      onClick={() => {
+        const expectedPerClick =
+          estimatedCommissionCents != null
+            ? Math.round(estimatedCommissionCents * businessRules.affiliate.assumedClickToSaleRate)
+            : null;
         trackEvent({
           name: "offer_clicked",
           props: {
@@ -59,10 +65,10 @@ export function OfferLink({
             merchant,
             offerId,
             ...(placement ? { placement } : {}),
-            ...(estimatedCommissionCents != null ? { estimatedCommissionCents } : {}),
+            ...(expectedPerClick != null ? { estimatedCommissionCents: expectedPerClick } : {}),
           },
-        })
-      }
+        });
+      }}
       className={cn(buttonVariants({ size, variant }), "min-w-0 overflow-hidden", className)}
     >
       <span className="min-w-0 truncate">{children}</span>
