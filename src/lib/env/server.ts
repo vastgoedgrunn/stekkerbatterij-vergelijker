@@ -47,6 +47,11 @@ const serverSchema = z.object({
   /** e-WNDR thuisbatterij-lead affiliate quote-URL (consumer landing, niet affiliate-worden). */
   EWNDR_LEAD_AFFILIATE_URL: z.string().url().optional(),
 
+  /** Awin publisher (awinaffid). Zonder: EcoFlow/Coolblue Awin-wraps blijven stub. */
+  AWIN_PUBLISHER_ID: z.string().min(1).optional(),
+  /** Optioneel override; default EcoFlow NL = 123332. */
+  AWIN_ECOFLOW_ADVERTISER_ID: z.string().min(1).optional(),
+
   /** Bol Marketing Catalog API (OAuth client credentials). Ontbreekt = stub. */
   BOL_CLIENT_ID: z.string().min(1).optional(),
   BOL_CLIENT_SECRET: z.string().min(1).optional(),

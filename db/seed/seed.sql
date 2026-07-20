@@ -58,7 +58,10 @@ insert into merchants (name, slug, is_self, website_url) values
   ('Solar Sale', 'solar-sale', false, 'https://solarsale.nl'),
   ('Gamma', 'gamma', false, 'https://gamma.nl'),
   ('Zendure', 'zendure', false, 'https://zendure.nl'),
-  ('HomeWizard', 'homewizard', false, 'https://www.homewizard.com')
+  ('HomeWizard', 'homewizard', false, 'https://www.homewizard.com'),
+  ('Sessy', 'sessy', false, 'https://www.sessy.nl'),
+  ('Sunology', 'sunology', false, 'https://sunology.eu'),
+  ('EcoFlow', 'ecoflow', false, 'https://nl.ecoflow.com')
 on conflict (slug) do update set name = excluded.name, website_url = excluded.website_url;
 
 -- Producten (upsert incl. afbeelding)
@@ -247,7 +250,8 @@ from (values
   ('solar-sale', 'daisycon', '{"subid":"{click_ref}"}'::jsonb),
   -- Daisycon ds1.nl: ws is de Sub ID-parameter; {click_ref} wordt per klik ingevuld.
   ('zendure', 'daisycon', '{"ws":"{click_ref}"}'::jsonb),
-  ('homewizard', 'daisycon', '{"ws":"{click_ref}"}'::jsonb)
+  ('homewizard', 'daisycon', '{"ws":"{click_ref}"}'::jsonb),
+  ('ecoflow', 'awin', '{"clickref":"{click_ref}"}'::jsonb)
 ) as v(mslug, network, params)
 where merchants.slug = v.mslug;
 
@@ -262,12 +266,7 @@ update offers o set
   commission_source_url = v.source,
   affiliate_params = v.params::jsonb
 from (values
-  -- Anker × Coolblue: geen placeholder product-ID (904321 was niet geverifieerd).
-  ('anker-solix-solarbank-2-e1600','gamma',
-   'https://www.gamma.nl/assortiment/k/anker-solix-solarbank',
-   null, 'awin', 'cps', 0.08, null,
-   'https://www.ankersolix.com/eu/become-an-affiliate',
-   '{"clickref":"{click_ref}"}'),
+  -- Anker × Gamma assortiment: niet meer in seed (P0 listing). Zie 0028 soft-delete.
   ('ecoflow-powerstream-800','solar-sale',
    'https://solarsale.nl/ecoflow-powerstream-800',
    null, 'daisycon', 'cps', 0.05, null,
@@ -322,13 +321,16 @@ insert into partner_programs (slug, name, network, program_id, link_id, commissi
   ('zendure-nl', 'Zendure NL (Daisycon)', 'daisycon', '20779', '1881195', 'cps', 0.08, 30, 'https://daisycon.com/nl/campagnes/20779-zendure-nl/', 'https://www.zendure.nl/pages/affiliate-program'),
   ('homewizard-int', 'HomeWizard INT (Daisycon)', 'daisycon', '18407', '1795784', 'cps', 0.075, 30, 'https://daisycon.com/nl/campagnes/18407-homewizard-int/', 'https://affiliate-net.nl/programmas/homewizard/'),
   ('anker-solix-eu', 'Anker SOLIX EU', 'impact', null, null, 'cps', 0.08, 30, 'https://www.ankersolix.com/eu/become-an-affiliate', 'https://www.ankersolix.com/eu/become-an-affiliate'),
-  ('bol-partner', 'bol Partner', 'bol-partner', null, null, 'cps', 0.025, 7, 'https://affiliate.bol.com/', 'https://affiliate.bol.com/'),
+  ('bol-partner', 'bol Partner', 'bol-partner', '1532194', null, 'cps', 0.025, 7, 'https://affiliate.bol.com/', 'https://affiliate.bol.com/'),
+  ('ecoflow-nl-awin', 'EcoFlow NL (Awin)', 'awin', '123332', null, 'cps', 0.05, 7, 'https://ui.awin.com/merchant-profile/123332', 'https://ui.awin.com/merchant-profile/123332'),
+  ('coolblue-nl-awin', 'Coolblue NL (Awin)', 'awin', '85161', null, 'cps', null, 28, 'https://ui.awin.com/merchant-profile/85161', 'https://www.coolblue.nl/affiliate'),
+  ('coolblue-energie-awin', 'Coolblue Energie NL (Awin)', 'awin', '85163', null, 'cpa', null, 30, 'https://ui.awin.com/merchant-profile/85163', 'https://www.coolblue.nl/energie'),
   ('daisycon-energy', 'Daisycon Energie', 'daisycon', null, null, 'cpa', null, 30, 'https://www.daisycon.com/nl/', 'https://affiliate-net.nl/programmas/frankenergie/'),
   ('e-wndr-leads', 'e-WNDR Thuisbatterij leads', 'e-wndr', null, null, 'cpa', null, null, 'https://e-wndr.nl/affiliate-worden/', 'https://e-wndr.nl/affiliate-worden/')
 on conflict (slug) do update set
   name = excluded.name,
   network = excluded.network,
-  program_id = excluded.program_id,
+  program_id = coalesce(excluded.program_id, partner_programs.program_id),
   link_id = coalesce(excluded.link_id, partner_programs.link_id),
   commission_rate = excluded.commission_rate,
   signup_url = excluded.signup_url,
@@ -343,22 +345,23 @@ update partner_programs set
   commission_cents_min = 10000, commission_cents_max = 15000
 where slug = 'e-wndr-leads';
 
-insert into energy_partners (slug, name, description, affiliate_url, affiliate_network, affiliate_params, commission_type, commission_cents_min, commission_cents_max, commission_source_url, sort_order) values
+insert into energy_partners (slug, name, description, affiliate_url, affiliate_network, affiliate_params, commission_type, commission_cents_min, commission_cents_max, commission_source_url, sort_order, active) values
   ('frank-energie', 'Frank Energie',
    'Dynamisch contract met transparante prijzen. Populair bij batterij-eigenaren.',
    'https://www.daisycon.com/nl/publishers/deeplink/?program_id=FRANK_PLACEHOLDER&subid={click_ref}',
    'daisycon', '{"subid":"{click_ref}"}'::jsonb, 'cpa', 3000, 6000,
-   'https://affiliate-net.nl/programmas/frankenergie/', 10),
+   'https://affiliate-net.nl/programmas/frankenergie/', 10, false),
   ('vattenfall-flex', 'Vattenfall FlexPrijs',
    'Flexibel dynamisch contract van een bekende energieleverancier.',
    'https://www.daisycon.com/nl/publishers/deeplink/?program_id=VATTENFALL_PLACEHOLDER&subid={click_ref}',
    'daisycon', '{"subid":"{click_ref}"}'::jsonb, 'cpa', 400, 9600,
-   'https://affiliate-net.nl/', 20)
+   'https://affiliate-net.nl/', 20, false)
 on conflict (slug) do update set
   description = excluded.description,
   affiliate_url = excluded.affiliate_url,
   commission_cents_min = excluded.commission_cents_min,
   commission_cents_max = excluded.commission_cents_max,
+  active = excluded.active,
   updated_at = now();
 
 -- Dropship heroes: leverancier + sellable (checkout blijft uit tot leverancier bevestigd)

@@ -1,82 +1,67 @@
 # Affiliate-aanmelding: stappen voor eigenaar
 
-Zodra deze programma's zijn goedgekeurd, lever je de **publisher-ID's** en **deeplink-sjablonen**
-aan (Slack of admin). Wij vullen ze in via admin/seed en testen elke outbound link.
+Zodra programma's zijn goedgekeurd, zet je **publisher-ID's** en **voorbeeld-deeplinks**
+in Vercel (of Slack). Agents vullen seeds/admin en testen outbound.
 
-## Prioriteit (winst × snelheid)
+## Live nu
 
-| # | Programma | Verwachte commissie | Aanmeld-URL | Wat we van jou nodig hebben |
-|---|-----------|---------------------|-------------|----------------------------|
-| 1 | **Zendure NL** | ~8% CPS, 30d cookie | [zendure.nl/pages/affiliate-program](https://www.zendure.nl/pages/affiliate-program) | Awin/Impact publisher-ID, deeplink-sjabloon per product |
-| 2 | **Anker SOLIX EU** | ~8% CPS, 30d cookie | [ankersolix.com/eu/become-an-affiliate](https://www.ankersolix.com/eu/become-an-affiliate) | Publisher-ID, product-deeplinks |
-| 3 | **Bol.com Partner** | 2,5 tot 7% per categorie | [affiliate.bol.com](https://affiliate.bol.com/) | Site-ID (`s=…` in deeplink), Bol API-key (optioneel) |
-| 4 | **Daisycon** | Frank €30 tot €60, Vattenfall €4 tot €96 CPA | [daisycon.com/nl](https://www.daisycon.com/nl/) | Publisher-ID, campaign-IDs per energiepartner |
-| 5 | **e-WNDR** (leads) | ~€100 CPA per thuisbatterij-lead | [e-wndr.nl/affiliate-worden](https://e-wndr.nl/affiliate-worden/) | Affiliate-link voor lead-formulier |
+| Programma | Netwerk | Wat staat er |
+|-----------|---------|--------------|
+| Bol Partner | Bol | Site-ID `1532194`, Marketing Catalog API live |
+| Zendure NL | Daisycon | `si=20779`, `li=1881195`, `wi=423133` |
+| HomeWizard INT | Daisycon | `si=18407`, `li=1795784`, `wi=423133` |
+
+## Prioriteit (wacht op goedkeuring)
+
+| # | Programma | Verwacht | Actie na goedkeuring |
+|---|-----------|----------|----------------------|
+| 1 | **EcoFlow NL (Awin)** mid `123332` | ~5% CPS | `AWIN_PUBLISHER_ID` in Vercel + product-deeplink |
+| 2 | **e-WNDR** leads | ~€100 CPA | `EWNDR_LEAD_AFFILIATE_URL` (echte offerte-URL) |
+| 3 | **Daisycon energie** Frank / Vattenfall | CPA | `program_id` per campagne → `energy_partners` |
+| 4 | **Coolblue Energie** Awin `85163` | CPA leads | Alleen als je vaste-batterij/energie promoot |
+| 5 | **Coolblue NL** Awin `85161` | CPS | Alleen met echte `/product/{id}`-URL’s |
+| 6 | **Anker SOLIX EU** | CPS | Impact/EU-programma naast Bol |
 
 ## Stappen per netwerk
 
-### Zendure / Awin
+### EcoFlow / Awin
 
-1. Meld je aan via Zendure of direct bij [Awin](https://www.awin.com/).
-2. Wacht op goedkeuring (1 tot 5 werkdagen).
-3. Noteer: **Publisher ID**, **Advertiser ID** (Zendure), voorbeeld-deeplink uit het dashboard.
-4. Stuur ons 1 voorbeeld-URL per hero-product (SolarFlow 800).
-
-### Anker SOLIX EU
-
-1. Aanmelden via [Anker SOLIX affiliate-pagina](https://www.ankersolix.com/eu/become-an-affiliate).
-2. Vaak via Impact Radius, noteer publisher-ID.
-3. Deeplink naar Solarbank 2 E1600 (Bol/Coolblue/Gamma).
+1. Awin publisher-account + aansluiten op [EcoFlow NL](https://ui.awin.com/merchant-profile/123332).
+2. Noteer **Publisher ID** (`awinaffid`).
+3. Zet `AWIN_PUBLISHER_ID` in Vercel (Production + Preview).
+4. Stuur 1 product-URL (bijv. STREAM AC Pro op `nl.ecoflow.com`).
+5. Zie `docs/affiliate-awin.md`.
 
 ### Bol.com Partner
 
-1. Account op [affiliate.bol.com](https://affiliate.bol.com/), site moet live zijn.
-2. Genereer deeplink per product via partner-tools.
-3. Vervang `PUBLISHER_ID` in seed/admin door jouw `s=…` waarde.
-4. *(Optioneel)* Bol Product API voor automatische prijs-sync.
+1. Account op [affiliate.bol.com](https://affiliate.bol.com/).
+2. Site-ID in Vercel: `BOL_PUBLISHER_ID` (live: `1532194`).
+3. Optioneel: Marketing Catalog `BOL_CLIENT_ID` / `BOL_CLIENT_SECRET` (live).
 
-### Daisycon (Zendure NL + HomeWizard INT, live)
+### Daisycon (Zendure + HomeWizard)
 
-Publisher-account en beide productcampagnes zijn goedgekeurd. Zendure én HomeWizard
-hebben een live `li` (zie `docs/affiliate-daisycon.md`). Homepage als bestemmingsURL
-bij het genereren van de deeplink is voldoende; productpaden zetten we in `dl`.
+Live. Details: `docs/affiliate-daisycon.md`. Media `423133`.
 
 ### Daisycon (energie)
 
-1. Publisher-account op [daisycon.com](https://www.daisycon.com/nl/).
-2. **Media verifiëren** (jouw media-ID: `423133`, site moet publiek bereikbaar zijn):
-   - Kies **Verifieer via metatag** (aanbevolen).
-   - Kopieer de `content`-waarde uit de metatag → zet in Vercel als
-     `NEXT_PUBLIC_DAISYCON_VERIFY_CONTENT` (Production + Preview).
-   - Deploy afwachten → klik **Verifieer media** in Daisycon.
-   - Alternatief: **Verifieer via bestand** → zet `DAISYCON_VERIFY_FILENAME` +
-     `DAISYCON_VERIFY_FILE_BODY` in Vercel.
-3. Wacht op media-goedkeuring (1 tot 2 werkdagen).
-4. Meld je aan voor **Frank Energie** en **Vattenfall FlexPrijs** in het Daisycon-dashboard.
-5. Noteer **`program_id`** per campagne → wij zetten die in `energy_partners.affiliate_url`.
-6. Test subid-tracking: `subid={click_ref}` via `/api/go/energy/frank-energie`.
-
-**Tip:** gebruik `https://stekkerbatterijvergelijker.com` als media-URL zodra DNS/SSL klaar is
-(in plaats van alleen `.vercel.app`).
+1. Aanmelden Frank Energie + Vattenfall FlexPrijs in MyDaisycon.
+2. Noteer `program_id` per campagne.
+3. Agents activeren `energy_partners` (nu `active=false` door placeholders).
 
 ### e-WNDR (vaste batterij-leads)
 
-1. Affiliate aanvragen via [e-wndr.nl/affiliate-worden](https://e-wndr.nl/affiliate-worden/).
+1. Affiliate via [e-wndr.nl/affiliate-worden](https://e-wndr.nl/affiliate-worden/).
 2. Ontvang **consumer quote-URL** (niet de affiliate-worden-pagina).
-3. Zet in Vercel als `EWNDR_LEAD_AFFILIATE_URL` (Production + Preview).
-4. Beslishulp stuurt door via `/api/go/lead/e-wndr` met subid-tracking.
+3. Zet `EWNDR_LEAD_AFFILIATE_URL` in Vercel. CTA op vaste-PDP verschijnt dan automatisch.
 
-## Na goedkeuring
+## Na goedkeuring (agents)
 
-1. Stuur IDs + 1 test-deeplink per netwerk naar Slack.
-2. Data-agent vult admin in (via verification gate voor commissie-%).
-3. QA test: klik → redirect → `offer_clicks.click_ref` in `/admin/clicks`.
-4. Geen commissie-% live zonder bron-URL in `commission_source_url`.
+1. Env in Vercel zetten (of ID in Slack/Cursor plakken).
+2. Seed/admin: deeplink + `affiliate_link_status=ok` na URL-verify.
+3. Test: klik → 302 → `offer_clicks` in `/admin/clicks`.
 
-## Placeholders in seed
+## Placeholders
 
-Tot jouw IDs binnen zijn staan in `db/seed/seed.sql`:
-
-- `FRANK_PLACEHOLDER` / `VATTENFALL_PLACEHOLDER` in energie-URLs
-
-Vervang deze vóór productie-traffic.
+- Frank/Vattenfall: `FRANK_PLACEHOLDER` / `VATTENFALL_PLACEHOLDER` (partners inactief).
+- EcoFlow Awin-offer: `pending` tot `AWIN_PUBLISHER_ID` + product-URL.
+- Coolblue/Gamma: geen zoek/listing-URL’s (P0 soft-delete in `0028_monetization_ready.sql`).
