@@ -31,7 +31,7 @@ function noticeMessage(
     return `Productfoto's vernieuwd: ${params.updated ?? "0"} bijgewerkt.`;
   }
   if (notice === "bol-prices") {
-    return `Bol-prijzen: ${params.checked ?? "0"} gecheckt, ${params.updated ?? "0"} bijgewerkt, ${params.stock ?? "0"} zonder voorraad.`;
+    return `Bol Catalog: ${params.checked ?? "0"} gecheckt, ${params.updated ?? "0"} prijzen bijgewerkt, ${params.stock ?? "0"} zonder voorraad, ${params.images ?? "0"} foto's gesynchroniseerd.`;
   }
   return "Actie uitgevoerd.";
 }
@@ -120,7 +120,7 @@ export default async function AdminCatalogHealthPage({
             </form>
             <form action={refreshBolPricesAction}>
               <CatalogPendingButton size="sm" variant="outline" pendingLabel="Prijzen…">
-                Vernieuw Bol-prijzen
+                Vernieuw Bol Catalog (prijs + foto)
               </CatalogPendingButton>
             </form>
             <form action={refreshProductImagesAction}>

@@ -8,6 +8,8 @@ met geverifieerde outbound-links.
 - Pipeline: `src/features/catalog-discovery/run-pipeline.server.ts`
 - Bol Marketing Catalog + feed-fallback: `src/features/catalog-discovery/bol-client.ts`
 - Bol prijsrefresh (full auto vanuit Catalog): `refresh-bol-prices.server.ts`
+  (prijs + voorraad + productfoto via `include-image`; geldt voor alle Bol-offers,
+  inclusief shop-accessoires)
 - Image ingest: `ingest-image.server.ts` + `refresh-product-images.server.ts`
   (download merchant/fabrikant-foto → Supabase Storage `products` / `catalog/{slug}.ext`)
 - Admin: `/admin/catalog` (Run discovery, Vernieuw Bol-prijzen, Vernieuw productfoto's, review-queue)

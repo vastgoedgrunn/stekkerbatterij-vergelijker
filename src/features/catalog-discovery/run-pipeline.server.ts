@@ -26,6 +26,7 @@ export type PipelineResult = {
     updated: number;
     outOfStock: number;
     checked: number;
+    imagesSynced: number;
   };
 };
 
@@ -164,6 +165,7 @@ export async function runCatalogDiscoveryPipeline(input?: {
       updated: prices.updated,
       outOfStock: prices.outOfStock,
       checked: prices.checked,
+      imagesSynced: prices.imagesSynced,
     };
   } catch (error) {
     stats.errors.push(`Bol prijsrefresh: ${error instanceof Error ? error.message : "onbekend"}`);

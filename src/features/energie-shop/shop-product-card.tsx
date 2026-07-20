@@ -4,6 +4,7 @@ import { OfferLink } from "@/features/offers-pricing/offer-link";
 import { Badge } from "@/components/ui/badge";
 import { ProductImage } from "@/components/patterns/product-image";
 import { formatPrice } from "@/lib/format";
+import { getPublicImageUrl } from "@/lib/supabase/storage";
 import type { ShopCatalogItem } from "./catalog";
 import type { ShopOfferRow } from "./queries";
 
@@ -21,6 +22,7 @@ export function ShopProductCard({
       ? `${quantity}× ${formatPrice(offer.priceCents)}`
       : formatPrice(offer.priceCents)
     : null;
+  const imageUrl = getPublicImageUrl(offer?.imagePath ?? null);
 
   return (
     <article
@@ -28,7 +30,7 @@ export function ShopProductCard({
       className="border-border/80 bg-card flex scroll-mt-28 flex-col overflow-hidden rounded-2xl border shadow-[var(--shadow-sm)]"
     >
       <ProductImage
-        src={item.imagePath}
+        src={imageUrl}
         alt={item.name}
         aspect="card"
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

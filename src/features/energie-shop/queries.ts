@@ -3,11 +3,29 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { isEligibleOutboundOffer } from "@/features/offers-pricing/offer-eligibility";
 import { SHOP_ITEMS } from "./catalog";
 
+/** Lokale shopfoto's tot Catalog-sync `products.image_path` vult. */
+const SHOP_IMAGE_FALLBACKS: Record<string, string> = {
+  "homewizard-p1-meter": "/images/shop/homewizard-p1-meter.jpg",
+  "homewizard-p1-voeding": "/images/shop/homewizard-p1-voeding.jpg",
+  "homewizard-energy-display": "/images/shop/homewizard-energy-display.jpg",
+  "p1-kabel-3m": "/images/shop/p1-kabel-3m.jpg",
+  "p1-kabel-5m": "/images/shop/p1-kabel-5m.jpg",
+  "p1-kabel-10m": "/images/shop/p1-kabel-10m.jpg",
+  "homewizard-actieve-p1-splitter": "/images/shop/homewizard-actieve-p1-splitter.jpg",
+  "homewizard-energy-socket": "/images/shop/homewizard-energy-socket.jpg",
+  "zendure-ab3000x": "/images/shop/zendure-ab3000x.jpg",
+  "anker-solix-bp2700": "/images/shop/anker-solix-bp2700.jpg",
+  "anker-solix-bp3800": "/images/shop/anker-solix-bp3800.jpg",
+  "anker-solix-power-dock": "/images/shop/anker-solix-power-dock.jpg",
+};
+
 export interface ShopOfferRow {
   productId: string;
   productSlug: string;
   offerId: string;
   priceCents: number;
+  /** products.image_path: Storage-pad of lokale /images/... fallback */
+  imagePath: string | null;
   merchantName: string;
   estimatedCommissionCents: number | null;
 }
@@ -28,6 +46,7 @@ type OfferJoin = {
 type ProductJoin = {
   id: string;
   slug: string;
+  image_path: string | null;
   offers: OfferJoin[] | null;
 };
 
@@ -42,11 +61,10 @@ function estimateCommission(offer: OfferJoin): number | null {
   if (offer.commission_rate != null) {
     return Math.round(offer.price_cents * offer.commission_rate);
   }
-  // bol Partner: grove schatting 3% tot we tarief syncen
   return Math.round(offer.price_cents * 0.03);
 }
 
-/** Laadt Bol-offers voor alle shop-SKU's (keyed op product slug). */
+/** Laadt Bol-offers + Catalog-foto voor alle shop-SKU's (keyed op product slug). */
 export async function getShopOffersBySlug(): Promise<Map<string, ShopOfferRow>> {
   const map = new Map<string, ShopOfferRow>();
   if (!isSupabaseConfigured()) return map;
@@ -56,7 +74,7 @@ export async function getShopOffersBySlug(): Promise<Map<string, ShopOfferRow>> 
   const { data, error } = await supabase
     .from("products")
     .select(
-      "id, slug, offers(id, price_cents, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, merchants(name))",
+      "id, slug, image_path, offers(id, price_cents, affiliate_url, affiliate_deeplink, affiliate_link_status, deleted_at, commission_type, commission_rate, commission_cents_fixed, merchants(name))",
     )
     .in("slug", slugs)
     .eq("status", "published")
@@ -83,6 +101,7 @@ export async function getShopOffersBySlug(): Promise<Map<string, ShopOfferRow>> 
       productSlug: product.slug,
       offerId: best.id,
       priceCents: best.price_cents,
+      imagePath: product.image_path ?? SHOP_IMAGE_FALLBACKS[product.slug] ?? null,
       merchantName: merchantName(best.merchants),
       estimatedCommissionCents: estimateCommission(best),
     });
