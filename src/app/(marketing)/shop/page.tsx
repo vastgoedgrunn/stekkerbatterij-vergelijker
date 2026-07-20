@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import type { Route } from "next";
 import Link from "next/link";
-import { ArrowRight, ShieldCheck, ShoppingBag, Sparkles } from "lucide-react";
+import { ArrowRight, PackageCheck, Truck } from "lucide-react";
 import { Container } from "@/components/patterns/section";
-import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
@@ -17,11 +16,12 @@ import { ShopExpandFilter } from "@/features/energie-shop/shop-expand-filter";
 export const metadata: Metadata = {
   title: "Slimme Energie Shop",
   description:
-    "P1 meters, slimme stekkers, splitters, kabels en uitbreidingsbatterijen. Je koopt via bol, wij helpen je kiezen. Geen eigen magazijn.",
+    "P1 meters, slimme stekkers, splitters, kabels en uitbreidingsbatterijen voor je thuisbatterij. Bestel snel en eenvoudig in onze shop.",
   alternates: { canonical: "/shop" },
   openGraph: {
     title: "Slimme Energie Shop",
-    description: "Meet je energie, stuur slimmer en breid je batterij uit. Affiliate via bol.",
+    description:
+      "Alles voor meten, sturen en uitbreiden rond je thuisbatterij. Duidelijke producten, actuele prijzen.",
     url: `${siteConfig.url}/shop`,
   },
 };
@@ -40,25 +40,24 @@ export default async function SlimmeEnergieShopPage() {
           aria-hidden
         />
         <Container className="relative py-10 sm:py-14">
-          <p className="text-primary inline-flex items-center gap-1.5 text-sm font-semibold tracking-wide uppercase">
-            <ShoppingBag className="size-4" aria-hidden />
+          <p className="text-primary text-sm font-semibold tracking-wide uppercase">
             Slimme Energie Shop
           </p>
           <h1 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-            Meet, stuur en breid uit. Zonder zelf te verkopen.
+            Alles voor je thuisbatterij, op één plek
           </h1>
           <p className="text-muted-foreground mt-4 max-w-2xl text-base leading-relaxed sm:text-lg">
-            Accessoires vóór, tijdens en na je thuisbatterij. Je betaalt en ontvangt via bol. Wij
-            selecteren alleen geverifieerde productpagina&apos;s.
+            Van P1 meter tot uitbreidingsbatterij. Kies wat je nodig hebt, bestel direct en ga
+            verder met besparen.
           </p>
           <ul className="mt-6 flex flex-col gap-2.5 text-sm sm:flex-row sm:flex-wrap sm:gap-x-6">
             <li className="flex items-center gap-2 font-medium">
-              <ShieldCheck className="text-primary size-4 shrink-0" aria-hidden />
-              Je koopt bij bol of de verkoper op bol
+              <PackageCheck className="text-primary size-4 shrink-0" aria-hidden />
+              Geselecteerd voor stekkerbatterijen en slimme meters
             </li>
             <li className="flex items-center gap-2 font-medium">
-              <Sparkles className="text-primary size-4 shrink-0" aria-hidden />
-              Geen checkout of magazijn bij ons
+              <Truck className="text-primary size-4 shrink-0" aria-hidden />
+              Snelle levering en actuele prijzen
             </li>
           </ul>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -66,13 +65,13 @@ export default async function SlimmeEnergieShopPage() {
               href="#section-meten"
               className={cn(buttonVariants({ size: "lg" }), "justify-center")}
             >
-              Begin met meten
+              Bekijk producten
             </a>
             <Link
               href={"/beslishulp" as Route}
               className={cn(buttonVariants({ size: "lg", variant: "outline" }), "justify-center")}
             >
-              Liever eerst beslishulp
+              Hulp bij kiezen
               <ArrowRight className="size-4" />
             </Link>
           </div>
@@ -112,9 +111,8 @@ export default async function SlimmeEnergieShopPage() {
             <header className="mb-5 max-w-2xl">
               <h2 className="text-2xl font-bold tracking-tight">Batterij uitbreiden</h2>
               <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed sm:text-base">
-                Extra modules en accessoires. Filter op merk zodat je geen verkeerde uitbreiding
-                koopt. BP1600 voor Solarbank 2 staat momenteel niet stabiel op bol; wel BP2700 voor
-                Solarbank 3.
+                Extra modules en accessoires die bij jouw merk passen. Filter op merk zodat je
+                precies de juiste uitbreiding bestelt.
               </p>
             </header>
             <ShopExpandFilter
@@ -127,8 +125,8 @@ export default async function SlimmeEnergieShopPage() {
             <header className="mb-5 max-w-2xl">
               <h2 className="text-2xl font-bold tracking-tight">Slimme pakketten</h2>
               <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed sm:text-base">
-                Samengestelde sets. Je klikt per onderdeel door naar bol (aparte winkelwagens). Zo
-                blijven prijzen en voorraad actueel.
+                Kant-en-klare sets voor meten, sturen of uitbreiden. Bestel elk onderdeel met één
+                klik.
               </p>
             </header>
             <div className="grid gap-4 lg:grid-cols-2">
@@ -146,11 +144,11 @@ export default async function SlimmeEnergieShopPage() {
 
         <div className="border-border/70 from-primary/5 mt-14 rounded-3xl border bg-gradient-to-br to-transparent p-6 sm:p-8">
           <h2 className="text-xl font-bold tracking-tight sm:text-2xl">
-            Klaar om te kiezen welke batterij past?
+            Nog niet zeker welke batterij past?
           </h2>
           <p className="text-muted-foreground mt-2 max-w-xl text-sm leading-relaxed sm:text-base">
-            Na meten met een P1 Meter helpt onze beslishulp je naar de juiste stekkerbatterij. De
-            vergelijker blijft onafhankelijk: shopselectie beïnvloedt de ranking niet.
+            Meet eerst met een P1 Meter, of start onze beslishulp. In een paar stappen zie je welke
+            stekkerbatterij bij jouw situatie past.
           </p>
           <Link
             href={"/beslishulp" as Route}
@@ -160,13 +158,6 @@ export default async function SlimmeEnergieShopPage() {
             <ArrowRight className="size-4" />
           </Link>
         </div>
-
-        <AffiliateDisclosure className="mt-10" />
-        <p className="text-muted-foreground mt-3 text-xs leading-relaxed">
-          Prijzen op bol.com, gecontroleerd 20 juli 2026. Actuele prijs en voorraad zie je op bol.
-          Er is geen vaste P1-kabel van 1 meter als los HomeWizard-artikel op bol; kies 3, 5 of 10
-          meter RJ12, of een splitter met korte aansluitkabel.
-        </p>
       </Container>
     </main>
   );

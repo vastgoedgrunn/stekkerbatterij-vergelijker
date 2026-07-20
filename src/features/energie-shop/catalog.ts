@@ -23,6 +23,8 @@ export interface ShopCatalogItem {
   bolUrl: string;
   /** Indicatieve prijs in centen, bron bol.com 2026-07-20 (wordt in DB als offer-prijs gezet). */
   priceCents: number;
+  /** Lokale productfoto onder public/. */
+  imagePath: string;
 }
 
 export interface ShopBundle {
@@ -44,22 +46,22 @@ export const SHOP_SECTIONS: {
   {
     id: "meten",
     title: "Eerst meten",
-    subtitle: "P1 meters, displays en kabels om je verbruik in kaart te brengen.",
+    subtitle: "P1 meters, displays en kabels om je verbruik helder in beeld te krijgen.",
   },
   {
     id: "sturen",
     title: "Slim sturen",
-    subtitle: "Stekkers en splitters om apparaten te meten en te schakelen.",
+    subtitle: "Stekkers en splitters om apparaten te meten en op het juiste moment te schakelen.",
   },
   {
     id: "uitbreiden",
     title: "Batterij uitbreiden",
-    subtitle: "Extra modules en accessoires. Alleen tonen wat bij jouw merk past.",
+    subtitle: "Extra capaciteit en accessoires die bij jouw merk en model passen.",
   },
   {
     id: "pakketten",
     title: "Slimme pakketten",
-    subtitle: "Samengestelde sets. Je koopt elk onderdeel apart via bol.",
+    subtitle: "Kant-en-klare sets. Handig als je meteen goed wilt beginnen.",
   },
 ];
 
@@ -79,6 +81,7 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     bolUrl:
       "https://www.bol.com/nl/nl/p/wi-fi-energie-monitor-p1-meter-inzicht-in-je-stroomverbruik-via-app/9300000005832994/",
     priceCents: 3499,
+    imagePath: "/images/shop/homewizard-p1-meter.jpg",
   },
   {
     slug: "homewizard-p1-voeding",
@@ -94,6 +97,7 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     bolUrl:
       "https://www.bol.com/nl/nl/p/go-solid-oplader-geschikt-voor-homewizard-wi-fi-p1-meter/9300000197452613/",
     priceCents: 1995,
+    imagePath: "/images/shop/homewizard-p1-voeding.jpg",
   },
   {
     slug: "homewizard-energy-display",
@@ -109,6 +113,7 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     bolUrl:
       "https://www.bol.com/nl/nl/p/homewizard-energy-display-brengt-jouw-energieverbruik-in-beeld/9300000162175512/",
     priceCents: 6926,
+    imagePath: "/images/shop/homewizard-energy-display.jpg",
   },
   {
     slug: "p1-kabel-3m",
@@ -124,6 +129,7 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     bolUrl:
       "https://www.bol.com/nl/nl/p/goobay-telefoon-verlengkabel-rj12-rj12-zwart-3-meter/9200000019143783/",
     priceCents: 629,
+    imagePath: "/images/shop/p1-kabel-3m.jpg",
   },
   {
     slug: "p1-kabel-5m",
@@ -138,6 +144,7 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     bolUrl:
       "https://www.bol.com/nl/nl/p/rj12-rj12-telefoon-verlengkabel-zwart-5-meter/9200000019143663/",
     priceCents: 710,
+    imagePath: "/images/shop/p1-kabel-5m.jpg",
   },
   {
     slug: "p1-kabel-10m",
@@ -153,6 +160,7 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     bolUrl:
       "https://www.bol.com/nl/nl/p/rj12-rj12-telefoon-verlengkabel-zwart-10-meter/9200000019144041/",
     priceCents: 1039,
+    imagePath: "/images/shop/p1-kabel-10m.jpg",
   },
   {
     slug: "homewizard-actieve-p1-splitter",
@@ -167,6 +175,7 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     compat: ["meten", "aansturing", "homewizard"],
     bolUrl: "https://www.bol.com/nl/nl/p/actieve-p1-splitter/9300000082809573/",
     priceCents: 3700,
+    imagePath: "/images/shop/homewizard-actieve-p1-splitter.jpg",
   },
   {
     slug: "homewizard-energy-socket",
@@ -181,6 +190,7 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     compat: ["meten", "aansturing", "homewizard"],
     bolUrl: "https://www.bol.com/nl/nl/p/homewizard-wi-fi-energy-socket/9300000123843037/",
     priceCents: 3650,
+    imagePath: "/images/shop/homewizard-energy-socket.jpg",
   },
   {
     slug: "zendure-ab3000x",
@@ -196,6 +206,7 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     bolUrl:
       "https://www.bol.com/nl/nl/p/zendure-solarflow-2400-ac-ab3000x-2880wh-uitbreidingsbatterij/9300000237435925/",
     priceCents: 74999,
+    imagePath: "/images/shop/zendure-ab3000x.jpg",
   },
   {
     slug: "anker-solix-bp2700",
@@ -211,6 +222,7 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     bolUrl:
       "https://www.bol.com/nl/nl/p/anker-solix-bp2700-expansion-battery-2688wh-plug-and-play-compatibel-anker-solix-solarbank-3-e2700-pro/9300000233342583/",
     priceCents: 86600,
+    imagePath: "/images/shop/anker-solix-bp2700.jpg",
   },
   {
     slug: "anker-solix-bp3800",
@@ -226,6 +238,7 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     bolUrl:
       "https://www.bol.com/nl/nl/p/anker-solix-bp3800-extension-battery-3840wh/9300000171717051/",
     priceCents: 149900,
+    imagePath: "/images/shop/anker-solix-bp3800.jpg",
   },
   {
     slug: "anker-solix-power-dock",
@@ -240,6 +253,7 @@ export const SHOP_ITEMS: ShopCatalogItem[] = [
     bolUrl:
       "https://www.bol.com/nl/nl/p/anker-solix-power-dock-accessoire-slim-energiebeheer-uitbreidbare-functionaliteit-compact-ontwerp/9300000248613510/",
     priceCents: 38400,
+    imagePath: "/images/shop/anker-solix-power-dock.jpg",
   },
 ];
 

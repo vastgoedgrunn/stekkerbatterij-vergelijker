@@ -25,7 +25,7 @@ const principles = [
   {
     icon: Eye,
     title: "Transparant",
-    text: "Waar we zelf verkopen of een vergoeding ontvangen, laten we dat duidelijk zien. Advertenties zijn altijd gelabeld.",
+    text: "Waar we een vergoeding ontvangen, vermelden we dat rustig. Advertenties zijn altijd gelabeld.",
   },
   {
     icon: ShieldCheck,

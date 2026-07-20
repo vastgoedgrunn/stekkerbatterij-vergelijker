@@ -2,10 +2,10 @@
 
 import { OfferLink } from "@/features/offers-pricing/offer-link";
 import { Badge } from "@/components/ui/badge";
+import { ProductImage } from "@/components/patterns/product-image";
 import { formatPrice } from "@/lib/format";
 import type { ShopCatalogItem } from "./catalog";
 import type { ShopOfferRow } from "./queries";
-import { ShopItemVisual } from "./shop-item-visual";
 
 export function ShopProductCard({
   item,
@@ -27,7 +27,13 @@ export function ShopProductCard({
       id={item.slug}
       className="border-border/80 bg-card flex scroll-mt-28 flex-col overflow-hidden rounded-2xl border shadow-[var(--shadow-sm)]"
     >
-      <ShopItemVisual item={item} className="rounded-none rounded-t-2xl" />
+      <ProductImage
+        src={item.imagePath}
+        alt={item.name}
+        aspect="card"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        className="rounded-none rounded-t-2xl border-0 border-b"
+      />
       <div className="flex flex-1 flex-col gap-3 p-4 sm:p-5">
         <div>
           <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
@@ -48,10 +54,10 @@ export function ShopProductCard({
             {priceLabel ? (
               <>
                 <p className="text-lg font-bold tracking-tight">{priceLabel}</p>
-                <p className="text-muted-foreground text-xs">via bol · prijs kan wijzigen</p>
+                <p className="text-muted-foreground text-xs">Incl. btw</p>
               </>
             ) : (
-              <p className="text-muted-foreground text-sm">Prijs op bol bekijken</p>
+              <p className="text-muted-foreground text-sm">Prijs op aanvraag</p>
             )}
           </div>
           {offer ? (
@@ -66,10 +72,10 @@ export function ShopProductCard({
               variant="primary"
               className="w-full justify-center sm:w-auto"
             >
-              {quantity > 1 ? `Koop ${quantity}× op bol` : "Bekijk op bol"}
+              {quantity > 1 ? `Bestel ${quantity}×` : "Bestellen"}
             </OfferLink>
           ) : (
-            <span className="text-muted-foreground text-sm">Tijdelijk niet beschikbaar</span>
+            <span className="text-muted-foreground text-sm">Tijdelijk niet leverbaar</span>
           )}
         </div>
       </div>

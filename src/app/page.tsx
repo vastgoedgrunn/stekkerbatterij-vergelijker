@@ -74,7 +74,7 @@ const trustItems = [
   {
     icon: ShieldCheck,
     title: "Transparant over aanbieders",
-    text: "Je ziet bij welk merk of webshop de laagste prijs staat, plus duidelijke uitleg over affiliate-links.",
+    text: "Je ziet bij welk merk of webshop de laagste prijs staat, met een duidelijke controledatum.",
   },
 ];
 

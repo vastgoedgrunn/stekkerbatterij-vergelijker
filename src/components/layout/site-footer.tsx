@@ -102,9 +102,9 @@ export function SiteFooter() {
       <div className="border-border border-t">
         <p className="text-muted-foreground mx-auto w-full max-w-6xl px-4 py-6 text-xs leading-relaxed">
           &copy; {new Date().getFullYear()} {siteConfig.name}. Onafhankelijk vergelijkingsplatform.
-          Prijzen zijn indicatief en incl. btw; controleer altijd de actuele prijs bij de aanbieder.
-          Sommige links zijn affiliate-links: als je via ons iets koopt, ontvangen wij soms een
-          commissie. Dat beïnvloedt onze ranking niet.{" "}
+          Prijzen zijn indicatief en incl. btw; controleer altijd de actuele prijs bij afronden. Bij
+          aankoop via onze links kunnen wij een kleine vergoeding ontvangen, zonder extra kosten
+          voor jou. Dat beïnvloedt onze ranking niet.{" "}
           <Link
             href={"/over-ons/hoe-wij-vergelijken" as Route}
             className="underline-offset-2 hover:underline"

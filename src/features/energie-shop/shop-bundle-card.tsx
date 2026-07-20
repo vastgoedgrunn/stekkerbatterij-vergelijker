@@ -45,15 +45,13 @@ export function ShopBundleCard({
       <div className="from-primary/10 to-accent/30 border-border/60 border-b bg-gradient-to-br px-4 py-5 sm:px-5">
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="text-lg font-bold tracking-tight">{bundle.name}</h3>
-          {bundle.highlight && <Badge variant="highlight">Aanbevolen</Badge>}
+          {bundle.highlight && <Badge variant="highlight">Populair</Badge>}
         </div>
         <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed">{bundle.summary}</p>
         {allReady && totalCents > 0 && (
           <p className="mt-3 text-base font-semibold">
-            Samen circa {formatPrice(totalCents)}
-            <span className="text-muted-foreground ml-1 text-xs font-normal">
-              (aparte bol-bestellingen)
-            </span>
+            Vanaf {formatPrice(totalCents)}
+            <span className="text-muted-foreground ml-1 text-xs font-normal">incl. btw</span>
           </p>
         )}
       </div>
@@ -90,10 +88,10 @@ export function ShopBundleCard({
                 variant="outline"
                 className="w-full shrink-0 justify-center sm:w-auto"
               >
-                {qty > 1 ? `Koop ${qty}× op bol` : "Koop op bol"}
+                {qty > 1 ? `Bestel ${qty}×` : "Bestellen"}
               </OfferLink>
             ) : (
-              <span className="text-muted-foreground text-sm">Niet beschikbaar</span>
+              <span className="text-muted-foreground text-sm">Niet leverbaar</span>
             )}
           </li>
         ))}
