@@ -57,6 +57,19 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
   },
   {
     source: "research",
+    externalId: "anker-bol-solarbank-max-ac",
+    brandSlug: "anker-solix",
+    rawTitle: "Anker SOLIX Solarbank Max AC",
+    rawDescription:
+      "7 kWh all-in-one plug-in thuisbatterij, 3,5 kW bidirectioneel, uitbreidbaar tot 42 kWh.",
+    capacityKwh: 7.0,
+    powerKw: 3.5,
+    url: "https://www.bol.com/nl/nl/p/anker-solix-solarbank-max-ac-balkonkrachtwerk-met-opslag-7kwh-3600w-alles-in-1-plug-play-thuisaccu-10000-cycli-5-min-installatie-zonnepaneel-met-omvormer/9300000292343906/",
+    imageUrl: "/images/products/anker-solix-solarbank-max-ac.jpg",
+    priceCents: 219900,
+  },
+  {
+    source: "research",
     externalId: "anker-bol-solarbank-2-e1600-pro",
     brandSlug: "anker-solix",
     rawTitle: "Anker SOLIX Solarbank 2 E1600 Pro",

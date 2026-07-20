@@ -33,6 +33,7 @@ export const CURATED_PRODUCT_IMAGE_SOURCES: Record<string, string> = {
     "https://zendure.com/cdn/shop/files/solarflow-800-with-ac-cable.png?v=1740455072",
   "zendure-solarflow-hyper-2000":
     "https://zendure.com/cdn/shop/files/ZDHYP2000-1AB2000X-png.png?v=1743509454",
+  "anker-solix-solarbank-max-ac": "https://media.s-bol.com/npqgAnLWx407/qYW39Bp/550x550.jpg",
 };
 
 /** Lokale slug-assets (al in /public) als Storage-fallback niet nodig is. */
@@ -53,6 +54,7 @@ export const LOCAL_PRODUCT_IMAGE_PATHS: Record<string, string> = {
   "sunology-storey": "/images/products/sunology-storey.jpg",
   "zendure-solarflow-800": "/images/products/zendure-solarflow-800.jpg",
   "zendure-solarflow-hyper-2000": "/images/products/zendure-solarflow-hyper-2000.jpg",
+  "anker-solix-solarbank-max-ac": "/images/products/anker-solix-solarbank-max-ac.jpg",
   // Shop-accessoires: lokale fallback tot Catalog-foto in Storage staat
   "homewizard-p1-meter": "/images/shop/homewizard-p1-meter.jpg",
   "homewizard-p1-voeding": "/images/shop/homewizard-p1-voeding.jpg",

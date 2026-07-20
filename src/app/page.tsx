@@ -28,6 +28,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/json-ld";
 import { siteConfig } from "@/config/site";
 import { businessRules } from "@/config/business-rules";
+import { EDITORS_FAVORITE_PLUG_IN_SLUG } from "@/config/editors-picks";
 import { cn } from "@/lib/utils";
 
 export const revalidate = 3600;
@@ -100,7 +101,12 @@ export default async function HomePage() {
     getArticles(),
   ]);
 
-  const plugInFeatured = plugInAll.filter((p) => p.lowestPriceCents !== null).slice(0, 4);
+  const pricedPlugIns = plugInAll.filter((p) => p.lowestPriceCents !== null);
+  const editorsPick = pricedPlugIns.find((p) => p.slug === EDITORS_FAVORITE_PLUG_IN_SLUG);
+  const plugInFeatured = [
+    ...(editorsPick ? [editorsPick] : []),
+    ...pricedPlugIns.filter((p) => p.slug !== EDITORS_FAVORITE_PLUG_IN_SLUG),
+  ].slice(0, 4);
   const fixedFeatured = fixedCandidates
     .filter(
       (p) =>
@@ -283,7 +289,7 @@ export default async function HomePage() {
             <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
               <SectionHeading
                 eyebrow="Scherpste prijs per kWh"
-                title="Populaire stekkerbatterijen"
+                title="Onze favoriet en populaire stekkerbatterijen"
                 description="De plug-and-play modellen met de laagste prijs per kWh opslag van dit moment."
               />
               <Link

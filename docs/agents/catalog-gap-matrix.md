@@ -6,7 +6,7 @@ Snapshot + code-status 2026-07-20 (monetization-ready PR).
 
 | Status | SKUs |
 |--------|------|
-| Betaald live | Anker Pro (Bol), EcoFlow STREAM (Bol), Marstek Venus (Bol), Zendure 800 (Daisycon), HomeWizard single+bundle (Daisycon) |
+| Betaald live | Anker Max AC (Bol), Anker Pro (Bol), EcoFlow STREAM (Bol), Marstek Venus (Bol), Zendure 800 (Daisycon), HomeWizard single+bundle (Daisycon) |
 | Direct product-URL (onbetaald) | Sessy single/Duo, Sunology Play/Storey |
 | Pending Awin | EcoFlow merkshop (`pending` tot `AWIN_PUBLISHER_ID`) |
 | Nog geen geverifieerde product-URL | Anker E1600 non-Pro, EcoFlow PowerStream 800, Growatt NOAH, Marstek Jupiter, Zendure Hyper (OOS) |
