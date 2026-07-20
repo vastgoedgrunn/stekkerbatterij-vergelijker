@@ -8,14 +8,25 @@ import { Container } from "@/components/patterns/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/format";
+import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
+const title = "Koopgidsen & kennis over stekkerbatterijen";
+const description =
+  "Onafhankelijke gidsen over stekkerbatterijen: capaciteit kiezen, stekker vs vaste thuisbatterij, saldering en terugverdientijd.";
+
 export const metadata: Metadata = {
-  title: "Koopgidsen & kennis over stekkerbatterijen",
-  description:
-    "Onafhankelijke gidsen over stekkerbatterijen: capaciteit, veiligheid, saldering en terugverdientijd.",
+  title,
+  description,
   alternates: { canonical: "/gidsen" },
+  openGraph: {
+    title,
+    description,
+    url: `${siteConfig.url}/gidsen`,
+    type: "website",
+    siteName: siteConfig.name,
+  },
 };
 
 export default async function GuidesPage() {

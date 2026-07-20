@@ -5,14 +5,17 @@ import { BatteryCharging, ShieldCheck, Zap } from "lucide-react";
 import { getProducts } from "@/features/products/queries";
 import type { ProductListItem } from "@/features/products/types";
 import { productDetailPath } from "@/features/products/product-paths";
+import { getFaqs } from "@/features/content/queries";
+import { getRelatedGuides } from "@/features/content/related-guides";
 import { ProductRatingDisplay } from "@/components/patterns/product-rating-display";
 import { AffiliateDisclosure } from "@/components/patterns/affiliate-disclosure";
+import { FaqAccordion } from "@/components/patterns/faq-accordion";
 import { Container, Section, SectionHeading } from "@/components/patterns/section";
 import { Card } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { OfferLink } from "@/features/offers-pricing/offer-link";
 import { JsonLd } from "@/components/seo/json-ld";
-import { itemListJsonLd } from "@/lib/seo/json-ld";
+import { faqJsonLd, itemListJsonLd } from "@/lib/seo/json-ld";
 import { formatNumber, formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
@@ -92,20 +95,28 @@ function rankingReason(product: ProductListItem, index: number): string {
 }
 
 export default async function BestBatteryPage() {
-  const result = await getProducts({
-    productType: "plug_in",
-    sort: "value_asc",
-    pageSize: 10,
-  });
+  const [result, faqs] = await Promise.all([
+    getProducts({
+      productType: "plug_in",
+      sort: "value_asc",
+      pageSize: 10,
+    }),
+    getFaqs(),
+  ]);
   // Alleen producten met live prijs in de top 10; vaste systemen zijn al uitgefilterd.
   const products = result.items.filter((p) => p.lowestPriceCents !== null).slice(0, 10);
+  const relatedGuides = getRelatedGuides("stekkerbatterij-koopgids");
+  const faqLd = faqJsonLd(faqs);
 
-  const structuredData = itemListJsonLd(
-    products.map((product) => ({
-      name: product.name,
-      url: productDetailPath(product.slug, "plug_in"),
-    })),
-  );
+  const structuredData: Record<string, unknown>[] = [
+    itemListJsonLd(
+      products.map((product) => ({
+        name: product.name,
+        url: productDetailPath(product.slug, "plug_in"),
+      })),
+    ),
+  ];
+  if (faqLd) structuredData.push(faqLd);
 
   return (
     <main id="main-content">
@@ -251,6 +262,43 @@ export default async function BestBatteryPage() {
           )}
 
           <AffiliateDisclosure className="mt-6" />
+
+          {faqs.length > 0 && (
+            <section className="mt-14" aria-labelledby="beste-faq">
+              <h2 id="beste-faq" className="text-2xl font-bold tracking-tight">
+                Veelgestelde vragen
+              </h2>
+              <p className="text-muted-foreground mt-2 max-w-2xl text-sm">
+                Korte antwoorden voordat je een stekkerbatterij kiest.
+              </p>
+              <div className="mt-6">
+                <FaqAccordion faqs={faqs} />
+              </div>
+            </section>
+          )}
+
+          <section className="mt-14" aria-labelledby="beste-guides">
+            <h2 id="beste-guides" className="text-2xl font-bold tracking-tight">
+              Verder lezen
+            </h2>
+            <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
+              {relatedGuides.map((guide) => (
+                <li key={guide.slug}>
+                  <Link
+                    href={`/gidsen/${guide.slug}` as Route}
+                    className="text-primary hover:underline"
+                  >
+                    {guide.title}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link href={"/merken" as Route} className="text-primary hover:underline">
+                  Alle merken
+                </Link>
+              </li>
+            </ul>
+          </section>
 
           <div className="border-border bg-card mt-12 rounded-2xl border p-6 sm:p-8">
             <h2 className="text-2xl font-bold tracking-tight">Zelf de knoop doorhakken?</h2>

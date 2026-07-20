@@ -176,7 +176,9 @@ export function articleJsonLd(article: {
       name: siteConfig.name,
       logo: {
         "@type": "ImageObject",
-        url: `${siteConfig.url}/images/brand/logo.png`,
+        url: `${siteConfig.url}${siteConfig.logoMarkPath}`,
+        width: 279,
+        height: 279,
       },
     },
   };

@@ -121,10 +121,10 @@ export default async function HomePage() {
               Onafhankelijk vergelijkingsplatform
             </span>
             <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-              Welke <span className="text-primary">thuisbatterij</span> past bij jou?
+              <span className="text-primary">Stekkerbatterij</span> vergelijken: welke past bij jou?
             </h1>
             <p className="text-muted-foreground max-w-xl text-lg text-pretty">
-              Vergelijk stekkerbatterijen en vaste thuisbatterijen op capaciteit, vermogen en
+              Vergelijk stekkerbatterijen en vaste thuisbatterijen op prijs, capaciteit, vermogen en
               garantie. Direct kopen of een offerte voor installatie: jij kiest het pad dat past.
             </p>
             <HeroCta />
@@ -226,7 +226,12 @@ export default async function HomePage() {
             <div className="marquee-track">
               <div className="marquee-group">
                 {brands.map((brand) => (
-                  <span key={brand.slug} className="marquee-logo">
+                  <Link
+                    key={brand.slug}
+                    href={`/merken/${brand.slug}`}
+                    className="marquee-logo"
+                    title={`${brand.name} batterijen`}
+                  >
                     <Image
                       src={`/logos/brands/${brand.slug}.png`}
                       alt={brand.name}
@@ -234,12 +239,17 @@ export default async function HomePage() {
                       height={brand.height}
                       sizes="160px"
                     />
-                  </span>
+                  </Link>
                 ))}
               </div>
               <div className="marquee-group" aria-hidden="true" data-marquee-clone>
                 {brands.map((brand) => (
-                  <span key={`clone-${brand.slug}`} className="marquee-logo">
+                  <Link
+                    key={`clone-${brand.slug}`}
+                    href={`/merken/${brand.slug}`}
+                    className="marquee-logo"
+                    tabIndex={-1}
+                  >
                     <Image
                       src={`/logos/brands/${brand.slug}.png`}
                       alt=""
@@ -247,7 +257,7 @@ export default async function HomePage() {
                       height={brand.height}
                       sizes="160px"
                     />
-                  </span>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -273,6 +283,41 @@ export default async function HomePage() {
               </Reveal>
             ))}
           </div>
+          <nav aria-label="Populaire pagina's" className="mt-10">
+            <p className="text-muted-foreground mb-3 text-center text-xs font-semibold tracking-wide uppercase">
+              Populair
+            </p>
+            <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-semibold">
+              <li>
+                <Link href="/beste-stekkerbatterij" className="text-primary hover:underline">
+                  Beste stekkerbatterij
+                </Link>
+              </li>
+              <li>
+                <Link href="/stekkerbatterijen" className="text-primary hover:underline">
+                  Stekkerbatterijen vergelijken
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/gidsen/stekkerbatterij-koopgids"
+                  className="text-primary hover:underline"
+                >
+                  Koopgids
+                </Link>
+              </li>
+              <li>
+                <Link href="/merken" className="text-primary hover:underline">
+                  Merken
+                </Link>
+              </li>
+              <li>
+                <Link href="/beslishulp" className="text-primary hover:underline">
+                  Beslishulp
+                </Link>
+              </li>
+            </ul>
+          </nav>
         </Container>
       </Section>
 

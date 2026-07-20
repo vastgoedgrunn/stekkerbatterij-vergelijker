@@ -29,9 +29,11 @@ const columns = [
     title: "Kennis",
     links: [
       { href: "/gidsen", label: "Koopgidsen" },
+      { href: "/gidsen/stekkerbatterij-koopgids", label: "Koopgids stekkerbatterij" },
+      { href: "/gidsen/hoeveel-kwh-stekkerbatterij", label: "Hoeveel kWh heb je nodig?" },
+      { href: "/gidsen/saldering-afbouw", label: "Saldering afbouw" },
       { href: "/tools/terugverdientijd", label: "Terugverdientijd" },
       { href: "/over-ons/hoe-wij-vergelijken", label: "Hoe wij vergelijken" },
-      { href: "/beslishulp", label: "Beslishulp" },
     ],
   },
   {
