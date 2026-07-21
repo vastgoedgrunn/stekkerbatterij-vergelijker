@@ -11,6 +11,13 @@ export type OfferOutboundFields = {
   affiliate_deeplink?: string | null;
 };
 
+const BLOCKED_DESTINATIONS = new Set([
+  "www.coolblue.nl/product/904321",
+  "www.coolblue.nl/product/905678",
+  "www.zonneplan.nl/thuisbatterij/marstek-venus",
+  "www.zonneplan.nl/thuisbatterij/sessy",
+]);
+
 /** True bij merchant zoek/listing i.p.v. concrete product-URL. */
 export function isSearchOrListingUrl(url: string): boolean {
   try {
@@ -40,19 +47,36 @@ export function isSearchOrListingUrl(url: string): boolean {
   }
 }
 
+/** True bij eerder bevestigde dode of overgenomen merchantbestemmingen. */
+function isKnownBrokenMerchantUrl(rawUrl: string): boolean {
+  try {
+    const url = new URL(rawUrl);
+    const host = url.hostname.replace(/^www\./, "");
+    const path = url.pathname.replace(/\/+$/, "") || "/";
+    const key = `www.${host}${path}`;
+
+    if (host === "solarsale.nl") return true;
+    return BLOCKED_DESTINATIONS.has(key);
+  } catch {
+    return true;
+  }
+}
+
 export function offerOutboundUrl(offer: OfferOutboundFields): string | null {
   const url = offer.affiliate_deeplink ?? offer.affiliate_url ?? null;
   if (!url || !url.startsWith("https://")) return null;
   if (isSearchOrListingUrl(url)) return null;
+  if (isKnownBrokenMerchantUrl(url)) return null;
   return url;
 }
 
-/** Actief in catalogus (prijs mag getoond), niet soft-deleted/broken/zoek-URL. */
+/** Actief in catalogus (prijs mag getoond), alleen na geverifieerde linkcheck. */
 export function isActiveOffer(offer: OfferOutboundFields): boolean {
   if (offer.deleted_at) return false;
-  if (offer.affiliate_link_status === "broken") return false;
+  if (offer.affiliate_link_status !== "ok") return false;
   const url = offer.affiliate_deeplink ?? offer.affiliate_url;
   if (url && isSearchOrListingUrl(url)) return false;
+  if (url && isKnownBrokenMerchantUrl(url)) return false;
   return true;
 }
 
