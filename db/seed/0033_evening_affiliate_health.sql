@@ -34,12 +34,10 @@ from (
     ('homewizard-energy-display', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
     ('sessy-thuisbatterij', 'sessy', 'Avondcontrole 2026-07-21: productpagina HTTPS 200 en titelmatch'),
     ('sunology-storey', 'sunology', 'Avondcontrole 2026-07-21: productpagina HTTPS 200 en titelmatch')
-) as verified(product_slug, merchant_slug, health_note),
-products p,
-merchants m
-where p.slug = verified.product_slug
-  and m.slug = verified.merchant_slug
-  and o.product_id = p.id
+) as verified(product_slug, merchant_slug, health_note)
+join products p on p.slug = verified.product_slug
+join merchants m on m.slug = verified.merchant_slug
+where o.product_id = p.id
   and o.merchant_id = m.id
   and o.deleted_at is null;
 
