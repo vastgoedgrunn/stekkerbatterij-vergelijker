@@ -35,7 +35,7 @@ where o.deleted_at is null
     -- WordPress ?s= alleen op een homepage. Bol partner-deeplinks gebruiken
     -- legitiem &s={publisher_id} en mogen hier niet als zoek-URL tellen.
     or coalesce(o.affiliate_deeplink, o.affiliate_url)
-       ~* '^https://[^/?#]+/?\?[^#]*[?&]s='
+       ~* '^https://[^/?#]+/?\?([^#&]+&)*s='
     or coalesce(o.affiliate_deeplink, o.affiliate_url) ~* 'gamma\\.nl/assortiment'
     or coalesce(o.affiliate_deeplink, o.affiliate_url) is null
     or coalesce(o.affiliate_deeplink, o.affiliate_url) !~* '^https://'
