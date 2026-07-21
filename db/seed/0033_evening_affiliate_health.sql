@@ -12,33 +12,36 @@ set
   affiliate_link_checked_at = '2026-07-21T18:11:36Z'::timestamptz,
   updated_at = now()
 from (
-  values
-    ('homewizard-p1-meter', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('p1-kabel-10m', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('p1-kabel-5m', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('ecoflow-stream-ac-pro', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('zendure-solarflow-800', 'zendure', 'Avondcontrole 2026-07-21: Daisycon-deeplink HTTPS 200 en SKU-match'),
-    ('homewizard-p1-voeding', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('anker-solix-solarbank-2-e1600-pro', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('marstek-venus-512', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('homewizard-actieve-p1-splitter', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('anker-solix-power-dock', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('homewizard-plug-in-battery-bundle', 'homewizard', 'Avondcontrole 2026-07-21: Daisycon-deeplink HTTPS 200 en SKU-match'),
-    ('zendure-ab3000x', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('homewizard-plug-in-battery', 'homewizard', 'Avondcontrole 2026-07-21: Daisycon-deeplink HTTPS 200 en SKU-match'),
-    ('p1-kabel-3m', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('homewizard-energy-socket', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('anker-solix-bp2700', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('anker-solix-solarbank-max-ac', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('anker-solix-bp3800', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('homewizard-energy-display', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
-    ('sessy-thuisbatterij', 'sessy', 'Avondcontrole 2026-07-21: productpagina HTTPS 200 en titelmatch'),
-    ('sunology-storey', 'sunology', 'Avondcontrole 2026-07-21: productpagina HTTPS 200 en titelmatch')
-) as verified(product_slug, merchant_slug, health_note)
-join products p on p.slug = verified.product_slug
-join merchants m on m.slug = verified.merchant_slug
-where o.product_id = p.id
-  and o.merchant_id = m.id
+  select p.id as product_id, m.id as merchant_id, checks.health_note
+  from (
+    values
+      ('homewizard-p1-meter', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('p1-kabel-10m', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('p1-kabel-5m', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('ecoflow-stream-ac-pro', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('zendure-solarflow-800', 'zendure', 'Avondcontrole 2026-07-21: Daisycon-deeplink HTTPS 200 en SKU-match'),
+      ('homewizard-p1-voeding', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('anker-solix-solarbank-2-e1600-pro', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('marstek-venus-512', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('homewizard-actieve-p1-splitter', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('anker-solix-power-dock', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('homewizard-plug-in-battery-bundle', 'homewizard', 'Avondcontrole 2026-07-21: Daisycon-deeplink HTTPS 200 en SKU-match'),
+      ('zendure-ab3000x', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('homewizard-plug-in-battery', 'homewizard', 'Avondcontrole 2026-07-21: Daisycon-deeplink HTTPS 200 en SKU-match'),
+      ('p1-kabel-3m', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('homewizard-energy-socket', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('anker-solix-bp2700', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('anker-solix-solarbank-max-ac', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('anker-solix-bp3800', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('homewizard-energy-display', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
+      ('sessy-thuisbatterij', 'sessy', 'Avondcontrole 2026-07-21: productpagina HTTPS 200 en titelmatch'),
+      ('sunology-storey', 'sunology', 'Avondcontrole 2026-07-21: productpagina HTTPS 200 en titelmatch')
+  ) as checks(product_slug, merchant_slug, health_note)
+  join products p on p.slug = checks.product_slug
+  join merchants m on m.slug = checks.merchant_slug
+) as verified
+where o.product_id = verified.product_id
+  and o.merchant_id = verified.merchant_id
   and o.deleted_at is null;
 
 -- De Sessy-pagina verkoopt alleen de single-SKU. Er is geen aparte Duo-pagina.
