@@ -45,34 +45,35 @@ where o.product_id = verified.product_id
   and o.deleted_at is null;
 
 -- De Sessy-pagina verkoopt alleen de single-SKU. Er is geen aparte Duo-pagina.
-update offers o
-set
-  stock_status = 'out_of_stock',
-  affiliate_link_status = 'broken',
-  affiliate_link_note = 'P0: pagina verkoopt Sessy single, geen verifieerbare Duo-SKU; soft-deleted 2026-07-21',
-  affiliate_link_checked_at = '2026-07-21T18:11:36Z'::timestamptz,
-  deleted_at = coalesce(o.deleted_at, now()),
-  updated_at = now()
-from products p, merchants m
-where o.product_id = p.id
-  and o.merchant_id = m.id
-  and p.slug = 'sessy-thuisbatterij-duo'
-  and m.slug = 'sessy';
-
 -- EcoFlow Awin heeft nog geen publisherdeeplink of specifieke productpagina.
 update offers o
 set
   stock_status = 'out_of_stock',
   affiliate_link_status = 'broken',
-  affiliate_link_note = 'P0: EcoFlow Awin productdeeplink ontbreekt; homepage soft-deleted 2026-07-21',
+  affiliate_link_note = blocked.health_note,
   affiliate_link_checked_at = '2026-07-21T18:11:36Z'::timestamptz,
   deleted_at = coalesce(o.deleted_at, now()),
   updated_at = now()
-from products p, merchants m
-where o.product_id = p.id
-  and o.merchant_id = m.id
-  and p.slug = 'ecoflow-stream-ac-pro'
-  and m.slug = 'ecoflow';
+from (
+  select p.id as product_id, m.id as merchant_id, targets.health_note
+  from (
+    values
+      (
+        'sessy-thuisbatterij-duo',
+        'sessy',
+        'P0: pagina verkoopt Sessy single, geen verifieerbare Duo-SKU; soft-deleted 2026-07-21'
+      ),
+      (
+        'ecoflow-stream-ac-pro',
+        'ecoflow',
+        'P0: EcoFlow Awin productdeeplink ontbreekt; homepage soft-deleted 2026-07-21'
+      )
+  ) as targets(product_slug, merchant_slug, health_note)
+  join products p on p.slug = targets.product_slug
+  join merchants m on m.slug = targets.merchant_slug
+) as blocked
+where o.product_id = blocked.product_id
+  and o.merchant_id = blocked.merchant_id;
 
 -- Reeds broken offers bij niet-gepubliceerde producten mogen niet actief blijven.
 update offers o
