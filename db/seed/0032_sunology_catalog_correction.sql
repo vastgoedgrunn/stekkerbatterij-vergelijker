@@ -28,12 +28,8 @@ set
   last_checked_at = '2026-07-21T06:02:00Z'::timestamptz,
   deleted_at = coalesce(o.deleted_at, now()),
   updated_at = now()
-from products p
-cross join merchants m
-where o.product_id = p.id
-  and o.merchant_id = m.id
-  and p.slug = 'sunology-play'
-  and m.slug = 'sunology';
+where o.product_id = (select id from products where slug = 'sunology-play')
+  and o.merchant_id = (select id from merchants where slug = 'sunology');
 
 update products
 set
@@ -51,26 +47,19 @@ where slug = 'sunology-storey'
   and deleted_at is null;
 
 update product_specs ps
-set value_number = v.value_number
-from products p
-cross join spec_definitions sd
-cross join (values
-    ('inverter_w', 500::numeric),
-    ('weight_kg', 30.5::numeric)
-  ) as v(spec_key, value_number)
-where ps.product_id = p.id
-  and ps.spec_id = sd.id
-  and p.slug = 'sunology-storey'
-  and sd.key = v.spec_key;
+set value_number = 500
+where ps.product_id = (select id from products where slug = 'sunology-storey')
+  and ps.spec_id = (select id from spec_definitions where key = 'inverter_w');
+
+update product_specs ps
+set value_number = 30.5
+where ps.product_id = (select id from products where slug = 'sunology-storey')
+  and ps.spec_id = (select id from spec_definitions where key = 'weight_kg');
 
 update product_specs ps
 set value_text = 'IP64'
-from products p
-cross join spec_definitions sd
-where ps.product_id = p.id
-  and ps.spec_id = sd.id
-  and p.slug = 'sunology-storey'
-  and sd.key = 'ip_rating';
+where ps.product_id = (select id from products where slug = 'sunology-storey')
+  and ps.spec_id = (select id from spec_definitions where key = 'ip_rating');
 
 update offers o
 set
@@ -83,9 +72,5 @@ set
   last_checked_at = '2026-07-21T06:02:00Z'::timestamptz,
   deleted_at = null,
   updated_at = now()
-from products p
-cross join merchants m
-where o.product_id = p.id
-  and o.merchant_id = m.id
-  and p.slug = 'sunology-storey'
-  and m.slug = 'sunology';
+where o.product_id = (select id from products where slug = 'sunology-storey')
+  and o.merchant_id = (select id from merchants where slug = 'sunology');
