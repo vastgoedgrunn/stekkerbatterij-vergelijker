@@ -5,7 +5,13 @@
 -- het verwachte product en SKU. De directe Sessy- en Sunology-links gaven
 -- status 200 en een passende paginatitel.
 
-with verified(product_slug, merchant_slug, health_note) as (
+update offers o
+set
+  affiliate_link_status = 'ok',
+  affiliate_link_note = verified.health_note,
+  affiliate_link_checked_at = '2026-07-21T18:11:36Z'::timestamptz,
+  updated_at = now()
+from (
   values
     ('homewizard-p1-meter', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
     ('p1-kabel-10m', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
@@ -28,14 +34,9 @@ with verified(product_slug, merchant_slug, health_note) as (
     ('homewizard-energy-display', 'bol', 'Avondcontrole 2026-07-21: affiliate-deeplink HTTPS 200 en SKU-match'),
     ('sessy-thuisbatterij', 'sessy', 'Avondcontrole 2026-07-21: productpagina HTTPS 200 en titelmatch'),
     ('sunology-storey', 'sunology', 'Avondcontrole 2026-07-21: productpagina HTTPS 200 en titelmatch')
-)
-update offers o
-set
-  affiliate_link_status = 'ok',
-  affiliate_link_note = verified.health_note,
-  affiliate_link_checked_at = '2026-07-21T18:11:36Z'::timestamptz,
-  updated_at = now()
-from verified, products p, merchants m
+) as verified(product_slug, merchant_slug, health_note),
+products p,
+merchants m
 where p.slug = verified.product_slug
   and m.slug = verified.merchant_slug
   and o.product_id = p.id
