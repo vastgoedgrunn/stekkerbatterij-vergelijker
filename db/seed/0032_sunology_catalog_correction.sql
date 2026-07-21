@@ -28,7 +28,8 @@ set
   last_checked_at = '2026-07-21T06:02:00Z'::timestamptz,
   deleted_at = coalesce(o.deleted_at, now()),
   updated_at = now()
-from products p, merchants m
+from products p
+cross join merchants m
 where o.product_id = p.id
   and o.merchant_id = m.id
   and p.slug = 'sunology-play'
@@ -51,8 +52,9 @@ where slug = 'sunology-storey'
 
 update product_specs ps
 set value_number = v.value_number
-from products p, spec_definitions sd,
-  (values
+from products p
+cross join spec_definitions sd
+cross join (values
     ('inverter_w', 500::numeric),
     ('weight_kg', 30.5::numeric)
   ) as v(spec_key, value_number)
@@ -63,7 +65,8 @@ where ps.product_id = p.id
 
 update product_specs ps
 set value_text = 'IP64'
-from products p, spec_definitions sd
+from products p
+cross join spec_definitions sd
 where ps.product_id = p.id
   and ps.spec_id = sd.id
   and p.slug = 'sunology-storey'
@@ -80,7 +83,8 @@ set
   last_checked_at = '2026-07-21T06:02:00Z'::timestamptz,
   deleted_at = null,
   updated_at = now()
-from products p, merchants m
+from products p
+cross join merchants m
 where o.product_id = p.id
   and o.merchant_id = m.id
   and p.slug = 'sunology-storey'
