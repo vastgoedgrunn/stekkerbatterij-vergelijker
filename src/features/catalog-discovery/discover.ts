@@ -20,7 +20,11 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     powerKw: 0.8,
     url: "https://eu.zendure.com/products/solarflow-800",
     imageUrl: "/images/products/zendure-solarflow-800.jpg",
-    priceCents: null,
+    priceCents: 74800,
+    payload: {
+      sourceTitle: "SolarFlow 800 + AB2000L Battery (1920 Wh) / None",
+      priceCheckedAt: "2026-07-22",
+    },
   },
   {
     source: "research",
@@ -29,12 +33,12 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     rawTitle: "Zendure SolarFlow Hyper 2000 + AB2000X",
     capacityKwh: 1.92,
     powerKw: 1.2,
-    url: "https://www.zendure.nl/products/solarflow-hyper-2000?variant=47024967319807",
+    url: "https://www.zendure.nl/products/solarflow-hyper-2000",
     imageUrl: "/images/products/zendure-solarflow-hyper-2000.jpg",
     priceCents: 108900,
     payload: {
       sourceTitle: "Hyper 2000 / 1*AB2000X (1920Wh) / Zonder panelen",
-      priceCheckedAt: "2026-07-21",
+      priceCheckedAt: "2026-07-22",
     },
   },
   {
@@ -60,7 +64,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 79900,
     payload: {
       sourceTitle: "EcoFlow STREAM Ultra Plug-in Thuisbatterij",
-      priceCheckedAt: "2026-07-21",
+      priceCheckedAt: "2026-07-22",
     },
   },
   {
@@ -74,7 +78,11 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     powerKw: 3.5,
     url: "https://www.bol.com/nl/nl/p/anker-solix-solarbank-max-ac-balkonkrachtwerk-met-opslag-7kwh-3600w-alles-in-1-plug-play-thuisaccu-10000-cycli-5-min-installatie-zonnepaneel-met-omvormer/9300000292343906/",
     imageUrl: "/images/products/anker-solix-solarbank-max-ac.jpg",
-    priceCents: 219900,
+    priceCents: 209900,
+    payload: {
+      sourceTitle: "Anker SOLIX Solarbank Max AC",
+      priceCheckedAt: "2026-07-22",
+    },
   },
   {
     source: "research",
@@ -89,12 +97,12 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
   },
   {
     source: "research",
-    externalId: "anker-solarbank-2-e1600",
+    externalId: "anker-nl-solarbank-2-e1600-ac",
     brandSlug: "anker-solix",
-    rawTitle: "Anker SOLIX Solarbank 2 E1600",
+    rawTitle: "Anker SOLIX Solarbank 2 E1600 AC",
     capacityKwh: 1.6,
-    powerKw: 0.8,
-    url: "https://www.ankersolix.com/eu/",
+    powerKw: 1.2,
+    url: "https://www.ankersolix.com/nl/products/a17c2",
     imageUrl: "/images/products/anker-solix-solarbank-2-e1600.jpg",
     priceCents: null,
   },
@@ -122,22 +130,22 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 59900,
     payload: {
       sourceTitle: "MARSTEK JUPITER C Plus All-in-One",
-      priceCheckedAt: "2026-07-21",
+      priceCheckedAt: "2026-07-22",
     },
   },
   {
     source: "research",
-    externalId: "growatt-bol-noah-2000",
+    externalId: "growatt-wallbox-noah-2000",
     brandSlug: "growatt",
     rawTitle: "Growatt NOAH 2000",
     capacityKwh: 2.048,
     powerKw: 0.8,
-    url: "https://www.bol.com/nl/nl/p/growatt-noah-2000-batterij/9300000224938575/",
+    url: "https://www.wallboxdiscounter.com/nl/growatt-noah-2000-thuisbatterij.html",
     imageUrl: "/images/products/growatt-noah-2000.jpg",
-    priceCents: 68900,
+    priceCents: 74900,
     payload: {
-      sourceTitle: "Growatt Noah 2000 Batterij",
-      priceCheckedAt: "2026-07-21",
+      sourceTitle: "Growatt Noah 2000 - 2000 Wh uitbreidbaar tot 8000 Wh - Thuisbatterij",
+      priceCheckedAt: "2026-07-22",
     },
   },
   {
@@ -174,7 +182,24 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 139000,
     payload: {
       sourceTitle: "STOREY Master 2200Wh 500W",
-      priceCheckedAt: "2026-07-21",
+      priceCheckedAt: "2026-07-22",
+    },
+  },
+  {
+    source: "research",
+    externalId: "sunology-storey-extension",
+    brandSlug: "sunology",
+    rawTitle: "Sunology STOREY Extension",
+    rawDescription:
+      "Uitbreidingsmodule voor STOREY Master met 2,2 kWh extra opslag en 500 W extra vermogen.",
+    capacityKwh: 2.2,
+    powerKw: 0.5,
+    url: "https://sunology.eu/products/extension-storey",
+    imageUrl: "/images/products/sunology-storey-extension.png",
+    priceCents: 119000,
+    payload: {
+      sourceTitle: "Batterie (Pack Extension), SKU STOREYEC2200P500",
+      priceCheckedAt: "2026-07-22",
     },
   },
 ];
