@@ -27,10 +27,13 @@ export function isSearchOrListingUrl(url: string): boolean {
     if (u.searchParams.has("s") && (path === "" || path === "/")) return true;
     // Gamma categorie/listing, geen productdetail
     if (host.endsWith("gamma.nl") && path.includes("/assortiment/")) return true;
-    // Kale merchant-homepages (geen product)
+    // Kale merchant-homepages zijn nooit een productdetail.
+    if (path === "" || path === "/") {
+      return true;
+    }
     if (
       (host.endsWith("coolblue.nl") || host.endsWith("gamma.nl") || host === "bol.com") &&
-      (path === "" || path === "/" || path === "/nl" || path === "/nl/nl")
+      (path === "/nl" || path === "/nl/nl")
     ) {
       return true;
     }
