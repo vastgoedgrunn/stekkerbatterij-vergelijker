@@ -19,33 +19,36 @@ set
   affiliate_link_checked_at = '2026-07-26T18:07:09Z'::timestamptz,
   updated_at = now()
 from (
-  values
-    ('homewizard-energy-display', 'bol'),
-    ('sessy-thuisbatterij', 'sessy'),
-    ('p1-kabel-10m', 'bol'),
-    ('p1-kabel-5m', 'bol'),
-    ('anker-solix-solarbank-max-ac', 'bol'),
-    ('anker-solix-bp3800', 'bol'),
-    ('homewizard-p1-meter', 'bol'),
-    ('ecoflow-stream-ac-pro', 'bol'),
-    ('zendure-solarflow-800', 'zendure'),
-    ('homewizard-p1-voeding', 'bol'),
-    ('sunology-storey', 'sunology'),
-    ('anker-solix-solarbank-2-e1600-pro', 'bol'),
-    ('marstek-venus-512', 'bol'),
-    ('homewizard-actieve-p1-splitter', 'bol'),
-    ('anker-solix-power-dock', 'bol'),
-    ('homewizard-plug-in-battery-bundle', 'homewizard'),
-    ('zendure-ab3000x', 'bol'),
-    ('homewizard-plug-in-battery', 'homewizard'),
-    ('p1-kabel-3m', 'bol'),
-    ('homewizard-energy-socket', 'bol'),
-    ('anker-solix-bp2700', 'bol')
-) as verified(product_slug, merchant_slug)
-join products p on p.slug = verified.product_slug
-join merchants m on m.slug = verified.merchant_slug
-where o.product_id = p.id
-  and o.merchant_id = m.id
+  select p.id as product_id, m.id as merchant_id, checks.merchant_slug
+  from (
+    values
+      ('homewizard-energy-display', 'bol'),
+      ('sessy-thuisbatterij', 'sessy'),
+      ('p1-kabel-10m', 'bol'),
+      ('p1-kabel-5m', 'bol'),
+      ('anker-solix-solarbank-max-ac', 'bol'),
+      ('anker-solix-bp3800', 'bol'),
+      ('homewizard-p1-meter', 'bol'),
+      ('ecoflow-stream-ac-pro', 'bol'),
+      ('zendure-solarflow-800', 'zendure'),
+      ('homewizard-p1-voeding', 'bol'),
+      ('sunology-storey', 'sunology'),
+      ('anker-solix-solarbank-2-e1600-pro', 'bol'),
+      ('marstek-venus-512', 'bol'),
+      ('homewizard-actieve-p1-splitter', 'bol'),
+      ('anker-solix-power-dock', 'bol'),
+      ('homewizard-plug-in-battery-bundle', 'homewizard'),
+      ('zendure-ab3000x', 'bol'),
+      ('homewizard-plug-in-battery', 'homewizard'),
+      ('p1-kabel-3m', 'bol'),
+      ('homewizard-energy-socket', 'bol'),
+      ('anker-solix-bp2700', 'bol')
+  ) as checks(product_slug, merchant_slug)
+  join products p on p.slug = checks.product_slug
+  join merchants m on m.slug = checks.merchant_slug
+) as verified
+where o.product_id = verified.product_id
+  and o.merchant_id = verified.merchant_id
   and o.deleted_at is null;
 
 -- Drie actieve offers zijn geen verifieerbare product-outbound.
@@ -59,27 +62,30 @@ set
   deleted_at = coalesce(o.deleted_at, now()),
   updated_at = now()
 from (
-  values
-    (
-      'sunology-play',
-      'sunology',
-      'P0: URL opent een PLAY zonnepaneelset zonder batterij; soft-deleted 2026-07-26'
-    ),
-    (
-      'sessy-thuisbatterij-duo',
-      'sessy',
-      'P0: URL verkoopt de Sessy single, geen verifieerbare Duo-SKU; soft-deleted 2026-07-26'
-    ),
-    (
-      'ecoflow-stream-ac-pro',
-      'ecoflow',
-      'P0: EcoFlow Awin publisherdeeplink en specifieke product-URL ontbreken; homepage soft-deleted 2026-07-26'
-    )
-) as blocked(product_slug, merchant_slug, health_note)
-join products p on p.slug = blocked.product_slug
-join merchants m on m.slug = blocked.merchant_slug
-where o.product_id = p.id
-  and o.merchant_id = m.id;
+  select p.id as product_id, m.id as merchant_id, targets.health_note
+  from (
+    values
+      (
+        'sunology-play',
+        'sunology',
+        'P0: URL opent een PLAY zonnepaneelset zonder batterij; soft-deleted 2026-07-26'
+      ),
+      (
+        'sessy-thuisbatterij-duo',
+        'sessy',
+        'P0: URL verkoopt de Sessy single, geen verifieerbare Duo-SKU; soft-deleted 2026-07-26'
+      ),
+      (
+        'ecoflow-stream-ac-pro',
+        'ecoflow',
+        'P0: EcoFlow Awin publisherdeeplink en specifieke product-URL ontbreken; homepage soft-deleted 2026-07-26'
+      )
+  ) as targets(product_slug, merchant_slug, health_note)
+  join products p on p.slug = targets.product_slug
+  join merchants m on m.slug = targets.merchant_slug
+) as blocked
+where o.product_id = blocked.product_id
+  and o.merchant_id = blocked.merchant_id;
 
 -- Broken offers bij niet-gepubliceerde producten mogen niet actief blijven.
 update offers o
@@ -153,30 +159,37 @@ set
   last_checked_at = '2026-07-26T18:07:09Z'::timestamptz,
   updated_at = now()
 from (
-  values
-    (
-      'ecoflow-stream-ac-pro',
-      'bol',
-      74900::bigint,
-      'Bol productbron EUR 749 en partnerlink SKU-match; gecheckt 2026-07-26'
-    ),
-    (
-      'anker-solix-solarbank-max-ac',
-      'bol',
-      209900::bigint,
-      'Bol productbron EUR 2099 en partnerlink SKU-match; gecheckt 2026-07-26'
-    ),
-    (
-      'sunology-storey',
-      'sunology',
-      139000::bigint,
-      'Officiele STOREY productbron EUR 1390 en HTTPS titelmatch; gecheckt 2026-07-26'
-    )
-) as prices(product_slug, merchant_slug, price_cents, health_note)
-join products p on p.slug = prices.product_slug
-join merchants m on m.slug = prices.merchant_slug
-where o.product_id = p.id
-  and o.merchant_id = m.id
+  select
+    p.id as product_id,
+    m.id as merchant_id,
+    targets.price_cents,
+    targets.health_note
+  from (
+    values
+      (
+        'ecoflow-stream-ac-pro',
+        'bol',
+        74900::bigint,
+        'Bol productbron EUR 749 en partnerlink SKU-match; gecheckt 2026-07-26'
+      ),
+      (
+        'anker-solix-solarbank-max-ac',
+        'bol',
+        209900::bigint,
+        'Bol productbron EUR 2099 en partnerlink SKU-match; gecheckt 2026-07-26'
+      ),
+      (
+        'sunology-storey',
+        'sunology',
+        139000::bigint,
+        'Officiele STOREY productbron EUR 1390 en HTTPS titelmatch; gecheckt 2026-07-26'
+      )
+  ) as targets(product_slug, merchant_slug, price_cents, health_note)
+  join products p on p.slug = targets.product_slug
+  join merchants m on m.slug = targets.merchant_slug
+) as prices
+where o.product_id = prices.product_id
+  and o.merchant_id = prices.merchant_id
   and o.deleted_at is null;
 
 update products
