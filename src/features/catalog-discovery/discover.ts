@@ -18,27 +18,27 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
       "Hybride micro-omvormer 800W bidirectioneel AC, uitbreidbaar met AB-batterijmodules.",
     capacityKwh: 1.92,
     powerKw: 0.8,
-    url: "https://eu.zendure.com/products/solarflow-800",
+    url: "https://www.zendure.nl/products/solarflow-800",
     imageUrl: "/images/products/zendure-solarflow-800.jpg",
-    priceCents: 74800,
+    priceCents: 74700,
     payload: {
-      sourceTitle: "SolarFlow 800 + AB2000L Battery (1920 Wh) / None",
-      priceCheckedAt: "2026-07-22",
+      sourceTitle: "SolarFlow 800 + 1*Batterij AB2000L",
+      priceCheckedAt: "2026-07-27",
     },
   },
   {
     source: "research",
-    externalId: "zendure-nl-hyper-2000-ab2000x",
+    externalId: "zendure-nl-hyper-2000-ab2000l",
     brandSlug: "zendure",
-    rawTitle: "Zendure SolarFlow Hyper 2000 + AB2000X",
+    rawTitle: "Zendure SolarFlow Hyper 2000 + AB2000L",
     capacityKwh: 1.92,
     powerKw: 1.2,
     url: "https://www.zendure.nl/products/solarflow-hyper-2000",
     imageUrl: "/images/products/zendure-solarflow-hyper-2000.jpg",
-    priceCents: 108900,
+    priceCents: null,
     payload: {
-      sourceTitle: "Hyper 2000 / 1*AB2000X (1920Wh) / Zonder panelen",
-      priceCheckedAt: "2026-07-22",
+      sourceTitle: "Hyper 2000 / 1*AB2000L (1920Wh) / Zonder panelen, uitverkocht",
+      priceCheckedAt: "2026-07-27",
     },
   },
   {
@@ -64,7 +64,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 79900,
     payload: {
       sourceTitle: "EcoFlow STREAM Ultra Plug-in Thuisbatterij",
-      priceCheckedAt: "2026-07-22",
+      priceCheckedAt: "2026-07-27",
     },
   },
   {
@@ -81,7 +81,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 209900,
     payload: {
       sourceTitle: "Anker SOLIX Solarbank Max AC",
-      priceCheckedAt: "2026-07-22",
+      priceCheckedAt: "2026-07-27",
     },
   },
   {
@@ -130,7 +130,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 59900,
     payload: {
       sourceTitle: "MARSTEK JUPITER C Plus All-in-One",
-      priceCheckedAt: "2026-07-22",
+      priceCheckedAt: "2026-07-27",
     },
   },
   {
@@ -145,7 +145,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 74900,
     payload: {
       sourceTitle: "Growatt Noah 2000 - 2000 Wh uitbreidbaar tot 8000 Wh - Thuisbatterij",
-      priceCheckedAt: "2026-07-22",
+      priceCheckedAt: "2026-07-27",
     },
   },
   {
@@ -182,7 +182,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 139000,
     payload: {
       sourceTitle: "STOREY Master 2200Wh 500W",
-      priceCheckedAt: "2026-07-22",
+      priceCheckedAt: "2026-07-27",
     },
   },
   {
@@ -199,7 +199,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 119000,
     payload: {
       sourceTitle: "Batterie (Pack Extension), SKU STOREYEC2200P500",
-      priceCheckedAt: "2026-07-22",
+      priceCheckedAt: "2026-07-27",
     },
   },
 ];
