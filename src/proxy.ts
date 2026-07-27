@@ -73,10 +73,7 @@ export async function proxy(request: NextRequest) {
     }
   } else if (isAdminPath(request.nextUrl.pathname)) {
     adminRedirect = new URL("/account", request.url);
-    adminRedirect.searchParams.set(
-      "next",
-      `${request.nextUrl.pathname}${request.nextUrl.search}`,
-    );
+    adminRedirect.searchParams.set("next", `${request.nextUrl.pathname}${request.nextUrl.search}`);
   }
 
   if (!request.cookies.has(AB_COOKIE_NAME)) {
