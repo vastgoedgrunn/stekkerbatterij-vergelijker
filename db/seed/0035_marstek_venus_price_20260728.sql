@@ -13,13 +13,20 @@ set
   affiliate_link_checked_at = now(),
   last_checked_at = now(),
   updated_at = now()
-from products p, merchants m
-where o.product_id = p.id
-  and o.merchant_id = m.id
-  and m.slug = 'bol'
-  and m.deleted_at is null
-  and p.slug = 'marstek-venus-512'
-  and p.deleted_at is null
-  and o.deleted_at is null
+where o.deleted_at is null
   and o.price_cents > 0
-  and abs(138500 - o.price_cents)::numeric / o.price_cents <= 0.10;
+  and abs(138500 - o.price_cents)::numeric / o.price_cents <= 0.10
+  and exists (
+    select 1
+    from products p
+    where p.id = o.product_id
+      and p.slug = 'marstek-venus-512'
+      and p.deleted_at is null
+  )
+  and exists (
+    select 1
+    from merchants m
+    where m.id = o.merchant_id
+      and m.slug = 'bol'
+      and m.deleted_at is null
+  );
