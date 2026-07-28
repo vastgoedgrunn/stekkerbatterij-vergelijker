@@ -1,22 +1,22 @@
 -- Avondcontrole affiliate- en offergezondheid.
--- Gecontroleerd: 2026-07-26T18:07:09Z.
+-- Gecontroleerd: 2026-07-28T18:09:14Z.
 --
 -- Bol partnerlinks stuurden met HTTPS 301 naar de exacte product-URL en SKU.
 -- Bol gaf daarna HTTP 403 aan het automation-IP; de product-URL's en actuele
 -- prijzen zijn daarom ook via de geciteerde Bol productbronnen gecontroleerd.
--- Directe merkshop- en Daisycon-links gaven HTTPS 200 met een passende titel.
+-- Directe merkshop- en Daisycon-links kwamen uit op HTTPS 200 met een passende titel.
 
 update offers o
 set
   affiliate_link_status = 'ok',
   affiliate_link_note = case
     when verified.merchant_slug = 'bol'
-      then 'Avondcontrole 2026-07-26: Bol partnerlink 301 naar exacte HTTPS product-URL en SKU; bestemming blokkeerde automation-IP met 403'
+      then 'Avondcontrole 2026-07-28: Bol partnerlink 301 naar exacte HTTPS product-URL en SKU; bestemming blokkeerde automation-IP met 403'
     when verified.merchant_slug in ('homewizard', 'zendure')
-      then 'Avondcontrole 2026-07-26: Daisycon-link HTTPS 200 en SKU-match'
-    else 'Avondcontrole 2026-07-26: productpagina HTTPS 200 en titelmatch'
+      then 'Avondcontrole 2026-07-28: Daisycon-link eindigt op HTTPS 200 en SKU-match'
+    else 'Avondcontrole 2026-07-28: product-URL resolveert via HTTPS en titelmatch'
   end,
-  affiliate_link_checked_at = '2026-07-26T18:07:09Z'::timestamptz,
+  affiliate_link_checked_at = '2026-07-28T18:09:14Z'::timestamptz,
   updated_at = now()
 from (
   select p.id as product_id, m.id as merchant_id, checks.merchant_slug
@@ -57,8 +57,8 @@ set
   stock_status = 'out_of_stock',
   affiliate_link_status = 'broken',
   affiliate_link_note = blocked.health_note,
-  affiliate_link_checked_at = '2026-07-26T18:07:09Z'::timestamptz,
-  last_checked_at = '2026-07-26T18:07:09Z'::timestamptz,
+  affiliate_link_checked_at = '2026-07-28T18:09:14Z'::timestamptz,
+  last_checked_at = '2026-07-28T18:09:14Z'::timestamptz,
   deleted_at = coalesce(o.deleted_at, now()),
   updated_at = now()
 from (
@@ -68,17 +68,17 @@ from (
       (
         'sunology-play',
         'sunology',
-        'P0: URL opent een PLAY zonnepaneelset zonder batterij; soft-deleted 2026-07-26'
+        'P0: URL opent een PLAY zonnepaneelset zonder batterij; soft-deleted 2026-07-28'
       ),
       (
         'sessy-thuisbatterij-duo',
         'sessy',
-        'P0: URL verkoopt de Sessy single, geen verifieerbare Duo-SKU; soft-deleted 2026-07-26'
+        'P0: URL verkoopt de Sessy single, geen verifieerbare Duo-SKU; soft-deleted 2026-07-28'
       ),
       (
         'ecoflow-stream-ac-pro',
         'ecoflow',
-        'P0: EcoFlow Awin publisherdeeplink en specifieke product-URL ontbreken; homepage soft-deleted 2026-07-26'
+        'P0: EcoFlow Awin publisherdeeplink en specifieke product-URL ontbreken; homepage soft-deleted 2026-07-28'
       )
   ) as targets(product_slug, merchant_slug, health_note)
   join products p on p.slug = targets.product_slug
@@ -93,9 +93,9 @@ set
   deleted_at = coalesce(o.deleted_at, now()),
   affiliate_link_note = coalesce(
     o.affiliate_link_note,
-    'P0: broken offer bij niet-gepubliceerd product soft-deleted 2026-07-26'
+    'P0: broken offer bij niet-gepubliceerd product soft-deleted 2026-07-28'
   ),
-  affiliate_link_checked_at = '2026-07-26T18:07:09Z'::timestamptz,
+  affiliate_link_checked_at = '2026-07-28T18:09:14Z'::timestamptz,
   updated_at = now()
 from products p
 where o.product_id = p.id
@@ -148,15 +148,17 @@ where ps.product_id = (select id from products where slug = 'sunology-storey')
 -- append-only naar price_history.
 -- EcoFlow bron:
 -- https://www.bol.com/nl/nl/p/ecoflow-stream-ac-pro-thuisbatterij/9300000232241116/
--- Anker bron:
+-- Anker Max bron:
 -- https://www.bol.com/nl/nl/p/anker-solix-solarbank-max-ac-balkonkrachtwerk-met-opslag-7kwh-3600w-alles-in-1-plug-play-thuisaccu-10000-cycli-5-min-installatie-zonnepaneel-met-omvormer/9300000292343906/
+-- Marstek bron:
+-- https://www.bol.com/nl/nl/p/marstek-venus-e-3-0-5-12kwh-plug-play-thuisbatterij-via-230v-stopcontact/9300000240523865/
 update offers o
 set
   price_cents = prices.price_cents,
   stock_status = 'in_stock',
   affiliate_link_note = prices.health_note,
-  affiliate_link_checked_at = '2026-07-26T18:07:09Z'::timestamptz,
-  last_checked_at = '2026-07-26T18:07:09Z'::timestamptz,
+  affiliate_link_checked_at = '2026-07-28T18:09:14Z'::timestamptz,
+  last_checked_at = '2026-07-28T18:09:14Z'::timestamptz,
   updated_at = now()
 from (
   select
@@ -170,19 +172,25 @@ from (
         'ecoflow-stream-ac-pro',
         'bol',
         74900::bigint,
-        'Bol productbron EUR 749 en partnerlink SKU-match; gecheckt 2026-07-26'
+        'Bol productbron EUR 749 en partnerlink SKU-match; gecheckt 2026-07-28'
       ),
       (
         'anker-solix-solarbank-max-ac',
         'bol',
         209900::bigint,
-        'Bol productbron EUR 2099 en partnerlink SKU-match; gecheckt 2026-07-26'
+        'Bol productbron EUR 2099 en partnerlink SKU-match; gecheckt 2026-07-28'
+      ),
+      (
+        'marstek-venus-512',
+        'bol',
+        138500::bigint,
+        'Bol productbron EUR 1385 en partnerlink SKU-match; gecheckt 2026-07-28'
       ),
       (
         'sunology-storey',
         'sunology',
         139000::bigint,
-        'Officiele STOREY productbron EUR 1390 en HTTPS titelmatch; gecheckt 2026-07-26'
+        'Officiele STOREY productbron EUR 1390 en HTTPS titelmatch; gecheckt 2026-07-28'
       )
   ) as targets(product_slug, merchant_slug, price_cents, health_note)
   join products p on p.slug = targets.product_slug

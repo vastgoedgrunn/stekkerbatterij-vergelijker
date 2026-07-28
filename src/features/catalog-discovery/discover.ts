@@ -66,7 +66,11 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     powerKw: 3.5,
     url: "https://www.bol.com/nl/nl/p/anker-solix-solarbank-max-ac-balkonkrachtwerk-met-opslag-7kwh-3600w-alles-in-1-plug-play-thuisaccu-10000-cycli-5-min-installatie-zonnepaneel-met-omvormer/9300000292343906/",
     imageUrl: "/images/products/anker-solix-solarbank-max-ac.jpg",
-    priceCents: 219900,
+    priceCents: 209900,
+    payload: {
+      sourceTitle: "Anker SOLIX Solarbank Max AC",
+      priceCheckedAt: "2026-07-28",
+    },
   },
   {
     source: "research",
@@ -157,7 +161,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 139000,
     payload: {
       sourceTitle: "STOREY Master 2200Wh 500W",
-      priceCheckedAt: "2026-07-26",
+      priceCheckedAt: "2026-07-28",
     },
   },
 ];
