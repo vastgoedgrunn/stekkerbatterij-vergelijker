@@ -13,10 +13,11 @@ set
   affiliate_link_checked_at = now(),
   last_checked_at = now(),
   updated_at = now()
-from products p
-join merchants m on m.slug = 'bol' and m.deleted_at is null
+from products p, merchants m
 where o.product_id = p.id
   and o.merchant_id = m.id
+  and m.slug = 'bol'
+  and m.deleted_at is null
   and p.slug = 'marstek-venus-512'
   and p.deleted_at is null
   and o.deleted_at is null
