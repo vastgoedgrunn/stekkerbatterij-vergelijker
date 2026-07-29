@@ -18,6 +18,7 @@ export type BrandCompleteness = {
   minRequired: number;
   target: number;
   skuGap: number;
+  complete: boolean;
   issues: string[];
 };
 
@@ -139,6 +140,10 @@ export async function getCatalogCompletenessReport(): Promise<CatalogCompletenes
     if (skuGap > 0) {
       issues.push(`Te weinig SKUs (${publishedCount}/${CATALOG_MIN_PRODUCTS_PER_BRAND})`);
     }
+    const complete =
+      publishedCount >= CATALOG_MIN_PRODUCTS_PER_BRAND &&
+      withImage >= CATALOG_MIN_PRODUCTS_PER_BRAND &&
+      withOutboundOffer >= 1;
 
     return {
       brandSlug,
@@ -150,6 +155,7 @@ export async function getCatalogCompletenessReport(): Promise<CatalogCompletenes
       minRequired: CATALOG_MIN_PRODUCTS_PER_BRAND,
       target: CATALOG_TARGET_PRODUCTS_PER_BRAND,
       skuGap,
+      complete,
       issues,
     };
   });
@@ -172,7 +178,7 @@ export async function getCatalogCompletenessReport(): Promise<CatalogCompletenes
     brands,
     unhealthyOffers,
     summary: {
-      brandsBelowMin: brands.filter((b) => b.skuGap > 0).length,
+      brandsBelowMin: brands.filter((b) => !b.complete).length,
       brandsAtTarget: brands.filter((b) => b.publishedCount >= CATALOG_TARGET_PRODUCTS_PER_BRAND)
         .length,
       pendingOrBrokenOffers: unhealthyOffers.length,

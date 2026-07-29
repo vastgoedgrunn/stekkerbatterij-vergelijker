@@ -23,7 +23,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 74700,
     payload: {
       sourceTitle: "SolarFlow 800 + 1*Batterij AB2000L",
-      priceCheckedAt: "2026-07-27",
+      priceCheckedAt: "2026-07-29",
     },
   },
   {
@@ -38,7 +38,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: null,
     payload: {
       sourceTitle: "Hyper 2000 / 1*AB2000L (1920Wh) / Zonder panelen, uitverkocht",
-      priceCheckedAt: "2026-07-27",
+      priceCheckedAt: "2026-07-29",
     },
   },
   {
@@ -64,7 +64,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 79900,
     payload: {
       sourceTitle: "EcoFlow STREAM Ultra Plug-in Thuisbatterij",
-      priceCheckedAt: "2026-07-27",
+      priceCheckedAt: "2026-07-29",
     },
   },
   {
@@ -145,7 +145,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 74900,
     payload: {
       sourceTitle: "Growatt Noah 2000 - 2000 Wh uitbreidbaar tot 8000 Wh - Thuisbatterij",
-      priceCheckedAt: "2026-07-27",
+      priceCheckedAt: "2026-07-29",
     },
   },
   {
@@ -182,7 +182,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 139000,
     payload: {
       sourceTitle: "STOREY Master 2200Wh 500W",
-      priceCheckedAt: "2026-07-27",
+      priceCheckedAt: "2026-07-29",
     },
   },
   {
@@ -199,7 +199,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 119000,
     payload: {
       sourceTitle: "Batterie (Pack Extension), SKU STOREYEC2200P500",
-      priceCheckedAt: "2026-07-27",
+      priceCheckedAt: "2026-07-29",
     },
   },
 ];
