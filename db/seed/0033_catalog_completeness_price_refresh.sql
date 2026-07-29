@@ -3,6 +3,7 @@
 --
 -- Prijsbronnen:
 -- Anker Max AC: https://www.bol.com/nl/nl/p/anker-solix-solarbank-max-ac-balkonkrachtwerk-met-opslag-7kwh-3600w-alles-in-1-plug-play-thuisaccu-10000-cycli-5-min-installatie-zonnepaneel-met-omvormer/9300000292343906/
+-- EcoFlow STREAM AC Pro: https://nl.ecoflow.com/products/stream-ac-pro-ac
 -- Zendure SolarFlow 800 + AB2000L: https://www.zendure.nl/products/solarflow-800
 -- Growatt NOAH 2000: https://www.wallboxdiscounter.com/nl/growatt-noah-2000-thuisbatterij.html
 -- Sunology STOREY Extension: https://sunology.eu/products/extension-storey.js
@@ -33,11 +34,28 @@ where slug = 'anker-solix-solarbank-max-ac'
 
 update offers o
 set
+  price_cents = 79900,
+  stock_status = 'in_stock',
+  affiliate_url = 'https://nl.ecoflow.com/products/stream-ac-pro-ac',
+  affiliate_link_status = 'pending',
+  affiliate_link_note = 'Officiele EcoFlow STREAM AC Pro productpagina, EUR 799; affiliate deeplink ontbreekt, gecheckt 2026-07-29T06:07:27Z',
+  affiliate_link_checked_at = '2026-07-29T06:07:27Z'::timestamptz,
+  last_checked_at = '2026-07-29T06:07:27Z'::timestamptz,
+  updated_at = now()
+from products p, merchants m
+where o.product_id = p.id
+  and o.merchant_id = m.id
+  and p.slug = 'ecoflow-stream-ac-pro'
+  and m.slug = 'ecoflow'
+  and o.deleted_at is null;
+
+update offers o
+set
   price_cents = 74700,
   stock_status = 'in_stock',
-  affiliate_link_note = 'Daisycon deeplink naar SolarFlow 800; Nederlandse setprijs EUR 747, gecheckt 2026-07-27T06:01:06Z',
-  affiliate_link_checked_at = '2026-07-27T06:01:06Z'::timestamptz,
-  last_checked_at = '2026-07-27T06:01:06Z'::timestamptz,
+  affiliate_link_note = 'Daisycon deeplink naar SolarFlow 800; Nederlandse setprijs EUR 747, gecheckt 2026-07-29T06:07:27Z',
+  affiliate_link_checked_at = '2026-07-29T06:07:27Z'::timestamptz,
+  last_checked_at = '2026-07-29T06:07:27Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
@@ -77,9 +95,9 @@ select
   null,
   null,
   'ok',
-  'Exacte Growatt NOAH 2000 productpagina, direct en onbetaald; gecheckt 2026-07-27T06:01:06Z',
-  '2026-07-27T06:01:06Z'::timestamptz,
-  '2026-07-27T06:01:06Z'::timestamptz
+  'Exacte Growatt NOAH 2000 productpagina, direct en onbetaald; affiliate deeplink ontbreekt, gecheckt 2026-07-29T06:07:27Z',
+  '2026-07-29T06:07:27Z'::timestamptz,
+  '2026-07-29T06:07:27Z'::timestamptz
 from products p
 cross join merchants m
 where p.slug = 'growatt-noah-2000'
@@ -168,9 +186,9 @@ select
   null,
   null,
   'ok',
-  'Sunology SKU STOREYEC2200P500, direct en onbetaald; gecheckt 2026-07-27T06:01:06Z',
-  '2026-07-27T06:01:06Z'::timestamptz,
-  '2026-07-27T06:01:06Z'::timestamptz
+  'Sunology SKU STOREYEC2200P500, direct en onbetaald; affiliate deeplink ontbreekt, gecheckt 2026-07-29T06:07:27Z',
+  '2026-07-29T06:07:27Z'::timestamptz,
+  '2026-07-29T06:07:27Z'::timestamptz
 from products p
 cross join merchants m
 where p.slug = 'sunology-storey-extension'
