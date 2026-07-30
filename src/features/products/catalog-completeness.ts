@@ -61,6 +61,7 @@ export async function getCatalogCompletenessReport(): Promise<CatalogCompletenes
     .from("products")
     .select("id, slug, image_path, brand:brands(name, slug)")
     .eq("status", "published")
+    .eq("product_type", "plug_in")
     .is("deleted_at", null);
 
   if (productsError) {

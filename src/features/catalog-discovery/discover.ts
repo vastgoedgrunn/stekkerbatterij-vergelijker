@@ -23,7 +23,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 74700,
     payload: {
       sourceTitle: "SolarFlow 800 + 1*Batterij AB2000L",
-      priceCheckedAt: "2026-07-29",
+      priceCheckedAt: "2026-07-30",
     },
   },
   {
@@ -81,7 +81,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 209900,
     payload: {
       sourceTitle: "Anker SOLIX Solarbank Max AC",
-      priceCheckedAt: "2026-07-27",
+      priceCheckedAt: "2026-07-30",
     },
   },
   {
@@ -145,7 +145,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 74900,
     payload: {
       sourceTitle: "Growatt Noah 2000 - 2000 Wh uitbreidbaar tot 8000 Wh - Thuisbatterij",
-      priceCheckedAt: "2026-07-29",
+      priceCheckedAt: "2026-07-30",
     },
   },
   {
@@ -172,6 +172,23 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
   },
   {
     source: "research",
+    externalId: "sunology-vault-research",
+    brandSlug: "sunology",
+    rawTitle: "Sunology VAULT",
+    rawDescription:
+      "Draagbare batterij van 700 Wh die via een Sunology PLAY Max ook het huishouden kan voeden.",
+    capacityKwh: 0.7,
+    powerKw: null,
+    url: "https://sunology.eu/products/vault-batterie-solaire-maison",
+    imageUrl: "/images/products/sunology-vault.png",
+    priceCents: 42900,
+    payload: {
+      sourceTitle: "Sunology VAULT, 700 Wh",
+      priceCheckedAt: "2026-07-30",
+    },
+  },
+  {
+    source: "research",
     externalId: "sunology-storey-research",
     brandSlug: "sunology",
     rawTitle: "Sunology STOREY",
@@ -182,7 +199,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 139000,
     payload: {
       sourceTitle: "STOREY Master 2200Wh 500W",
-      priceCheckedAt: "2026-07-29",
+      priceCheckedAt: "2026-07-30",
     },
   },
   {
@@ -199,7 +216,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     priceCents: 119000,
     payload: {
       sourceTitle: "Batterie (Pack Extension), SKU STOREYEC2200P500",
-      priceCheckedAt: "2026-07-29",
+      priceCheckedAt: "2026-07-30",
     },
   },
 ];

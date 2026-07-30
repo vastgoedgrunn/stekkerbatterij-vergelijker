@@ -53,6 +53,7 @@ export const LOCAL_PRODUCT_IMAGE_PATHS: Record<string, string> = {
   "sunology-play": "/images/products/sunology-play.jpg",
   "sunology-storey": "/images/products/sunology-storey.jpg",
   "sunology-storey-extension": "/images/products/sunology-storey-extension.png",
+  "sunology-vault": "/images/products/sunology-vault.png",
   "zendure-solarflow-800": "/images/products/zendure-solarflow-800.jpg",
   "zendure-solarflow-hyper-2000": "/images/products/zendure-solarflow-hyper-2000.jpg",
   "anker-solix-solarbank-max-ac": "/images/products/anker-solix-solarbank-max-ac.jpg",

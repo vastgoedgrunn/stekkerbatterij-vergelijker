@@ -1,5 +1,5 @@
 -- Sunology cataloguscorrectie.
--- Gecontroleerd: 2026-07-29T06:07:27Z.
+-- Gecontroleerd: 2026-07-30T06:04:00Z.
 -- STOREY bron: https://sunology.eu/products/storey-batterie-stockage-plug-play
 -- PLAY bron: https://sunology.eu/products/sunology-play
 --
@@ -7,9 +7,8 @@
 -- 30,5 kg, 7500 cycli, 15 jaar garantie en EUR 1390. De prijswijziging wordt door
 -- t_offers_price append-only aan price_history toegevoegd.
 --
--- De bestaande PLAY URL leverde op 2026-07-27 een PLAY2 zonnepaneelset zonder
--- overeenkomende batterij-SKU en geeft op 2026-07-29 een 404. Daarom gaat het
--- onjuiste product terug naar draft en wordt de CTA
+-- De PLAY URL toont een zonnestation zonder overeenkomende batterij-SKU.
+-- Daarom gaat het onjuiste batterijproduct terug naar draft en wordt de CTA
 -- soft-deleted. Publiceer pas opnieuw met een geverifieerde batterij-SKU.
 
 update products
@@ -24,9 +23,9 @@ update offers o
 set
   stock_status = 'out_of_stock',
   affiliate_link_status = 'broken',
-  affiliate_link_note = 'P0: product-URL heeft geen overeenkomende batterij-SKU en geeft 404; gecheckt 2026-07-29T06:07:27Z',
-  affiliate_link_checked_at = '2026-07-29T06:07:27Z'::timestamptz,
-  last_checked_at = '2026-07-29T06:07:27Z'::timestamptz,
+  affiliate_link_note = 'P0: product-URL toont een zonnestation zonder overeenkomende batterij-SKU; gecheckt 2026-07-30T06:04:00Z',
+  affiliate_link_checked_at = '2026-07-30T06:04:00Z'::timestamptz,
+  last_checked_at = '2026-07-30T06:04:00Z'::timestamptz,
   deleted_at = coalesce(o.deleted_at, now()),
   updated_at = now()
 where o.product_id = (select id from products where slug = 'sunology-play')
@@ -68,9 +67,9 @@ set
   stock_status = 'in_stock',
   affiliate_url = 'https://sunology.eu/products/storey-batterie-stockage-plug-play',
   affiliate_link_status = 'ok',
-  affiliate_link_note = 'Officiele STOREY bron: EUR 1390; gecheckt 2026-07-29T06:07:27Z',
-  affiliate_link_checked_at = '2026-07-29T06:07:27Z'::timestamptz,
-  last_checked_at = '2026-07-29T06:07:27Z'::timestamptz,
+  affiliate_link_note = 'Officiele STOREY bron: EUR 1390; gecheckt 2026-07-30T06:04:00Z',
+  affiliate_link_checked_at = '2026-07-30T06:04:00Z'::timestamptz,
+  last_checked_at = '2026-07-30T06:04:00Z'::timestamptz,
   deleted_at = null,
   updated_at = now()
 where o.product_id = (select id from products where slug = 'sunology-storey')
