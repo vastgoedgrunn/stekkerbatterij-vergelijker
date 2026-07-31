@@ -118,8 +118,7 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     externalId: "marstek-jupiter-c-plus",
     brandSlug: "marstek",
     rawTitle: "Marstek Jupiter C Plus",
-    rawDescription:
-      "All-in-one plug-in balkonbatterij van 2,56 kWh, uitbreidbaar tot 10,24 kWh.",
+    rawDescription: "All-in-one plug-in balkonbatterij van 2,56 kWh, uitbreidbaar tot 10,24 kWh.",
     capacityKwh: 2.56,
     powerKw: 0.8,
     url: "https://eu.marstekenergy.com/nl-nl/products/marstek-jupiter-c-plus-all-in-one",
