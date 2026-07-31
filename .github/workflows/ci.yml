@@ -93,5 +93,6 @@ jobs:
         run: |
           npx --yes linkinator@6 http://localhost:3000 \
             --recurse \
+            --concurrency 10 \
             --timeout 15000 \
             --skip "^(?!http://localhost:3000)"
