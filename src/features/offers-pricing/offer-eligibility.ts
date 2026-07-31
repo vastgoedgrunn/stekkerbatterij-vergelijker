@@ -12,7 +12,7 @@ export type OfferOutboundFields = {
 };
 
 /** True bij merchant zoek/listing i.p.v. concrete product-URL. */
-export function isSearchOrListingUrl(url: string): boolean {
+function isSearchOrListingUrlAtDepth(url: string, depth: number): boolean {
   try {
     const u = new URL(url);
     const host = u.hostname.replace(/^www\./, "");
@@ -34,10 +34,20 @@ export function isSearchOrListingUrl(url: string): boolean {
     ) {
       return true;
     }
+    // Bol deeplinks verpakken de productbestemming in de `url` parameter.
+    // Controleer die bestemming ook, zodat een verpakte zoekpagina geen CTA krijgt.
+    if (host === "partner.bol.com" && depth < 2) {
+      const destination = u.searchParams.get("url");
+      if (destination) return isSearchOrListingUrlAtDepth(destination, depth + 1);
+    }
     return false;
   } catch {
     return false;
   }
+}
+
+export function isSearchOrListingUrl(url: string): boolean {
+  return isSearchOrListingUrlAtDepth(url, 0);
 }
 
 export function offerOutboundUrl(offer: OfferOutboundFields): string | null {
