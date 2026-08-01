@@ -38,7 +38,7 @@ van twee gepubliceerde producten met een hard gematchte, bruikbare outbound.
 4. **Sunology STOREY**: onze prijs is 2.499 euro en de fabrikant noemt 1.390 euro. De afwijking
    is groter dan 10%, dus niet automatisch bijgewerkt in deze run.
 
-## Blokkers (wacht op goedkeuring / env)
+## Omgevingsblokkades
 
 1. **`AWIN_PUBLISHER_ID`**: EcoFlow NL mid `123332` live zetten.
 2. **`EWNDR_LEAD_AFFILIATE_URL`**: echte offerte-URL (CTA verborgen tot gezet).
@@ -47,5 +47,6 @@ van twee gepubliceerde producten met een hard gematchte, bruikbare outbound.
 
 ## Doel
 
-2–4 published plug-in SKUs per marquee-merk mét geverifieerde product-URL (geen search/homepage)
+2 tot 4 gepubliceerde plug-in SKU's per marquee-merk mét geverifieerde product-URL
+(geen zoekpagina of homepage)
 én bij voorkeur betaalde deeplink.
