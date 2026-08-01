@@ -1,5 +1,6 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { trackEvent } from "@/lib/observability/analytics";
 
@@ -11,7 +12,7 @@ export function CatalogProductLink({
   className,
   children,
 }: {
-  href: string;
+  href: Route;
   productId: string;
   productSlug: string;
   trackFixedCatalogClick: boolean;
