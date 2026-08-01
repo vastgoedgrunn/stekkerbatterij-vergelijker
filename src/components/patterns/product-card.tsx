@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { ArrowRight, BatteryCharging, Clock, ShieldCheck, Zap } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { CatalogProductLink } from "@/components/patterns/catalog-product-link";
 import { ProductImage } from "@/components/patterns/product-image";
 import { ProductRatingDisplay } from "@/components/patterns/product-rating-display";
 import { CompareToggle } from "@/features/comparison/compare-toggle";
@@ -12,7 +12,13 @@ import type { ProductListItem } from "@/features/products/types";
 import { productDetailPath, productTypeBadge } from "@/features/products/product-paths";
 import { EDITORS_FAVORITE_PLUG_IN_SLUG } from "@/config/editors-picks";
 
-export function ProductCard({ product }: { product: ProductListItem }) {
+export function ProductCard({
+  product,
+  fixedCatalogCta = false,
+}: {
+  product: ProductListItem;
+  fixedCatalogCta?: boolean;
+}) {
   const imageUrl = getPublicImageUrl(product.imagePath);
   const isFixed = product.productType === "fixed";
   const isAccessory = product.productType === "accessory";
@@ -61,8 +67,11 @@ export function ProductCard({ product }: { product: ProductListItem }) {
         </div>
       )}
 
-      <Link
+      <CatalogProductLink
         href={href}
+        productId={product.id}
+        productSlug={product.slug}
+        trackFixedCatalogClick={fixedCatalogCta}
         className="focus-visible:ring-ring flex flex-1 flex-col rounded-[inherit] focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
       >
         <ProductImage
@@ -156,9 +165,17 @@ export function ProductCard({ product }: { product: ProductListItem }) {
               </p>
             )}
 
-            <span className="border-primary/30 text-primary group-hover:bg-primary group-hover:text-primary-foreground flex w-full items-center justify-center gap-1.5 rounded-md border px-4 py-2 text-sm font-semibold transition-colors">
-              {isFixed
-                ? "Offerte aanvragen"
+            <span
+              className={
+                fixedCatalogCta
+                  ? "bg-primary text-primary-foreground flex w-full items-center justify-center gap-1.5 rounded-md px-4 py-2 text-center text-sm font-semibold"
+                  : "border-primary/30 text-primary group-hover:bg-primary group-hover:text-primary-foreground flex w-full items-center justify-center gap-1.5 rounded-md border px-4 py-2 text-sm font-semibold transition-colors"
+              }
+            >
+              {fixedCatalogCta
+                ? "Bekijk model en vraag offerte aan"
+                : isFixed
+                  ? "Offerte aanvragen"
                 : outboundOffer
                   ? `Details · vanaf ${formatPrice(outboundOffer.priceCents)}`
                   : "Bekijk details"}
@@ -166,7 +183,7 @@ export function ProductCard({ product }: { product: ProductListItem }) {
             </span>
           </div>
         </div>
-      </Link>
+      </CatalogProductLink>
 
       {outboundOffer && (
         <div className="relative z-10 space-y-2 px-5 pb-5">
