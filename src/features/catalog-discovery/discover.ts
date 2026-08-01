@@ -156,17 +156,6 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     imageUrl: "/images/products/sunology-storey.jpg",
     priceCents: null,
   },
-  {
-    source: "research",
-    externalId: "sunology-play-research",
-    brandSlug: "sunology",
-    rawTitle: "Sunology PLAY",
-    capacityKwh: 1.2,
-    powerKw: null,
-    url: "https://sunology.eu/products/sunology-play",
-    imageUrl: "/images/products/sunology-play.jpg",
-    priceCents: null,
-  },
 ];
 
 export type DiscoverResult = {
