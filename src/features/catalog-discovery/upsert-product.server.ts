@@ -51,6 +51,7 @@ function buildDescription(candidate: DiscoveredCandidate): string {
  */
 export async function upsertProductFromCandidate(
   candidate: DiscoveredCandidate,
+  options?: { existingProduct?: { id: string; slug: string } | null },
 ): Promise<UpsertResult> {
   const db = getDb();
 
@@ -69,19 +70,24 @@ export async function upsertProductFromCandidate(
     throw new Error(`Merk niet gevonden: ${candidate.brandSlug}`);
   }
 
-  const slug = slugifyProductName(candidate.rawTitle);
-  const { data: existing } = await db
+  const candidateSlug = slugifyProductName(candidate.rawTitle);
+  let existingQuery = db
     .from("products")
     .select("id, slug, name, status, image_path")
-    .eq("slug", slug)
-    .is("deleted_at", null)
-    .maybeSingle<{
-      id: string;
-      slug: string;
-      name: string;
-      status: string;
-      image_path: string | null;
-    }>();
+    .is("deleted_at", null);
+
+  existingQuery = options?.existingProduct
+    ? existingQuery.eq("id", options.existingProduct.id)
+    : existingQuery.eq("slug", candidateSlug);
+
+  const { data: existing } = await existingQuery.maybeSingle<{
+    id: string;
+    slug: string;
+    name: string;
+    status: string;
+    image_path: string | null;
+  }>();
+  const slug = existing?.slug ?? candidateSlug;
 
   const imageResolved = await resolveAndIngestProductImage({
     slug,
@@ -148,8 +154,20 @@ export async function upsertProductFromCandidate(
   let offerId: string | null = null;
   const isBol = Boolean(extractBolProductId(candidate.url));
   const merchantId = isBol ? bolMerchant?.id : null;
+  const nowIso = new Date().toISOString();
 
   if (merchantId && candidate.priceCents != null && candidate.priceCents > 0) {
+    const { data: previousOffer, error: previousOfferError } = await db
+      .from("offers")
+      .select("id, price_cents")
+      .eq("product_id", productId)
+      .eq("merchant_id", merchantId)
+      .maybeSingle<{ id: string; price_cents: number }>();
+
+    if (previousOfferError) {
+      throw new Error(`Bestaande offer-prijs laden mislukt: ${previousOfferError.message}`);
+    }
+
     const deeplink = isBol ? buildBolPartnerDeeplink(candidate.url) : null;
     const { data: offer, error: offerError } = await db
       .from("offers")
@@ -164,8 +182,8 @@ export async function upsertProductFromCandidate(
           affiliate_network: isBol ? "bol-partner" : null,
           affiliate_link_status: verify.status,
           affiliate_link_note: verify.note,
-          affiliate_link_checked_at: new Date().toISOString(),
-          last_checked_at: new Date().toISOString(),
+          affiliate_link_checked_at: nowIso,
+          last_checked_at: nowIso,
           deleted_at: null,
         } as never,
         { onConflict: "product_id,merchant_id" },
@@ -173,8 +191,20 @@ export async function upsertProductFromCandidate(
       .select("id")
       .maybeSingle<{ id: string }>();
 
-    if (!offerError && offer) {
-      offerId = offer.id;
+    if (offerError || !offer) {
+      throw new Error(offerError?.message ?? "Offer-upsert zonder resultaat");
+    }
+
+    offerId = offer.id;
+    if (previousOffer?.price_cents !== candidate.priceCents) {
+      const { error: historyError } = await db.from("price_history").insert({
+        offer_id: offer.id,
+        price_cents: candidate.priceCents,
+        recorded_at: nowIso,
+      } as never);
+      if (historyError) {
+        throw new Error(`Price history opslaan mislukt: ${historyError.message}`);
+      }
     }
   } else if (merchantId && verify.ok) {
     // Geen prijs: toch offer met pending/ok URL voor latere prijs-fill.
@@ -193,8 +223,8 @@ export async function upsertProductFromCandidate(
           affiliate_link_status: verify.status === "ok" ? "pending" : verify.status,
           affiliate_link_note:
             verify.status === "ok" ? `${verify.note}; prijs nog invullen` : verify.note,
-          affiliate_link_checked_at: new Date().toISOString(),
-          last_checked_at: new Date().toISOString(),
+          affiliate_link_checked_at: nowIso,
+          last_checked_at: nowIso,
           deleted_at: null,
         } as never,
         { onConflict: "product_id,merchant_id" },
