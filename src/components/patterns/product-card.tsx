@@ -176,9 +176,9 @@ export function ProductCard({
                 ? "Bekijk model en vraag offerte aan"
                 : isFixed
                   ? "Offerte aanvragen"
-                : outboundOffer
-                  ? `Details · vanaf ${formatPrice(outboundOffer.priceCents)}`
-                  : "Bekijk details"}
+                  : outboundOffer
+                    ? `Details · vanaf ${formatPrice(outboundOffer.priceCents)}`
+                    : "Bekijk details"}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
             </span>
           </div>
