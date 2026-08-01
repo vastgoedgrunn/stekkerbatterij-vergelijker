@@ -32,7 +32,13 @@ where o.deleted_at is null
     coalesce(o.affiliate_deeplink, o.affiliate_url) ~* 'bol\\.com/.*/s(\\?|$)'
     or coalesce(o.affiliate_deeplink, o.affiliate_url) ~* 'searchtext='
     or coalesce(o.affiliate_deeplink, o.affiliate_url) ~* 'coolblue\\.nl/zoeken'
-    or coalesce(o.affiliate_deeplink, o.affiliate_url) ~* '[?&]s='
+    -- WordPress ?s= telt alleen op een kale homepage. Bol partnerlinks
+    -- gebruiken legitiem &s={publisher_id} en mogen hier niet matchen.
+    or coalesce(o.affiliate_deeplink, o.affiliate_url)
+       ~* '^https://[^/?#]+/?\?([^#&]+&)*s='
+    -- Elke kale merchant-homepage is ongeschikt als product-outbound.
+    or coalesce(o.affiliate_deeplink, o.affiliate_url)
+       ~* '^https://[^/?#]+/?([?#].*)?$'
     or coalesce(o.affiliate_deeplink, o.affiliate_url) ~* 'gamma\\.nl/assortiment'
     or coalesce(o.affiliate_deeplink, o.affiliate_url) is null
     or coalesce(o.affiliate_deeplink, o.affiliate_url) !~* '^https://'
