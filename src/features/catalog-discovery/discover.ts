@@ -181,10 +181,11 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
     powerKw: null,
     url: "https://sunology.eu/products/vault-batterie-solaire-maison",
     imageUrl: null,
-    priceCents: 42900,
+    priceCents: 49900,
     payload: {
       sourceTitle: "Sunology VAULT, 700 Wh",
-      priceCheckedAt: "2026-08-01T05:10:15Z",
+      sourceSku: "BATSG70012",
+      priceCheckedAt: "2026-08-03T05:35:00Z",
     },
   },
   {

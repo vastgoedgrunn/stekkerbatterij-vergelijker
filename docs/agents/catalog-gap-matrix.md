@@ -1,6 +1,6 @@
 # Catalogus gap-matrix (live inventaris)
 
-Snapshot en code-status 2026-08-01.
+Snapshot en code-status 2026-08-03.
 
 ## Outbound-dekking plug-in (published)
 
@@ -37,6 +37,8 @@ van twee gepubliceerde producten met een hard gematchte, bruikbare outbound.
    vooraf geselecteerde bundel van twee.
 4. **Sunology STOREY**: onze prijs is 2.499 euro en de fabrikant noemt 1.390 euro. De afwijking
    is groter dan 10%, dus niet automatisch bijgewerkt in deze run.
+5. **Sunology VAULT**: de fabrikant noemt SKU `BATSG70012` voor 499 euro. Dit is een draagbare
+   batterij die alleen via PLAY Max het huishouden voedt en blijft daarom in review.
 
 ## Omgevingsblokkades
 
