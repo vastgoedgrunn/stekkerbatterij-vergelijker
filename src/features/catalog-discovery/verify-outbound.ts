@@ -88,9 +88,7 @@ async function verifyBolPartnerRedirect(
     return {
       ok: false,
       status: "pending",
-      note: `Bol partnerlink fetch faalde: ${
-        error instanceof Error ? error.message : "onbekend"
-      }`,
+      note: `Bol partnerlink fetch faalde: ${error instanceof Error ? error.message : "onbekend"}`,
     };
   }
 }
