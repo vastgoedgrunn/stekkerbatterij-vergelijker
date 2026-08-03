@@ -1,6 +1,10 @@
 import { extractBolProductId, tokenizeTitle } from "./match-sku";
 import type { OutboundVerifyResult } from "./types";
 
+const BROWSER_USER_AGENT =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+  "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
+
 function isProductUrl(url: string): boolean {
   try {
     const u = new URL(url);
@@ -14,6 +18,80 @@ function isProductUrl(url: string): boolean {
     return true;
   } catch {
     return false;
+  }
+}
+
+async function verifyBolPartnerRedirect(
+  url: string,
+  productName: string,
+): Promise<OutboundVerifyResult | null> {
+  let partnerUrl: URL;
+  try {
+    partnerUrl = new URL(url);
+  } catch {
+    return null;
+  }
+  if (partnerUrl.hostname !== "partner.bol.com") return null;
+
+  const destination = partnerUrl.searchParams.get("url");
+  if (!destination || !isProductUrl(destination)) {
+    return {
+      ok: false,
+      status: "broken",
+      note: "Bol partnerlink bevat geen geldige productbestemming",
+    };
+  }
+
+  const expectedId = extractBolProductId(destination);
+  const destinationTokens = tokenizeTitle(decodeURIComponent(destination));
+  const productTokens = tokenizeTitle(productName);
+  const overlap = productTokens.filter((token) => destinationTokens.includes(token));
+  if (!expectedId || overlap.length < Math.min(2, productTokens.length)) {
+    return {
+      ok: false,
+      status: "broken",
+      note: "Bol partnerlink bevat een productbestemming met SKU-mismatch",
+    };
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      redirect: "manual",
+      headers: { "User-Agent": BROWSER_USER_AGENT },
+      signal: AbortSignal.timeout(8000),
+    });
+    const location = response.headers.get("location");
+    if (response.status < 300 || response.status >= 400 || !location) {
+      return {
+        ok: false,
+        status: "broken",
+        note: `Bol partnerlink gaf HTTP ${response.status} zonder redirect`,
+      };
+    }
+
+    const redirectedId = extractBolProductId(location);
+    if (redirectedId !== expectedId) {
+      return {
+        ok: false,
+        status: "broken",
+        note: `Bol partnerlink redirect naar verkeerde SKU (${redirectedId ?? "geen product-ID"})`,
+      };
+    }
+
+    return {
+      ok: true,
+      status: "ok",
+      note: `Bol partnerlink HTTP ${response.status} naar product-ID ${expectedId}`,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      status: "pending",
+      note: `Bol partnerlink fetch faalde: ${
+        error instanceof Error ? error.message : "onbekend"
+      }`,
+    };
   }
 }
 
@@ -39,6 +117,9 @@ export async function verifyOutboundForProduct(input: {
   if (!url.startsWith("https://")) {
     return { ok: false, status: "broken", note: "Geen https-URL" };
   }
+
+  const bolPartnerResult = await verifyBolPartnerRedirect(url, productName);
+  if (bolPartnerResult) return bolPartnerResult;
 
   if (!isProductUrl(url)) {
     return {
@@ -69,7 +150,7 @@ export async function verifyOutboundForProduct(input: {
       const res = await fetch(url, {
         method: "GET",
         redirect: "follow",
-        headers: { "User-Agent": "StekkerbatterijVergelijkerBot/1.0" },
+        headers: { "User-Agent": BROWSER_USER_AGENT },
         signal: AbortSignal.timeout(8000),
       });
       if (!res.ok) {
