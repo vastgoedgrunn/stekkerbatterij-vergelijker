@@ -1,6 +1,6 @@
 # Catalogus gap-matrix (live inventaris)
 
-Publieke productiecontrole op 2026-08-01 om 06:03 UTC. De automationomgeving heeft geen
+Publieke productiecontrole op 2026-08-04 om 06:04 UTC. De automationomgeving heeft geen
 Supabase serviceconfiguratie. Drafts en discovery candidates zijn niet zichtbaar onder de
 publieke RLS en worden daarom niet als nul gerapporteerd.
 
@@ -38,23 +38,24 @@ dus één SKU-gat. Growatt mist bij beide producten een bruikbare outbound offer
   Sunology VAULT voor EUR 429 en STOREY Extension voor EUR 1190. Deze zijn geen bevestigde
   databasedrafts zolang de afgeschermde queue niet kan worden gelezen.
 
-## Prijscontrole 2026-08-01
+## Prijscontrole 2026-08-04
 
 | Product | Productieprijs | Bronprijs | Actie |
 |---------|---------------:|----------:|-------|
 | Anker SOLIX Solarbank Max AC | EUR 2.199 | EUR 2.099 | In seed bijgewerkt, verschil 4,5 procent |
-| Zendure SolarFlow 800 plus AB2000L | EUR 747 | EUR 747 | Controletijdstip vernieuwd |
-| HomeWizard Plug-In Battery | EUR 1.195 | EUR 1.195 | Controletijdstip vernieuwd |
-| HomeWizard bundle | EUR 2.390 | EUR 2.390 | Controletijdstip vernieuwd |
-| Sessy 5 kWh | EUR 3.550 | EUR 3.550 | Controletijdstip vernieuwd |
+| Zendure SolarFlow 800 plus AB2000L | EUR 747 | EUR 747 | Controletijdstip vernieuwd naar 4 augustus |
+| HomeWizard Plug-In Battery | EUR 1.195 | EUR 1.195 | Controletijdstip vernieuwd naar 4 augustus |
+| HomeWizard bundle | EUR 2.390 | EUR 2.390 | Controletijdstip vernieuwd naar 4 augustus |
+| Sessy 5 kWh | EUR 3.550 | EUR 3.550 | Controletijdstip vernieuwd naar 4 augustus |
 | Sessy Duo | EUR 7.100 | Geen harde configuratiematch | Niet gewijzigd |
-| EcoFlow STREAM AC Pro, Bol | EUR 698 | EUR 779 | Verschil 11,6 procent, niet automatisch gewijzigd |
+| EcoFlow STREAM AC Pro, Bol | EUR 698 | Niet actueel verifieerbaar | Bol blokkeert deze automation en de Catalog API is niet geconfigureerd |
 | EcoFlow STREAM AC Pro, merkshop | EUR 698 | EUR 799 | Verschil 14,5 procent, niet automatisch gewijzigd |
 | Sunology STOREY Master | EUR 2.499 | EUR 1.390 | Verschil 44,4 procent, niet automatisch gewijzigd |
-| Marstek Venus E 3.0 | EUR 1.300 | EUR 1.300 | Controletijdstip vernieuwd |
+| Marstek Venus E 3.0 | EUR 1.300 | Laatst bevestigd EUR 1.300 | Op 4 augustus niet actueel verifieerbaar via Bol |
 | Sunology PLAY | EUR 1.299 | EUR 599 voor een zonnestation | Offer verwijderd wegens SKU-mismatch |
 
-Bronnen zijn op 2026-08-01 om 06:03 UTC gecontroleerd. De Bol productpagina van Anker Max AC
+De direct bereikbare bronnen zijn op 2026-08-04 om 06:04 UTC gecontroleerd. De Bol
+productpagina van Anker Max AC
 was voor het laatst hard bevestigd op 2026-07-31 om 06:04 UTC:
 
 - Anker Max AC:
@@ -75,7 +76,10 @@ was voor het laatst hard bevestigd op 2026-07-31 om 06:04 UTC:
   product terug naar draft. De productiecorrectie wacht op toepassing van de seed.
 - Vijf live offers missen een `affiliate_deeplink`: Sessy single, Sessy Duo, Sunology PLAY,
   Sunology STOREY en de pending EcoFlow merkshop-offer. Na de PLAY-correctie blijven er vier.
-- Voor ieder ontbrekend netwerk geldt: plak deeplink zodra netwerk open is.
+- Sessy single en Sessy Duo: plak deeplink zodra netwerk open is.
+- Sunology STOREY: plak deeplink zodra netwerk open is.
+- EcoFlow STREAM AC Pro bij EcoFlow blijft pending: plak deeplink zodra Awin open is.
+- Seed `0032` vervangt de kale EcoFlow merkhomepage door de concrete STREAM AC Pro-productpagina.
 - EcoFlow Awin blijft pending totdat `AWIN_PUBLISHER_ID` beschikbaar is.
 - Bol Catalog, Bol productfeed en Bol Partner API zijn niet geconfigureerd in deze
   automationomgeving.
