@@ -1,6 +1,6 @@
 # Catalogus gap-matrix (live inventaris)
 
-Publieke productiecontrole op 2026-08-04 om 06:04 UTC. De automationomgeving heeft geen
+Publieke productiecontrole op 2026-08-05 om 06:03 UTC. De automationomgeving heeft geen
 Supabase serviceconfiguratie. Drafts en discovery candidates zijn niet zichtbaar onder de
 publieke RLS en worden daarom niet als nul gerapporteerd.
 
@@ -34,27 +34,27 @@ dus één SKU-gat. Growatt mist bij beide producten een bruikbare outbound offer
 - De afgeschermde databasequeue voor overige drafts en `needs_review` is niet bereikbaar.
 - De zeven producten uit `0013_top_models_draft.sql` zijn inmiddels allemaal publiek
   gepubliceerd. Er is daarom geen verifieerbaar seed-draft dat nog wacht.
-- Nieuwe, nog niet gepubliceerde voorstellen zijn Growatt NOAH 2000 met een offer van EUR 749,
-  Sunology VAULT voor EUR 429 en STOREY Extension voor EUR 1190. Deze zijn geen bevestigde
+- Bronmatig gevonden, maar niet als nieuwe offers toegevoegd: Growatt NOAH 2000 bij Nederlandse
+  webshops en Sunology PLAY Max als mogelijke vervanger voor PLAY. Deze zijn geen bevestigde
   databasedrafts zolang de afgeschermde queue niet kan worden gelezen.
 
-## Prijscontrole 2026-08-04
+## Prijscontrole 2026-08-05
 
 | Product | Productieprijs | Bronprijs | Actie |
 |---------|---------------:|----------:|-------|
 | Anker SOLIX Solarbank Max AC | EUR 2.199 | EUR 2.099 | In seed bijgewerkt, verschil 4,5 procent |
-| Zendure SolarFlow 800 plus AB2000L | EUR 747 | EUR 747 | Controletijdstip vernieuwd naar 4 augustus |
-| HomeWizard Plug-In Battery | EUR 1.195 | EUR 1.195 | Controletijdstip vernieuwd naar 4 augustus |
-| HomeWizard bundle | EUR 2.390 | EUR 2.390 | Controletijdstip vernieuwd naar 4 augustus |
-| Sessy 5 kWh | EUR 3.550 | EUR 3.550 | Controletijdstip vernieuwd naar 4 augustus |
+| Zendure SolarFlow 800 plus AB2000L | EUR 747 | EUR 747 | Controletijdstip vernieuwd naar 5 augustus |
+| HomeWizard Plug-In Battery | EUR 1.195 | EUR 1.195 | Controletijdstip vernieuwd naar 5 augustus |
+| HomeWizard bundle | EUR 2.390 | EUR 2.390 | Controletijdstip vernieuwd naar 5 augustus |
+| Sessy 5 kWh | EUR 3.550 | EUR 3.550 | Controletijdstip vernieuwd naar 5 augustus |
 | Sessy Duo | EUR 7.100 | Geen harde configuratiematch | Niet gewijzigd |
 | EcoFlow STREAM AC Pro, Bol | EUR 698 | Niet actueel verifieerbaar | Bol blokkeert deze automation en de Catalog API is niet geconfigureerd |
 | EcoFlow STREAM AC Pro, merkshop | EUR 698 | EUR 799 | Verschil 14,5 procent, niet automatisch gewijzigd |
 | Sunology STOREY Master | EUR 2.499 | EUR 1.390 | Verschil 44,4 procent, niet automatisch gewijzigd |
-| Marstek Venus E 3.0 | EUR 1.300 | Laatst bevestigd EUR 1.300 | Op 4 augustus niet actueel verifieerbaar via Bol |
+| Marstek Venus E 3.0 | EUR 1.300 | Laatst bevestigd EUR 1.300 | Op 5 augustus niet actueel verifieerbaar via Bol |
 | Sunology PLAY | EUR 1.299 | EUR 599 voor een zonnestation | Offer verwijderd wegens SKU-mismatch |
 
-De direct bereikbare bronnen zijn op 2026-08-04 om 06:04 UTC gecontroleerd. De Bol
+De direct bereikbare bronnen zijn op 2026-08-05 om 06:03 UTC gecontroleerd. De Bol
 productpagina van Anker Max AC
 was voor het laatst hard bevestigd op 2026-07-31 om 06:04 UTC:
 
@@ -63,9 +63,9 @@ was voor het laatst hard bevestigd op 2026-07-31 om 06:04 UTC:
 - EcoFlow STREAM AC Pro: <https://nl.ecoflow.com/products/stream-ac-pro-ac>
 - Zendure SolarFlow 800: <https://www.zendure.nl/products/solarflow-800>
 - HomeWizard Plug-In Battery: <https://www.homewizard.com/nl/shop/plug-in-battery/>
-- Sessy: <https://www.sessy.nl/product/sessy/>
+- Sessy: <https://www.sessy.nl/prijsinformatie/>
 - Sunology STOREY: <https://sunology.eu/products/storey-batterie-stockage-plug-play>
-- Sunology PLAY: <https://sunology.eu/products/sunology-play>
+- Sunology PLAY: <https://sunology.eu/products/play-kit-solaire-plug-play>
 - Marstek Venus E 3.0:
   <https://www.bol.com/nl/nl/p/marstek-venus-e-3-0-5-12kwh-plug-play-thuisbatterij-via-230v-stopcontact/9300000240523865/>
 
