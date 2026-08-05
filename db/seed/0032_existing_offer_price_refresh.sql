@@ -1,4 +1,4 @@
--- Bestaande offerprijzen opnieuw gecontroleerd op 2026-08-04T06:04:25Z.
+-- Bestaande offerprijzen opnieuw gecontroleerd op 2026-08-05T06:03:20Z.
 -- Alleen bevestigde prijzen zonder wijziging of met maximaal 10 procent verschil.
 --
 -- Anker Max AC, laatst hard bevestigd op de Bol productpagina op 2026-07-31:
@@ -8,7 +8,7 @@
 -- HomeWizard Plug-In Battery:
 -- https://www.homewizard.com/nl/shop/plug-in-battery/
 -- Sessy 5 kWh:
--- https://www.sessy.nl/product/sessy/
+-- https://www.sessy.nl/prijsinformatie/
 -- Marstek Venus E 3.0:
 -- https://www.bol.com/nl/nl/p/marstek-venus-e-3-0-5-12kwh-plug-play-thuisbatterij-via-230v-stopcontact/9300000240523865/
 --
@@ -39,9 +39,9 @@ update offers o
 set
   price_cents = 74700,
   stock_status = 'in_stock',
-  affiliate_link_note = 'Daisycon deeplink naar SolarFlow 800; Nederlandse setprijs EUR 747, gecheckt 2026-08-04T06:04:25Z',
-  affiliate_link_checked_at = '2026-08-04T06:04:25Z'::timestamptz,
-  last_checked_at = '2026-08-04T06:04:25Z'::timestamptz,
+  affiliate_link_note = 'Daisycon deeplink naar SolarFlow 800; Nederlandse setprijs EUR 747, gecheckt 2026-08-05T06:03:20Z',
+  affiliate_link_checked_at = '2026-08-05T06:03:20Z'::timestamptz,
+  last_checked_at = '2026-08-05T06:03:20Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
@@ -59,11 +59,11 @@ set
   stock_status = 'in_stock',
   affiliate_link_note = case
     when p.slug = 'homewizard-plug-in-battery-bundle'
-      then 'HomeWizard merkshop, twee batterijen van EUR 1195; gecheckt 2026-08-04T06:04:25Z'
-    else 'HomeWizard merkshop, EUR 1195; gecheckt 2026-08-04T06:04:25Z'
+      then 'HomeWizard merkshop, twee batterijen van EUR 1195; gecheckt 2026-08-05T06:03:20Z'
+    else 'HomeWizard merkshop, EUR 1195; gecheckt 2026-08-05T06:03:20Z'
   end,
-  affiliate_link_checked_at = '2026-08-04T06:04:25Z'::timestamptz,
-  last_checked_at = '2026-08-04T06:04:25Z'::timestamptz,
+  affiliate_link_checked_at = '2026-08-05T06:03:20Z'::timestamptz,
+  last_checked_at = '2026-08-05T06:03:20Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
@@ -76,9 +76,9 @@ update offers o
 set
   price_cents = 355000,
   stock_status = 'in_stock',
-  affiliate_link_note = 'Sessy merkshop, 5 kWh EUR 3550; affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-04T06:04:25Z',
-  affiliate_link_checked_at = '2026-08-04T06:04:25Z'::timestamptz,
-  last_checked_at = '2026-08-04T06:04:25Z'::timestamptz,
+  affiliate_link_note = 'Sessy prijsinformatie, 5 kWh EUR 3550; affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-05T06:03:20Z',
+  affiliate_link_checked_at = '2026-08-05T06:03:20Z'::timestamptz,
+  last_checked_at = '2026-08-05T06:03:20Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
@@ -89,9 +89,9 @@ where o.product_id = p.id
 
 update offers o
 set
-  affiliate_link_note = 'De bron toont een Sessy 10 kWh-configuratie voor EUR 5500 zonder harde match met de bestaande Duo; prijs niet gewijzigd, affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-04T06:04:25Z',
-  affiliate_link_checked_at = '2026-08-04T06:04:25Z'::timestamptz,
-  last_checked_at = '2026-08-04T06:04:25Z'::timestamptz,
+  affiliate_link_note = 'De bron toont een Sessy 10 kWh-configuratie voor EUR 5500 zonder harde match met de bestaande Duo; prijs niet gewijzigd, affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-05T06:03:20Z',
+  affiliate_link_checked_at = '2026-08-05T06:03:20Z'::timestamptz,
+  last_checked_at = '2026-08-05T06:03:20Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
@@ -123,9 +123,9 @@ update offers o
 set
   affiliate_url = 'https://nl.ecoflow.com/products/stream-ac-pro-ac',
   affiliate_link_status = 'pending',
-  affiliate_link_note = 'EcoFlow merkshop EUR 799; prijsverschil 14,5 procent niet automatisch verwerkt; Awin deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-04T06:04:25Z',
-  affiliate_link_checked_at = '2026-08-04T06:04:25Z'::timestamptz,
-  last_checked_at = '2026-08-04T06:04:25Z'::timestamptz,
+  affiliate_link_note = 'EcoFlow merkshop EUR 799; prijsverschil 14,5 procent niet automatisch verwerkt; Awin deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-05T06:03:20Z',
+  affiliate_link_checked_at = '2026-08-05T06:03:20Z'::timestamptz,
+  last_checked_at = '2026-08-05T06:03:20Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
@@ -139,9 +139,9 @@ where o.product_id = p.id
 -- De actuele EUR 1390 is 44,4 procent lager dan productie. De prijs blijft ongewijzigd.
 update offers o
 set
-  affiliate_link_note = 'Sunology STOREY merkshop EUR 1390; prijsverschil 44,4 procent niet automatisch verwerkt; affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-04T06:04:25Z',
-  affiliate_link_checked_at = '2026-08-04T06:04:25Z'::timestamptz,
-  last_checked_at = '2026-08-04T06:04:25Z'::timestamptz,
+  affiliate_link_note = 'Sunology STOREY merkshop EUR 1390; prijsverschil 44,4 procent niet automatisch verwerkt; affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-05T06:03:20Z',
+  affiliate_link_checked_at = '2026-08-05T06:03:20Z'::timestamptz,
+  last_checked_at = '2026-08-05T06:03:20Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
