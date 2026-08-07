@@ -449,7 +449,7 @@ export default async function HomePage() {
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
                 Niet zeker welke batterij past?
               </h2>
-              <p className="text-lg opacity-90">
+              <p className="text-lg">
                 Onze beslishulp geeft je in vijf korte stappen een persoonlijk, onafhankelijk
                 advies.
               </p>
