@@ -1,19 +1,19 @@
 -- =========================================================================
 -- 0016_fixed_home_batteries.sql — 8 vaste thuisbatterijen (lead/offerte-pad)
 -- Geen affiliate offers. Indicatieve richtprijzen (incl. installatie, incl.
--- btw) zijn onderzocht op 2026-07-16 en gaan via de price-fact-verification
+-- btw) zijn hercontroleerd op 2026-08-01 en gaan via de price-fact-verification
 -- gate. Het blijven richtprijzen: de definitieve prijs is een offerte op maat.
 --
 -- Bandbreedtes per model (afgerond op honderden euro's), bron + checked-at:
---   tesla-powerwall-3                9.500 tot 13.500  solargarant.nl/thuisbatterijen/tesla-powerwall/powerwall-3/prijs/ (2026-07-16)
---   byd-battery-box-premium-hvs-10-2 7.000 tot  9.000  solargarant.nl/thuisbatterijen/byd/ (2026-07-16), incl. hybride omvormer
---   huawei-luna2000-10-s0            5.800 tot  8.500  solargarant.nl/thuisbatterijen/huawei/luna-2000-10-kwh/ (2026-07-16)
---   solaredge-home-battery-10        6.500 tot 10.000  thuisbatterij.nl/merken/solaredge/ (2026-07-16); ondergrens geldt na
+--   tesla-powerwall-3                9.500 tot 13.000  solargarant.nl/thuisbatterijen/tesla-powerwall/powerwall-3/prijs/ (2026-08-01)
+--   byd-battery-box-premium-hvs-10-2 7.000 tot  9.000  solargarant.nl/thuisbatterijen/byd/ (2026-08-01), incl. hybride omvormer
+--   huawei-luna2000-10-s0            5.800 tot  8.500  solargarant.nl/thuisbatterijen/huawei/luna-2000-10-kwh/ (2026-08-01)
+--   solaredge-home-battery-10        8.000 tot 10.000  thuisbatterij.nl/merken/solaredge/ (2026-08-01); ondergrens geldt bij
 --                                                      btw-teruggave en bij bestaande geschikte SolarEdge omvormer
---   enphase-iq-battery-5p            5.000 tot  7.500  solargarant.nl/thuisbatterijen/enphase/prijs/ (2026-07-16)
---   sigenergy-sigenstor-10           7.000 tot 10.000  solargarant.nl/thuisbatterijen/sigenergy/ (2026-07-16), configuratie-afhankelijk
---   sonnen-eco-8                     9.000 tot 12.500  solargarant.nl/thuisbatterijen/sonnen/ (2026-07-16)
---   foxess-ecs-10-4                  7.000 tot  9.000  dx-installatietechniek.nl 10,4 kWh pakket (2026-07-16) + typische installatie
+--   enphase-iq-battery-5p            5.000 tot  7.500  solargarant.nl/thuisbatterijen/enphase/prijs/ (2026-08-01)
+--   sigenergy-sigenstor-10           7.000 tot 10.000  solargarant.nl/thuisbatterijen/sigenergy/ (2026-08-01), configuratie-afhankelijk
+--   sonnen-eco-8                     9.000 tot 12.500  solargarant.nl/thuisbatterijen/sonnen/ (2026-08-01)
+--   foxess-ecs-10-4                  7.000 tot  9.000  dx-installatietechniek.nl 10,4 kWh pakket (2026-08-01) + typische installatie
 --
 -- KANTTEKENING sonnen-eco-8: de eco 8 is uitgefaseerd en wordt in NL niet meer
 -- los geprijsd. De bandbreedte dekt de actuele 10 kWh opvolgers (sonnenBatterie
@@ -63,7 +63,7 @@ from (values
     'De Tesla Powerwall 3 combineert batterij en hybride omvormer in één compacte unit. Geschikt voor zelfverbruik, backup en dynamische tarieven. Installatie door een gecertificeerde installateur is verplicht.',
     13.5, 11.5, 10000, 10, false,
     '/images/products/tesla-powerwall-3.jpg',
-    950000::bigint, 1350000::bigint
+    950000::bigint, 1300000::bigint
   ),
   (
     'byd',
@@ -93,7 +93,7 @@ from (values
     'De SolarEdge Home Battery is ontworpen voor woningen met SolarEdge-omvormers en power optimizers. Capaciteit rond 10 kWh, uitbreidbaar in het ecosysteem. Installatie door SolarEdge-partner.',
     9.7, 5.0, 6000, 10, true,
     '/images/products/solaredge-home-battery-10.jpg',
-    650000::bigint, 1000000::bigint
+    800000::bigint, 1000000::bigint
   ),
   (
     'enphase',
