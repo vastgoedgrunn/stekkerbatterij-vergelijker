@@ -42,6 +42,7 @@ export const LOCAL_PRODUCT_IMAGE_PATHS: Record<string, string> = {
   "anker-solix-solarbank-2-e1600-pro": "/images/products/anker-solix-solarbank-2-e1600-pro.jpg",
   "ecoflow-powerstream-800": "/images/products/ecoflow-powerstream-800.jpg",
   "ecoflow-stream-ac-pro": "/images/products/ecoflow-stream-ac-pro.jpg",
+  "growatt-nexa-2000": "/images/products/growatt-nexa-2000.png",
   "growatt-noah-2000": "/images/products/growatt-noah-2000.jpg",
   "growatt-noah-2000s": "/images/products/growatt-noah-2000s.jpg",
   "homewizard-plug-in-battery": "/images/products/homewizard-plug-in-battery.jpg",
