@@ -1,4 +1,4 @@
--- Growatt-catalogus gecorrigeerd en aangevuld op 2026-08-06T06:04:31Z.
+-- Growatt-catalogus gecorrigeerd en aangevuld op 2026-08-07T06:05:00Z.
 --
 -- De fabrikant en actuele Nederlandse handel tonen NOAH 2000 en NEXA 2000 als
 -- afzonderlijke modellen. Voor "NOAH 2000S" is geen harde SKU-bron gevonden.
@@ -21,11 +21,11 @@ where slug = 'growatt-noah-2000s'
 
 update offers o
 set
-  deleted_at = coalesce(o.deleted_at, '2026-08-06T06:04:31Z'::timestamptz),
+  deleted_at = coalesce(o.deleted_at, '2026-08-07T06:05:00Z'::timestamptz),
   affiliate_link_status = 'broken',
-  affiliate_link_note = 'P0: geen harde bron voor SKU NOAH 2000S; offer soft-deleted 2026-08-06',
-  affiliate_link_checked_at = '2026-08-06T06:04:31Z'::timestamptz,
-  last_checked_at = '2026-08-06T06:04:31Z'::timestamptz,
+  affiliate_link_note = 'P0: geen harde bron voor SKU NOAH 2000S; offer soft-deleted 2026-08-07',
+  affiliate_link_checked_at = '2026-08-07T06:05:00Z'::timestamptz,
+  last_checked_at = '2026-08-07T06:05:00Z'::timestamptz,
   updated_at = now()
 from products p
 where o.product_id = p.id
@@ -49,7 +49,7 @@ select
   10,
   true,
   '/images/products/growatt-nexa-2000.png',
-  '2026-08-06T06:04:31Z'::timestamptz
+  '2026-08-07T06:05:00Z'::timestamptz
 from brands b
 where b.slug = 'growatt'
   and b.deleted_at is null
@@ -117,10 +117,10 @@ select
   'https://www.stralendgroen.nl/product/growatt-nexa-2000/',
   null,
   'ok',
-  'Exacte NEXA 2000 productpagina, SKU 229066, EUR 545 inclusief btw; affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-06T06:04:31Z',
+  'Exacte NEXA 2000 productpagina, SKU 229066, EUR 545 inclusief btw; affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-07T06:05:00Z',
   false,
-  '2026-08-06T06:04:31Z'::timestamptz,
-  '2026-08-06T06:04:31Z'::timestamptz
+  '2026-08-07T06:05:00Z'::timestamptz,
+  '2026-08-07T06:05:00Z'::timestamptz
 from products p
 cross join merchants m
 where p.slug = 'growatt-nexa-2000'
@@ -153,10 +153,10 @@ select
   'https://uwsolarinstallatieshop.nl/Thuisbatterijen/580-growatt-noah-2000.html',
   null,
   'ok',
-  'Exacte NOAH 2000 productpagina, artikel O-G-NOAH-2000, EUR 603,79 inclusief btw; affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-06T06:04:31Z',
+  'Exacte NOAH 2000 productpagina, artikel O-G-NOAH-2000, EUR 603,79 inclusief btw; affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-07T06:05:00Z',
   false,
-  '2026-08-06T06:04:31Z'::timestamptz,
-  '2026-08-06T06:04:31Z'::timestamptz
+  '2026-08-07T06:05:00Z'::timestamptz,
+  '2026-08-07T06:05:00Z'::timestamptz
 from products p
 cross join merchants m
 where p.slug = 'growatt-noah-2000'

@@ -1,6 +1,6 @@
 # Catalogus gap-matrix (live inventaris)
 
-Publieke productiecontrole op 2026-08-06 om 06:04 UTC. De automationomgeving heeft geen
+Publieke productiecontrole op 2026-08-07 om 06:01 UTC. De automationomgeving heeft geen
 Supabase serviceconfiguratie. Drafts en discovery candidates zijn niet zichtbaar onder de
 publieke RLS en worden daarom niet als nul gerapporteerd.
 
@@ -40,25 +40,25 @@ Sunology houdt één geldig batterijproduct en heeft daardoor nog één SKU-gat.
   worden door de correctieseeds teruggezet naar draft. Er is geen ander verifieerbaar
   seed-draft dat nog op publicatie wacht.
 
-## Prijscontrole 2026-08-06
+## Prijscontrole 2026-08-07
 
 | Product | Productieprijs | Bronprijs | Actie |
 |---------|---------------:|----------:|-------|
 | Anker SOLIX Solarbank Max AC | EUR 2.199 | EUR 2.099 | In seed bijgewerkt, verschil 4,5 procent |
-| Zendure SolarFlow 800 plus AB2000L | EUR 747 | EUR 747 | Controletijdstip vernieuwd naar 6 augustus |
-| HomeWizard Plug-In Battery | EUR 1.195 | EUR 1.195 | Controletijdstip vernieuwd naar 6 augustus |
-| HomeWizard bundle | EUR 2.390 | EUR 2.390 | Controletijdstip vernieuwd naar 6 augustus |
-| Sessy 5 kWh | EUR 3.550 | EUR 3.550 | Controletijdstip vernieuwd naar 6 augustus |
+| Zendure SolarFlow 800 plus AB2000L | EUR 747 | EUR 747 | Controletijdstip vernieuwd naar 7 augustus |
+| HomeWizard Plug-In Battery | EUR 1.195 | EUR 1.195 | Controletijdstip vernieuwd naar 7 augustus |
+| HomeWizard bundle | EUR 2.390 | EUR 2.390 | Controletijdstip vernieuwd naar 7 augustus |
+| Sessy 5 kWh | EUR 3.550 | EUR 3.550 | Controletijdstip vernieuwd naar 7 augustus |
 | Sessy Duo | EUR 7.100 | Geen harde configuratiematch | Niet gewijzigd |
 | EcoFlow STREAM AC Pro, Bol | EUR 698 | Niet actueel verifieerbaar | Niet gewijzigd zonder Bol Catalog |
-| EcoFlow STREAM AC Pro, merkshop | EUR 698 | EUR 799 | Automatisch bijgewerkt |
+| EcoFlow STREAM AC Pro, merkshop | EUR 698 | EUR 749 | Automatisch bijgewerkt, verschil 7,3 procent |
 | Sunology STOREY Master | EUR 2.499 | EUR 1.390 | Automatisch bijgewerkt |
 | Marstek Venus E 3.0 | EUR 1.300 | Laatst bevestigd EUR 1.300 | Niet gewijzigd zonder actuele Bol-bron |
 | Growatt NOAH 2000 | Geen offer | EUR 603,79 | Nieuwe exacte merchantoffer toegevoegd |
 | Growatt NEXA 2000 | Niet gepubliceerd | EUR 545 | Nieuw product en exacte merchantoffer toegevoegd |
 | Sunology PLAY | EUR 1.299 | EUR 599 voor een zonnestation | Offer verwijderd wegens SKU-mismatch |
 
-De merchantprijzen zijn op 2026-08-06 om 06:04 UTC gecontroleerd. De Bol-productpagina van
+De merchantprijzen zijn op 2026-08-07 om 06:05 UTC gecontroleerd. De Bol-productpagina van
 Anker Max AC was voor het laatst hard bevestigd op 2026-07-31 om 06:04 UTC:
 
 - Anker Max AC:
