@@ -128,7 +128,9 @@ export async function runCatalogDiscoveryPipeline(input?: {
         continue;
       }
 
-      const upserted = await upsertProductFromCandidate(candidate);
+      const upserted = await upsertProductFromCandidate(candidate, {
+        existingProduct: existing ? { id: existing.id, slug: existing.slug } : null,
+      });
       stats.upserted += 1;
       if (upserted.outboundStatus === "ok") stats.verifiedOk += 1;
       if (upserted.outboundStatus === "broken") stats.verifiedBroken += 1;
