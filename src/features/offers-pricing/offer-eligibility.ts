@@ -12,11 +12,17 @@ export type OfferOutboundFields = {
 };
 
 /** True bij merchant zoek/listing i.p.v. concrete product-URL. */
-export function isSearchOrListingUrl(url: string): boolean {
+function isSearchOrListingUrlAtDepth(url: string, depth: number): boolean {
   try {
     const u = new URL(url);
     const host = u.hostname.replace(/^www\./, "");
     const path = u.pathname.replace(/\/+$/, "");
+    if (host === "partner.bol.com" && depth < 2) {
+      const destination = u.searchParams.get("url");
+      if (destination && isSearchOrListingUrlAtDepth(destination, depth + 1)) {
+        return true;
+      }
+    }
     if (host.endsWith("bol.com") && (path === "/nl/nl/s" || path.endsWith("/s"))) {
       return true;
     }
@@ -38,6 +44,10 @@ export function isSearchOrListingUrl(url: string): boolean {
   } catch {
     return false;
   }
+}
+
+export function isSearchOrListingUrl(url: string): boolean {
+  return isSearchOrListingUrlAtDepth(url, 0);
 }
 
 export function offerOutboundUrl(offer: OfferOutboundFields): string | null {
