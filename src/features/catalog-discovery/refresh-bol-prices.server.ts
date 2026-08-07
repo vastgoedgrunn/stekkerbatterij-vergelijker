@@ -263,14 +263,6 @@ export async function refreshBolOfferPrices(_input?: {
         } as never)
         .eq("id", offer.id);
 
-      if (offer.price_cents !== newPrice) {
-        await db.from("price_history").insert({
-          offer_id: offer.id,
-          price_cents: newPrice,
-          recorded_at: nowIso,
-        } as never);
-      }
-
       result.updated += 1;
       result.items.push({
         ...baseItem,
