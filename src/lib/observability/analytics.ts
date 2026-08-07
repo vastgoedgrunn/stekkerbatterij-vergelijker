@@ -32,6 +32,10 @@ export type AnalyticsEvent =
       props?: { slug: string; partner: string; source?: string };
     }
   | { name: "fixed_catalog_viewed"; props?: { path: string } }
+  | {
+      name: "fixed_catalog_product_clicked";
+      props: { productId: string; slug: string; placement: "product_card" };
+    }
   | { name: "product_detail_viewed"; props?: { productId: string; slug: string } }
   | { name: "review_submitted"; props?: { productId: string } }
   | { name: "cart_add"; props?: { productId: string } }
