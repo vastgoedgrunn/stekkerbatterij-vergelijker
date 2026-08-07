@@ -5,6 +5,7 @@ import {
   CATALOG_TARGET_PRODUCTS_PER_BRAND,
   MARQUEE_BRAND_SLUGS,
 } from "@/config/marquee-brands";
+import { isEligibleOutboundOffer } from "@/features/offers-pricing/offer-eligibility";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type BrandCompleteness = {
@@ -17,6 +18,7 @@ export type BrandCompleteness = {
   minRequired: number;
   target: number;
   skuGap: number;
+  complete: boolean;
   issues: string[];
 };
 
@@ -128,12 +130,7 @@ export async function getCatalogCompletenessReport(): Promise<CatalogCompletenes
       }
       withOffer += 1;
 
-      const hasOutbound = productOffers.some((o) => {
-        const status = o.affiliate_link_status ?? "pending";
-        if (status === "broken") return false;
-        const dest = o.affiliate_deeplink || o.affiliate_url;
-        return typeof dest === "string" && dest.startsWith("https://");
-      });
+      const hasOutbound = productOffers.some(isEligibleOutboundOffer);
       if (hasOutbound) withOutboundOffer += 1;
       else issues.push(`${product.slug}: geen bruikbare outbound offer`);
     }
@@ -143,6 +140,10 @@ export async function getCatalogCompletenessReport(): Promise<CatalogCompletenes
     if (skuGap > 0) {
       issues.push(`Te weinig SKUs (${publishedCount}/${CATALOG_MIN_PRODUCTS_PER_BRAND})`);
     }
+    const complete =
+      publishedCount >= CATALOG_MIN_PRODUCTS_PER_BRAND &&
+      withImage >= CATALOG_MIN_PRODUCTS_PER_BRAND &&
+      withOutboundOffer >= 1;
 
     return {
       brandSlug,
@@ -154,6 +155,7 @@ export async function getCatalogCompletenessReport(): Promise<CatalogCompletenes
       minRequired: CATALOG_MIN_PRODUCTS_PER_BRAND,
       target: CATALOG_TARGET_PRODUCTS_PER_BRAND,
       skuGap,
+      complete,
       issues,
     };
   });
@@ -176,7 +178,7 @@ export async function getCatalogCompletenessReport(): Promise<CatalogCompletenes
     brands,
     unhealthyOffers,
     summary: {
-      brandsBelowMin: brands.filter((b) => b.skuGap > 0).length,
+      brandsBelowMin: brands.filter((b) => !b.complete).length,
       brandsAtTarget: brands.filter((b) => b.publishedCount >= CATALOG_TARGET_PRODUCTS_PER_BRAND)
         .length,
       pendingOrBrokenOffers: unhealthyOffers.length,

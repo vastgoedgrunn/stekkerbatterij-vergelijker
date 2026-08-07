@@ -25,6 +25,14 @@ export type UpsertResult = {
   outboundNote: string;
 };
 
+type ExistingProduct = {
+  id: string;
+  slug: string;
+  name: string;
+  status: string;
+  image_path: string | null;
+};
+
 function buildSummary(candidate: DiscoveredCandidate): string {
   const bits = [candidate.rawTitle];
   if (candidate.capacityKwh != null) bits.push(`${candidate.capacityKwh} kWh`);
@@ -51,6 +59,7 @@ function buildDescription(candidate: DiscoveredCandidate): string {
  */
 export async function upsertProductFromCandidate(
   candidate: DiscoveredCandidate,
+  options?: { matchedProductId?: string | null },
 ): Promise<UpsertResult> {
   const db = getDb();
 
@@ -70,21 +79,22 @@ export async function upsertProductFromCandidate(
   }
 
   const slug = slugifyProductName(candidate.rawTitle);
-  const { data: existing } = await db
-    .from("products")
-    .select("id, slug, name, status, image_path")
-    .eq("slug", slug)
-    .is("deleted_at", null)
-    .maybeSingle<{
-      id: string;
-      slug: string;
-      name: string;
-      status: string;
-      image_path: string | null;
-    }>();
+  const existingQuery = options?.matchedProductId
+    ? db
+        .from("products")
+        .select("id, slug, name, status, image_path")
+        .eq("id", options.matchedProductId)
+        .is("deleted_at", null)
+    : db
+        .from("products")
+        .select("id, slug, name, status, image_path")
+        .eq("slug", slug)
+        .is("deleted_at", null);
+  const { data: existing } = await existingQuery.maybeSingle<ExistingProduct>();
+  const resolvedSlug = existing?.slug ?? slug;
 
   const imageResolved = await resolveAndIngestProductImage({
-    slug,
+    slug: resolvedSlug,
     productPageUrl: candidate.url,
     candidateImageUrl: candidate.imageUrl,
     existingImagePath: existing?.image_path ?? null,
@@ -99,6 +109,7 @@ export async function upsertProductFromCandidate(
     await db
       .from("products")
       .update({
+        name: candidate.rawTitle,
         summary: buildSummary(candidate),
         description: buildDescription(candidate),
         capacity_kwh: candidate.capacityKwh ?? null,
@@ -207,7 +218,7 @@ export async function upsertProductFromCandidate(
   return {
     productId,
     offerId,
-    slug,
+    slug: resolvedSlug,
     created,
     outboundStatus: verify.status,
     outboundNote: verify.note,
