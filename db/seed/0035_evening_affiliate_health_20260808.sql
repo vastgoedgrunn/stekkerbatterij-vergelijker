@@ -1,5 +1,5 @@
 -- Avondcontrole affiliate- en offergezondheid.
--- Gecontroleerd: 2026-08-07T18:05:39Z.
+-- Gecontroleerd: 2026-08-08T18:04:43Z.
 --
 -- Alle zestien Bol partnerlinks gaven HTTPS 301 naar het exacte productpad
 -- en product-ID. De twee HomeWizard links en de Zendure link eindigden met
@@ -16,7 +16,8 @@
 -- https://uwsolarinstallatieshop.nl/Thuisbatterijen/580-growatt-noah-2000.html
 --
 -- De offer-prijstrigger schrijft echte prijswijzigingen append-only naar
--- price_history. De gecontroleerde prijzen zijn vandaag niet gewijzigd.
+-- price_history. EcoFlow STREAM AC Pro wijzigde van EUR 749 naar EUR 799.
+-- De overige gecontroleerde prijzen zijn niet gewijzigd.
 
 -- Corrigeer eerst bekende concrete bestemmingen, zodat oude homepages niet
 -- door de P0 scan als actief aanbod blijven bestaan.
@@ -37,8 +38,8 @@ set
   affiliate_url = 'https://nl.ecoflow.com/products/stream-ac-pro-ac',
   affiliate_link_status = 'pending',
   affiliate_link_note = 'P0: exacte EcoFlow product-URL gecontroleerd; Awin publisher-ID en deeplink ontbreken',
-  affiliate_link_checked_at = '2026-08-07T18:05:39Z'::timestamptz,
-  last_checked_at = '2026-08-07T18:05:39Z'::timestamptz,
+  affiliate_link_checked_at = '2026-08-08T18:04:43Z'::timestamptz,
+  last_checked_at = '2026-08-08T18:04:43Z'::timestamptz,
   deleted_at = null,
   updated_at = now()
 from products p
@@ -62,9 +63,9 @@ update offers
 set
   stock_status = 'out_of_stock',
   affiliate_link_status = 'broken',
-  affiliate_link_note = 'P0: zoekpagina, listing, homepage of ontbrekende HTTPS outbound soft-deleted 2026-08-07',
-  affiliate_link_checked_at = '2026-08-07T18:05:39Z'::timestamptz,
-  last_checked_at = '2026-08-07T18:05:39Z'::timestamptz,
+  affiliate_link_note = 'P0: zoekpagina, listing, homepage of ontbrekende HTTPS outbound soft-deleted 2026-08-08',
+  affiliate_link_checked_at = '2026-08-08T18:04:43Z'::timestamptz,
+  last_checked_at = '2026-08-08T18:04:43Z'::timestamptz,
   deleted_at = coalesce(deleted_at, now()),
   updated_at = now()
 where deleted_at is null
@@ -87,13 +88,13 @@ set
   affiliate_link_status = 'ok',
   affiliate_link_note = case
     when verified.merchant_slug = 'bol'
-      then 'Avondcontrole 2026-08-07: Bol partnerlink 301 naar exact HTTPS productpad en product-ID'
+      then 'Avondcontrole 2026-08-08: Bol partnerlink 301 naar exact HTTPS productpad en product-ID'
     when verified.merchant_slug in ('homewizard', 'zendure')
-      then 'Avondcontrole 2026-08-07: Daisycon link geeft exact HTTPS productpad en SKU-match'
-    else 'Avondcontrole 2026-08-07: directe product-URL geeft exact HTTPS productpad en SKU-match'
+      then 'Avondcontrole 2026-08-08: Daisycon link geeft exact HTTPS productpad en SKU-match'
+    else 'Avondcontrole 2026-08-08: directe product-URL geeft exact HTTPS productpad en SKU-match'
   end,
-  affiliate_link_checked_at = '2026-08-07T18:05:39Z'::timestamptz,
-  last_checked_at = '2026-08-07T18:05:39Z'::timestamptz,
+  affiliate_link_checked_at = '2026-08-08T18:04:43Z'::timestamptz,
+  last_checked_at = '2026-08-08T18:04:43Z'::timestamptz,
   updated_at = now()
 from (
   select p.id as product_id, m.id as merchant_id, checks.merchant_slug
@@ -133,12 +134,12 @@ where o.product_id = verified.product_id
 -- EcoFlow blijft pending totdat een echte Awin publisherdeeplink beschikbaar is.
 update offers o
 set
-  price_cents = 74900,
+  price_cents = 79900,
   stock_status = 'in_stock',
   affiliate_link_status = 'pending',
-  affiliate_link_note = 'P0: EcoFlow STREAM AC Pro EUR 749 en product-URL gecontroleerd; Awin publisher-ID en deeplink ontbreken',
-  affiliate_link_checked_at = '2026-08-07T18:05:39Z'::timestamptz,
-  last_checked_at = '2026-08-07T18:05:39Z'::timestamptz,
+  affiliate_link_note = 'P0: EcoFlow STREAM AC Pro EUR 799 en product-URL gecontroleerd; Awin publisher-ID en deeplink ontbreken',
+  affiliate_link_checked_at = '2026-08-08T18:04:43Z'::timestamptz,
+  last_checked_at = '2026-08-08T18:04:43Z'::timestamptz,
   updated_at = now()
 from products p
 where o.product_id = p.id
@@ -168,50 +169,50 @@ from (
         'zendure-solarflow-800',
         'zendure',
         74700::bigint,
-        'SolarFlow 800 plus AB2000L EUR 747 en Daisycon productpad gecontroleerd 2026-08-07',
-        '2026-08-07T18:05:39Z'::timestamptz
+        'SolarFlow 800 plus AB2000L EUR 747 en Daisycon productpad gecontroleerd 2026-08-08',
+        '2026-08-08T18:04:43Z'::timestamptz
       ),
       (
         'homewizard-plug-in-battery',
         'homewizard',
         119500::bigint,
-        'HomeWizard merkshop EUR 1195 en Daisycon productpad gecontroleerd 2026-08-07',
-        '2026-08-07T18:05:39Z'::timestamptz
+        'HomeWizard merkshop EUR 1195 en Daisycon productpad gecontroleerd 2026-08-08',
+        '2026-08-08T18:04:43Z'::timestamptz
       ),
       (
         'homewizard-plug-in-battery-bundle',
         'homewizard',
         239000::bigint,
-        'HomeWizard merkshop, twee batterijen van EUR 1195, gecontroleerd 2026-08-07',
-        '2026-08-07T18:05:39Z'::timestamptz
+        'HomeWizard merkshop, twee batterijen van EUR 1195, gecontroleerd 2026-08-08',
+        '2026-08-08T18:04:43Z'::timestamptz
       ),
       (
         'sessy-thuisbatterij',
         'sessy',
         355000::bigint,
-        'Sessy merkshop 5 kWh EUR 3550 en productconfigurator gecontroleerd 2026-08-07',
-        '2026-08-07T18:05:39Z'::timestamptz
+        'Sessy merkshop 5 kWh EUR 3550 en productconfigurator gecontroleerd 2026-08-08',
+        '2026-08-08T18:04:43Z'::timestamptz
       ),
       (
         'sunology-storey',
         'sunology',
         139000::bigint,
-        'Sunology STOREY EUR 1390 en exact productpad gecontroleerd 2026-08-07',
-        '2026-08-07T18:05:39Z'::timestamptz
+        'Sunology STOREY EUR 1390 en exact productpad gecontroleerd 2026-08-08',
+        '2026-08-08T18:04:43Z'::timestamptz
       ),
       (
         'growatt-nexa-2000',
         'stralendgroen',
         54500::bigint,
-        'Growatt NEXA 2000 SKU 229066, EUR 545 en exact productpad gecontroleerd 2026-08-07',
-        '2026-08-07T18:05:39Z'::timestamptz
+        'Growatt NEXA 2000 SKU 229066, EUR 545 en exact productpad gecontroleerd 2026-08-08',
+        '2026-08-08T18:04:43Z'::timestamptz
       ),
       (
         'growatt-noah-2000',
         'uw-solar-installatie-shop',
         60379::bigint,
-        'Growatt NOAH 2000 artikel O-G-NOAH-2000, EUR 603,79 en exact productpad gecontroleerd 2026-08-07',
-        '2026-08-07T18:05:39Z'::timestamptz
+        'Growatt NOAH 2000 artikel O-G-NOAH-2000, EUR 603,79 en exact productpad gecontroleerd 2026-08-08',
+        '2026-08-08T18:04:43Z'::timestamptz
       )
   ) as targets(product_slug, merchant_slug, price_cents, health_note, checked_at)
   join products p on p.slug = targets.product_slug
@@ -259,8 +260,8 @@ set
   stock_status = 'out_of_stock',
   affiliate_link_status = 'broken',
   affiliate_link_note = blocked.health_note,
-  affiliate_link_checked_at = '2026-08-07T18:05:39Z'::timestamptz,
-  last_checked_at = '2026-08-07T18:05:39Z'::timestamptz,
+  affiliate_link_checked_at = '2026-08-08T18:04:43Z'::timestamptz,
+  last_checked_at = '2026-08-08T18:04:43Z'::timestamptz,
   deleted_at = coalesce(o.deleted_at, now()),
   updated_at = now()
 from (
@@ -270,12 +271,12 @@ from (
       (
         'sunology-play',
         'sunology',
-        'P0: Sunology PLAY is een zonnestation zonder batterij-SKU; soft-deleted 2026-08-07'
+        'P0: Sunology PLAY is een zonnestation zonder batterij-SKU; soft-deleted 2026-08-08'
       ),
       (
         'sessy-thuisbatterij-duo',
         'sessy',
-        'P0: Sessy Duo heeft geen eigen productpad of affiliate deeplink; soft-deleted 2026-08-07'
+        'P0: Sessy Duo heeft geen eigen productpad of affiliate deeplink; soft-deleted 2026-08-08'
       )
   ) as targets(product_slug, merchant_slug, health_note)
   join products p on p.slug = targets.product_slug
@@ -308,10 +309,10 @@ set
   stock_status = 'out_of_stock',
   affiliate_link_note = coalesce(
     affiliate_link_note,
-    'P0: broken offer soft-deleted na avondcontrole 2026-08-07'
+    'P0: broken offer soft-deleted na avondcontrole 2026-08-08'
   ),
-  affiliate_link_checked_at = '2026-08-07T18:05:39Z'::timestamptz,
-  last_checked_at = '2026-08-07T18:05:39Z'::timestamptz,
+  affiliate_link_checked_at = '2026-08-08T18:04:43Z'::timestamptz,
+  last_checked_at = '2026-08-08T18:04:43Z'::timestamptz,
   deleted_at = coalesce(deleted_at, now()),
   updated_at = now()
 where affiliate_link_status = 'broken'
