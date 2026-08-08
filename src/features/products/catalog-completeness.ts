@@ -141,10 +141,15 @@ export async function getCatalogCompletenessReport(): Promise<CatalogCompletenes
     if (skuGap > 0) {
       issues.push(`Te weinig SKUs (${publishedCount}/${CATALOG_MIN_PRODUCTS_PER_BRAND})`);
     }
+    if (withOutboundOffer < CATALOG_MIN_PRODUCTS_PER_BRAND) {
+      issues.push(
+        `Te weinig bruikbare outbounds (${withOutboundOffer}/${CATALOG_MIN_PRODUCTS_PER_BRAND})`,
+      );
+    }
     const complete =
       publishedCount >= CATALOG_MIN_PRODUCTS_PER_BRAND &&
       withImage >= CATALOG_MIN_PRODUCTS_PER_BRAND &&
-      withOutboundOffer >= 1;
+      withOutboundOffer >= CATALOG_MIN_PRODUCTS_PER_BRAND;
 
     return {
       brandSlug,

@@ -1,14 +1,14 @@
 # Catalogus gap-matrix (live inventaris)
 
-Publieke productiecontrole op 2026-08-07 om 06:01 UTC. De automationomgeving heeft geen
+Publieke productiecontrole op 2026-08-08 om 05:06 UTC. De automationomgeving heeft geen
 Supabase serviceconfiguratie. Drafts en discovery candidates zijn niet zichtbaar onder de
 publieke RLS en worden daarom niet als nul gerapporteerd.
 
 ## Completeness per marquee-merk
 
-De publieke catalogus toont 17 gepubliceerde plug-inproducten. Alle 17 hebben een `image_path`.
-Een merk is compleet bij minimaal twee gepubliceerde producten met afbeelding en minimaal één
-offer met status `ok` en een concrete HTTPS-productlink.
+De publieke catalogus toont 17 gepubliceerde plug-inproducten. Alle 17 productafbeeldingen geven
+HTTP 200. Een merk is compleet bij minimaal twee gepubliceerde producten die elk een offer met
+status `ok`, een prijs en een concrete HTTPS-productlink hebben.
 
 | Merk | Gepubliceerd | Met afbeelding | Bruikbare outbound | Open gap |
 |------|--------------:|---------------:|--------------------:|----------|
@@ -21,10 +21,12 @@ offer met status `ok` en een concrete HTTPS-productlink.
 | HomeWizard | 2 | 2 | 2 | Geen catalogusgap |
 | Sunology | 2 | 2 | 2 in productie, 1 hard gematcht | PLAY is een zonnestation en gaat terug naar draft |
 
-Na toepassing van seeds `0033` en `0034` toont de catalogus 16 geldige plug-inproducten.
-Growatt blijft op twee producten door NOAH 2000S te vervangen door de bronmatig bevestigde
-NEXA 2000. NOAH 2000 en NEXA 2000 krijgen beide een exacte Nederlandse productlink.
-Sunology houdt één geldig batterijproduct en heeft daardoor nog één SKU-gat.
+Seeds `0032`, `0033` en `0034` zijn op 7 augustus naar `main` gemerged, maar de publieke
+productiedatabase toont de correcties op 8 augustus nog niet. Productie toont nog steeds
+Sunology PLAY en Growatt NOAH 2000S, en toont Growatt NEXA 2000 nog niet. Na toepassing van de
+seeds telt de catalogus 16 geldige plug-inproducten. Growatt houdt dan twee geldige producten
+door NOAH 2000S te vervangen door de bronmatig bevestigde NEXA 2000. Sunology houdt één geldig
+batterijproduct en daarmee één SKU-gat.
 
 ## SKU en draftstatus
 
@@ -40,26 +42,26 @@ Sunology houdt één geldig batterijproduct en heeft daardoor nog één SKU-gat.
   worden door de correctieseeds teruggezet naar draft. Er is geen ander verifieerbaar
   seed-draft dat nog op publicatie wacht.
 
-## Prijscontrole 2026-08-07
+## Prijscontrole 2026-08-08
 
 | Product | Productieprijs | Bronprijs | Actie |
 |---------|---------------:|----------:|-------|
-| Anker SOLIX Solarbank Max AC | EUR 2.199 | EUR 2.099 | In seed bijgewerkt, verschil 4,5 procent |
-| Zendure SolarFlow 800 plus AB2000L | EUR 747 | EUR 747 | Controletijdstip vernieuwd naar 7 augustus |
-| HomeWizard Plug-In Battery | EUR 1.195 | EUR 1.195 | Controletijdstip vernieuwd naar 7 augustus |
-| HomeWizard bundle | EUR 2.390 | EUR 2.390 | Controletijdstip vernieuwd naar 7 augustus |
-| Sessy 5 kWh | EUR 3.550 | EUR 3.550 | Controletijdstip vernieuwd naar 7 augustus |
-| Sessy Duo | EUR 7.100 | Geen harde configuratiematch | Niet gewijzigd |
+| Anker SOLIX Solarbank Max AC | EUR 2.199 | Niet actueel verifieerbaar | Niet gewijzigd zonder Bol Catalog |
+| Zendure SolarFlow 800 plus AB2000L | EUR 747 | EUR 747 | Ongewijzigd |
+| HomeWizard Plug-In Battery | EUR 1.195 | EUR 1.195 | Ongewijzigd |
+| HomeWizard bundle | EUR 2.390 | Alleen singlepagina van EUR 1.195 | `needs_review`, geen bundel voorgeselecteerd |
+| Sessy 5 kWh | EUR 3.550 | EUR 3.550 | Ongewijzigd |
+| Sessy Duo | EUR 7.100 | EUR 5.500 voor 10 kWh | Niet gewijzigd zonder harde configuratiematch |
 | EcoFlow STREAM AC Pro, Bol | EUR 698 | Niet actueel verifieerbaar | Niet gewijzigd zonder Bol Catalog |
-| EcoFlow STREAM AC Pro, merkshop | EUR 698 | EUR 749 | Automatisch bijgewerkt, verschil 7,3 procent |
-| Sunology STOREY Master | EUR 2.499 | EUR 1.390 | Automatisch bijgewerkt |
+| EcoFlow STREAM AC Pro, merkshop | EUR 698 | EUR 749 actie, EUR 799 in productdata | Niet gewijzigd door bronambiguïteit |
+| Sunology STOREY Master | EUR 2.499 | EUR 1.390 | Niet automatisch, verschil groter dan 10 procent |
 | Marstek Venus E 3.0 | EUR 1.300 | Laatst bevestigd EUR 1.300 | Niet gewijzigd zonder actuele Bol-bron |
-| Growatt NOAH 2000 | Geen offer | EUR 603,79 | Nieuwe exacte merchantoffer toegevoegd |
-| Growatt NEXA 2000 | Niet gepubliceerd | EUR 545 | Nieuw product en exacte merchantoffer toegevoegd |
-| Sunology PLAY | EUR 1.299 | EUR 599 voor een zonnestation | Offer verwijderd wegens SKU-mismatch |
+| Growatt NOAH 2000 | Geen offer | EUR 603,79 | Exacte merchantoffer staat in gemergede seed, nog niet live |
+| Growatt NEXA 2000 | Niet gepubliceerd | EUR 545 | Product en offer staan in gemergede seed, nog niet live |
+| Sunology PLAY | EUR 1.299 | EUR 599 voor een zonnestation | Verwijdering staat in gemergede seed, nog niet live |
 
-De merchantprijzen zijn op 2026-08-07 om 06:05 UTC gecontroleerd. De Bol-productpagina van
-Anker Max AC was voor het laatst hard bevestigd op 2026-07-31 om 06:04 UTC:
+De bereikbare merchantprijzen zijn op 2026-08-08 om 05:08 UTC gecontroleerd. De
+Bol-productpagina van Anker Max AC was voor het laatst hard bevestigd op 2026-07-31 om 06:04 UTC:
 
 - Anker Max AC:
   <https://www.bol.com/nl/nl/p/anker-solix-solarbank-max-ac-balkonkrachtwerk-met-opslag-7kwh-3600w-alles-in-1-plug-play-thuisaccu-10000-cycli-5-min-installatie-zonnepaneel-met-omvormer/9300000292343906/>
@@ -77,7 +79,9 @@ Anker Max AC was voor het laatst hard bevestigd op 2026-07-31 om 06:04 UTC:
 
 ## P0 outbound en affiliate
 
-- De code-equivalente zoek- en listingcontrole geeft `P0 search-URL count: 0`.
+- De publieke code-equivalente zoek- en listingcontrole geeft `P0 search-URL count: 0`.
+- De databasebrede SQL-scan is zonder Supabase serviceconfiguratie niet uitvoerbaar en wordt
+  daarom niet als nul gerapporteerd.
 - Sunology PLAY en Growatt NOAH 2000S zijn semantische SKU-problemen. De correctieseeds zetten
   beide producten terug naar draft en verwijderen eventuele offers.
 - Na de correcties missen zes actieve offers een `affiliate_deeplink`: Sessy single, Sessy Duo,

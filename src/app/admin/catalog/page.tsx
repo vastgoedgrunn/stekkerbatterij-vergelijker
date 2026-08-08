@@ -244,7 +244,7 @@ export default async function AdminCatalogHealthPage({
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="font-semibold">{brand.brandName}</p>
-                    <Badge variant={brand.skuGap > 0 ? "warning" : "success"}>
+                    <Badge variant={brand.complete ? "success" : "warning"}>
                       {brand.publishedCount}/{brand.minRequired} SKUs
                     </Badge>
                   </div>
