@@ -8,7 +8,7 @@
 -- https://nl.growatt.com/products
 -- NEXA 2000, prijs, voorraad, SKU 229066 en MPN NEXA 2000:
 -- https://www.stralendgroen.nl/product/growatt-nexa-2000/
--- NOAH 2000, prijs en voorraad:
+-- NOAH 2000, prijs en voorraad, opnieuw gecontroleerd op 2026-08-08T06:04:00Z:
 -- https://uwsolarinstallatieshop.nl/Thuisbatterijen/580-growatt-noah-2000.html
 
 update products
@@ -153,10 +153,10 @@ select
   'https://uwsolarinstallatieshop.nl/Thuisbatterijen/580-growatt-noah-2000.html',
   null,
   'ok',
-  'Exacte NOAH 2000 productpagina, artikel O-G-NOAH-2000, EUR 603,79 inclusief btw; affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-07T06:05:00Z',
+  'Exacte NOAH 2000 productpagina, artikel O-G-NOAH-2000, EUR 603,79 inclusief btw; affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-08T06:04:00Z',
   false,
-  '2026-08-07T06:05:00Z'::timestamptz,
-  '2026-08-07T06:05:00Z'::timestamptz
+  '2026-08-08T06:04:00Z'::timestamptz,
+  '2026-08-08T06:04:00Z'::timestamptz
 from products p
 cross join merchants m
 where p.slug = 'growatt-noah-2000'
