@@ -240,6 +240,12 @@
     background-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
   }
 
+  /* Tokenvaste focus voor links en andere bediening zonder eigen ringvariant. */
+  :where(a[href], button, summary):focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 3px;
+  }
+
   /* Respecteer gebruikersvoorkeur voor minder beweging. */
   @media (prefers-reduced-motion: reduce) {
     *,
