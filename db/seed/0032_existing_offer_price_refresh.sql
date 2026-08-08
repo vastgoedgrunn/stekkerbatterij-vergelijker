@@ -1,7 +1,7 @@
--- Bestaande offerprijzen opnieuw gecontroleerd op 2026-08-07T06:05:00Z.
+-- Bestaande offerprijzen opnieuw gecontroleerd op 2026-08-08T06:04:00Z.
 -- Elke bevestigde merchantprijs wordt volledig automatisch verwerkt.
 --
--- Anker Max AC, laatst hard bevestigd op de Bol productpagina op 2026-07-31:
+-- Anker Max AC, hard bevestigd op de Bol productpagina op 2026-08-08:
 -- https://www.bol.com/nl/nl/p/anker-solix-solarbank-max-ac-balkonkrachtwerk-met-opslag-7kwh-3600w-alles-in-1-plug-play-thuisaccu-10000-cycli-5-min-installatie-zonnepaneel-met-omvormer/9300000292343906/
 -- Zendure SolarFlow 800 plus AB2000L:
 -- https://www.zendure.nl/products/solarflow-800
@@ -19,9 +19,9 @@ update offers o
 set
   price_cents = 209900,
   stock_status = 'in_stock',
-  affiliate_link_note = 'Bol productpagina EAN 0194644338664, EUR 2099, gecheckt 2026-07-31T06:04:00Z',
-  affiliate_link_checked_at = '2026-07-31T06:04:00Z'::timestamptz,
-  last_checked_at = '2026-07-31T06:04:00Z'::timestamptz,
+  affiliate_link_note = 'Bol productpagina EAN 0194644338664, EUR 2099, gecheckt 2026-08-08T06:04:00Z',
+  affiliate_link_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
+  last_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
@@ -39,9 +39,9 @@ update offers o
 set
   price_cents = 74700,
   stock_status = 'in_stock',
-  affiliate_link_note = 'Daisycon deeplink naar SolarFlow 800; Nederlandse setprijs EUR 747, gecheckt 2026-08-07T06:05:00Z',
-  affiliate_link_checked_at = '2026-08-07T06:05:00Z'::timestamptz,
-  last_checked_at = '2026-08-07T06:05:00Z'::timestamptz,
+  affiliate_link_note = 'Daisycon deeplink naar SolarFlow 800; Nederlandse setprijs EUR 747, gecheckt 2026-08-08T06:04:00Z',
+  affiliate_link_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
+  last_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
@@ -59,11 +59,11 @@ set
   stock_status = 'in_stock',
   affiliate_link_note = case
     when p.slug = 'homewizard-plug-in-battery-bundle'
-      then 'HomeWizard merkshop, twee batterijen van EUR 1195; gecheckt 2026-08-07T06:05:00Z'
-    else 'HomeWizard merkshop, EUR 1195; gecheckt 2026-08-07T06:05:00Z'
+      then 'HomeWizard merkshop, twee batterijen van EUR 1195; gecheckt 2026-08-08T06:04:00Z'
+    else 'HomeWizard merkshop, EUR 1195; gecheckt 2026-08-08T06:04:00Z'
   end,
-  affiliate_link_checked_at = '2026-08-07T06:05:00Z'::timestamptz,
-  last_checked_at = '2026-08-07T06:05:00Z'::timestamptz,
+  affiliate_link_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
+  last_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
@@ -76,9 +76,9 @@ update offers o
 set
   price_cents = 355000,
   stock_status = 'in_stock',
-  affiliate_link_note = 'Sessy prijsinformatie, 5 kWh EUR 3550; affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-07T06:05:00Z',
-  affiliate_link_checked_at = '2026-08-07T06:05:00Z'::timestamptz,
-  last_checked_at = '2026-08-07T06:05:00Z'::timestamptz,
+  affiliate_link_note = 'Sessy prijsinformatie, 5 kWh EUR 3550; affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-08T06:04:00Z',
+  affiliate_link_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
+  last_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
@@ -89,9 +89,9 @@ where o.product_id = p.id
 
 update offers o
 set
-  affiliate_link_note = 'De bron toont een Sessy 10 kWh-configuratie voor EUR 5500 zonder harde match met de bestaande Duo; prijs niet gewijzigd, affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-07T06:05:00Z',
-  affiliate_link_checked_at = '2026-08-07T06:05:00Z'::timestamptz,
-  last_checked_at = '2026-08-07T06:05:00Z'::timestamptz,
+  affiliate_link_note = 'De bron toont een Sessy 10 kWh-configuratie voor EUR 5500 zonder harde match met de bestaande Duo; prijs niet gewijzigd, affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-08T06:04:00Z',
+  affiliate_link_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
+  last_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
@@ -104,9 +104,9 @@ update offers o
 set
   price_cents = 130000,
   stock_status = 'in_stock',
-  affiliate_link_note = 'Bol productpagina 9300000240523865, EUR 1300, gecheckt 2026-08-01T06:03:38Z',
-  affiliate_link_checked_at = '2026-08-01T06:03:38Z'::timestamptz,
-  last_checked_at = '2026-08-01T06:03:38Z'::timestamptz,
+  affiliate_link_note = 'Bol productpagina 9300000240523865, EUR 1300, gecheckt 2026-08-08T06:04:00Z',
+  affiliate_link_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
+  last_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
@@ -125,9 +125,9 @@ set
   stock_status = 'in_stock',
   affiliate_url = 'https://nl.ecoflow.com/products/stream-ac-pro-ac',
   affiliate_link_status = 'pending',
-  affiliate_link_note = 'EcoFlow merkshop actieprijs EUR 749; Awin deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-07T06:05:00Z',
-  affiliate_link_checked_at = '2026-08-07T06:05:00Z'::timestamptz,
-  last_checked_at = '2026-08-07T06:05:00Z'::timestamptz,
+  affiliate_link_note = 'EcoFlow merkshop actieprijs EUR 749; Awin deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-08T06:04:00Z',
+  affiliate_link_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
+  last_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
@@ -143,9 +143,9 @@ update offers o
 set
   price_cents = 139000,
   stock_status = 'in_stock',
-  affiliate_link_note = 'Sunology STOREY merkshop EUR 1390; affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-07T06:05:00Z',
-  affiliate_link_checked_at = '2026-08-07T06:05:00Z'::timestamptz,
-  last_checked_at = '2026-08-07T06:05:00Z'::timestamptz,
+  affiliate_link_note = 'Sunology STOREY merkshop EUR 1390; affiliate deeplink ontbreekt, plak deeplink zodra netwerk open is; gecheckt 2026-08-08T06:04:00Z',
+  affiliate_link_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
+  last_checked_at = '2026-08-08T06:04:00Z'::timestamptz,
   updated_at = now()
 from products p, merchants m
 where o.product_id = p.id
