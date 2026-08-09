@@ -40,6 +40,12 @@ function isSearchOrListingUrlAtDepth(url: string, depth: number): boolean {
     ) {
       return true;
     }
+    // Bol deeplinks verpakken de productbestemming in de `url` parameter.
+    // Controleer die bestemming ook, zodat een verpakte zoekpagina geen CTA krijgt.
+    if (host === "partner.bol.com" && depth < 2) {
+      const destination = u.searchParams.get("url");
+      if (destination) return isSearchOrListingUrlAtDepth(destination, depth + 1);
+    }
     return false;
   } catch {
     return false;
