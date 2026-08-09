@@ -18,9 +18,9 @@ const RESEARCH_SEEDS: DiscoveredCandidate[] = [
       "Hybride micro-omvormer 800W bidirectioneel AC, uitbreidbaar met AB-batterijmodules.",
     capacityKwh: 1.92,
     powerKw: 0.8,
-    url: "https://eu.zendure.com/products/solarflow-800",
+    url: "https://www.zendure.nl/products/solarflow-800?variant=47143119290623",
     imageUrl: "/images/products/zendure-solarflow-800.jpg",
-    priceCents: null,
+    priceCents: 74700,
   },
   {
     source: "research",
